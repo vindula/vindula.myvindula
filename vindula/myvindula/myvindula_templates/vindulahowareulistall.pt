@@ -1,96 +1,30 @@
-<html>
-	<body metal:use-macro="here/main_template/macros/master">
-		<metal:block fill-slot="top_slot">
-			<tal:dummy tal:define="dummy python:request.set('disable_border',1)" />
-		</metal:block>
-	
+<html metal:use-macro="here/main_template/macros/master">
+    <head>
+        <metal:block fill-slot="top_slot">
+            <tal:dummy tal:define="dummy python:request.set('disable_border',1)" />
+        </metal:block>
+    </head>
+	<body>
 	  	<div metal:fill-slot="content-core">
 			<h2 class="h2title">Em que os usuários estão pensando</h2>
       		<meta:macro metal:define-macro="page-view">    
-      			<script type="text/javascript" src="++resource++vindula.myvindula/js/ajax_comments-curtir.js"></script>
-      			<input type="hidden" id="portal_url" tal:attributes="value context/portal_url|nothing">    
-				<input type="hidden" id="context_url" tal:attributes="value string:${context/absolute_url|nothing}">
 				<style type="text/css">
 					.geral_lista_comentarios .comments-cont .comments-cont{display:block !important;}
 				</style>
-				
 				<div id="content-comment" tal:define="view_listhowareu python: context.restrictedTraverse('@@howareu-list-all');
-											  view_myvindula python: context.restrictedTraverse('@@myvindula');
-											  member context/@@plone_portal_state/member;
-											  AnonymousUser context/portal_membership/isAnonymousUser|python:True;
-											  form_data view_listhowareu/load_dados|python:[]">
+        											  form_data view_listhowareu/load_dados|python:[]">
 	                           					     
 		        	<div id="interna" class="howareulist" tal:define="Batch python:modules['Products.CMFPlone'].Batch;
 												                       b_size python:10;
 												                       b_start python:0;
 												                       b_start request/b_start | b_start;">
 
-						<div class="geral_lista_comentarios" tal:define="batch python:Batch(form_data, b_size, int(b_start));"> 
-							<tal:rep repeat="item batch">
-								<div class="comment item_lista"
-									 tal:define="prefs_user python: view_myvindula.get_prefs_user(item.username);"
-									 tal:condition="prefs_user">
-									 
-									<div class="commentImage">
-					                    <img src="defaultUser.png"
-						             		 alt="" border="0"
-						             		 height="30"
-						             		 tal:attributes="src string: ${context/portal_url|nothing}/user-image?username=${item/username|nothing};
-									 						 alt prefs_user/name|item/username|nothing;
-															 title prefs_user/name|nothing;" />
-					                </div>
-									<div class="documentByLine name-user">
-										<h4>
-											<a tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${item/username|nothing}">
-												<span tal:replace="prefs_user/name|item/username|nothing" /> | 
-						                    	<span tal:condition="item/date_creation|nothing"  
-													  tal:replace="python:item.date_creation.strftime('%d/%m/%Y  %H:%M') or None" />
-											</a>
-										</h4>
-					                </div>
-									<div id="like" tal:condition="not: AnonymousUser">
-										<div tal:attributes="id item/id|nothing">
-											<input type="hidden" name="isPlone:boolean" id="isPlone" value="False" />
-											<input type="hidden" name="type" id="type" value="ModelsMyvindulaHowareu" />
-										</div>
-										<div metal:use-macro="context/myvindula-like-macro/macros/like" />
-
-									</div>
-									<div class="row comment-body">
-										<div class="cell width-6 position-0" tal:condition="item/upload_image|nothing">
-											<img width="230px" tal:attributes="src string:${context/portal_url|nothing}/howareu-image?id=${item/id|nothing}">
-										</div>
-						                <div tal:attributes="class python: item.upload_image and 'cell width-9 position-6' or ''">
-						                    <p tal:replace="structure item/text|nothing" />
-								  		</div>	
-									</div>
-									<div class="visualClear"></div>
-									<!-- campos input necessario para a criação de comentariso -->
-									<div id="comments" tal:condition="not: AnonymousUser">
-										<div tal:attributes="id item/id|nothing">
-											
-											<input type="hidden" name="isPlone:boolean" id="isPlone" value="False" />
-											<input type="hidden" name="type" id="type" value="ModelsMyvindulaHowareu" />
-										</div>
-										<input type="button" value="Comentar" class="comments bt_comments" tal:attributes="id item/id|nothing" />
-										
-										<form action="#" method="post" enctype="multipart/form-data" style="float:right"
-											tal:condition="python: 'Manager' in member.getRoles()"
-					                		tal:attributes="action string:${context/absolute_url}/howareu-list-all">
-											<input type="hidden" name="form.excluir:boolean" value="True" />
-												
-											<input type="hidden" name="id_howareu" id="id_howareu" tal:attributes="value item/id|nothing" />
-											<input type="submit" name="excluir" id="excluir" value="Excluir" 
-																	 class="comments bt_comments" tal:attributes="id item/id|nothing" />	
-										</form>
-										<div id="new-comments"></div>
-									</div>
-								</div>
-								<div class="comments-cont">
-									<div metal:use-macro="context/myvindula-comments-macro/macros/comments" />
-								</div>
-							</tal:rep>
-						</div>
+                        <div class="geral_lista_comentarios" tal:define="batch python:Batch(form_data, b_size, int(b_start));
+                                                                         comment_type string:ModelsMyvindulaHowareu">
+                            <tal:rep tal:repeat="item batch">
+                                <div metal:use-macro="context/macro-single-howareu/macros/page" />
+                            </tal:rep>  
+                        </div>
 						<tal:cond tal:condition="form_data">
 							<div class="navigation-users" tal:define="batch python:Batch(form_data, b_size, int(b_start));">
 								<div metal:use-macro="here/batch_macros/macros/navigation" />

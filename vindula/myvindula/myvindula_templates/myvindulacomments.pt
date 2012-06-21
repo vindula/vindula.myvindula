@@ -1,21 +1,35 @@
-<form action="" name="save-coment" tal:attributes="action string:${context/absolute_url}/myvindula-comments">
-	<script type="text/javascript"  tal:attributes="src string:${view/static}/js/comments.js"></script>
-	
+<form action="" name="save-coment" tal:condition="python: not 'form_ajax' in request.form" >
 	<input type="hidden" name="url_context" value="">
-	<!--input type="hidden" name="username" value="" tal:attributes="value context/REQUEST/username|nothing"-->
-	<input type="hidden" name="id_obj" tal:attributes="value context/REQUEST/id_obj|nothing">
-	<input type="hidden" name="type" tal:attributes="value context/REQUEST/type|nothing">
-	<input type="hidden" name="isPlone:boolean" tal:attributes="value context/REQUEST/isPlone|nothing">
-						                	
-	<textarea  tal:define="view_myvindula python:context.restrictedTraverse('@@myvindula');"
-		       tal:attributes="title view_myvindula/getConfTyneMCE|nothing" 
-                         style="width: 100%; height: 85px;" name="text" id="text" class='mce_editable'></textarea>
+	<input type="hidden" name="id_obj" id="id_obj" tal:attributes="value context/REQUEST/id_obj|nothing">
+	<input type="hidden" name="type" id="type"  tal:attributes="value context/REQUEST/type|nothing">
+	<input type="hidden" name="isPlone:boolean" id="isPlone" tal:attributes="value context/REQUEST/isPlone|nothing">
+
+    <tal:def define="view_myvindula python:context.restrictedTraverse('@@myvindula');
+                     panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel');">
+
+    	 <textarea tal:condition="panelView/check_ativa_richtext|python:False" 
+                                   tal:attributes="title view_myvindula/getConfTyneMCE" 
+                                   style="width: 100%; height: 85px;" name="text" id="text" class='mce_editable'></textarea>   
+                                    
+         <textarea tal:condition="not: panelView/check_ativa_richtext|python:True"  
+                   style="width: 100%; height: 81px;" name="text" id="text"></textarea>  
+     </tal:def>
 	
 	<div class="formControls text-aling">
 	  <input type="hidden" name="form.submitted-comment:boolean" value="True" />
 	  <input type="button" name="cancel" value="Cancelar" id="cancel-coment" class="context bt_comments"/>
-	  <input type="submit" name="submit" value="Publicar" id="save-coment" class="context bt_comments"/>
+	  
+	  <input type="button" name="submit" value="Publicar" id="save-coment" class="context bt_comments"/>
+	   
+	   <img tal:attributes="src string:${context/portal_url|nothing}/++resource++vindula.myvindula/images/save-load.gif"
+	        id="load-save" style="display: none" />
+	   	   
 	</div>
-	
-	
 </form>
+
+<tal:cond tal:condition="python: 'form_ajax' in request.form and not 'form_excluir' in request.form">
+    <tal:def define="item view/get_sigle_comments;
+                    comment_type string:ModelsMyvindulaComments">
+        <div metal:use-macro="context/macro-single-comment/macros/comment"> </div>
+    </tal:def>
+</tal:cond>

@@ -1,18 +1,11 @@
 <html metal:use-macro="here/main_template/macros/master">
-
 	<head>
-			<metal:block fill-slot="top_slot">
-			        <tal:dummy tal:define="dummy python:request.set('disable_border',1)" />
-			</metal:block>
+        <metal:block fill-slot="top_slot">
+                <tal:dummy tal:define="dummy python:request.set('disable_border',1)" />
+        </metal:block>
 	</head>
-	
 	<body metal:fill-slot="content">  
 		<meta:macro metal:define-macro="page-view">     
-			
-				<script type="text/javascript" tal:attributes="src string:${view/static}/js/comments-perfil.js"></script>
-				<script type="text/javascript" tal:attributes="src string:${view/static}/js/ajax_comments-curtir.js"></script>
-
-		
 	    	<div tal:define="view python: context.restrictedTraverse('@@myvindulalistuser');
 							   member python:context.portal_membership.getAuthenticatedMember();
 							   logado python:str(member)!='Anonymous User';
@@ -22,9 +15,9 @@
 							   panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel')">
 												   
 
-				<input type="hidden" id="portal_url" tal:attributes="value context/portal_url|nothing">
+				<!--input type="hidden" id="portal_url" tal:attributes="value context/portal_url|nothing">
 				<input type="hidden" id="context_url" tal:attributes="value string:${context/REQUEST/getURL|nothing}?user=${context/REQUEST/form/user|nothing}">
-				<input type="hidden" id="username" name="username" value="" tal:attributes="value context/@@plone_portal_state/member|nothing">
+				<input type="hidden" id="username" name="username" value="" tal:attributes="value context/@@plone_portal_state/member|nothing"-->
 				<div id="content">
 					<div id="interna" class="userpage ">
 						 <!--h2 class="h2title">Informa&ccedil;&otilde;es do Perfil</h2-->

@@ -568,13 +568,15 @@ class ModelsMyvindulaComments(Storm, BaseStore):
         D['ip'] = base.Convert_utf8(kwargs.get('ip',''))
         D['type'] = base.Convert_utf8(kwargs.get('type',''))
         D['id_obj'] = base.Convert_utf8(kwargs.get('id_obj',''))
-        D['isPlone'] = kwargs.get('isPlone',False)
+        D['isPlone'] = eval(kwargs.get('isPlone','False'))
         D['text'] = base.Convert_utf8(kwargs.get('text',''))
         
         # adicionando...
         comments = ModelsMyvindulaComments(**D)
         self.store.add(comments)
-        self.store.flush()        
+        self.store.flush()
+        
+        return comments.id        
 
     def get_myvindula_comments(self,**kwargs):
         id_obj = kwargs.get('id_obj','')
@@ -586,6 +588,14 @@ class ModelsMyvindulaComments(Storm, BaseStore):
         data = self.store.find(ModelsMyvindulaComments, ModelsMyvindulaComments.id_obj==id_obj,ModelsMyvindulaComments.type==type_obj)
 
         if data.count > 0:
+            return data
+        else:
+            return None
+        
+    def get_comments_byID(self, id):
+        data = self.store.find(ModelsMyvindulaComments, ModelsMyvindulaComments.id==id).one()
+        
+        if data:
             return data
         else:
             return None

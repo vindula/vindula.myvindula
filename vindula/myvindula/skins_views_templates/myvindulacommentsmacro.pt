@@ -1,0 +1,12 @@
+<metal:macro define-macro="comments">
+	<tal:def define="view_comments python:context.restrictedTraverse('@@myvindula-comments')">
+	    <div class="visualClear"></div>
+		<div class="comments-cont" tal:define="comments python:view_comments.get_comments(item.id, item._name_class);
+		                                       comment_type string:ModelsMyvindulaComments"
+								   tal:condition="python: comments.count() > 0">
+            <tal:rep repeat="item comments">
+                    <div metal:use-macro="context/macro-single-comment/macros/comment" />
+            </tal:rep>
+		</div>
+	</tal:def>
+</metal:macro>								

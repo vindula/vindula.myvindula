@@ -94,7 +94,7 @@ class MyVindulaView(grok.View, UtilMyvindula):
         """ Receive itself from request and do some actions """
         form = self.request.form
         submitted = form.get('form.submitted', False)
-        excluir = form.get('form.excluir', False)
+        excluir = eval(form.get('form_excluir', 'False'))
             
         if submitted:
             visible_area = form.get('visible_area')
@@ -116,7 +116,7 @@ class MyVindulaView(grok.View, UtilMyvindula):
             id_howareu = int(form.get('id_howareu','0'))
             ModelsMyvindulaHowareu().del_myvindula_howareu(id_howareu)
                
-            IStatusMessage(self.request).addStatusMessage(_(u'Registro removido com sucesso.'),"info")
+            #IStatusMessage(self.request).addStatusMessage(_(u'Registro removido com sucesso.'),"info")
                      
 
 #Views de renderização das imagem do howareu ---------------------------------------------------   
@@ -508,12 +508,6 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
             user_id = user
 
         return ModelsDepartment().get_departmentByUsername(user)
-    
-class MyVindulaUserPerfil(grok.View):
-    grok.context(Interface)
-    grok.require('zope2.View')
-    grok.name('myvindula-user-perfil')     
-    
     
 
 class MyVindulaListRecados(grok.View,UtilMyvindula):
@@ -922,29 +916,56 @@ class MyVindulaLike(grok.View):
     grok.name('myvindula-like')
     
     def render(self):
-        pass
+        membership = getSite().portal_membership
+        form = self.request.form
+        member = membership.getAuthenticatedMember()
+        view_like = self.context.restrictedTraverse('@@myvindula-comments')
+
+        data_like = view_like.get_like(form['id_obj'],form['type']);
+        like_user = data_like.find(username=unicode(member.getUserName())).count()
+        html = ''
+
+        if like_user:
+            if data_like.count()>2:
+                html = '<span > Você e mais '+str(data_like.count()-1)+' pessoas já curtiram isso.</span>'
+            
+            elif data_like.count()==2:
+                html = '<span >Você e mais uma pessoa curtiram isso.</span>'
+             
+            elif data_like.count()==1:
+                html = '<span >Você curtiu isso.</span>'
+            
+            html += '<span class="link" id="'+form['id_obj']+'" src="True">(Desfazer Curtir)</span>'
+                
+        else:
+            if data_like.count()>1:
+                html = '<span>'+str(data_like.count())+' pessoas já curtiram isso.</span>'
+            
+            elif data_like.count()==1:
+                html =  '<span>'+ str(data_like.count())+' pessoa curtiu isso.</span>'
+        
+            html += '<span class="link" id="'+form['id_obj']+'">(Curtir)</span>' 
+                
+        
+        return html
+    
     
     def update(self):
         """ Receive itself from request and do some actions """
         member = getSite().portal_membership
         form = self.request.form
         dislike = form.get('dislike','False')
+        self.id_like = 0
+        self.excluir = False
         
         if not member.isAnonymousUser():
             form['username'] = member.getAuthenticatedMember().getUserName()
             if eval(dislike):     
                 ModelsMyvindulaLike().del_myvindula_like(**form)
-  
+                
             else:
                 ModelsMyvindulaLike().set_myvindula_like(**form)
 
-
-
-class MyVindulaLikeMacro(grok.View):
-    grok.context(Interface)
-    grok.require('zope2.View')
-    grok.name('myvindula-like-macro')  
-    
     
 class MyVindulaComments(grok.View, UtilMyvindula):
     grok.context(Interface)
@@ -972,8 +993,6 @@ class MyVindulaComments(grok.View, UtilMyvindula):
             else:
                 return conf_global
             
-    
-    
 #    def get_prefs_user(self, user):
 #        try:
 #            user_id = unicode(user, 'utf-8')    
@@ -994,6 +1013,13 @@ class MyVindulaComments(grok.View, UtilMyvindula):
         D['type'] = type_obj
         return ModelsMyvindulaLike().get_myvindula_like(**D)
     
+    def get_sigle_comments(self):
+        try:
+            id = self.id_comment
+            return ModelsMyvindulaComments().get_comments_byID(id)
+        except:
+            return None
+    
 #    def get_photo_user(self,prefs_user):
 #        if prefs_user:
 #            if prefs_user.photograph is not None and \
@@ -1009,8 +1035,9 @@ class MyVindulaComments(grok.View, UtilMyvindula):
     def update(self):
         """ Receive itself from request and do some actions """
         form = self.request.form
-        submitted = form.get('form.submitted-comment', False)
-        excluir = form.get('form.excluir', False)
+        submitted = eval(form.get('form_submitted_comment', 'False'))
+        excluir = eval(form.get('form_excluir', 'False'))
+        
         request = self.request.environ
         
         if 'HTTP_REFERER' in request:
@@ -1024,23 +1051,18 @@ class MyVindulaComments(grok.View, UtilMyvindula):
                 form['username'] = member.getAuthenticatedMember().getUserName()
                 form['ip'] = self.get_ip(self.request)
             
-                ModelsMyvindulaComments().set_myvindula_comments(**form)
-                return self.request.response.redirect(redirect)
+                self.id_comment = ModelsMyvindulaComments().set_myvindula_comments(**form)
         
         elif excluir:
             id_comments = int(form.get('id_comments','0'))
             ModelsMyvindulaComments().del_myvindula_comments(id_comments)
                
-            IStatusMessage(self.request).addStatusMessage(_(u'Registro removido com sucesso.'),"info")
+            #IStatusMessage(self.request).addStatusMessage(_(u'Registro removido com sucesso.'),"info")
             
-            return self.request.response.redirect(redirect)
+#        if not ajax and (submitted or excluir):
+#            return self.request.response.redirect(redirect)
         
-        
-class MyVindulaCommentsMacro(grok.View):
-    grok.context(Interface)
-    grok.require('zope2.View')
-    grok.name('myvindula-comments-macro')        
-     
+   
  
 class MyVindulaCoursesView(grok.View, BaseFunc):
     grok.context(INavigationRoot)

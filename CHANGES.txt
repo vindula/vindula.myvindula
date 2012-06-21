@@ -112,5 +112,13 @@ Changelog
 -----------------------
 - Criação do objeto de coleção para a aba meus conteúdos do usuário 
 
+1.1.19 - 2012-06-21
+----------------------
+- Alteração do metodo de comentar no portal, implantado função ajax
+- Alteração do metodo de curtir no portal, implantado função ajax
+- Alteração dos metodos de excluir comentarios, pensamentos e recados 
+- Impĺantado função curtir em imagens 
+- Implantado modal na view de album de fotos do plone
+
 
  

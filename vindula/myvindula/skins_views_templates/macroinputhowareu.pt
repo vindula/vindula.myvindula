@@ -1,0 +1,31 @@
+<metal:macro define-macro="input">
+    <!-- campos input necessario para a criação de comentariso -->
+    <div id="comments"  tal:define="isAnonymous context/portal_membership/isAnonymousUser|python:True;
+                                    member context/@@plone_portal_state/member;" 
+                        tal:condition="not: isAnonymous">
+        
+        <div tal:attributes="id item/id|nothing">
+            <input type="hidden" name="isPlone:boolean" id="isPlone" value="False" />
+            <input type="hidden" name="type" id="type" tal:attributes="value comment_type" />
+        </div>
+        <input type="button" value="Comentar" class="comments bt_comments" tal:attributes="id item/id|nothing" />
+        <input type="hidden" id="portal_url" tal:attributes="value context/portal_url|nothing">
+        
+        <form action="#" method="post" enctype="multipart/form-data" style="float:right"
+                         tal:condition="python: 'Manager' in member.getRoles() or
+                                                 item.username == member.getUserName()" >
+                         
+            <input type="hidden" name="form_excluir:boolean" value="True" />
+            <input type="hidden" name="id_howareu" id="id_howareu" tal:attributes="value item/id|nothing" />
+            
+            <input type="button" name="excluir" value="Excluir" 
+                                 class="comments bt_comments excluir-howareu" tal:attributes="id item/id|nothing" />
+                                 
+            <img tal:attributes="src string:${context/portal_url|nothing}/++resource++vindula.myvindula/images/save-load.gif"
+                 id="load-save" style="display: none" />                                 
+                                     
+        </form>
+        <div id="new-comments"></div>
+    </div>
+
+</metal:macro>    

@@ -1,0 +1,40 @@
+<metal:macro define-macro="comments">
+    <tal:def define="isAnonymous python:context.portal_membership.isAnonymousUser();
+                     view_comments python:context.restrictedTraverse('@@myvindula-comments');
+                     view_myvindula python:context.restrictedTraverse('@@myvindula');
+                     panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel');">
+
+        <!-- campos input necessario para a criação de comentariso -->
+        <div class="geral_lista_comentarios">
+            <div class="comment item_lista" tal:condition="not: isAnonymous">
+                <form action="/" name="save-coment">
+                    <input type="hidden" id="portal_url" tal:attributes="value context/portal_url|nothing">   
+                    <input type="hidden" name="id_obj" id="id_obj" tal:attributes="value view_coments/get_UID|nothing">
+                    <input type="hidden" name="type" id="type" tal:attributes="value context/portal_type|nothing">
+                    <input type="hidden" name="isPlone:boolean" id="isPlone" value="True">
+    
+                     <textarea tal:condition="panelView/check_ativa_richtext|python:False" 
+                               tal:attributes="title view_myvindula/getConfTyneMCE" 
+                               style="width: 100%; height: 85px;" name="text" id="text" class='mce_editable'></textarea>   
+                                    
+                     <textarea tal:condition="not: panelView/check_ativa_richtext|python:True"  
+                               style="width: 100%; height: 81px;" name="text" id="text"></textarea>                                         
+                                         
+        
+                    <div class="bt_comentar">
+                        <input type="hidden" name="form.submitted-comment:boolean" value="True" />
+                        <input type="button" name="submit" value="Comentar" id="save-coment" class="context bt_comments" />
+                    </div>
+                </form>
+            
+                <div class="comments-cont" tal:define="comments_nivel2 python:view_comments.get_comments(item_id, item_name_class);
+                                                       comment_type string:ModelsMyvindulaComments"
+                                           tal:condition="python: comments_nivel2.count() > 0" >
+                    <tal:rep repeat="item comments_nivel2">
+                        <div metal:use-macro="context/macro-single-comment/macros/comment" />
+                    </tal:rep>
+                </div>
+            </div>
+        </div>
+    </tal:def>
+</metal:macro>
