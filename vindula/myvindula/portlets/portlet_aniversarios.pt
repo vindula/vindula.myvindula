@@ -52,7 +52,7 @@
 			</tal:results>
 			<div class="titulo_info_boxTipo2 aling-right">
 				<h4 tal:define="x python:len(results)>int(quant)" tal:condition="x">
-					<a tal:attributes="href string:${here/portal_url}/myvindulalistbirthdays?filtro=${view/get_type_search|nothing}">Mais...</a>
+					<a tal:attributes="href string:${here/portal_url}/myvindulalistbirthdays?filtro=${view/get_type_search|nothing}">Todos</a>
 				</h4>
 			</div>
 			

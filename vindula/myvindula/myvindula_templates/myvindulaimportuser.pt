@@ -16,7 +16,8 @@
 				tal:attributes="src string:${view/static}/js/ajax_importuser.js"></script>
 
 		<div id="content">				
-			 <h1>Sincroniza&ccedil;&atilde;o de Usu&aacute;rios</h1>
+			 <h1>Sincroniza&ccedil;&atilde;o de Usu&aacute;rios do Banco de Dados com o Vindula</h1>
+			 <legend>Antes de importar novos usuários,contate o Suporte do Vindula.</legend>
 			 <div id="interna">
 					<tal:def define="load view/load_form">
 						<input type="hidden" id="portal_url" tal:attributes="value context/portal_url|nothing">
