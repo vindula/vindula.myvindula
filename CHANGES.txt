@@ -116,4 +116,8 @@ Changelog
 -----------------------
 - Alteração do nome do link do portlet Aniversariantes de Mais... para Todos.
 
+1.1.20	-	2012-06-21
+-----------------------
+-	Criação de mensagem antes de utilizar o Sincronização de usuários com o banco de dados com o Vindula para contatar o suporte Vindula.
+
  
