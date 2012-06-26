@@ -132,3 +132,8 @@ Changelog
 -------------------------
 - Alteração do version para 1.1.1
 - Correção do layout do perfil do usuario 
+
+1.1.23 - 2012-06-25
+--------------------------
+- Alteração do cabeçalho do portlet aniversariantes reload
+
