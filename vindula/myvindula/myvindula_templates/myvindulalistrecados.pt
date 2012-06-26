@@ -51,8 +51,9 @@
                                             
                                             <input type="hidden" name="form.excluir:boolean" value="True" />
                                             <input type="hidden" name="id_recado" id="id_recado" tal:attributes="value item/id|nothing" />
-                                            <input type="submit" name="excluir" id="excluir" value="Excluir" 
-                                                                     class="comments bt_comments" tal:attributes="id item/id|nothing" />    
+                                            <input type="submit" name="excluir" id="excluir" value="Excluir"
+                                                   onclick="return confirmExcluirRecados();" 
+                                                                 class="bt_comments" tal:attributes="id item/id|nothing" />    
                                         </form>
     								</div>
     							</div>

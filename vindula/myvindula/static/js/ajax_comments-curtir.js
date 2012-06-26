@@ -1,4 +1,13 @@
 $j = jQuery.noConflict();
+
+function confirmExcluirRecados(){
+        if (confirm('Tem certeja que deseja excluir este recado?')){
+            return true;
+        }else{
+            return false;
+        }
+    };
+
 $j(document).ready(function(){
 	$j('input.comments').live('click', function(){
 		var url = $j('#portal_url').val() + "/myvindula-comments";
@@ -84,48 +93,51 @@ $j(document).ready(function(){
 	
 	$j('input.excluir').live('click', function(){
         var url = $j('#portal_url').val() + "/myvindula-comments";
-        //var url_sucess = $j('#context_url').val();
-        
         var ctx = $j(this);
         
-        ctx.hide();
-        ctx.parent().find('#load-save').show();
-        
-        //var username = $j('#username').val();
-        var parametros = $j(this).parent().parent();
-        var id_comments = parametros.find('#id_comments').val();
-        
-        $j.get(url,{form_excluir:'True',
-                    form_ajax:'True',
-                    id_comments:id_comments
-                    }, function(data){
-                    
-                    var comment_pai = ctx.closest('.comment');
-                    comment_pai.remove();
-            });
+        if (confirm('Deseja remover o comentário?')){
+            ctx.hide();
+            ctx.parent().find('#load-save').show();
+
+            var parametros = $j(this).parent().parent();
+            var id_comments = parametros.find('#id_comments').val();
+            
+            $j.get(url,{form_excluir:'True',
+                        form_ajax:'True',
+                        id_comments:id_comments
+                        }, function(data){
+                        
+                        var comment_pai = ctx.closest('.comment');
+                        comment_pai.remove();
+                });
+        }else{
+            return false;
+            
+        }    
     });
     
     $j('input.excluir-howareu').live('click', function(){
         var url = $j('#portal_url').val() + "/myvindula";
-        //var url_sucess = $j('#context_url').val();
-        
         var ctx = $j(this);
-        
-        ctx.hide();
-        ctx.parent().find('#load-save').show();
-        
-        //var username = $j('#username').val();
-        var parametros = $j(this).parent().parent();
-        var id_howareu = parametros.find('#id_howareu').val();
-        
-        $j.get(url,{form_excluir:'True',
-                    form_ajax:'True',
-                    id_howareu:id_howareu
-                    }, function(data){
-                    
-                    var comment_pai = ctx.closest('.comment');
-                    comment_pai.remove();
-            });
+
+        if (confirm('Deseja remover este pensamento?')){
+            ctx.hide();
+            ctx.parent().find('#load-save').show();
+            
+            var parametros = $j(this).parent().parent();
+            var id_howareu = parametros.find('#id_howareu').val();
+            
+            $j.get(url,{form_excluir:'True',
+                        form_ajax:'True',
+                        id_howareu:id_howareu
+                        }, function(data){
+                        
+                        var comment_pai = ctx.closest('.comment');
+                        comment_pai.remove();
+                });
+        }else{
+            return false;
+        }
     });
     
 });

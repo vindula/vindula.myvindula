@@ -22,7 +22,7 @@
             <input type="hidden" name="id_comments" id="id_comments" tal:attributes="value item/id|nothing" />
             
             <input type="button" name="excluir" value="Excluir" 
-                                 class="comments bt_comments excluir" tal:attributes="id item/id|nothing" />    
+                                 class="bt_comments excluir" tal:attributes="id item/id|nothing" />    
                                  
             <img tal:attributes="src string:${context/portal_url|nothing}/++resource++vindula.myvindula/images/save-load.gif"
                  id="load-save" style="display: none" />                                 

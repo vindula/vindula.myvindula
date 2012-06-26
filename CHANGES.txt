@@ -137,3 +137,7 @@ Changelog
 --------------------------
 - Alteração do cabeçalho do portlet aniversariantes reload
 
+
+1.1.24 - 2012-06-26
+------------------------
+- Adição do popup de confirmação de exclução de pensamentos, recados e comentarios

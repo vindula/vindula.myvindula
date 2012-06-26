@@ -19,7 +19,7 @@
             <input type="hidden" name="id_howareu" id="id_howareu" tal:attributes="value item/id|nothing" />
             
             <input type="button" name="excluir" value="Excluir" 
-                                 class="comments bt_comments excluir-howareu" tal:attributes="id item/id|nothing" />
+                                 class="bt_comments excluir-howareu" tal:attributes="id item/id|nothing" />
                                  
             <img tal:attributes="src string:${context/portal_url|nothing}/++resource++vindula.myvindula/images/save-load.gif"
                  id="load-save" style="display: none" />                                 
