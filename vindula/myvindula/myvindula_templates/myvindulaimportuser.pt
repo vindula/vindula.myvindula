@@ -33,7 +33,8 @@
 					   		<legend>Deseja importar e atualizar estes novos usuarios?</legend>
 							<div style="float:left; width:100%">
 								<input id="voltar" style="width:100px" class="button-erp" type="button" value="Voltar" name="form.voltar">
-								<input id="importUser" style="width:150px;" class="button-erp" type="button" value="Importar Usuarios" name="form.submited">
+								<input id="importUser" style="width:150px;" class="button-erp" type="button" value="Importar Usuarios" name="form.submited" onclick="confirm('Tem certeza que deseja importar os usuárois?'),return false;">
+									
 							</div>
 						</fieldset>
 						
