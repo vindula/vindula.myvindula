@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<object name="Image"
+   meta_type="Factory-based Type Information with dynamic views"
+   i18n:domain="plone" xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+    
+     <property name="immediate_view">myvindula-image_view</property>
+    <property name="default_view">myvindula-image_view</property>
+ 
+     <property name="view_methods">
+         <element value="myvindula-image_view"/>
+         <element value="image_view"/>
+     </property>
+</object>

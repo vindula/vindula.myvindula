@@ -4,5 +4,7 @@
   <object name="vindula.myvindula.vindulaphotouser" meta_type="Dexterity FTI" />
   <object name="vindula.myvindula.vindulalistdocumentuser" meta_type="Dexterity FTI" />
 
-    
+  <object name="File"
+          meta_type="Factory-based Type Information with dynamic views"/>
+
 </object>

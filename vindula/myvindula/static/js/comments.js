@@ -26,6 +26,8 @@ function confirmAlterarUserName () {
 $j(document).ready(function(){	
 	$j('#cancel-coment').live('click',function(){
 		$j(this).parent().parent().parent().parent().find('#new-comments').css('display','none');
+		$j(this).parent().parent().parent().parent().find('.bt_comments').eq(0).css('display', '')
+	   
 	});
 	$j('input[name="url_context"]').attr('value',location);
 	

@@ -1,7 +1,7 @@
 <tal:block tal:define="userHasReplyPermission view/can_reply;
                        isDiscussionAllowed view/is_discussion_allowed;
                        isAnonymousDiscussionAllowed view/anonymous_discussion_allowed;
-                       isAnon view/is_anonymous;
+                       isAnonymous view/is_anonymous;
                        canReview view/can_review;
                        replies python:view.get_replies(canReview);
 					   
@@ -11,7 +11,6 @@
                        wtool context/@@plone_tools/workflow;
 					   
 					   member python:context.portal_membership.getAuthenticatedMember();
-					   logado python:str(member)!='Anonymous User';
 					    
 					   view_coments python:context.restrictedTraverse('@@myvindula-comments');
 					   item_id view_coments/get_UID|nothing;
@@ -25,99 +24,44 @@
 		   tal:condition="enable"
            i18n:domain="plone">
 	
-	<script type="text/javascript" src="" tal:attributes="src string:${view_coments/static}/js/ajax_comments-curtir.js"></script>
-	<script type="text/javascript" src="" tal:attributes="src string:${view_coments/static}/js/comments.js"></script>
 	<link rel="stylesheet" type="text/css" tal:attributes="href string:${view_coments/static}/myvindula_comments.css" />
-	<input type="hidden" id="portal_url" tal:attributes="value context/portal_url|nothing">	
-	<input type="hidden" id="context_url" tal:attributes="value context/absolute_url|nothing">
 	
-	<div id="content">		           	
+    <style type="text/css">
+        .geral_lista_comentarios .comments-cont .comments-cont{display:block !important;}
+    </style>
+	
+	<div id="content">
+	    
+	    <!-- Macro Like -->
+        <div id="like" tal:condition="not: isAnonymous">
+            <div tal:attributes="id item_id">
+                <input type="hidden" name="isPlone:boolean" id="isPlone" value="True" />
+                <input type="hidden" name="type" id="type" tal:attributes="value context/portal_type|nothing" />
+            </div>
+            <div metal:use-macro="context/myvindula-like-macro/macros/like-plone"> </div>
+        </div>
+	    		           	
 		<!-- start: Comments -->		
-		<div class="geral_lista_comentarios">           		
-	    	<div class="titulo_area">
-				<h2 tal:content="python:'Comentários ('+str(comments.count())+')'"></h2>
-			</div>
-			<div class="descricao_titulo">
-				<p>Fa&ccedil;a um coment&aacute;rio sobre o conte&uacute;do acima.</p>
-			</div>
-			
-			<p tal:condition="not: logado">
-				<span>Para comentar voc&ecirc; precisa estar autenticado,</span>
-				<span><a href="/login" alt="Acesse">clique aqui</a> para acessar.</span>
-			</p>
-
-			<!-- Comment Input -->
-			<div id="comment-geral" tal:condition="logado">
-				<form action="" name="save-coment" tal:attributes="action string:${context/absolute_url}/myvindula-comments">	
-					<input type="hidden" name="id_obj" tal:attributes="value view_coments/get_UID|nothing">
-					<input type="hidden" name="type" tal:attributes="value context/portal_type|nothing">
-					<input type="hidden" name="isPlone:boolean" value="True">	
-					<input type="hidden" name="username" value="" tal:attributes="value context/@@plone_portal_state/member|nothing">
-					<textarea  style="width: 100%; height: 81px;" name="text"></textarea>
-	
-					<div class="bt_comentar">
-						<input type="hidden" name="form.submitted-comment:boolean" value="True" />
-						<input type="submit" name="submit" value="Comentar" id="save-coment" />
-					</div>
-				</form>
-			</div>
-
-			<div class="descricao_titulo">
-				<p tal:condition="python: comments.count() > 0">J&aacute; comentaram...</p>
-				<p tal:condition="python: comments.count() == 0">Seja o primeiro a comentar!</p>
-			</div>
-			
-			<input type="hidden" id="username" name="username" value="" tal:attributes="value member">
-			<div class="comments-cont">
-				<tal:rep repeat="item comments">
-					<div class="comment item_lista" tal:define="user_comment python: view_coments.get_prefs_user(item.username);">
-						<div class="commentImage">
-		                    <img src="defaultUser.png"
-			             		 alt="" border="0"
-			             		 height="30"
-			             		 tal:attributes="src string:${here/portal_url}/user-image?username=${item/username|nothing};
-						 						 alt user_comment/name|nothing;
-												 title user_comment/name|nothing;" />
-		                </div>
-						<div class="documentByLine name-user">
-							<h4>
-								<a tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${user_comment/username|nothing}">
-									<span tal:replace="user_comment/name|nothing" /> | 
-			                    	<span tal:replace="python:item.date_creation.strftime('%d/%m/%Y  %H:%M')" />
-								</a>
-							</h4>
-		                </div>
-						<div id="like" tal:condition="logado">
-							<div tal:attributes="id item/id|nothing">
-								<input type="hidden" name="isPlone:boolean" id="isPlone" value="False" />
-								<input type="hidden" name="type" id="type" value="ModelsMyvindulaComments" />
-							</div>
-							<div metal:use-macro="context/myvindula-like-macro/macros/like" />
-						</div>
-		                <div class="comment-body">
-		                    <p tal:replace="item/text|nothing" />
-				  		</div>
-						<div id="comments">
-							<div tal:attributes="id item/id|nothing">
-								<input type="hidden" name="isPlone:boolean" id="isPlone" value="True" />
-								<input type="hidden" name="type" id="type" value="ModelsMyvindulaComments" />
-							</div>
-							<input type="button" value="Responder" class="comments bt_comments" 
-								   tal:attributes="id item/id|nothing"
-							       tal:condition="logado" />
-							<tal:define define="number python:view_coments.get_comments(item.id, item._name_class).count()" 
-							            tal:on-error="nothing">
-							     <tal:condition condition="python: number > 0">
-								    <span id="show-hide"> Ver</span>
-									<span id="number-comments" tal:content="string: respostas (${number})"></span>
-								</tal:condition>
-							</tal:define>
-							<div id="new-comments"></div>
-						</div>
-						<div metal:use-macro="context/myvindula-comments-macro/macros/comments" />
-					</div>
-				</tal:rep>
-			</div>
+    	<div class="titulo_area">
+			<h2 tal:content="python:'Comentários ('+str(comments.count())+')'"></h2>
 		</div>
+		
+		<div class="descricao_titulo">
+			<p>Fa&ccedil;a um coment&aacute;rio sobre o conte&uacute;do acima.</p>
+		</div>
+		
+		<p tal:condition="isAnonymous">
+			<span>Para comentar voc&ecirc; precisa estar autenticado,</span>
+			<span><a href="/login" alt="Acesse">clique aqui</a> para acessar.</span>
+		</p>
+		
+		<div class="descricao_titulo">
+			<p tal:condition="python: comments.count() > 0">J&aacute; comentaram...</p>
+			<p tal:condition="python: comments.count() == 0">Seja o primeiro a comentar!</p>
+		</div>
+		
+		<!-- Macro Comment -->
+        <div metal:use-macro="context/macro-comments-master/macros/comments" />
+            
 	</div>
 </tal:block>

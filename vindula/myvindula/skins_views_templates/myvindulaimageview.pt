@@ -1,0 +1,79 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="plone">
+
+<body>
+    <metal:content-core fill-slot="content-core">
+        <metal:block define-macro="content-core"
+                     tal:define="kssClassesView context/@@kss_field_decorator_view;
+                                 getKssClasses nocall:kssClassesView/getKssClassesInlineEditable;
+                                 size context/size;
+                                 isAnonymous python:context.portal_membership.isAnonymousUser();
+                                 member context/@@plone_portal_state/member;
+                                 
+                                 portal context/@@plone_portal_state/portal;
+                                 view_coments python:context.restrictedTraverse('@@myvindula-comments');
+                                 
+                                 item_id view_coments/get_UID|nothing;
+					   		  	 item_name_class context/portal_type|nothing;
+                                 
+                                 comments python:view_coments.get_comments(item_id, item_name_class);">
+			
+				<link rel="stylesheet" type="text/css" tal:attributes="href string:${view_coments/static}/myvindula_comments.css" />
+				<input type="hidden" id="portal_url" tal:attributes="value context/portal_url|nothing">
+				
+
+                <style type="text/css">
+                    .geral_lista_comentarios .comments-cont .comments-cont{display:block !important;}
+                </style>
+    
+                                 
+            <a href=""
+               class="discreet"
+               tal:attributes="href string:${context/@@plone_context_state/object_url}/image_view_fullscreen">
+                <tal:block condition="size" replace="structure python:context.tag(scale='preview')" />
+                <br />
+                <span class="visualNoPrint">
+                    <img src="" alt="" tal:replace="structure context/search_icon.png" />
+                    <span i18n:translate="label_click_to_view_full_image">Click to view full-size image&hellip;</span>
+                </span>
+            </a>
+
+            <span class="discreet visualNoPrint">
+            &mdash;
+                <span i18n:translate="label_size">Size</span>:
+
+                <span tal:define="size python:context.getObjSize(here)"
+                      tal:content="size">
+                    File size
+                </span>
+
+                <!--span tal:condition="python:test(size, 0, 1)"
+                      i18n:translate="no_image_uploaded">
+                    (No image has been uploaded yet)
+                </span-->
+            </span>
+            
+            
+            
+            <div id="like" tal:condition="not: isAnonymous">
+                <div tal:attributes="id item_id">
+                    <input type="hidden" name="isPlone:boolean" id="isPlone" value="True" />
+                    <input type="hidden" name="type" id="type" tal:attributes="value context/portal_type|nothing" />
+                </div>
+                <div metal:use-macro="context/myvindula-like-macro/macros/like-plone"> </div>
+            </div>
+            <div metal:use-macro="context/macro-comments-master/macros/comments" />
+			
+			
+            
+        </metal:block>
+    </metal:content-core>
+</body>
+
+</html>
+
