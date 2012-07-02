@@ -143,8 +143,14 @@ Changelog
 --------------------------
 - Alteração do cabeçalho do portlet aniversariantes reload
 
+<<<<<<< HEAD
 
 1.1.24 - 2012-06-26
 ------------------------
 - Adição do popup de confirmação de exclução de pensamentos, recados e comentarios
 >>>>>>> eca48ab2993b9c8dc29eddbd9f9e53f78db5b0da
+=======
+1.1.24 - 2012-07-02
+--------------------------
+Modificado a visualizacao de miniaturas para receber noticias e clientes
+>>>>>>> Modificada a visualizacao de miniaturas para receber noticias e clientes
