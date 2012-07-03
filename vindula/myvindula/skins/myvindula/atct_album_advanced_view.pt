@@ -7,7 +7,7 @@
 
 <metal:content-core fill-slot="content-core">
 <metal:main_macro define-macro="content-core"
-     tal:define="result python:here.atctListAlbum(images=1, folders=1, subimages=0, others=1, vindulaNew=1, cliente=1);
+     tal:define="result python:here.atctListAlbumAdvanced(images=1, folders=1, subimages=0, others=1, vindulaNew=1, cliente=1);
                  images result/images;
                  albums result/folders;
 				 clientes result/cliente|nothing;
@@ -18,9 +18,7 @@
                  kssClassesView context/@@kss_field_decorator_view;
                  getKssClasses nocall:kssClassesView/getKssClassesInlineEditable;
                  templateId template/getId;
-                 batch python:Batch(images, 12, int(b_start), orphan=1);
-				 batch_clientes python:Batch(clientes, 12, int(b_start), orphan=1) or None;
-				 batch_news python:Batch(vindulaNews, 12, int(b_start), orphan=1) or None;">
+                 batch python:Batch(images, 12, int(b_start), orphan=1);">
     
     <div metal:define-macro="text-field-view"
          id="parent-fieldname-text" class="stx"
@@ -52,29 +50,29 @@
         </tal:images>
 
         <div class="photoAlbum" tal:condition="albums">
-        <tal:albums tal:repeat="album albums">
-            <div class="photoAlbumEntry photoAlbumFolder"
-                 tal:define="image_brains_in_album python:album.atctListAlbum(subimages=1)['subimages'];
-                             number_of_images python:len(image_brains_in_album);
-                             random python:modules['random'];
-                             random_image python:number_of_images and random.choice(image_brains_in_album).getObject() or None">
-                        <a tal:attributes="href album/getURL;
-                                           title album/Description">
-                            <span class="photoAlbumEntryWrapper">
-                                <img src="" alt=""
-                                     tal:condition="number_of_images"
-                                     tal:replace="structure python:random_image.tag(scale='thumb', title=album.Description)" />
-                            </span>
-                            <span class="photoAlbumEntryTitle">
-                               <tal:title content="album/pretty_title_or_id">Title</tal:title>
-                            (<tal:number content="number_of_images" />)
-                            </span>
-                        </a>
-            </div>
-        </tal:albums>
+	        <tal:albums tal:repeat="album albums">
+	            <div class="photoAlbumEntry photoAlbumFolder"
+	                 tal:define="image_brains_in_album python:album.atctListAlbum(subimages=1)['subimages'];
+	                             number_of_images python:len(image_brains_in_album);
+	                             random python:modules['random'];
+	                             random_image python:number_of_images and random.choice(image_brains_in_album).getObject() or None">
+	                        <a tal:attributes="href album/getURL;
+	                                           title album/Description">
+	                            <span class="photoAlbumEntryWrapper">
+	                                <img src="" alt=""
+	                                     tal:condition="number_of_images"
+	                                     tal:replace="structure python:random_image.tag(scale='thumb', title=album.Description)" />
+	                            </span>
+	                            <span class="photoAlbumEntryTitle">
+	                               <tal:title content="album/pretty_title_or_id">Title</tal:title>
+	                            (<tal:number content="number_of_images" />)
+	                            </span>
+	                        </a>
+	            </div>
+	        </tal:albums>
         </div>
 		
-		<tal:cliente tal:condition="batch_clientes" tal:repeat="cliente batch_clientes">
+		<tal:cliente tal:condition="clientes" tal:repeat="cliente clientes">
             <div class="photoAlbumEntry">
 	            <a tal:define="id python:int(b_start)+int(repeat['cliente'].number()-1);
 							   item cliente/getObject|nothing"
@@ -94,7 +92,7 @@
             </div>
         </tal:cliente>
 		
-		<tal:new tal:condition="batch_news" tal:repeat="news batch_news">
+		<tal:new tal:condition="vindulaNews" tal:repeat="news vindulaNews">
             <div class="photoAlbumEntry">
 	            <a tal:define="id python:int(b_start)+int(repeat['news'].number()-1);
 							   item news/getObject|nothing"
@@ -119,13 +117,11 @@
     </tal:albumsimages>
 
     <p class="discreet"
-       i18n:domain="atcontenttypes"
-       i18n:translate="text_no_albums_uploaded"
-       tal:condition="python:not (albums or images or batch_clientes or batch_news)">
-        No albums or photos uploaded yet.
+       tal:condition="python:not (albums or images or clientes or vindulaNews)">
+        Sem conte&uacute;do na pasta.
     </p>
 
-    <div tal:condition="python:albums or images or batch_clientes or batch_news"
+    <div tal:condition="python:albums or images"
          metal:use-macro="here/batch_macros/macros/navigation" />
 
     <tal:listing condition="otherContents"
