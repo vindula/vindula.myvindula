@@ -466,6 +466,7 @@ class ImportUser(BaseFunc):
         D['user_new'] = cont
         D['user_all'] = db_user.count()
         D['user_plone'] = len(plone_user) 
+
         return D
         
     def importUser(self,ctx,form):
@@ -500,8 +501,9 @@ class ImportUser(BaseFunc):
         D['username'] = user.username
         D['fullname'] = user.name
         D['email'] = user.email
-            
+        
         return D
+
     
 class ManageCourses(BaseFunc):
     def to_utf8(value):

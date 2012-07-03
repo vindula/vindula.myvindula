@@ -1,7 +1,7 @@
 $j = jQuery.noConflict();
 
 $j(document).ready(function(){
-	
+
 	function ajaxImport(cont,i){
 		$j('div#spinner').removeClass('display-none');
 		var url = $j('#portal_url').val() + "/ajax_view";
@@ -22,8 +22,22 @@ $j(document).ready(function(){
 	});
 	
 	$j('input#importUser').click(function(){
-		var cont = $j('#contUser').val()
-		var i = 0;
-		ajaxImport(cont,i);
+		
+		
+
+		if (confirm('Tem certeza que deseja importar os usuários?')){
+			var cont = $j('#contUser').val()
+			var i = 0;
+			ajaxImport(cont,i);
+		}
+		else{
+				return false;
+				
+		};
+		
+		
+		
+		
+	
 	});
 });

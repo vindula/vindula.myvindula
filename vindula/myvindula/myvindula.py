@@ -100,9 +100,12 @@ class MyVindulaView(grok.View, UtilMyvindula):
             
         if submitted:
             visible_area = form.get('visible_area')
+            text = form.get('text')
             if not eval(visible_area):
                 form['visible_area'] = form.get('departamento','0')
-            
+            if text == '':
+                IStatusMessage(self.request).addStatusMessage(_(u'Não é possível postar um pensamento em branco.'),"info")
+                return False
             upload_foto = form.get('upload_image')
             if upload_foto:
                 data = upload_foto.read()
