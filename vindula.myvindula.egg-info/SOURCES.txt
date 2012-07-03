@@ -18,6 +18,7 @@ vindula/myvindula/handlers.py
 vindula/myvindula/myvindula.py
 vindula/myvindula/registration.py
 vindula/myvindula/setuphandlers.py
+vindula/myvindula/skins_views.py
 vindula/myvindula/user.py
 vindula/myvindula/user_photo.py
 vindula/myvindula/utils.py

@@ -43,6 +43,8 @@ from vindula.chat.utils.models import ModelsUserOpenFire
 
 from vindula.myvindula.utils import UtilMyvindula
 
+from vindula.controlpanel.handlers import userLogged
+
 logger = logging.getLogger('vindula.myvindula')
 
 class MyVindulaView(grok.View, UtilMyvindula):
@@ -758,7 +760,8 @@ class MyVindulaFirstRegistreView(grok.View, UtilMyvindula):
             self.request.response.redirect(continuar_url) 
         
         elif 'voltar' in form_keys:
-            self.request.response.redirect(voltar_url)
+            userLogged(self,False)
+            #    self.request.response.redirect(voltar_url)
         
         else:
             result = ModelsCompanyInformation().get_CompanyInformation()
