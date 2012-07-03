@@ -97,7 +97,6 @@ class MyVindulaView(grok.View, UtilMyvindula):
         excluir = eval(form.get('form_excluir', 'False'))
             
         if submitted:
-            import pdb;pdb.set_trace()
             visible_area = form.get('visible_area')
             text = form.get('text')
             if not eval(visible_area):
