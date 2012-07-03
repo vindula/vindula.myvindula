@@ -150,7 +150,10 @@ Changelog
 ------------------------
 - Correção da view de myvindula-first-registre para o redirect dos usuarios
 
-
 1.1.26 - 2012-07-02
 --------------------------
-Modificado a visualizacao de miniaturas para receber noticias e clientes
+- Modificado a visualizacao de miniaturas para receber noticias e clientes
+
+1.1.27 - 2012-07-03
+--------------------------
+- Adicionada a visao de miniaturas avancadas para a pasta
