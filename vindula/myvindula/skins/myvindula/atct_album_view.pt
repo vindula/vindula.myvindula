@@ -7,16 +7,20 @@
 
 <metal:content-core fill-slot="content-core">
 <metal:main_macro define-macro="content-core"
-     tal:define="result python:here.atctListAlbum(images=1, folders=1, subimages=0, others=1);
+     tal:define="result python:here.atctListAlbum(images=1, folders=1, subimages=0, others=1, vindulaNew=1, cliente=1);
                  images result/images;
                  albums result/folders;
+				 clientes result/cliente|nothing;
+				 vindulaNews result/vindulaNew;
                  otherContents result/others;
                  Batch python:modules['Products.CMFPlone'].Batch;
                  b_start python:request.get('b_start', 0);
                  kssClassesView context/@@kss_field_decorator_view;
                  getKssClasses nocall:kssClassesView/getKssClassesInlineEditable;
                  templateId template/getId;
-                 batch python:Batch(images, 12, int(b_start), orphan=1)">
+                 batch python:Batch(images, 12, int(b_start), orphan=1);
+				 batch_clientes python:Batch(clientes, 12, int(b_start), orphan=1) or None;
+				 batch_news python:Batch(vindulaNews, 12, int(b_start), orphan=1) or None;">
     
     <div metal:define-macro="text-field-view"
          id="parent-fieldname-text" class="stx"
@@ -30,7 +34,7 @@
         <div metal:define-slot="inside" tal:replace="structure text">The body</div>
     </div>
 
-    <tal:albumsimages tal:condition="python:albums or images">
+    <tal:albumsimages tal:condition="python:albums or images or clientes or vindulaNews">
         <tal:images tal:condition="batch" tal:repeat="image batch">
             <div class="photoAlbumEntry">
                         <a tal:define="id python:int(b_start)+int(repeat['image'].number()-1)"
@@ -69,6 +73,46 @@
             </div>
         </tal:albums>
         </div>
+		
+		<tal:cliente tal:condition="batch_clientes" tal:repeat="cliente batch_clientes">
+            <div class="photoAlbumEntry">
+	            <a tal:define="id python:int(b_start)+int(repeat['cliente'].number()-1);
+							   item cliente/getObject|nothing"
+	               tal:attributes="href string:${item/absolute_url};
+	                               title item/Title|nothing">
+	                <span class="photoAlbumEntryWrapper">
+	                	<img src="" alt="" tal:condition="item/getImage|nothing" 
+									tal:attributes="src python:item.getImage().absolute_url()+'_thumb'; title item/Title|nothing;" />
+						
+						<img src="" alt="" tal:condition="not: item/getImage|nothing" 
+									tal:attributes="src string:${context/portal_url|nothing}/++resource++vindula.myvindula/images/office_building.png" />
+	                </span>
+	                <span class="photoAlbumEntryTitle" tal:content="item/Title|nothing">
+	                   Title
+	                </span>
+	            </a>
+            </div>
+        </tal:cliente>
+		
+		<tal:new tal:condition="batch_news" tal:repeat="news batch_news">
+            <div class="photoAlbumEntry">
+	            <a tal:define="id python:int(b_start)+int(repeat['news'].number()-1);
+							   item news/getObject|nothing"
+	               tal:attributes="href string:${item/absolute_url}/view;
+	                               title item/Title|nothing">
+	                <span class="photoAlbumEntryWrapper">
+	                	<img src="" alt="" tal:condition="item/getImageRelac|nothing" 
+									tal:attributes="src python:item.getImageRelac().absolute_url()+'/image_thumb'; title item/Title|nothing;" />
+						
+						<img src="" alt="" tal:condition="not: item/getImageRelac|nothing" 
+									tal:attributes="src string:${context/portal_url|nothing}/++resource++vindula.myvindula/images/news_icon.png" />
+	                </span>
+	                <span class="photoAlbumEntryTitle" tal:content="item/Title|nothing">
+	                   Title
+	                </span>
+	            </a>
+            </div>
+        </tal:new>
 
         <div class="visualClear"><!-- --></div>
 
@@ -77,11 +121,11 @@
     <p class="discreet"
        i18n:domain="atcontenttypes"
        i18n:translate="text_no_albums_uploaded"
-       tal:condition="python:not (albums or images)">
+       tal:condition="python:not (albums or images or batch_clientes or batch_news)">
         No albums or photos uploaded yet.
     </p>
 
-    <div tal:condition="python:albums or images"
+    <div tal:condition="python:albums or images or batch_clientes or batch_news"
          metal:use-macro="here/batch_macros/macros/navigation" />
 
     <tal:listing condition="otherContents"
