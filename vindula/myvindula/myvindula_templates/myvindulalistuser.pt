@@ -55,18 +55,24 @@
     			<div id="interna" class="userpage ">
     				 <h2 class="h2title">Informa&ccedil;&otilde;es do Perfil</h2>
     				<div class="titulo">
-    					<h2 tal:content="form_data/name|nothing"></h2>
+    					<h2>
+    					    <tal:cond condition="python: view.get_ConfugCampos('name')">
+    					       <tal:cont content="form_data/name|nothing" />
+    					    </tal:cond>
+    					</h2>
     				</div>
     				
     				<div class="department">
-    					<tal:def define="departamentos python: view.get_department(user)">
-    		        		<tal:rep repeat="departamento departamentos">
-    		        			<span tal:content="departamento/Title|nothing">Departamento</span>
-    							<span tal:define="cont repeat/departamento/length;
-    												   last repeat/departamento/end"
-    								  tal:condition="python: cont > 1 and not last"> | </span>
-    		        		</tal:rep>
-    		        	</tal:def>
+    				    <tal:cond condition="python: view.get_ConfugCampos('vin_myvindula_department')">
+        					<tal:def define="departamentos python: view.get_department(user)">
+        		        		<tal:rep repeat="departamento departamentos">
+        		        			<span tal:content="departamento/Title|nothing">Departamento</span>
+        							<span tal:define="cont repeat/departamento/length;
+        												   last repeat/departamento/end"
+        								  tal:condition="python: cont > 1 and not last"> | </span>
+        		        		</tal:rep>
+        		        	</tal:def>
+        		        </tal:cond>
     					<!--span tal:content="form_data/departamento/name|nothing"></span-->
     				</div>
     				

@@ -1177,9 +1177,9 @@ class BaseFunc(BaseStore):
                     tmp += "   Habilita a edição do campo '%s' pelo funcionário</div>"%(data[campo]['label'])   
                     tmp += "   <div class='formHelp'>"
                     tmp += "   <input id='%s' type='checkbox' value='%s' name='%s' size='25' %s/>"%('view_'+campo,'true','view_'+campo,self.checked(campo,self.request,data,'view'))
-                    tmp += "    Habilita a visualização do campo '%s' pelo funcionário</div>"%(campos[campo]['label'])   
+                    tmp += "    Habilita a visualização do campo '%s' pelo funcionário</div>"%(data[campo]['label'])   
 
-                    tmp += "   <div class='formHelp'>Digite o nome de visualização do campo '%s' pelo funcionário</div>"%(campos[campo]['label'])
+                    tmp += "   <div class='formHelp'>Digite o nome de visualização do campo '%s' pelo funcionário</div>"%(data[campo]['label'])
                     value = self.getValue(campo,self.request,data)
                     try: valor = value.get('label','')
                     except: valor = value

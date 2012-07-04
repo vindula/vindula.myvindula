@@ -340,15 +340,15 @@ class SchemaConfgMyvindula(BaseFunc):
               # Inicia o processamento do formulario
               # chama a funcao que valida os dados extraidos do formulario (valida_form) 
               errors, data = valida_form(campos, context.request.form)  
-              
+
               if not errors:
-                  
                   for campo in campos.keys():
+                      
                       edit = False
-                      L = []
-                      for i in form_keys:
-                          if campo in i:
-                              L.append(i)  
+#                      L = []
+#                      for i in form_keys:
+#                          if campo in i:
+#                              L.append(i)  
                       
                       
                       result = ModelsConfgMyvindula().get_configuration_By_fields(campo)
@@ -356,30 +356,44 @@ class SchemaConfgMyvindula(BaseFunc):
                           edit = True
                               
                       D = {}
-                      for item in L:
-                        if 'edit' in item:
-                            if form.get(item):
-                                D['ativo_edit'] = True
-                            else:
-                                D['ativo_edit'] = False
-                               
-                        elif 'view' in item:
-                            if form.get(item):
-                                D['ativo_view'] = True 
-                            else:
-                                D['ativo_view'] = False
+                      # Edit
+                      if form.get('edit_'+campo):
+                          D['ativo_edit'] = True
+                      else:
+                          D['ativo_edit'] = False
+                      
+                      # View
+                      if form.get('view_'+campo):
+                           D['ativo_view'] = True 
+                      else:
+                           D['ativo_view'] = False
+                                            
+                      # Label
+                      try: valor = unicode(form.get('label_'+campo),'utf-8')
+                      except: valor = form.get('label_'+campo)
                             
-                        elif 'label' in item:
-                            try: valor = unicode(form.get(item),'utf-8')
-                            except: valor = form.get(item)
+                      D['label'] = valor
+                      
+                      
+#                      for item in L:
+#                        if 'edit' in item:
+#                            
+#                               
+#                        elif 'view' in item:
+#                           
+#                            
+#                        elif 'label' in item:
                             
-                            D['label'] = valor
                       
                       if not 'ativo_edit' in D.keys():
                           D['ativo_edit'] = False
                       
                       if not 'ativo_view' in D.keys():
                           D['ativo_view'] = False
+                      
+                      
+                      
+                      
                       
                       if edit:
                           for data in D.keys():
