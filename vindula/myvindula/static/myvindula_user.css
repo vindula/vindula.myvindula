@@ -172,8 +172,11 @@ h2.h2title {
 .userlist div.user {
 	float:left;
 	text-align: center;
-	width: 105px;
-	/*height: 125px;*/
+	/*
+width: 106px;
+*/
+	width: 21.428%;
+	height: 130px;
 	margin: 12px;
 } 
 
