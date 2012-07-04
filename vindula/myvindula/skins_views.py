@@ -47,4 +47,10 @@ class MyVindulaImageView(grok.View, UtilMyvindula):
 class MyVindulaUserPerfil(grok.View):
     grok.context(Interface)
     grok.require('zope2.View')
-    grok.name('myvindula-user-perfil')                
+    grok.name('myvindula-user-perfil')
+    
+    def update(self):
+        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
+        if open_for_anonymousUser:
+            self.request.response.redirect(self.context.absolute_url() + '/login')
+                

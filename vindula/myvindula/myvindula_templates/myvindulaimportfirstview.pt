@@ -1,6 +1,6 @@
 <html>
-    <body metal:use-macro="here/main_template/macros/master">
-        <div metal:fill-slot="content">
+    <body metal:use-macro="here/prefs_main_template/macros/master">
+        <div metal:fill-slot="prefs_configlet_content">
             <div id="first" tal:define="load view/load_file">
                 <div class="import-user">
                     
@@ -25,7 +25,7 @@
                     <p>Pedro Silva;Analista;Pedro;Empresa Ltda.</p>
                     <p>Maria Laura dos Santos;Secretaria;;Empresa Ltda.</p>
                     <p>Obs: Se a linha tiver um ponto e virgula seguido do outro (;;), a coluna correspondente será cadastrada em branco.</p>
-                    <form method="post" enctype="multipart/form-data">
+                    <form method="post" enctype="multipart/form-data" style="margin-top: 10px;">
                         <span><input type="file" name="csv_file" size="30" accept="csv"></span>
                         <span><input type="submit" name="load_file" value="Enviar"></span>
                     </form>

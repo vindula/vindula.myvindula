@@ -1,8 +1,11 @@
 <html metal:use-macro="here/main_template/macros/master">
 	<head>
         <metal:block fill-slot="top_slot">
-                <tal:dummy tal:define="dummy python:request.set('disable_border',1)" />
+            <tal:dummy tal:define="dummy python:request.set('disable_border',1);
+                                   disable_column_one python:request.set('disable_plone.leftcolumn',1);
+                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
         </metal:block>
+        
 	</head>
 	<body metal:fill-slot="content">  
 		<meta:macro metal:define-macro="page-view">     
@@ -14,10 +17,6 @@
 							   user form_data/username|nothing;
 							   panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel')">
 												   
-
-				<!--input type="hidden" id="portal_url" tal:attributes="value context/portal_url|nothing">
-				<input type="hidden" id="context_url" tal:attributes="value string:${context/REQUEST/getURL|nothing}?user=${context/REQUEST/form/user|nothing}">
-				<input type="hidden" id="username" name="username" value="" tal:attributes="value context/@@plone_portal_state/member|nothing"-->
 				<div id="content">
 					<div id="interna" class="userpage ">
 						 <!--h2 class="h2title">Informa&ccedil;&otilde;es do Perfil</h2-->
@@ -41,7 +40,7 @@
 						<!-- start: Personal Information -->
 						<div id="personal">
 							<div id="photo">    
-					            <img tal:attributes="src string: ${context/portal_url|nothing}/user-image?username=${from_data/username|nothing}">
+					             <img tal:attributes="src string: ${context/portal_url|nothing}/user-image?username=${user}">
 							</div>
 						
 							<div id="data" tal:condition="view/valida_pessoal|nothing">

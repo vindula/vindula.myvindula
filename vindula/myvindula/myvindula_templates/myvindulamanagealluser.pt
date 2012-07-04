@@ -1,6 +1,6 @@
 <html>
-	<body metal:use-macro="here/main_template/macros/master">
-	  	<div metal:fill-slot="content">
+	<body metal:use-macro="here/prefs_main_template/macros/master">
+	  	<div metal:fill-slot="prefs_configlet_content">
 	  		
 			<h1>Gerenciamento de Usu&aacute;rios</h1>
 				<div id="content" tal:define="member python:context.portal_membership.getAuthenticatedMember();

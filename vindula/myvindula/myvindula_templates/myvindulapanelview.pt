@@ -66,7 +66,7 @@
 		                    tal:condition="link|nothing"
 		                    tal:attributes="class python:selected and 'selected' or 'plain'">
 		                    <a href=""
-		                       tal:attributes="href string:${context/portal_url}/@@myvindula-meus-conteudos"
+		                       tal:attributes="href string:${context/portal_url}/myvindula-meus-conteudos"
 		                       i18n:translate="">
 		                        Meus Conteúdos
 		                    </a>

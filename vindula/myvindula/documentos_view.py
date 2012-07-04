@@ -13,6 +13,7 @@ from vindula.myvindula.validation import valida_form
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 from vindula.myvindula.user import ModelsFuncDetails
+from vindula.myvindula.vindulalistdocumentuser import IVindulaListDocumentUser
 
 from vindula.myvindula.document_models import BaseFunc, SchemaManageDocument, SchemaDocument, ModelsConfigDocuments, ModelsUserDocuments
 from datetime import datetime 
@@ -20,7 +21,7 @@ import pickle
 
 
 class MyVindulaManageDocumentView(grok.View):
-    grok.context(Interface)
+    grok.context(IVindulaListDocumentUser)
     grok.require('cmf.ManagePortal')
     grok.name('myvindula-manage-documents')
     
@@ -29,17 +30,16 @@ class MyVindulaManageDocumentView(grok.View):
     
     
 class MyVindulaAddDocumentView(grok.View, BaseFunc):
-    grok.context(Interface)
+    grok.context(IVindulaListDocumentUser)
     grok.require('cmf.ManagePortal')
     grok.name('add-documents')
-    
     
     def load_form(self):
         return SchemaManageDocument().registration_processes(self)
         
     
 class MyVindulaEditDocumentView(grok.View, BaseFunc):
-    grok.context(Interface)
+    grok.context(IVindulaListDocumentUser)
     grok.require('cmf.ManagePortal')
     grok.name('edit-documents')
     
@@ -49,19 +49,17 @@ class MyVindulaEditDocumentView(grok.View, BaseFunc):
     def load_form(self):
         return SchemaManageDocument().registration_processes(self)
     
-    
     def render(self):
         return self.index()
-    
-    
-class MyVindulaAddDocumentView(grok.View, BaseFunc):
-    grok.context(Interface)
-    grok.require('cmf.ManagePortal')
-    grok.name('add-documents')
-    
-    
-    def load_form(self):
-        return SchemaManageDocument().registration_processes(self)    
+#    
+#class MyVindulaAddDocumentView(grok.View, BaseFunc):
+#    grok.context(Interface)
+#    grok.require('cmf.ManagePortal')
+#    grok.name('add-documents')
+#    
+#    
+#    def load_form(self):
+#        return SchemaManageDocument().registration_processes(self)    
     
 
 class MyVindulaExportDocumentView(grok.View, BaseFunc):
@@ -130,7 +128,6 @@ class MyVindulaDocumentView(grok.View, BaseFunc):
     grok.context(INavigationRoot)
     grok.require('zope2.View')
     grok.name('myvindula-documents')
-    
   
     def load_form(self):
         return SchemaDocument().registration_processes(self)
@@ -152,13 +149,17 @@ class MyVindulaDocumentView(grok.View, BaseFunc):
             return doc_user.id
         else:
             return False
+  
+    def update(self):
+        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
+        if open_for_anonymousUser:
+            self.request.response.redirect(self.context.absolute_url() + '/login')
 
 
 class MyVindulaListDocumentView(grok.View, BaseFunc):
     grok.context(INavigationRoot)
     grok.require('zope2.View')
     grok.name('list-documents')
-    
     
     def load_list(self):
         form = self.request.form # var tipo 'dict' que guarda todas as informacoes do formulario (keys,items,values)
@@ -211,7 +212,12 @@ class MyVindulaListDocumentView(grok.View, BaseFunc):
                     return True
             else:
                 return False
-                            
+
+    def update(self):
+        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
+        if open_for_anonymousUser:
+            self.request.response.redirect(self.context.absolute_url() + '/login')
+
     
 class VindulaDocumentosDownloadView(grok.View):
     grok.context(Interface)
@@ -224,27 +230,27 @@ class VindulaDocumentosDownloadView(grok.View):
         else:
             return ''
 
-    
     def render(self):
         pass
     
     def update(self):
-        form = self.request.form
-        if 'id' in form.keys():
-            id = form.get('id','0')
-            if id != 'None':
-                campo_doc = ModelsUserDocuments().get_UserDocuments_byID(int(id))
-                if campo_doc:
-                    valor_blob = campo_doc.documento
-                    x = self.decodePickle(valor_blob)
-                    
-                    filename = x['filename']
-                    self.request.response.setHeader("Content-Type", "type/file", 0)
-                    self.request.response.setHeader('Content-Disposition','attachment; filename=%s'%(filename))
-                    self.request.response.write(x['data'])
-                      
-                
-                
-                
-                
+        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
+        
+        if not open_for_anonymousUser:
+            form = self.request.form
+            if 'id' in form.keys():
+                id = form.get('id','0')
+                if id != 'None':
+                    campo_doc = ModelsUserDocuments().get_UserDocuments_byID(int(id))
+                    if campo_doc:
+                        valor_blob = campo_doc.documento
+                        x = self.decodePickle(valor_blob)
+                        
+                        filename = x['filename']
+                        self.request.response.setHeader("Content-Type", "type/file", 0)
+                        self.request.response.setHeader('Content-Disposition','attachment; filename=%s'%(filename))
+                        self.request.response.write(x['data'])
+
+        else:
+            self.request.response.redirect(self.context.absolute_url() + '/login')                      
                 

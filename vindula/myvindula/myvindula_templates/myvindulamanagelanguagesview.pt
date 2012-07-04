@@ -1,17 +1,12 @@
 <html>
-<body metal:use-macro="here/main_template/macros/master">
+<body metal:use-macro="here/prefs_main_template/macros/master">
 
-<metal:js fill-slot="javascript_head_slot">
-	<script type="text/javascript" src="js/mascara.js" 
-    tal:attributes="src string:${view/static}/js/mascara.js"></script>
-</metal:js>
-<metal:block fill-slot="top_slot">
-        <tal:dummy tal:define="dummy python:request.set('disable_border',1)" />
-</metal:block>
-    
-    <div metal:fill-slot="content">            
+    <metal:js fill-slot="javascript_head_slot">
+    	<script type="text/javascript" src="js/mascara.js" 
+                tal:attributes="src string:${view/static}/js/mascara.js"></script>
+    </metal:js>
+    <div metal:fill-slot="prefs_configlet_content">            
 
-    	<metal:use use-macro="context/@@myvindulapanel/macros/page"/>    
 	    <div id="content" tal:define="form_data view/load_form | python:{};
 		                              errors form_data/errors | python:{};
 									  form_values form_data/data | python:{};">

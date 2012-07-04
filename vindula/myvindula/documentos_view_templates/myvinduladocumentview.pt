@@ -6,7 +6,12 @@
       metal:use-macro="context/main_template/macros/master">
 
 	<head>
-		
+		<metal:block fill-slot="top_slot">
+            <tal:dummy tal:define="dummy python:request.set('disable_border',1);
+                                   disable_column_one python:request.set('disable_plone.leftcolumn',1);
+                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+        </metal:block>
+        
 	</head>
 
 	<body>

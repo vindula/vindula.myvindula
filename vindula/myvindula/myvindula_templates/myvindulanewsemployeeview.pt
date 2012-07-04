@@ -1,7 +1,14 @@
-<html>
-	<body metal:use-macro="here/main_template/macros/master">
-	
-	  	<div metal:fill-slot="content">
+<html  metal:use-macro="here/main_template/macros/master">
+    <head>
+        <metal:block fill-slot="top_slot">
+            <tal:dummy tal:define="dummy python:request.set('disable_border',1);
+                                   disable_column_one python:request.set('disable_plone.leftcolumn',1);
+                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+        </metal:block>
+        
+    </head>
+	<body>
+	  	<div metal:fill-slot="content-core">
 			<h2 class="h2title">Novos Usu&aacute;rios do portal</h2>
       		<meta:macro metal:define-macro="page-view">                  
 				<tal:def define="member python:context.portal_membership.getAuthenticatedMember();

@@ -1,5 +1,10 @@
 <html>
     <body metal:use-macro="here/main_template/macros/master">
+    	 <metal:block fill-slot="top_slot">
+            <tal:dummy tal:define="dummy python:request.set('disable_border',1);
+                                   disable_column_one python:request.set('disable_plone.leftcolumn',1);
+                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+        </metal:block>
     	
         <div metal:fill-slot="content">
             <div id="interna">

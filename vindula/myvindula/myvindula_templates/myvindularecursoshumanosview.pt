@@ -7,13 +7,15 @@
       i18n:domain="plone">
 
 <head>
+        <metal:block fill-slot="top_slot">
+            <tal:dummy tal:define="disable_column_one python:request.set('disable_plone.leftcolumn',1);
+                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+        </metal:block>
 
 </head>
 
 <body>
-   <div class="cell width-full position-0" 
-         metal:fill-slot="content" >
-         
+   <div metal:fill-slot="content" >
 	   <metal:use use-macro="context/@@myvindulapanel/macros/page"/>
        
 	   <tal:def define="enable_holerite context/@@myvindula-conf-userpanel/check_holerite;
@@ -23,7 +25,7 @@
 						
 						link request/id| enable_link;">	
 		    
-			<div id="edit-bar" class="custom"
+			<div id="edit-bar" class="custom" style="bottom: 16px;position: relative;"
 				 tal:condition="python: enable_holerite or enable_documents" >
 	            
 				<h5 class="hiddenStructure"

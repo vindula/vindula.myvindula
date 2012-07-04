@@ -1,10 +1,10 @@
 <html>
-<body metal:use-macro="here/main_template/macros/master">
+<body metal:use-macro="here/prefs_main_template/macros/master">
 <!--metal:block fill-slot="top_slot">
         <tal:dummy tal:define="dummy python:request.set('disable_border',1)" />
 </metal:block-->
     
-    <div metal:fill-slot="content">            
+    <div metal:fill-slot="prefs_configlet_content">            
 	    <div id="content" tal:define="form_data view/load_list | python:{};">
 	        
 	        <h1>Cursos</h1>

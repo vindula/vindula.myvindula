@@ -38,6 +38,10 @@ h2.h2title {
 	color: #000000;
 	margin-bottom: 10px;
 }
+.userpage{
+    overflow: hidden;
+}
+
 .userpage div.department {
     background-color: #205C90;
     clear: both;
@@ -169,7 +173,7 @@ h2.h2title {
 	float:left;
 	text-align: center;
 	width: 105px;
-	height: 125px;
+	/*height: 125px;*/
 	margin: 12px;
 } 
 

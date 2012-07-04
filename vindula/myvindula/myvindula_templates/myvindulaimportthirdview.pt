@@ -1,6 +1,6 @@
 <html>
-    <body metal:use-macro="here/main_template/macros/master">
-        <div metal:fill-slot="content">
+    <body metal:use-macro="here/prefs_main_template/macros/master">
+        <div metal:fill-slot="prefs_configlet_content">
             <div id="internal" tal:define="success python:eval(context.REQUEST.form.get('success', None));
 										   error python:context.REQUEST.form.get('error', None)">
 				<div class="import-user">

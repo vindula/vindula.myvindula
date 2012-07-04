@@ -57,25 +57,10 @@ class MyVindulaView(grok.View, UtilMyvindula):
         D={}
         D['username'] = user
         return ModelsMyvindulaHowareu().get_myvindula_howareu(**D)
-    
 
     def get_department(self):
         return ModelsDepartment().get_department()
 
-#    def get_photo_user(self,prefs_user):
-#        if prefs_user:
-#            if prefs_user.photograph is not None and \
-#                not ' ' in prefs_user.photograph  and \
-#                not prefs_user.photograph == '':
-#                #return self.context.absolute_url()+'/'+prefs_user.photograph #+ '/image_thumb'
-#                return BaseFunc().get_imageVindulaUser(prefs_user.photograph)
-#            
-#            else:
-#                return self.context.absolute_url()+'/defaultUser.png'
-#        else:
-#            return self.context.absolute_url()+'/defaultUser.png'
-    
-    
     def checkHomeFolder(self):
         """ Check if exist homeFolder """
         homefolder = self.context.portal_membership.getHomeFolder()
@@ -97,32 +82,35 @@ class MyVindulaView(grok.View, UtilMyvindula):
         form = self.request.form
         submitted = form.get('form.submitted', False)
         excluir = eval(form.get('form_excluir', 'False'))
-            
-        if submitted:
-            visible_area = form.get('visible_area')
-            text = form.get('text')
-            if not eval(visible_area):
-                form['visible_area'] = form.get('departamento','0')
-            if text == '':
-                IStatusMessage(self.request).addStatusMessage(_(u'Não é possível postar um pensamento em branco.'),"info")
-                return False
-            upload_foto = form.get('upload_image')
-            if upload_foto:
-                data = upload_foto.read()
-                if len(data) != 0 : 
-                    form['upload_image'] = pickle.dumps(data)
+        
+        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
+        
+        if not open_for_anonymousUser:    
+            if submitted:
+                visible_area = form.get('visible_area')
+                text = form.get('text')
+                if not eval(visible_area):
+                    form['visible_area'] = form.get('departamento','0')
+                if text == '':
+                    IStatusMessage(self.request).addStatusMessage(_(u'Não é possível postar um pensamento em branco.'),"info")
+                    return False
+                upload_foto = form.get('upload_image')
+                if upload_foto:
+                    data = upload_foto.read()
+                    if len(data) != 0 : 
+                        form['upload_image'] = pickle.dumps(data)
+                    else:
+                        form['upload_image'] = ''                
                 else:
-                    form['upload_image'] = ''                
-            else:
-                form['upload_image'] = ''
-            ModelsMyvindulaHowareu().set_myvindula_howareu(**form)
-                
-        elif excluir:
-            id_howareu = int(form.get('id_howareu','0'))
-            ModelsMyvindulaHowareu().del_myvindula_howareu(id_howareu)
-               
-            #IStatusMessage(self.request).addStatusMessage(_(u'Registro removido com sucesso.'),"info")
-                     
+                    form['upload_image'] = ''
+                ModelsMyvindulaHowareu().set_myvindula_howareu(**form)
+                    
+            elif excluir:
+                id_howareu = int(form.get('id_howareu','0'))
+                ModelsMyvindulaHowareu().del_myvindula_howareu(id_howareu)
+        
+        else:
+            self.request.response.redirect(self.context.absolute_url() + '/login')                  
 
 #Views de renderização das imagem do howareu ---------------------------------------------------   
 class VindulahowareuImage(grok.View, BaseFunc):
@@ -162,13 +150,19 @@ class VindulaHowAreUListAll(grok.View, BaseFunc):
         """ Receive itself from request and do some actions """
         form = self.request.form
         excluir = form.get('form.excluir', False)
-            
-        if excluir:
-            id_howareu = int(form.get('id_howareu','0'))
-            ModelsMyvindulaHowareu().del_myvindula_howareu(id_howareu)
-               
-            IStatusMessage(self.request).addStatusMessage(_(u'Registro removido com sucesso.'),"info")         
-         
+        
+        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
+        
+        if not open_for_anonymousUser:
+            if excluir:
+                id_howareu = int(form.get('id_howareu','0'))
+                ModelsMyvindulaHowareu().del_myvindula_howareu(id_howareu)
+                   
+                IStatusMessage(self.request).addStatusMessage(_(u'Registro removido com sucesso.'),"info")         
+                     
+        else:
+            self.request.response.redirect(self.context.absolute_url() + '/login')   
+
 
 class MyVindulaPanelView(grok.View):
     grok.context(Interface)
@@ -224,14 +218,18 @@ class MyVindulaRecursosHumanosView(grok.View, BaseFunc):
         else:
             return 'context/'+link+'/macros/page'
 
-
+    def update(self):
+        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
+        
+        if open_for_anonymousUser:
+            self.request.response.redirect(self.context.absolute_url() + '/login')   
+        
 class MyVindulaPrefsView(grok.View, BaseFunc):
     grok.context(ISiteRoot)
     grok.require('zope2.View')
     grok.name('myvindulaprefs')
     
     ignoreContext = True
-    
     label = _(u"Personal Information")
     description = _(u"Change your available information below.")   
     
@@ -285,7 +283,6 @@ class MyVindulaPrefsView(grok.View, BaseFunc):
                         return SchemaFunc().registration_processes(self, user, False)
                     else:
                         return self.request.response.redirect(error_url)
-        
         else:
             return self.request.response.redirect(error_url)
        
@@ -310,7 +307,11 @@ class MyVindulaPrefsView(grok.View, BaseFunc):
     def update(self):
         # disable Plone's editable border
         self.request.set('disable_border', True)
-        return super(MyVindulaPrefsView, self).update()
+        #return super(MyVindulaPrefsView, self).update()
+        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
+        
+        if open_for_anonymousUser:
+            self.request.response.redirect(self.context.absolute_url() + '/login')
 
 class MyVindulaImportUser(grok.View, BaseFunc):
     grok.context(INavigationRoot)
@@ -318,7 +319,6 @@ class MyVindulaImportUser(grok.View, BaseFunc):
     grok.name('myvindulaimportuser')
     
     ignoreContext = True
-    
     label = _(u"users to import the database")
     description = _(u"User import for plone site from mysql database.")   
     
@@ -346,7 +346,6 @@ class AjaxView(grok.View):
         return ImportUser().importUser(self,form)
     
 class MyVindulaListUser(grok.View, UtilMyvindula):
-    #grok.context(ISiteRoot)
     grok.context(Interface)
     grok.require('zope2.View')
     grok.name('myvindulalistuser')
@@ -361,9 +360,7 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
             else:
                 conf[item] = True
         
-    
         return conf
-    
     
     def get_ConfugCampos(self, campo):
         configuracao= ModelsConfgMyvindula().getConfig_views(campo)
@@ -431,49 +428,31 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
         return ModelsFuncDetails().get_FuncDetails(unicode(user, 'utf-8'))
 
     def update(self):
-        form = self.request.form
-        submitted = form.get('form.submitted', False)
+        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
         
-        excluir_howareu = form.get('form.excluir.howareu', False)
-        excluir_recados = form.get('form.excluir.recados', False)
-        
-        if submitted:
-            return  ModelsMyvindulaRecados().set_myvindula_recados(**form)
-        
-        elif excluir_howareu:
-            id_howareu = int(form.get('id_howareu','0'))
-            ModelsMyvindulaHowareu().del_myvindula_howareu(id_howareu)
-               
-            IStatusMessage(self.request).addStatusMessage(_(u'Registro removido com sucesso.'),"info")
-        
-        elif excluir_recados:       
-            id_recado = int(form.get('id_recado','0'))
-            ModelsMyvindulaRecados().del_myvindula_recados(id_recado)
-               
-            IStatusMessage(self.request).addStatusMessage(_(u'Registro removido com sucesso.'),"info")        
-              
-
-#    def get_prefs_user(self, user):
-#        try:
-#            user_id = unicode(user, 'utf-8')    
-#        except:
-#            user_id = user 
-#
-#        return ModelsFuncDetails().get_FuncDetails(user_id)
-
-    def getPhoto(self,photo):
-        prefs_user = UtilMyvindula().get_prefs_user(photo)
-        if prefs_user:
-            if prefs_user.photograph is not None and \
-                not ' ' in prefs_user.photograph  and \
-                not prefs_user.photograph == '':
-                return BaseFunc().get_imageVindulaUser(prefs_user.photograph)
-                #return self.context.absolute_url()+'/'+prefs_user.photograph # + '/image_thumb'
-            else:
-                return self.context.absolute_url()+'/defaultUser.png'
+        if not open_for_anonymousUser:
+            form = self.request.form
+            submitted = form.get('form.submitted', False)
+            
+            excluir_howareu = form.get('form.excluir.howareu', False)
+            excluir_recados = form.get('form.excluir.recados', False)
+            
+            if submitted:
+                return  ModelsMyvindulaRecados().set_myvindula_recados(**form)
+            
+            elif excluir_howareu:
+                id_howareu = int(form.get('id_howareu','0'))
+                ModelsMyvindulaHowareu().del_myvindula_howareu(id_howareu)
+                   
+                IStatusMessage(self.request).addStatusMessage(_(u'Registro removido com sucesso.'),"info")
+            
+            elif excluir_recados:       
+                id_recado = int(form.get('id_recado','0'))
+                ModelsMyvindulaRecados().del_myvindula_recados(id_recado)
+                   
+                IStatusMessage(self.request).addStatusMessage(_(u'Registro removido com sucesso.'),"info")        
         else:
-            return self.context.absolute_url()+'/defaultUser.png'
-
+            self.request.response.redirect(self.context.absolute_url() + '/login')              
 
     def get_department(self, user):
         try:
@@ -525,45 +504,25 @@ class MyVindulaListRecados(grok.View,UtilMyvindula):
         D['destination'] = user
         return ModelsMyvindulaRecados().get_myvindula_recados(**D)
 
-       
-#    def get_prefs_user(self, user):
-#        try:
-#            user_id = unicode(user, 'utf-8')    
-#        except:
-#            user_id = user 
-#
-#        return ModelsFuncDetails().get_FuncDetails(user_id)
-
-#    def getPhoto(self,photo):
-#        prefs_user = self.get_prefs_user(photo)
-#        if prefs_user:
-#            if prefs_user.photograph is not None and \
-#                not ' ' in prefs_user.photograph  and \
-#                not prefs_user.photograph == '':
-#                return BaseFunc().get_imageVindulaUser(prefs_user.photograph)
-#                #return self.context.absolute_url()+'/'+prefs_user.photograph # + '/image_thumb'
-#            else:
-#                return self.context.absolute_url()+'/defaultUser.png'
-#        else:
-#            return self.context.absolute_url()+'/defaultUser.png'
-        
     def update(self):
-        form = self.request.form
-        excluir = form.get('form.excluir', False)
-                
-        if excluir:
-            id_recado = int(form.get('id_recado','0'))
-            ModelsMyvindulaRecados().del_myvindula_recados(id_recado)
-               
-            IStatusMessage(self.request).addStatusMessage(_(u'Registro removido com sucesso.'),"info")        
+        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
         
+        if not open_for_anonymousUser:
+            form = self.request.form
+            excluir = form.get('form.excluir', False)
+                    
+            if excluir:
+                id_recado = int(form.get('id_recado','0'))
+                ModelsMyvindulaRecados().del_myvindula_recados(id_recado)
+                IStatusMessage(self.request).addStatusMessage(_(u'Registro removido com sucesso.'),"info")        
         
+        else:
+            self.request.response.redirect(self.context.absolute_url() + '/login')
 
 class MyVindulalistAll(grok.View, BaseFunc):
     grok.context(Interface)
     grok.require('zope2.View')
     grok.name('myvindulalistall')
-    
        
     def load_list(self):
         form = self.request.form
@@ -614,11 +573,6 @@ class MyVindulalistAll(grok.View, BaseFunc):
                     
         return result
     
-      
-#    def rs_to_list(self, rs):
-#        if rs:
-#            return [i for i in rs]
-    
     def check_no_result(self):
         form = self.request.form
         if 'title' in form.keys():
@@ -631,12 +585,16 @@ class MyVindulalistAll(grok.View, BaseFunc):
             return 'Digite um filtro para a busca.'
         else:
             return ''
+        
+    def update(self):
+        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
+        if open_for_anonymousUser:
+            self.request.response.redirect(self.context.absolute_url() + '/login')
    
 class MyVindulaNewsEmployeeView(grok.View, BaseFunc):
     grok.context(Interface)
     grok.require('zope2.View')
     grok.name('myvindula-news-employee')
-    
        
     def load_list(self):
         result = None
@@ -646,10 +604,6 @@ class MyVindulaNewsEmployeeView(grok.View, BaseFunc):
                     
         return result
     
-#    def rs_to_list(self, rs):
-#        if rs:
-#            return [i for i in rs]
-    
     def check_no_result(self):
         form = self.request.form
         if 'title' in form.keys():
@@ -663,7 +617,11 @@ class MyVindulaNewsEmployeeView(grok.View, BaseFunc):
         else:
             return ''
 
-
+    def update(self):
+        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
+        if open_for_anonymousUser:
+            self.request.response.redirect(self.context.absolute_url() + '/login')
+   
 
 #class MyVindulaListMyContent(grok.View):
 #    grok.context(Interface)
@@ -687,7 +645,7 @@ class MyVindulaNewsEmployeeView(grok.View, BaseFunc):
 
 class MyVindulaManageAllUser(grok.View, BaseFunc):
     grok.context(INavigationRoot)
-    grok.require('zope2.View')
+    grok.require('cmf.ManagePortal')
     grok.name('myvindulamanagealluser')
     
     def checa_login(self):
@@ -734,12 +692,6 @@ class MyVindulaManageAllUser(grok.View, BaseFunc):
             return result
         else:
             self.request.response.redirect(self.context.absolute_url() + '/login')
-
-#    def rs_to_list(self, rs):
-#        if rs:
-#            return [i for i in rs]
-#        else:
-#            return []
 
     def encodeUser(self,user):
         return base64.b16encode(user)
@@ -812,14 +764,11 @@ class MyVindulaFirstRegistreView(grok.View, UtilMyvindula):
         else:
             return 'Bom dia, '
     
-#    def get_prefs_user(self, user):
-#        try:
-#            user_id = unicode(user, 'utf-8')    
-#        except:
-#            user_id = user 
-#
-#        return ModelsFuncDetails().get_FuncDetails(user_id)    
-
+    def update(self):
+        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
+        if open_for_anonymousUser:
+            self.request.response.redirect(self.context.absolute_url() + '/login')
+    
 
 class MyVindulaListBirthdays(grok.View):
     grok.context(ISiteRoot)
@@ -901,7 +850,6 @@ class MyVindulaListBirthdays(grok.View):
             return results #results[:int(quant)]
         else:
             return []
-
     
     def load_list(self):
         form = self.request.form
@@ -915,6 +863,12 @@ class MyVindulaListBirthdays(grok.View):
             return results
         else:
             return []
+  
+    def update(self):
+        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
+        if open_for_anonymousUser:
+            self.request.response.redirect(self.context.absolute_url() + '/login')
+
 
 class MyVindulaLike(grok.View):
     grok.context(ISiteRoot)
@@ -951,10 +905,8 @@ class MyVindulaLike(grok.View):
                 html =  '<span>'+ str(data_like.count())+' pessoa curtiu isso.</span>'
         
             html += '<span class="link" id="'+form['id_obj']+'">(Curtir)</span>' 
-                
         
         return html
-    
     
     def update(self):
         """ Receive itself from request and do some actions """
@@ -987,26 +939,14 @@ class MyVindulaComments(grok.View, UtilMyvindula):
                 return True
             elif conf_context:
                 return True
-#            elif not conf_context:
-#                return False
             else:
                 return False
         else:
             if replies:
                 return True
-#            if conf_context:
-#                return True
             else:
                 return conf_global
             
-#    def get_prefs_user(self, user):
-#        try:
-#            user_id = unicode(user, 'utf-8')    
-#        except:
-#            user_id = user 
-#
-#        return ModelsFuncDetails().get_FuncDetails(user_id)
-    
     def get_comments(self,id,type):
         D={}
         D['id_obj'] = id
@@ -1026,18 +966,6 @@ class MyVindulaComments(grok.View, UtilMyvindula):
         except:
             return None
     
-#    def get_photo_user(self,prefs_user):
-#        if prefs_user:
-#            if prefs_user.photograph is not None and \
-#                not ' ' in prefs_user.photograph  and \
-#                not prefs_user.photograph == '':
-#                return BaseFunc().get_imageVindulaUser(prefs_user.photograph)
-#                #return self.context.absolute_url()+'/'+prefs_user.photograph # + '/image_thumb'
-#            else:
-#                return self.context.absolute_url()+'/defaultUser.png'
-#        else:
-#            return self.context.absolute_url()+'/defaultUser.png'
-#    
     def update(self):
         """ Receive itself from request and do some actions """
         form = self.request.form
@@ -1063,13 +991,6 @@ class MyVindulaComments(grok.View, UtilMyvindula):
             id_comments = int(form.get('id_comments','0'))
             ModelsMyvindulaComments().del_myvindula_comments(id_comments)
                
-            #IStatusMessage(self.request).addStatusMessage(_(u'Registro removido com sucesso.'),"info")
-            
-#        if not ajax and (submitted or excluir):
-#            return self.request.response.redirect(redirect)
-        
-   
- 
 class MyVindulaCoursesView(grok.View, BaseFunc):
     grok.context(INavigationRoot)
     grok.require('cmf.ManagePortal')
@@ -1094,7 +1015,6 @@ class MyVindulaLanguagesView(grok.View, BaseFunc):
     
     def load_list(self):
         return ManageLanguages().load_languages(self)
-
         
 class MyVindulaManageLanguagesView(grok.View, BaseFunc):        
     grok.context(INavigationRoot)
@@ -1108,7 +1028,6 @@ class MyVindulaImportFirstView(grok.View):
     grok.context(INavigationRoot)
     grok.require('cmf.ManagePortal')
     grok.name('myvindula-import-first')
-    
     
     def load_file(self):
         form = self.request.form               
@@ -1206,17 +1125,7 @@ class MyVindulaImportSecondView(grok.View, BaseFunc):
             folder = getSite()[path_file[0]][path_file[1]][path_file[2]]
             file = folder.get(path_file[3])
             
-#            if len(path_file) == 3:
-#                folder = path_file[1]
-#                file = path_file[2]
-#            else:
-#                folder = path_file[0]
-#                file = path_file[1]
-#            folder = self.context.get(folder)
-#            file = folder.get(file)
-            
             return file.data.split('\n')[0].replace('"', '').split(';')
-        
             
     def importar_valores(self):
         form = self.request.form
@@ -1406,13 +1315,6 @@ class MyVindulaImportHoleriteView(grok.View, BaseFunc):
         else:
             return []
         
-#    def CountDados(self, data):
-#        result = ModelsFuncHolerite().get_FuncHolerites_byData(data)
-#        if result: 
-#            return result.count()
-#        else:
-#            return 0
-              
     def load_file(self):
         from pprint import pprint
         from copy import copy
@@ -1712,10 +1614,6 @@ class MyVindulaHoleriteView(grok.View, UtilMyvindula):
     grok.require('zope2.View')
     grok.name('myvindula-holerite')
     
-#    def get_prefs_user(self, user):
-#        user_id = unicode(user, 'utf-8')    
-#        return ModelsFuncDetails().get_FuncDetails(user_id)
-    
     def get_descricao_holerite(self, id_holerite):
         result = ModelsFuncHoleriteDescricao().get_FuncHoleriteDescricoes_byid(id_holerite)
         if result: 
@@ -1724,7 +1622,6 @@ class MyVindulaHoleriteView(grok.View, UtilMyvindula):
             return [] 
     
     def load_list(self):
-    
         membership = self.context.portal_membership
         user_login = membership.getAuthenticatedMember()
         user = str(user_login.getUserName())
@@ -1749,16 +1646,16 @@ class MyVindulaHoleriteView(grok.View, UtilMyvindula):
         
         else:
                 return []
-            
+    
+    def update(self):
+        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
+        if open_for_anonymousUser:
+            self.request.response.redirect(self.context.absolute_url() + '/login')            
             
 class MyVindulaPrintHoleriteView(grok.View, UtilMyvindula):
     grok.context(ISiteRoot)
     grok.require('zope2.View')
     grok.name('imprimir-holerite')
-    
-#    def get_prefs_user(self, user):
-#        user_id = unicode(user, 'utf-8')    
-#        return ModelsFuncDetails().get_FuncDetails(user_id)
     
     def get_descricao_holerite(self, id_holerite):
         result = ModelsFuncHoleriteDescricao().get_FuncHoleriteDescricoes_byid(id_holerite)
@@ -1774,7 +1671,6 @@ class MyVindulaPrintHoleriteView(grok.View, UtilMyvindula):
         user_login = membership.getAuthenticatedMember()
         prefs_user = self.get_prefs_user(user_login.getUserName())
         
-        
         if prefs_user and 'id' in form.keys():
 
             try:cpf = unicode(prefs_user.teaching_research,'utf-8')
@@ -1783,3 +1679,9 @@ class MyVindulaPrintHoleriteView(grok.View, UtilMyvindula):
             id = int(form.get('id','0'))
                 
             return ModelsFuncHolerite().get_FuncHolerites_byCPFAndID(cpf, id)      
+        
+    def update(self):
+        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
+        if open_for_anonymousUser:
+            self.request.response.redirect(self.context.absolute_url() + '/login')
+        

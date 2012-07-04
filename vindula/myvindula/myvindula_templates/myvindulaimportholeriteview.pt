@@ -21,7 +21,7 @@
 								<div class="cell width-4 position-3">
 									<span>Data da Importação</span>
 								</div>
-								<div class="cell width-7 position-6">
+								<div class="cell width-6 position-7">
 									<span>Empresa</span>
 								</div>
 								<div class="cell width-3 position-13">
@@ -38,7 +38,7 @@
 									<div class="cell width-4 position-3">
 										<span tal:content="item/date_creation">Data da Importação</span>
 									</div>
-									<div class="cell width-7 position-6">
+									<div class="cell width-6 position-7">
 										<span tal:content="item/empresa">Empresa</span>
 									</div>
 									
