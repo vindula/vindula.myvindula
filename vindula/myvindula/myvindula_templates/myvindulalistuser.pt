@@ -47,12 +47,9 @@
     			</tal:cont>	
         	</tal:cont>
         	
-        	
     		<!--input type="hidden" id="portal_url" tal:attributes="value context/portal_url|nothing">
     		<input type="hidden" id="context_url" tal:attributes="value string:${context/REQUEST/getURL|nothing}?user=${context/REQUEST/form/user|nothing}">
     		<input type="hidden" id="username" name="username" value="" tal:attributes="value context/@@plone_portal_state/member|nothing"-->
-    		
-    		
     		
     		<div id="content">
     			<div id="interna" class="userpage ">
@@ -94,7 +91,7 @@
     									<td class="field" tal:content="python: view.get_label_filed('pronunciation_name')">Pron&uacute;ncia do nome</td>
     									<td class="value" tal:content="form_data/pronunciation_name|nothing"></td>
     								</tr>
-    								<tr tal:condition="python: view.get_ConfugCampos('date_birth_view')">
+    								<tr tal:condition="python: view.get_ConfugCampos('date_birth')">
     									<td class="field" tal:content="python: view.get_label_filed('date_birth')">Data de anivers&aacute;rio</td>
     									<td class="value" tal:condition="form_data/date_birth|nothing"
     													  tal:content="python: form_data.date_birth.strftime('%d/%m')"></td>
@@ -264,7 +261,7 @@
     							<td class="value" tal:content="form_data/blogs|nothing"></td>
     						</tr>				
     						<tr tal:condition="python: view.get_ConfugCampos('customised_message')">
-    							<td class="field" tal:content="python: view.get_label_filed('teaching_research')">Mensagem personalizada</td>
+    							<td class="field" tal:content="python: view.get_label_filed('customised_message')">Mensagem personalizada</td>
     							<td class="value" tal:content="form_data/customised_message|nothing"></td>
     						</tr>
     					</table>

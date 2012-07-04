@@ -18,206 +18,209 @@
 							   panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel')">
 												   
 				<div id="content">
-					<div id="interna" class="userpage ">
-						 <!--h2 class="h2title">Informa&ccedil;&otilde;es do Perfil</h2-->
-						
-						<div class="titulo">
-							<h2 tal:content="form_data/name|nothing"></h2>
-						</div>
-						
-						<div class="department">
-							<tal:def define="departamentos python: view.get_department(user)">
-				        		<tal:rep repeat="departamento departamentos">
-				        			<span tal:content="departamento/Title|nothing">Departamento</span>
-									<span tal:define="cont repeat/departamento/length;
-														   last repeat/departamento/end"
-										  tal:condition="python: cont > 1 and not last"> | </span>
-				        		</tal:rep>
-				        	</tal:def>
-							<!--span tal:content="form_data/departamento/name|nothing"></span-->
-						</div>
-						
-						<!-- start: Personal Information -->
-						<div id="personal">
-							<div id="photo">    
-					             <img tal:attributes="src string: ${context/portal_url|nothing}/user-image?username=${user}">
-							</div>
-						
-							<div id="data" tal:condition="view/valida_pessoal|nothing">
-								<div class="area"><span>Pessoal</span></div>
-									<table>
-										<tr tal:condition="configuracao/employee_id|nothing">
-											<td class="field">ID</td>
-											<td class="value" tal:content="form_data/employee_id|nothing"></td>
-										</tr>
-										<tr tal:condition="configuracao/nickname|nothing">
-											<td class="field">Apelido</td>
-											<td class="value" tal:content="form_data/nickname|nothing"></td>
-										</tr>
-										<tr tal:condition="configuracao/pronunciation_name|nothing">
-											<td class="field">Pron&uacute;ncia do nome</td>
-											<td class="value" tal:content="form_data/pronunciation_name|nothing"></td>
-										</tr>
-										<tr tal:condition="configuracao/date_birth|nothing">
-											<td class="field">Data de anivers&aacute;rio</td>
-											<td class="value" tal:condition="form_data/date_birth|nothing"
-															  tal:content="python: form_data.date_birth.strftime('%d/%m')"></td>
-											<td class="value" tal:condition="not: form_data/date_birth|nothing"></td>												  
-										</tr>
-									</table>
-								<a id="send-mail" tal:condition="form_data/email|configuracao/email|nothing" 
-												  tal:attributes="href string:mailto:${form_data/email|nothing}">Enviar e-mail</a>
-							</div>
-						</div>
-						<!-- end: Personal Information -->
-					</div>
-					
-					<div id="perfil" class="userpage"> <!-- display-none"--> 
-						<!-- start: Others Information -->
-						<!-- Contact -->
-						<div id="grupo" tal:condition="view/valida_contato|nothing">
-							<div class="area"><span>Contato</span></div>
-							<img class="type-info" tal:attributes="src string:${view/static}/images/user_contact.png" />
-							<table>
-								<tr tal:condition="configuracao/email|nothing">
-									<td class="field">E-mail</td>
-									<td class="value" tal:content="form_data/email|nothing"></td>
-								</tr>
-								<tr tal:condition="configuracao/phone_number|nothing">
-									<td class="field">Telefone</td>
-									<td class="value" tal:content="form_data/phone_number|nothing"></td>
-								</tr>
-								<tr tal:condition="configuracao/location|nothing">
-									<td class="field">Localiza&ccedil;&atilde;o</td>
-									<td class="value" tal:content="form_data/location|nothing"></td>
-								</tr>
-								<tr tal:condition="configuracao/postal_address|nothing">
-									<td class="field">Endere&ccedil;o</td>
-									<td class="value" tal:content="form_data/postal_address|nothing"></td>
-								</tr>
-							</table>
-						</div>
-						
-						<!-- Corporative -->
-						<div id="grupo" tal:condition="view/valida_corporativo|nothing" >
-							<div class="area"><span>Corporativo</span></div>
-							<img class="type-info" tal:attributes="src string:${view/static}/images/user_business.png" />
-							<table>
-								<tr tal:condition="configuracao/enterprise|nothing">
-									<td class="field">Empresa</td>
-									<td class="value" tal:content="form_data/enterprise|nothing"></td>
-								</tr>
-								<tr tal:condition="configuracao/registration|nothing">
-									<td class="field">Registro</td>
-									<td class="value" tal:content="form_data/registration|nothing"></td>
-								</tr>
-								<tr tal:condition="configuracao/position|nothing">
-									<td class="field">Cargo</td>
-									<td class="value" tal:content="form_data/position|nothing"></td>
-								</tr>
-								<tr tal:condition="configuracao/admission_date|nothing">
-									<td class="field">Data de Admiss&atilde;o</td>
-									<td class="value" tal:condition="form_data/admission_date|nothing"  
-													  tal:content="python:form_data.admission_date.strftime('%d/%m/%Y')"></td>
-									<td class="value" tal:condition="not: form_data/admission_date|nothing"></td>  
-								</tr>
-								<tr tal:condition="configuracao/cost_center|nothing">
-									<td class="field">Centro de custo</td>
-									<td class="value" tal:content="form_data/cost_center|nothing"></td>
-								</tr>
-								<tr tal:condition="configuracao/profit_centre|nothing">
-									<td class="field">Centro de lucro</td>
-									<td class="value" tal:content="form_data/profit_centre|nothing"></td>
-								</tr>
-								<tr tal:condition="configuracao/special_roles|nothing">
-									<td class="field">Funções Especiais</td>
-									<td class="value" tal:content="form_data/special_roles|nothing"></td>
-								</tr>
-								<tr tal:condition="configuracao/organisational_unit|nothing">
-									<td class="field">Unidade organizacional</td>
-									<td class="value" tal:content="form_data/organisational_unit|nothing"></td>
-								</tr>
-								<tr tal:condition="configuracao/delegations|nothing">
-									<td class="field">Delega&ccedil;&otilde;es</td>
-									<td class="value" tal:content="form_data/delegations|nothing"></td>
-								</tr>	
-								<tr tal:condition="configuracao/reports_to|nothing">
-									<td class="field">Reporta-se a</td>
-									<td class="value" tal:content="form_data/reports_to|nothing"></td>
-								</tr>
-							</table>
-						</div>	
-						
-						<!-- Others -->
-						<div id="grupo" tal:condition="view/valida_others|nothing">
-							<div  class="area"><span>Outras Informa&ccedil;&otilde;es</span></div>
-							<img class="type-info" tal:attributes="src string:${view/static}/images/user_others.png" />
-							<table>
-								<tr tal:condition="configuracao/committess|nothing">
-									<td class="field">Comissão</td>
-									<td class="value" tal:content="form_data/committess|nothing"></td>
-								</tr>
-								<tr tal:condition="configuracao/projects|nothing">
-									<td class="field">Projetos</td>
-									<td class="value" tal:content="form_data/projects|nothing"></td>
-								</tr>			
-								<tr tal:condition="configuracao/personal_information|nothing">
-									<td class="field">Informa&ccedil;&atilde;o pessoal</td>
-									<td class="value" tal:content="form_data/personal_information|nothing"></td>
-								</tr>
-								<tr tal:condition="configuracao/skills_expertise|nothing">
-									<td class="field">Habilidades</td>
-									<td class="value"><!-- tal:content="form_data/skills_expertise|nothing"-->
-										<tal:def define="cursos python: view.get_Courses(user)">
-											<tal:cont condition="cursos">
-								        		<tal:rep repeat="curso cursos">
-								        			<span tal:content="python:view.getCouses_byID(curso.vin_myvindula_courses_id).title">Departamento</span> <br />
-								        		</tal:rep>
-											</tal:cont>
-							        	</tal:def>
-									</td>
-								</tr>					
-								<tr tal:condition="configuracao/languages|nothing" >
-									<td class="field">Idiomas</td>
-									<td class="value"><!--tal:content="form_data/languages|nothing"-->
-										<tal:def define="languages python: view.get_Languages(user)">
-											<tal:cont condition="languages">
-								        		<tal:rep repeat="language languages">
-								        			<span tal:content="python:view.getLanguages_byID(language.vin_myvindula_languages_id).title">Departamento</span> <br />
-								        		</tal:rep>
-											</tal:cont>
-							        	</tal:def>
-									</td>
-								</tr>		
-								<tr tal:condition="configuracao/availability|nothing" >
-									<td class="field">Disponibilidade</td>
-									<td class="value" tal:content="form_data/availability|nothing"></td>
-								</tr>				
-								<tr tal:condition="configuracao/papers_published|nothing">
-									<td class="field">Artigos publicados</td>
-									<td class="value" tal:content="form_data/papers_published|nothing"></td>
-								</tr>	
-								<tr tal:condition="configuracao/teaching_research|nothing">
-									<td class="field">CPF</td>
-									<td class="value" tal:content="form_data/teaching_research|nothing"></td>
-								</tr>					
-								<tr tal:condition="configuracao/resume|nothing">
-									<td class="field">Resumo</td>
-									<td class="value" tal:content="form_data/resume|nothing"></td>
-								</tr>	
-								<tr tal:condition="configuracao/blogs|nothing">
-									<td class="field">Blogs</td>
-									<td class="value" tal:content="form_data/blogs|nothing"></td>
-								</tr>				
-								<tr tal:condition="configuracao/customised_message|nothing">
-									<td class="field">Mensagem personalizada</td>
-									<td class="value" tal:content="form_data/customised_message|nothing"></td>
-								</tr>
-							</table>
-						</div>
-						<!-- end: Others Information -->
-					</div>
-
+                    <div id="interna" class="userpage ">
+                     <h2 class="h2title">Informa&ccedil;&otilde;es do Perfil</h2>
+                    <div class="titulo">
+                        <h2 tal:content="form_data/name|nothing"></h2>
+                    </div>
+                    
+                    <div class="department">
+                        <tal:def define="departamentos python: view.get_department(user)">
+                            <tal:rep repeat="departamento departamentos">
+                                <span tal:content="departamento/Title|nothing">Departamento</span>
+                                <span tal:define="cont repeat/departamento/length;
+                                                       last repeat/departamento/end"
+                                      tal:condition="python: cont > 1 and not last"> | </span>
+                            </tal:rep>
+                        </tal:def>
+                        <!--span tal:content="form_data/departamento/name|nothing"></span-->
+                    </div>
+                    
+                    <!-- start: Personal Information -->
+                    <div id="personal">
+                        <div id="photo">    
+                            <img tal:attributes="src string: ${context/portal_url|nothing}/user-image?username=${user}">
+                        </div>
+                    
+                        <div id="data" tal:condition="view/valida_pessoal|nothing">
+                            <div class="area"><span>Pessoal</span></div>
+                                <table>
+                                    <tr tal:condition="python: view.get_ConfugCampos('employee_id')">
+                                        <td class="field" tal:content="python: view.get_label_filed('employee_id')">ID</td>
+                                        <td class="value" tal:content="form_data/employee_id|nothing"></td>
+                                    </tr>
+                                    <tr tal:condition="python: view.get_ConfugCampos('nickname')">
+                                        <td class="field" tal:content="python: view.get_label_filed('nickname')">Apelido</td>
+                                        <td class="value" tal:content="form_data/nickname|nothing"></td>
+                                    </tr>
+                                    <tr tal:condition="python: view.get_ConfugCampos('pronunciation_name')">
+                                        <td class="field" tal:content="python: view.get_label_filed('pronunciation_name')">Pron&uacute;ncia do nome</td>
+                                        <td class="value" tal:content="form_data/pronunciation_name|nothing"></td>
+                                    </tr>
+                                    <tr tal:condition="python: view.get_ConfugCampos('date_birth')">
+                                        <td class="field" tal:content="python: view.get_label_filed('date_birth')">Data de anivers&aacute;rio</td>
+                                        <td class="value" tal:condition="form_data/date_birth|nothing"
+                                                          tal:content="python: form_data.date_birth.strftime('%d/%m')"></td>
+                                        <td class="value" tal:condition="not: form_data/date_birth|nothing"></td>                                                 
+                                    </tr>
+                                    <tr tal:condition="python: view.get_ConfugCampos('email')">
+                                        <td class="field" tal:content="python: view.get_label_filed('email')">E-mail</td>
+                                        <td class="value" tal:content="form_data/email|nothing"></td>
+                                    </tr>
+                                </table>
+                            <a id="send-mail" tal:condition="form_data/email|python: view.get_ConfugCampos('email')" 
+                                              tal:attributes="href string:mailto:${form_data/email|nothing}">Enviar e-mail</a>
+                        </div>
+                    </div>
+                    <!-- end: Personal Information -->
+                </div>
+               
+                <div id="perfil" class="userpage"> <!-- display-none"--> 
+                    <!-- start: Others Information -->
+                    <!-- Contact -->
+                    <div id="grupo" tal:condition="view/valida_contato|nothing">
+                        <div class="area"><span >Contato</span></div>
+                        <img class="type-info" tal:attributes="src string:${view/static}/images/user_contact.png" />
+                        <table>
+                            <tr tal:condition="python: view.get_ConfugCampos('phone_number')">
+                                <td class="field" tal:content="python: view.get_label_filed('phone_number')">Telefone</td>
+                                <td class="value" tal:content="form_data/phone_number|nothing"></td>
+                            </tr>
+                            <tr tal:condition="python: view.get_ConfugCampos('cell_phone')">
+                                <td class="field" tal:content="python: view.get_label_filed('cell_phone')">Celular</td>
+                                <td class="value" tal:content="form_data/cell_phone|nothing"></td>
+                            </tr>
+                            <tr tal:condition="python: view.get_ConfugCampos('location')">
+                                <td class="field" tal:content="python: view.get_label_filed('location')">Localiza&ccedil;&atilde;o</td>
+                                <td class="value" tal:content="form_data/location|nothing"></td>
+                            </tr>
+                            <tr tal:condition="python: view.get_ConfugCampos('postal_address')">
+                                <td class="field" tal:content="python: view.get_label_filed('postal_address')">Endere&ccedil;o</td>
+                                <td class="value" tal:content="form_data/postal_address|nothing"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <!-- Corporative -->
+                    <div id="grupo" tal:condition="view/valida_corporativo|nothing" >
+                        <div class="area"><span>Corporativo</span></div>
+                        <img class="type-info" tal:attributes="src string:${view/static}/images/user_business.png" />
+                        <table>
+                            <tr tal:condition="python: view.get_ConfugCampos('enterprise')">
+                                <td class="field" tal:content="python: view.get_label_filed('enterprise')">Empresa</td>
+                                <td class="value" tal:content="form_data/enterprise|nothing"></td>
+                            </tr>
+                            <tr tal:condition="python: view.get_ConfugCampos('registration')">
+                                <td class="field" tal:content="python: view.get_label_filed('registration')">Registro</td>
+                                <td class="value" tal:content="form_data/registration|nothing"></td>
+                            </tr>
+                            <tr tal:condition="python: view.get_ConfugCampos('position')">
+                                <td class="field" tal:content="python: view.get_label_filed('position')">Cargo</td>
+                                <td class="value" tal:content="form_data/position|nothing"></td>
+                            </tr>
+                            <tr tal:condition="python: view.get_ConfugCampos('admission_date')">
+                                <td class="field" tal:content="python: view.get_label_filed('admission_date')">Data de Admiss&atilde;o</td>
+                                <td class="value" tal:condition="form_data/admission_date|nothing"  
+                                                  tal:content="python:form_data.admission_date.strftime('%d/%m/%Y')"></td>
+                                <td class="value" tal:condition="not: form_data/admission_date|nothing"></td>  
+                            </tr>
+                            <tr tal:condition="python: view.get_ConfugCampos('cost_center')">
+                                <td class="field" tal:content="python: view.get_label_filed('cost_center')">Centro de custo</td>
+                                <td class="value" tal:content="form_data/cost_center|nothing"></td>
+                            </tr>
+                            <tr tal:condition="python: view.get_ConfugCampos('profit_centre')">
+                                <td class="field" tal:content="python: view.get_label_filed('profit_centre')">Centro de lucro</td>
+                                <td class="value" tal:content="form_data/profit_centre|nothing"></td>
+                            </tr>
+                            <tr tal:condition="python: view.get_ConfugCampos('special_roles')">
+                                <td class="field" tal:content="python: view.get_label_filed('special_roles')">Funções Especiais</td>
+                                <td class="value" tal:content="form_data/special_roles|nothing"></td>
+                            </tr>
+                            <tr tal:condition="python: view.get_ConfugCampos('organisational_unit')">
+                                <td class="field" tal:content="python: view.get_label_filed('organisational_unit')">Unidade organizacional</td>
+                                <td class="value" tal:content="form_data/organisational_unit|nothing"></td>
+                            </tr>
+                            <tr tal:condition="python: view.get_ConfugCampos('delegations')">
+                                <td class="field" tal:content="python: view.get_label_filed('delegations')">Delega&ccedil;&otilde;es</td>
+                                <td class="value" tal:content="form_data/delegations|nothing"></td>
+                            </tr>   
+                            <tr tal:condition="python: view.get_ConfugCampos('reports_to')">
+                                <td class="field" tal:content="python: view.get_label_filed('reports_to')">Reporta-se a</td>
+                                <td class="value" tal:content="form_data/reports_to|nothing"></td>
+                            </tr>
+                        </table>
+                    </div>  
+                    
+                    <!-- Others -->
+                    <div id="grupo" tal:condition="view/valida_others|nothing">
+                        <div  class="area"><span>Outras Informa&ccedil;&otilde;es</span></div>
+                        <img class="type-info" tal:attributes="src string:${view/static}/images/user_others.png" />
+                        <table>
+                            <tr tal:condition="python: view.get_ConfugCampos('committess')">
+                                <td class="field" tal:content="python: view.get_label_filed('committess')">Comissão</td>
+                                <td class="value" tal:content="form_data/committess|nothing"></td>
+                            </tr>
+                            <tr tal:condition="python: view.get_ConfugCampos('projects')">
+                                <td class="field" tal:content="python: view.get_label_filed('projects')">Projetos</td>
+                                <td class="value" tal:content="form_data/projects|nothing"></td>
+                            </tr>           
+                            <tr tal:condition="python: view.get_ConfugCampos('personal_information')">
+                                <td class="field" tal:content="python: view.get_label_filed('personal_information')">Informa&ccedil;&atilde;o pessoal</td>
+                                <td class="value" tal:content="form_data/personal_information|nothing"></td>
+                            </tr>
+                            <tr tal:condition="python: view.get_ConfugCampos('skills_expertise')">
+                                <td class="field" tal:content="python: view.get_label_filed('skills_expertise')">Habilidades</td>
+                                <td class="value"><!-- tal:content="form_data/skills_expertise|nothing"-->
+                                    <tal:def define="cursos python: view.get_Courses(user)">
+                                        <tal:cont condition="cursos">
+                                            <tal:rep repeat="curso cursos">
+                                                <span tal:content="python:view.getCouses_byID(curso.vin_myvindula_courses_id).title">Departamento</span> <br />
+                                            </tal:rep>
+                                        </tal:cont>
+                                    </tal:def>
+                                </td>
+                            </tr>                   
+                            <tr tal:condition="python: view.get_ConfugCampos('languages')" >
+                                <td class="field" tal:content="python: view.get_label_filed('languages')">Idiomas</td>
+                                <td class="value"><!--tal:content="form_data/languages|nothing"-->
+                                    <tal:def define="languages python: view.get_Languages(user)">
+                                        <tal:cont condition="languages">
+                                            <tal:rep repeat="language languages">
+                                                <span tal:content="python:view.getLanguages_byID(language.vin_myvindula_languages_id).title">Departamento</span> <br />
+                                            </tal:rep>
+                                        </tal:cont>
+                                    </tal:def>
+                                </td>
+                            </tr>       
+                            <tr tal:condition="python: view.get_ConfugCampos('availability')" >
+                                <td class="field" tal:content="python: view.get_label_filed('availability')">Disponibilidade</td>
+                                <td class="value" tal:content="form_data/availability|nothing"></td>
+                            </tr>               
+                            <tr tal:condition="python: view.get_ConfugCampos('papers_published')">
+                                <td class="field" tal:content="python: view.get_label_filed('papers_published')">Artigos publicados</td>
+                                <td class="value" tal:content="form_data/papers_published|nothing"></td>
+                            </tr>   
+                            <tr tal:condition="python: view.get_ConfugCampos('teaching_research')">
+                                <td class="field" tal:content="python: view.get_label_filed('teaching_research')">CPF</td>
+                                <td class="value" tal:content="form_data/teaching_research|nothing"></td>
+                            </tr>                   
+                            <tr tal:condition="python: view.get_ConfugCampos('resume')">
+                                <td class="field" tal:content="python: view.get_label_filed('resume')">Resumo</td>
+                                <td class="value" tal:content="form_data/resume|nothing"></td>
+                            </tr>   
+                            <tr tal:condition="python: view.get_ConfugCampos('blogs')">
+                                <td class="field" tal:content="python: view.get_label_filed('blogs')">Blogs</td>
+                                <td class="value" tal:content="form_data/blogs|nothing"></td>
+                            </tr>               
+                            <tr tal:condition="python: view.get_ConfugCampos('customised_message')">
+                                <td class="field" tal:content="python: view.get_label_filed('customised_message')">Mensagem personalizada</td>
+                                <td class="value" tal:content="form_data/customised_message|nothing"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <!-- end: Others Information -->
+                </div>				    
+				    
 			</div>
 	    </div>
 	</meta:macro>    

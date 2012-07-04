@@ -9,8 +9,6 @@ from vindula.myvindula.user import BaseFunc, ModelsDepartment, ModelsFuncDetails
                                    ModelsMyvindulaFuncdetailCouses,ModelsMyvindulaCourses,\
                                    ModelsMyvindulaFuncdetailLanguages, ModelsMyvindulaLanguages,\
                                    ModelsConfgMyvindula
-
-
                
 class SchemaFunc(BaseFunc):
     def to_utf8(value):
@@ -76,12 +74,8 @@ class SchemaFunc(BaseFunc):
         
         conf = {}
         for item in campos.keys():
-            dado = ModelsConfgMyvindula().getConfig_edit(item)
-            if dado:
-                conf[item] = dado
-            else:
-                conf[item] = True
-        
+            try: conf[item] = ModelsConfgMyvindula().getConfig_edit(item)
+            except:conf[item] = True
         
         # divisao dos dicionarios "errors" e "convertidos"
         form_data = {

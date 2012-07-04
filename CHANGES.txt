@@ -162,3 +162,8 @@ Changelog
 ------------------------
 - Adicionado opção de restrição das views do myvindula para usuarios anonimos
 
+1.1.29 - 2012-07-04
+-----------------------
+- Correção da view de edição dos dados do myvindula pelo usuario
+- Correção na view de visualização do perfil do usuario
+
