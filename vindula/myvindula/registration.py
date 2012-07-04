@@ -166,7 +166,8 @@ class SchemaFunc(BaseFunc):
 #                            data['photograph'] = result.photograph
                         
                         for campo in campos.keys():
-                            value = data.get(campo, None)
+                            try: value = unicode(data.get(campo,''),'utf-8')
+                            except: value = data.get(campo,u'')
                             setattr(result, campo, value)
 
                     else:

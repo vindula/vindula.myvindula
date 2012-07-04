@@ -304,6 +304,10 @@ class MyVindulaPrefsView(grok.View, BaseFunc):
         
         return checa         
     
+    def get_ConfugCampos(self, campo):
+        configuracao= ModelsConfgMyvindula().getConfig_edit(campo)
+        return configuracao
+    
     def update(self):
         # disable Plone's editable border
         self.request.set('disable_border', True)

@@ -52,10 +52,10 @@
 							<!-- ID da user--> 
 							
 							<input id="user" type="hidden" value="" name="user" tal:condition="manage" tal:attributes="value request/user|nothing">
-		
+		                      
 							<!-- Select Departamento --> 
 							<div class="field" tal:attributes="class python: view.field_class(errors, 'vin_myvindula_department')"
-											   tal:condition="python: view.checaEstado(config_myvindula,'vin_myvindula_department') or manage">
+											   tal:condition="python: view.get_ConfugCampos('vin_myvindula_department') or manage">
 								<label for="vin_myvindula_department">Departamentos</label>
 			                    <span class="fieldRequired" title="Obrigatório">(Obrigatório)</span>	
 			                    <div class="formHelp">Selecione o departamento do funcionário.</div>
@@ -77,7 +77,7 @@
 								</tal:cond>
 															
 							</div>
-							<tal:cont condition="python: not view.checaEstado(config_myvindula,'vin_myvindula_department') and not manage">
+							<tal:cont condition="python: not view.get_ConfugCampos('vin_myvindula_department') and not manage">
 								<tal:cont condition="python: form_values.get('vin_myvindula_department',None)">
 									<tal:rep repeat="value request/vin_myvindula_department | python: [ i.UID for i in form_values.get('vin_myvindula_department',[])] or []">
 										<input id="vin_myvindula_department" type="hidden" value="" name="vin_myvindula_department" tal:attributes="value value">									
