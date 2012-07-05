@@ -45,8 +45,13 @@
                     
                     <!-- start: Personal Information -->
                     <div id="personal">
-                        <div id="photo">    
-                            <img tal:attributes="src string: ${context/portal_url|nothing}/user-image?username=${user}">
+                        <div id="photo">
+                            <tal:cond condition="python: view.get_ConfugCampos('photograph')">    
+                                <img tal:attributes="src string: ${context/portal_url|nothing}/user-image?username=${user}">
+                            </tal:cond>
+                            <tal:cond condition="python:not view.get_ConfugCampos('photograph')">
+                                <div style="width: 150px;height: 150px;"></div>
+                            </tal:cond>
                         </div>
                     
                         <div id="data" tal:condition="view/valida_pessoal|nothing">

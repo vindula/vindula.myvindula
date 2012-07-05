@@ -167,3 +167,8 @@ Changelog
 - Correção da view de edição dos dados do myvindula pelo usuario
 - Correção na view de visualização do perfil do usuario
 
+
+1.1.30 - 2012-07-05
+-----------------------
+- Correção do perfil do usuario erro ao salvar campo de data bloquiado na edição
+- Opção de remover a foto do usuario na view de listauser

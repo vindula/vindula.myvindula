@@ -168,7 +168,13 @@ class SchemaFunc(BaseFunc):
                         for campo in campos.keys():
                             try: value = unicode(data.get(campo,''),'utf-8')
                             except: value = data.get(campo,u'')
-                            setattr(result, campo, value)
+                            
+                            try:
+                                setattr(result, campo, value)
+                            
+                            except TypeError:
+                                value = None
+                                setattr(result, campo, value)
 
                     else:
                         #adicionando...
