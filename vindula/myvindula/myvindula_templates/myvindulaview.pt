@@ -8,7 +8,11 @@
         
     </head>
 	<body>
-		 <div metal:fill-slot="content">         
+		 <div metal:fill-slot="content">
+		     <div metal:use-macro="context/global_statusmessage/macros/portal_message">
+                Status message
+             </div>
+		              
 	        <metal:use use-macro="context/@@myvindulapanel/macros/page"/>
 			<input type="hidden" id="portal_url" tal:attributes="value context/portal_url|nothing">    
 			<input type="hidden" id="context_url" tal:attributes="value string:${context/absolute_url|nothing}/myvindula">
@@ -55,8 +59,25 @@
 					                tal:attributes="action string:${context/absolute_url}/myvindula">
 									<input type="hidden" id="username" name="username" value="" tal:attributes="value member/getUserName|nothing">
 									
-									<textarea tal:condition="panelView/check_ativa_richtext|python:False" tal:attributes="title view_myvindula/getConfTyneMCE" 
-                         						style="width: 100%; height: 85px;" name="text" id="text" class='mce_editable'></textarea>	
+									<tal:cond condition="panelView/check_ativa_richtext|python:False">
+                                        <style type="text/css">
+                                            #content table .mceToolbar,#content table .mceListBox, #content table .mceSplitButton {margin-bottom: 0;}
+                                        </style>
+    
+                                        <input class="cke_config_url" type="hidden" tal:attributes="value string:${context/portal_url}/ckeditor_plone_config.js" 
+                                               name="cke_config_url">
+                                        <input class="cke_iswidget" type="hidden" value="True" name="cke_iswidget">
+                                        <div class="widget_settings">
+                                            <input class="cke_baseHref" type="hidden" name="cke_baseHref" tal:attributes="value string:${context/portal_url}" >
+                                            <input class="cke_height" type="hidden" value="100px" name="cke_height">
+                                        </div>
+
+                                        <textarea style="width: 100%; height: 85px;" name="text" id="text" class="ckeditor_plone"></textarea>
+                                            
+									</tal:cond>
+									
+									<!--textarea tal:condition="panelView/check_ativa_richtext|python:False" tal:attributes="title view_myvindula/getConfTyneMCE" 
+                         						style="width: 100%; height: 85px;" name="text" id="text" class='mce_editable'></textarea-->	
 									
 									<textarea tal:condition="not: panelView/check_ativa_richtext|python:True"  style="width: 100%; height: 81px;" name="text"></textarea>
 									

@@ -1,7 +1,7 @@
 $j = jQuery.noConflict();
 
 function confirmExcluirRecados(){
-        if (confirm('Tem certeja que deseja excluir este recado?')){
+        if (confirm('Tem certeza que deseja excluir este recado?')){
             return true;
         }else{
             return false;
@@ -24,6 +24,10 @@ $j(document).ready(function(){
 				ctx.parent().find('#new-comments').html(data);
 				ctx.parent().find('#new-comments').css('display','block');
 				ctx.css('display','none');
+				
+				var item = $j(data).find('.ckeditor_plone');
+				carregaEditor(item[0]);
+				
 				//$j('#spinner').addClass('display-none');
 			});
 	});
@@ -66,7 +70,7 @@ $j(document).ready(function(){
         var id_obj = parametros.find('#id_obj').val();
         var isPlone = parametros.find('#isPlone').val();
         var type = parametros.find('#type').val();
-        var text = parametros.find('#text').val();
+        var text = parametros.find('[name=text]').val();
         
         $j.get(url,{form_ajax:'True',
                     form_submitted_comment:'True',

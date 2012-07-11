@@ -13,17 +13,27 @@
                     <input type="hidden" name="type" id="type" tal:attributes="value context/portal_type|nothing">
                     <input type="hidden" name="isPlone:boolean" id="isPlone" value="True">
     
-                     <textarea tal:condition="panelView/check_ativa_richtext|python:False" 
-                               tal:attributes="title view_myvindula/getConfTyneMCE" 
-                               style="width: 100%; height: 85px;" name="text" id="text" class='mce_editable'></textarea>   
+                    <tal:cond condition="panelView/check_ativa_richtext|python:False">
+                        <input class="cke_config_url" type="hidden" name="cke_config_url" tal:attributes="value string:${context/portal_url}/ckeditor_plone_config.js">
+                        <input class="cke_iswidget" type="hidden" value="True" name="cke_iswidget">
+                        <div class="widget_settings">
+                            <input class="cke_baseHref" type="hidden" name="cke_baseHref" tal:attributes="value string:${context/portal_url}" >
+                            <input class="cke_height" type="hidden" value="100px" name="cke_height">
+                        </div>
+                
+                        <textarea style="width: 100%; height: 85px;" name="text"  tal:define="idRandom python:str(panelView.randomIdComents())" 
+                                                                                  tal:attributes="id string:text_coments_${idRandom}" 
+                                                                                  class="ckeditor_plone"></textarea>
+                            
+                    </tal:cond>                                
                                     
-                     <textarea tal:condition="not: panelView/check_ativa_richtext|python:True"  
+                    <textarea tal:condition="not: panelView/check_ativa_richtext|python:True"  
                                style="width: 100%; height: 81px;" name="text" id="text"></textarea>                                         
                                          
         
                     <div class="bt_comentar">
                         <input type="hidden" name="form.submitted-comment:boolean" value="True" />
-                        <input type="button" name="submit" value="Comentar" id="save-coment" class="context bt_comments" />
+                        <input type="button" name="submit" value="Comentar" id="save-coment" class="context bt_comments" onClick="CKupdate();" />
                     </div>
                 </form>
             

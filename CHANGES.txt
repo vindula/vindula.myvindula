@@ -172,3 +172,10 @@ Changelog
 -----------------------
 - Correção do perfil do usuario erro ao salvar campo de data bloquiado na edição
 - Opção de remover a foto do usuario na view de listauser
+
+
+1.1.31 - 2012-07-11
+-----------------------
+- Ajuste nos comentarios e pensamentos para utilizar o ckeditor como editor de richText
+
+

@@ -16,7 +16,7 @@
 				<div id="content-comment" tal:define="view_listhowareu python: context.restrictedTraverse('@@howareu-list-all');
         											  form_data view_listhowareu/load_dados|python:[]">
 	                           					     
-		        	<div id="interna" class="howareulist" tal:define="Batch python:modules['Products.CMFPlone'].Batch;
+		        	<div class="howareulist" tal:define="Batch python:modules['Products.CMFPlone'].Batch;
 												                       b_size python:10;
 												                       b_start python:0;
 												                       b_start request/b_start | b_start;">
