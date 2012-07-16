@@ -163,6 +163,7 @@ h2.h2title {
  */
 .userlist div.all-users {
 	display: table;
+	width: 100%;
 }
 
 .userlist div.navigation-users {
@@ -172,19 +173,32 @@ h2.h2title {
 .userlist div.user {
 	float:left;
 	text-align: center;
-	/*
-width: 106px;
-*/
+	/*width: 106px;*/
 	width: 21.428%;
-	height: 130px;
+	height: 135px;
 	margin: 12px;
 } 
 
 .userlist div.user img {
 	border: 1px solid #CCCCCC;
-	height: 90px;
+	/*height: 90px;*/
 	/*width: 60px;*/
 }
+
+.all-users .portlet-user-info{
+    clear: both;
+}
+
+.all-users .portlet-user-image,
+.all-users .portlet-user-info{
+    width: auto;
+    float: none;
+}
+
+
+
+
+
 
 /* 
  * * * MY VINDULA LIST Contents * * *
