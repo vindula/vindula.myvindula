@@ -13,8 +13,16 @@
 				<style type="text/css">
 					.geral_lista_comentarios .comments-cont .comments-cont{display:block !important;}
 				</style>
-				<div id="content-comment" tal:define="view_listhowareu python: context.restrictedTraverse('@@howareu-list-all');
+				<div id="content-comment" tal:define="isAnonymous context/portal_membership/isAnonymousUser|python:True;
+				                                      view_listhowareu python: context.restrictedTraverse('@@howareu-list-all');
         											  form_data view_listhowareu/load_dados|python:[]">
+	                           				
+                    <p style="text-align: right;" tal:condition="not:isAnonymous">
+                        <a tal:attributes="href string:${context/portal_url}/myvindula" class="new-howareu" 
+                           title="Postar Novo Pensamento" alt="Postar Novo Pensamento" >
+                            <input type="button" name="new-howareu" value="Pensar" class="bt_comments" />
+                        </a>
+                    </p>	                           					     
 	                           					     
 		        	<div class="howareulist" tal:define="Batch python:modules['Products.CMFPlone'].Batch;
 												                       b_size python:10;

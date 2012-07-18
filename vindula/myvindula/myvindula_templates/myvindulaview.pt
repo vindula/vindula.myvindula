@@ -54,9 +54,10 @@
 				        <fieldset id="fieldset-global-settings">
 				            <legend id="fieldsetlegend-global-settings">O que você está pensando agora?</legend>
 					        <div id="howareu" class="field">
-					        	<form action="#"
+					        	<form action="#" id="myvindula-form"
 					                method="post" enctype="multipart/form-data"
-					                tal:attributes="action string:${context/absolute_url}/myvindula">
+					                tal:attributes="action string:${context/absolute_url}/myvindula;
+					                                name python: not 'form.submitted' in request.keys() and 'myvindula-form' or ''">
 									<input type="hidden" id="username" name="username" value="" tal:attributes="value member/getUserName|nothing">
 									
 									<tal:cond condition="panelView/check_ativa_richtext|python:False">
@@ -88,8 +89,8 @@
 										<div class="row">
 											<div id="buttom">
 								        		  <input type="hidden" name="form.submitted:boolean" value="True" />
-								        		  <input type="submit" name="submit" value="Publicar" class="context bt_comments"
-								        		         i18n:attributes="value;" />
+								        		  <input type="submit" value="Publicar" class="context bt_comments"
+								        		         onClick="CKupdate();"  i18n:attributes="value;" />
 											 </div>
 									  		 <div style="display: none">
 									  			<input type="radio" name="visible_area" value="True" checked>Todos os Usuários<br />

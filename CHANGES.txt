@@ -182,3 +182,8 @@ Changelog
 -----------------------
 - Adição da checagem para ocultar a viewlet document_byline 
 
+
+1.1.33 - 2012-07-18
+-----------------------
+- Adição do botão para criar pensamentos pelo mural
+
