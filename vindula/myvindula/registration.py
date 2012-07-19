@@ -70,7 +70,7 @@ class SchemaFunc(BaseFunc):
             if user != 'acl_users':
                 user_id = user.username
             else:
-                user_id = unicode('acl_users','utf-8')
+                user_id = unicode(form.get('username','acl_users'),'utf-8')
         
         conf = {}
         for item in campos.keys():

@@ -14,6 +14,8 @@ from Products.CMFCore.utils import getToolByName
 
 from vindula.myvindula.user import BaseFunc, ModelsDepartment, ModelsFuncDetails
 
+from vindula.myvindula.utils import UtilMyvindula
+
 class IPortletRamais(IPortletDataProvider):
       
     """A portlet
@@ -31,6 +33,13 @@ class IPortletRamais(IPortletDataProvider):
                                   description=unicode("Quantidade limite de item mostrado no portlet.", 'utf-8'),
                                   required=True)
     
+    filtro_user = schema.Text(title=unicode("Bancos para busca de pessoas", 'utf-8'),
+                              description=unicode("Adicione os campos que serão possiveis realizar a busca dos usuários como Nome, Empresa, Matricula e outros. \
+                                                   Adicione um campo por linha, no formato [Label] | [Campo].", 'utf-8'),
+                              default=u'[Nome] | [name]\n[Ramal] | [phone_number]',
+                              required=True)
+    
+    
     filtro_departamento = schema.TextLine(title=unicode("Dados do campo departamento", 'utf-8'),
                                   description=unicode("Adicione qual dado do banco de dados será usado para filtro dos usuários,\
                                                       (Valor Padrão: 'departamentos')", 'utf-8'),
@@ -47,8 +56,8 @@ class IPortletRamais(IPortletDataProvider):
                                default=True,
                                )
    
-    principal_user = schema.TextLine(title=unicode("Destaque do aniversariante", 'utf-8'),
-                                     description=unicode("Adicione o campo com a informação princial do aniversariante como 'name' para Nome ou 'nickname' para\
+    principal_user = schema.TextLine(title=unicode("Destaque do usuário", 'utf-8'),
+                                     description=unicode("Adicione o campo com a informação princial do usuário como 'name' para Nome ou 'nickname' para\
                                                           Apelido ou outros.", 'utf-8'),
                                      default = u'name',
                                      required=True)
@@ -73,11 +82,12 @@ class Assignment(base.Assignment):
     implements(IPortletRamais)
 
     # TODO: Add keyword parameters for configurable parameters here
-    def __init__(self, title_portlet=u'', quantidade_portlet=u'', filtro_departamento=u'',\
+    def __init__(self, title_portlet=u'', quantidade_portlet=u'', filtro_departamento=u'',filtro_user=u'',\
                  show_picture=u'', details_user=u'',details_text=u'',principal_user='',show_anonymous=u''):
        self.title_portlet = title_portlet
        self.quantidade_portlet = quantidade_portlet
        self.filtro_departamento = filtro_departamento
+       self.filtro_user = filtro_user
        self.show_picture = show_picture
        self.show_anonymous = show_anonymous
        self.details_user = details_user
@@ -91,9 +101,7 @@ class Assignment(base.Assignment):
         """
         return "Portlet Busca de Pessoas"
     
-
-    
-class Renderer(base.Renderer):
+class Renderer(base.Renderer, UtilMyvindula):
     """Portlet renderer.
 
     This is registered in configure.zcml. The referenced page template is
@@ -137,6 +145,23 @@ class Renderer(base.Renderer):
         else:
             try: return obj.__getattribute__('name')
             except: return ''    
+    
+    def get_camposFilter(self):
+        L = []
+        if self.data.filtro_user: 
+            lines = self.data.filtro_user.splitlines()
+            
+            for line in lines:
+                D = {}
+                line = line.replace('[', '').replace(']', '').split(' | ')
+                try:
+                    D['label'] = line[0]
+                    D['content'] = line[1]
+                    L.append(D)
+                except:
+                    pass
+
+        return L
     
     def get_details_user(self, user):
         if self.data.details_user: 
@@ -193,36 +218,72 @@ class Renderer(base.Renderer):
         filtro_busca = self.context.restrictedTraverse('@@myvindula-conf-userpanel').check_filtro_busca_user()
         
         if 'SearchSubmit' in form.keys():
-            title = form.get('title','').strip()
-            departamento= form.get('departamento','')
-            ramal = form.get('ramal','').strip()
-            if title or departamento !='0' or ramal:
+            campos = self.get_camposFilter()
+            campo_departamento = self.filtro_departamento()
             
-                if type(title) != unicode:
-                    title = unicode(title, 'utf-8')
-                
+            form_values = []
+            for item in campos:
+                D = {}
+                name = item.get('content')
+                value = form.get(name).strip()
+                if type(value) != unicode:
+                    D[name] = unicode(value, 'utf-8')
+                else:
+                    D[name] = value
+                form_values.append(D)
+            
+            #title = form.get('title','').strip()
+            #ramal = form.get('ramal','').strip()
+            departamento = form.get('departamento','')
+            if campo_departamento != "departamentos":
+                D = {}
+                if type(departamento) != unicode:
+                    D[campo_departamento] = unicode(departamento, 'utf-8')
+                else:
+                    D[campo_departamento] = departamento
+                form_values.append(D)
+                departamento = None
+            else:
                 if type(departamento) != unicode:
                     departamento = unicode(departamento, 'utf-8')
-                    
-                if type(ramal) != unicode:
-                    ramal = unicode(ramal, 'utf-8')
-                    
-                result = ModelsFuncDetails().get_FuncBusca(title,'0',ramal,filtro_busca)
-                if result:
+            
+            
+            check_form = [i for i in form_values if i.values()]
+            if departamento or check_form:
+                #import pdb;pdb.set_trace()
+#                if type(title) != unicode:
+#                    title = unicode(title, 'utf-8')
+#                
+#                if type(departamento) != unicode:
+#                    departamento = unicode(departamento, 'utf-8')
+#                    
+#                if type(ramal) != unicode:
+#                    ramal = unicode(ramal, 'utf-8')
+                
+                self.form_dados = form_values
+                result = ModelsFuncDetails().get_FuncBusca_dinamic(departamento,form_values,filtro_busca)
+                result = self.rs_to_list(result)
+#                if result:
+#                    for item in form_values:
+#                        if item.values():
+#                            busca = "result.find("+item.keys()[0] + ".like( '%' + '%'.join('"+item.values()[0]+"'.split(' ')) + '%'))"
+#                            result = eval(busca)
+#                    if departamento != '0' and self.data.filtro_departamento != 'departamentos':
+#                        busca = "result.find("+self.data.filtro_departamento + "=u'" + departamento+"')"
+#                        data = eval(busca)
+#                        if data.count() != 0:
+#                            result = data
+#                        else:
+#                            result = None
+#                    elif self.data.filtro_departamento == 'departamentos':
+#                        data = ModelsFuncDetails().get_FuncBusca(title,departamento,ramal,filtro_busca)
+#                        if data:
+#                            result = data
+#                        else:
+#                            result = None
 
-                    if departamento != '0' and self.data.filtro_departamento != 'departamentos':
-                        busca = "result.find("+self.data.filtro_departamento + "=u'" + departamento+"')"
-                        data = eval(busca)
-                        if data.count() != 0:
-                            result = data
-                        else:
-                            result = None
-                    elif self.data.filtro_departamento == 'departamentos':
-                        data = ModelsFuncDetails().get_FuncBusca(title,departamento,ramal,filtro_busca)
-                        if data:
-                            result = data
-                        else:
-                            result = None
+
+
         return result
     
     

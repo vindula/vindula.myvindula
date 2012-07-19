@@ -182,3 +182,8 @@ Changelog
 -----------------------
 - Adição da checagem para ocultar a viewlet document_byline 
 
+1.1.33 - 2012-07-19
+-----------------------
+- Adição do mecanismo de alterar os campos do portlet ramais, deixando as buscas mais dinamicas  
+
+

@@ -162,6 +162,7 @@ h2.h2title {
  * * * MY VINDULA LIST ALL VIEW * * *
  */
 .userlist div.all-users {
+    width:100%;
 	display: table;
 }
 

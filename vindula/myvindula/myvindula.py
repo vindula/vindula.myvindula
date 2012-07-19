@@ -534,41 +534,77 @@ class MyVindulalistAll(grok.View, BaseFunc):
         config_muit_user = self.context.restrictedTraverse('@@myvindula-conf-userpanel').config_muit_user()
         filtro_busca = self.context.restrictedTraverse('@@myvindula-conf-userpanel').check_filtro_busca_user()
         
-        if 'title' in form.keys() or 'SearchSubmit' in form.keys():
+        if 'SearchSubmit' in form.keys():
             title = form.get('title','').strip()
-            departamento= form.get('departamento','0')
-            ramal = form.get('ramal','').strip()
-            filtro = form.get('filtro','departamentos').strip()
+            campos = eval(form.get('campos',"[{'name':title}]")) 
+            campo_departamento = form.get('filtro','departamentos').strip()
+            departamento = form.get('departamento','')
             
-            if title or departamento !='0' or ramal:
+            form_values = []
+            for item in campos:
+                D = {}
+                name = item.keys()[0]
+                value = item.values()[0].strip()
+                if type(value) != unicode:
+                    D[name] = unicode(value, 'utf-8')
+                else:
+                    D[name] = value                    
+                    
+                form_values.append(D)
             
-                if type(title) != unicode:
-                    title = unicode(title, 'utf-8')
-                
+            if campo_departamento != "departamentos":
+                D = {}
+                if type(departamento) != unicode:
+                    D[campo_departamento] = unicode(departamento, 'utf-8')
+                else:
+                    D[campo_departamento] = departamento
+                form_values.append(D)
+                departamento = None
+            else:
                 if type(departamento) != unicode:
                     departamento = unicode(departamento, 'utf-8')
-                    
-                if type(ramal) != unicode:
-                    ramal = unicode(ramal, 'utf-8')
-
-                result = ModelsFuncDetails().get_FuncBusca(title,'0',ramal,filtro_busca)
-                if result:
-
-                    if departamento != '0' and filtro != 'departamentos':
-                        busca = "result.find("+ filtro + "=u'" + departamento+"')"
-                        data = eval(busca)
-                        if data.count() != 0:
-                            result = self.rs_to_list(data)
-                        else:
-                            result = []
-                    elif departamento == 'departamentos':
-                        data = ModelsFuncDetails().get_FuncBusca(title,departamento,ramal,filtro_busca)
-                        if data:
-                            result = self.rs_to_list(data)
-                        else:
-                            result = []
-                    else:
-                        result = self.rs_to_list(result)
+            
+            
+            check_form = [i for i in form_values if i.values()]
+            if departamento or check_form:
+                result = ModelsFuncDetails().get_FuncBusca_dinamic(departamento,form_values,filtro_busca)
+                result = self.rs_to_list(result)
+        
+#        if 'SearchSubmit' in form.keys():
+#            title = form.get('title','').strip()
+#            departamento= form.get('departamento','0')
+#            ramal = form.get('ramal','').strip()
+#            filtro = form.get('filtro','departamentos').strip()
+#            
+#            if title or departamento !='0' or ramal:
+#            
+#                if type(title) != unicode:
+#                    title = unicode(title, 'utf-8')
+#                
+#                if type(departamento) != unicode:
+#                    departamento = unicode(departamento, 'utf-8')
+#                    
+#                if type(ramal) != unicode:
+#                    ramal = unicode(ramal, 'utf-8')
+#
+#                result = ModelsFuncDetails().get_FuncBusca(title,'0',ramal,filtro_busca)
+#                if result:
+#
+#                    if departamento != '0' and filtro != 'departamentos':
+#                        busca = "result.find("+ filtro + "=u'" + departamento+"')"
+#                        data = eval(busca)
+#                        if data.count() != 0:
+#                            result = self.rs_to_list(data)
+#                        else:
+#                            result = []
+#                    elif departamento == 'departamentos':
+#                        data = ModelsFuncDetails().get_FuncBusca(title,departamento,ramal,filtro_busca)
+#                        if data:
+#                            result = self.rs_to_list(data)
+#                        else:
+#                            result = []
+#                    else:
+#                        result = self.rs_to_list(result)
             
         elif not config_muit_user or 'all' in form.keys():
             result_set = ModelsFuncDetails().get_FuncBusca(unicode('', 'utf-8'),unicode('0','utf-8'),unicode('', 'utf-8'),filtro_busca)

@@ -18,7 +18,7 @@ from vindula.myvindula import MessageFactory as _
 
 #Imports regarding the connection of the database 'strom'
 from storm.locals import *
-from storm.expr import Desc
+from storm.expr import Desc, Select
 from zope.component import getUtility
 from storm.zope.interfaces import IZStorm
 from storm.locals import Store
@@ -159,7 +159,7 @@ class ModelsFuncDetails(Storm, BaseStore):
 
 
         
-    def get_FuncBusca(self,name,department_id,phone,filtro=False):
+    def get_FuncBusca(self,name='',department_id=u'0',phone='',filtro=False):
         if department_id == u'0' and name == '' and phone == '':
             data = self.store.find(ModelsFuncDetails).order_by(ModelsFuncDetails.name)
          
@@ -182,7 +182,47 @@ class ModelsFuncDetails(Storm, BaseStore):
         if data.count() == 0:
             return None
         else:
-            return data   
+            return data
+        
+        
+    def get_FuncBusca_dinamic(self,department_id='',form_campos=[],filtro=False):
+        origin = [ModelsFuncDetails, Join(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==ModelsFuncDetails.username)]
+        busca = "self.store.using(*origin).find(ModelsFuncDetails,"
+        for item in form_campos:
+            if item.values()[0]:
+                busca += "ModelsFuncDetails."+item.keys()[0]+".like( '%' + '%'.join(u'"+item.values()[0]+"'.split(' ')) + '%' ),"
+        
+        if department_id:
+            busca += "ModelsDepartment.uid_plone==department_id,"
+            
+        busca += ").order_by(ModelsFuncDetails.name)"
+        data = eval(busca)
+        
+#        
+#        if department_id == u'0' and name == '' and phone == '':
+#            data = self.store.find(ModelsFuncDetails).order_by(ModelsFuncDetails.name)
+#         
+#        elif department_id != u'0':
+#            origin = [ModelsFuncDetails, Join(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==ModelsFuncDetails.username)]
+#            data = self.store.using(*origin).find(ModelsFuncDetails,  ModelsFuncDetails.name.like( '%' + '%'.join(name.split(' ')) + '%' ),
+#                                                                      ModelsFuncDetails.phone_number.like("%" + phone + "%"),                                                                      
+#                                                                      ModelsDepartment.uid_plone==department_id).order_by(ModelsFuncDetails.name)
+#        
+#        elif department_id == u'0' and name != '':
+#            data = self.store.find(ModelsFuncDetails, ModelsFuncDetails.name.like( '%' + '%'.join(name.split(' ')) + '%' )).order_by(ModelsFuncDetails.name)
+#
+#        else:
+#            data = self.store.find(ModelsFuncDetails, ModelsFuncDetails.name.like( '%' + '%'.join(name.split(' ')) + '%' ),
+#                                                      ModelsFuncDetails.phone_number.like("%" + phone + "%")).order_by(ModelsFuncDetails.name)
+                                                      
+        if filtro:
+            data = data.find(ModelsFuncDetails.phone_number != None)
+        
+        if data.count() == 0:
+            return None
+        else:
+            return data.group_by(ModelsFuncDetails.username)        
+           
 
     
     def get_FuncBirthdays(self, date_start, date_end, filtro=''):
