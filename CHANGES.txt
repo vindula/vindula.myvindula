@@ -182,8 +182,12 @@ Changelog
 -----------------------
 - Adição da checagem para ocultar a viewlet document_byline 
 
-1.1.33 - 2012-07-26
+1.1.33 - 2012-07-16
+------------------------
+- Integração da imagem do usuário com o gravatar
+- Criação de macro para organização das informações do usuário
+
+1.1.34 - 2012-07-26
 -----------------------
 - Removida a exibicao de miniaturas avancadas
 - Modificada a miniatura padrao do plone para que aceite noticias e clientes na listagem
-

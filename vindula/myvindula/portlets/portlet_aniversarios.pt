@@ -8,48 +8,17 @@
     <dd class="portletItem" >
 		<div id="busca-portlet" class="portlet-birthday" tal:define="quant view/get_quantidade_portlet;
 																	 results view/birthdaysToday;">
-			<tal:results tal:repeat="obj python:results[:int(quant)]">
-				<div id="boxPortlet" tal:define="i repeat/obj/end;
-												 details python: view.get_details_user(obj) or None;"
-						tal:attributes="class python:view.getEnd(i);">
-					<div class="row">
-						<tal:cond condition="view/show_picture">
-							<div class="portlet-user-image">
-								<a tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${obj/username|nothing}">
-									<img src="defaultUser.png"
-										  alt="" border="0"
-										    width="50"
-											tal:attributes="src string:${here/portal_url}/user-image?username=${obj/username|nothing};
-											alt obj/name|nothing;
-											title obj/name|nothing;" />
-								</a>
-							</div>
-						</tal:cond>
-						<div class="portlet-user-info" tal:attributes="class python: not view.show_picture and 'portlet-user-info-larg' or 'portlet-user-info'">
-							<h4>
-								<a tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${obj/username|nothing}"
-									tal:content="python: view.get_principal_campo(obj)">func</a>
-							</h4>
-								<!--a href="" tal:attributes="href python: obj.getObject().absolute_url()" tal:content="obj/Title">Employee</a><br /-->
-								<p class="quebraLinha">
-									<!--tal:def define="user obj/username;
-											        departamentos python: view.get_department(user)">
-										<tal:rep repeat="departamento departamentos">
-												<span tal:content="departamento/Title">Departamento</span>
-												<span tal:define="cont repeat/departamento/length;
-																  last repeat/departamento/end"
-																  tal:condition="python: cont > 1 and not last"> | </span>
-										</tal:rep>
-									</tal:def>
-									<span tal:content="obj/date_birth|nothing"></span><br /-->
-									<tal:rep repeat="detail details" condition="details">
-										<span tal:condition="python: detail['label'] and detail['content']" tal:content="string: ${detail/label}: "> </span>
-										<span tal:condition="detail/content" tal:content="detail/content"> </span>
-										<br tal:condition="python: detail['label'] or detail['content']">
-									</tal:rep>
-								</p>
-						</div>
-					</div>
+			<tal:results tal:repeat="item python:results[:int(quant)]">
+			    
+				<div id="boxPortlet" tal:define="i repeat/item/end;"
+						             tal:attributes="class python:view.getEnd(i);">
+                        <!-- Dados para utilização da macro -->						             
+                        <tal:def define="size_img string:50px;
+                                         principal_name python: view.get_principal_campo(item);
+                                         details python: view.get_details_user(item) or [];">
+                            <div metal:use-macro="context/myvindula-imageprofiles-macro/macros/userprofiles" />       
+                        </tal:def>						             
+					
 				</div>
 			</tal:results>
 			<div class="titulo_info_boxTipo2 aling-right">
