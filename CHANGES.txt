@@ -191,3 +191,6 @@ Changelog
 -----------------------
 - Removida a exibicao de miniaturas avancadas
 - Modificada a miniatura padrao do plone para que aceite noticias e clientes na listagem
+
+1.1.35 - 2012-07-26
+- Correção do css na template de impressão para visualização do Holerite devido a quebra no Internet Explorer 7

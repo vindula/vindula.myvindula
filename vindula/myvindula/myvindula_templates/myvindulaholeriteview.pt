@@ -11,9 +11,7 @@
 	</head>
     <body>
 		<metal:block fill-slot="top_slot">
-			 <tal:dummy tal:define="dummy python:request.set('disable_border',1);
-                                   disable_column_one python:request.set('disable_plone.leftcolumn',1);
-                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+			<tal:dummy tal:define="dummy python:request.set('disable_border',1)" />
 		</metal:block>
 
 		 <div metal:fill-slot="content">         
@@ -232,7 +230,7 @@
 							</div>
 							<br />
 							<div style="width:100%; margin-top: 10px;">
-								<input type="button" value="Imprimir" tal:attributes="onclick string:window.open('${context/portal_url}/imprimir-holerite?id=${item/id}', 'popupwindow', 'scrollbars=yes,width=670,height=600');;return true;;"
+								<input type="button" value="Imprimir" tal:attributes="onclick string:window.open('${context/portal_url}/imprimir-holerite?id=${item/id}', 'popupwindow', 'scrollbars=yes,width=680,height=600');;return true;;"
 									 />
 							</div>	
 						</div>
