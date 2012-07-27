@@ -36,8 +36,7 @@
 								<option value="">Competência</option>
 								<tal:rep repeat="opt select">
 									<option tal:attributes="value opt/id|nothing" 
-											tal:define="tmp opt/competencia|nothing"
-											tal:content="python:view.converte_competencia(tmp)" />
+											tal:content="opt/competencia|nothing" />
 								</tal:rep>
 				
 							</select>
@@ -48,7 +47,7 @@
 						<div id="spinner" class="display-none" style="text-align:center;">
 							<img src="" alt="spinner" align="center" tal:attributes="src string:${view/static}/ajaxLoader.gif" />
 						</div>										
-						<div id="holerite-cont">
+						<div id="holerite-cont" style="width: 660px;">
 							<div id="holerite" style="width: 660px;">
 								<div class="border" style="float: none;">
 									<div class="row title even">
