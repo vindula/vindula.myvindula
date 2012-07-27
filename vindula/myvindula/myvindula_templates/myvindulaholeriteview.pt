@@ -80,11 +80,11 @@
 											<span tal:content="item/cnpj_empresa|nothing" />		
 										</div>
 										<div class="cell width-3 position-11">
-											<span>Competência</span>
+											<span>Competência </span>
 										</div>
 										<div class="cell width-2 position-14">
-											<span tal:define="tmp item/competencia|nothing" 
-											      tal:content="python:view.converte_competencia(tmp)" />
+											<span tal:define="competencia item/competencia|nothing" 
+											      tal:content="competencia" />
 										</div>
 									</div>
 								</div>

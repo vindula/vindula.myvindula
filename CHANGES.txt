@@ -194,3 +194,7 @@ Changelog
 
 1.1.35 - 2012-07-26
 - Correção do css na template de impressão para visualização do Holerite devido a quebra no Internet Explorer 7
+
+1.1.36 - 2012-07-27
+- Correção na inversão do campo Competencia que antigamente vinha ANO/MES para MES/ANO
+- Ajuste de css 
