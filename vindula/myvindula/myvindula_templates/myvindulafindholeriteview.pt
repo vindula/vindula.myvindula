@@ -35,7 +35,7 @@
 				</div>
 				<div class="cell width-2 position-14">
 					<span tal:define="comp item/competencia|nothing"
-					tal:content="python:view.converte_competencia(comp)" />
+					tal:content="comp" />
 				</div>
 			</div>
 		</div>
