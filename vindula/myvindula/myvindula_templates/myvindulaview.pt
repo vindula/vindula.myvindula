@@ -5,7 +5,6 @@
                                    disable_column_one python:request.set('disable_plone.leftcolumn',1);
                                    disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
         </metal:block>
-        
     </head>
 	<body>
 		 <div metal:fill-slot="content">
@@ -17,16 +16,16 @@
 			<input type="hidden" id="portal_url" tal:attributes="value context/portal_url|nothing">    
 			<input type="hidden" id="context_url" tal:attributes="value string:${context/absolute_url|nothing}/myvindula">
 			<div id="content" tal:define="view python:context.restrictedTraverse('@@myvindula');
-							                             memberinfo context/portal_membership/getMemberInfo;
-														 member context/@@plone_portal_state/member;
-							                             name python:memberinfo['fullname'] or member.getUserName() or member.getUserName();
-							                             portrait python:context.portal_membership.getPersonalPortrait(member.getId());
-														 homeFolder python: context.portal_membership.getHomeFolder();
-														 prefs_user python: view.get_prefs_user(member.getUserName());
-														 departamentos python: view.get_department();
-														 view_myvindula python:context.restrictedTraverse('@@myvindula');
-														 panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel');
-														 logado python:str(member)!='Anonymous User';">	
+                                         memberinfo context/portal_membership/getMemberInfo;
+                                         member context/@@plone_portal_state/member;
+                                         name python:memberinfo['fullname'] or member.getUserName() or member.getUserName();
+                                         portrait python:context.portal_membership.getPersonalPortrait(member.getId());
+                                         homeFolder python: context.portal_membership.getHomeFolder();
+                                         prefs_user python: view.get_prefs_user(member.getUserName());
+                                         departamentos python: view.get_department();
+                                         view_myvindula python:context.restrictedTraverse('@@myvindula');
+                                         panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel');
+                                         logado python:str(member)!='Anonymous User';">	
 			
 				<div class="titulo_info cont_superior">
 					<h2 class="documentFirstHeading">Ol&aacute; <span tal:replace="name" />!</h2>	
@@ -34,12 +33,13 @@
 			    
 			    <br />
 			    <div id="userimage">
-			        <img src="defaultUser.png"
-			             alt=""
-			             border="0"
-			             tal:attributes="src string: ${context/portal_url|nothing}/user-image?username=${prefs_user/username|nothing};
-						 				 alt prefs_user/name|nothing;
-										 title prefs_user/name|nothing;" />
+			        <!-- Dados para utilização da macro -->                                  
+                    <tal:def define="size_img string:150px;
+                                     user_profiles prefs_user/username|nothing;
+                                     item prefs_user;">
+                        <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>       
+                    </tal:def>
+
 			        <br /><br />
 					
 			    </div>
@@ -50,6 +50,7 @@
         			</dl>
 			    </tal:condition>
 			    <tal:condition condition="view/checkHomeFolder">
+			        <div class="visualClear"></div>
 			    	<div class="lista_comentarios">
 				        <fieldset id="fieldset-global-settings">
 				            <legend id="fieldsetlegend-global-settings">O que você está pensando agora?</legend>
@@ -91,10 +92,10 @@
 								        		  <input type="submit" name="submit" value="Publicar" class="context bt_comments"
 								        		         i18n:attributes="value;" />
 											 </div>
-									  		 <div style="display: none">
+									  		 <!--div style="display: none">
 									  			<input type="radio" name="visible_area" value="True" checked>Todos os Usuários<br />
 									  			<input type="radio" name="visible_area" value="False" >Somente do departamento:
-												<!-- Select Departamento --> 
+												<-- Select Departamento -> 
 											    <select name="departamento" tal:define="id_request request/departamento | prefs_user/vin_myvindula_department_id | python:''" >
 							                    	<option value="True">-- Selecione --</option>
 		                        					<tal:repeat repeat="departamento departamentos">
@@ -103,7 +104,7 @@
 															tal:attributes="value departamento/UID | nothing; selected python: str(id_request)==str(departamento.id) or default"></option>
 													</tal:repeat>
 		                    					</select>
-									  		</div>
+									  		</div-->
 										</div>
 					        		</div>
 					            </form>

@@ -11,9 +11,7 @@
 	</head>
     <body>
 		<metal:block fill-slot="top_slot">
-			 <tal:dummy tal:define="dummy python:request.set('disable_border',1);
-                                   disable_column_one python:request.set('disable_plone.leftcolumn',1);
-                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+			<tal:dummy tal:define="dummy python:request.set('disable_border',1)" />
 		</metal:block>
 
 		 <div metal:fill-slot="content">         
@@ -38,8 +36,7 @@
 								<option value="">Competência</option>
 								<tal:rep repeat="opt select">
 									<option tal:attributes="value opt/id|nothing" 
-											tal:define="tmp opt/competencia|nothing"
-											tal:content="python:view.converte_competencia(tmp)" />
+											tal:content="opt/competencia|nothing" />
 								</tal:rep>
 				
 							</select>
@@ -50,7 +47,7 @@
 						<div id="spinner" class="display-none" style="text-align:center;">
 							<img src="" alt="spinner" align="center" tal:attributes="src string:${view/static}/ajaxLoader.gif" />
 						</div>										
-						<div id="holerite-cont">
+						<div id="holerite-cont" style="width: 660px;">
 							<div id="holerite" style="width: 660px;">
 								<div class="border" style="float: none;">
 									<div class="row title even">
@@ -83,11 +80,11 @@
 											<span tal:content="item/cnpj_empresa|nothing" />		
 										</div>
 										<div class="cell width-3 position-11">
-											<span>Competência</span>
+											<span>Competência </span>
 										</div>
 										<div class="cell width-2 position-14">
-											<span tal:define="tmp item/competencia|nothing" 
-											      tal:content="python:view.converte_competencia(tmp)" />
+											<span tal:define="competencia item/competencia|nothing" 
+											      tal:content="competencia" />
 										</div>
 									</div>
 								</div>
@@ -232,7 +229,7 @@
 							</div>
 							<br />
 							<div style="width:100%; margin-top: 10px;">
-								<input type="button" value="Imprimir" tal:attributes="onclick string:window.open('${context/portal_url}/imprimir-holerite?id=${item/id}', 'popupwindow', 'scrollbars=yes,width=670,height=600');;return true;;"
+								<input type="button" value="Imprimir" tal:attributes="onclick string:window.open('${context/portal_url}/imprimir-holerite?id=${item/id}', 'popupwindow', 'scrollbars=yes,width=680,height=600');;return true;;"
 									 />
 							</div>	
 						</div>

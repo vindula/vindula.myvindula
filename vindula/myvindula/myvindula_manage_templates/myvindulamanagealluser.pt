@@ -3,9 +3,7 @@
 	  	<div metal:fill-slot="prefs_configlet_content">
 	  		
 			<h1>Gerenciamento de Usu&aacute;rios</h1>
-				<div id="content" tal:define="member python:context.portal_membership.getAuthenticatedMember();
-											  view_listuser python: context.restrictedTraverse('@@myvindulalistuser');
-											  view_listall python: context.restrictedTraverse('@@myvindulalistall');
+				<div id="content" tal:define="view_listall python: context.restrictedTraverse('@@myvindulalistall');
 		  									  form_data view/load_list | python:{};">
 	                           					     
 		        	<div id="interna" class="userlist" tal:define="Batch python:modules['Products.CMFPlone'].Batch;
@@ -39,30 +37,27 @@
 		        		</div>
 						<div class="visualClear"></div>
 						<div tal:condition="form_data" class="all-users">						
-			          		<div tal:define="batch python:Batch(form_data, b_size, int(b_start));" 
-									 class="user" 
-									 tal:repeat="item batch">
-					            
-								<a tal:attributes="href python: here.portal_url() + '/myvindulaprefs?user=' + view.encodeUser(item.username)">
-					              <img  tal:attributes="src string: ${context/portal_url|nothing}/user-image?username=${item/username|nothing}">
-					              <br />
-					              <span tal:content="item/name|nothing"></span>
-					            </a>
-								
-			          		</div>
+			          		<tal:def define="batch python:Batch(form_data, b_size, int(b_start));">
+					            <div class="user"  tal:repeat="item batch">
+                                    <!-- Dados para utilização da macro -->                                     
+                                    <tal:def define="size_img string:90px;
+                                                     principal_name python: view_listall.checaValor(item.name,item.username);
+                                                     details python: [];
+                                                     view_manage python:True">
+                                        <div metal:use-macro="context/myvindula-imageprofiles-macro/macros/userprofiles" />       
+                                    </tal:def>
+    								
+								</div>
+								<div class="visualClear"></div>
+								<div class="navigation-users">
+                                    <div metal:use-macro="here/batch_macros/macros/navigation"> </div>
+                                </div>
+                            </tal:def>
 						</div>
-						
-						<tal:cond tal:condition="form_data">
-							<div class="navigation-users" tal:define="batch python:Batch(form_data, b_size, int(b_start));">
-								<div metal:use-macro="here/batch_macros/macros/navigation" />
-							</div>
-						</tal:cond>
-						
 						<div tal:condition="not: form_data">
 							<br>
 							<h3 tal:content="view_listall/check_no_result">N&atilde;o h&aacute; resultados.</h3>
 						</div>
-						
 						
 						
 		        	</div>

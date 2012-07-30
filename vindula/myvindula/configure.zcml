@@ -40,7 +40,7 @@
     
    	<store
 	      name="myvindula"
-	      uri="mysql://root:root@localhost/myvindulaDB" />  
+	      uri="mysql://root:vindula@localhost/myvindulaDB" />  
       
 	  <!--mysql://usuario:senha@servidor/base_de_dados -->
 

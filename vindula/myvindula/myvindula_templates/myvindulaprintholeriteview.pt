@@ -89,7 +89,7 @@
 					</div>
 					<tal:def define="tmp item/id|nothing;
 									 descricoes python:view.get_descricao_holerite(tmp)">
-						<div class="row title even">
+						<div class="row title even" style="width: 660px;">
 							<div class="cell width-1 position-0">
 								<span>Cód.</span>
 							</div>
@@ -108,7 +108,7 @@
 						</div> 
 						<tal:rep repeat="descricao descricoes">
 							<div tal:define="even repeat/descricao/even|nothing" 
-								class="row" tal:attributes="class python:even and 'row' or 'row even'">
+								class="row" tal:attributes="class python:even and 'row' or 'row even'" style="width: 660px;">
 								<div class="cell width-1 position-0">
 									<span tal:content="descricao/codigo|nothing">Cód.</span>
 								</div>
@@ -127,8 +127,8 @@
 							</div> 
 						</tal:rep>
 					</tal:def>
-					<div class="row border">
-						<div class="cell width-10 position-0 title" >
+					<div class="row border" style="width: 660px;">
+						<div class="cell width-10 position-0 title">
 							<span>mensagem</span>
 							<div class="row">
 								<div class="cell width-13 position-0" >
@@ -174,7 +174,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="row title even">
+					<div class="row title even" style="width: 660px;">
 						<div class="cell width-3 position-0">
 							<span>Sal&aacute;rio Base</span>
 						</div>
@@ -191,7 +191,7 @@
 							<span>Base IRRF</span>
 						</div>
 					</div>
-					<div class="row even center">
+					<div class="row even center" style="width: 660px;">
 						<div class="cell width-3 position-0">
 							<span tal:content="item/salario_base|nothing" />
 						</div>

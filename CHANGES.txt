@@ -182,3 +182,19 @@ Changelog
 -----------------------
 - Adição da checagem para ocultar a viewlet document_byline 
 
+1.1.33 - 2012-07-16
+------------------------
+- Integração da imagem do usuário com o gravatar
+- Criação de macro para organização das informações do usuário
+
+1.1.34 - 2012-07-26
+-----------------------
+- Removida a exibicao de miniaturas avancadas
+- Modificada a miniatura padrao do plone para que aceite noticias e clientes na listagem
+
+1.1.35 - 2012-07-26
+- Correção do css na template de impressão para visualização do Holerite devido a quebra no Internet Explorer 7
+
+1.1.36 - 2012-07-27
+- Correção na inversão do campo Competencia que antigamente vinha ANO/MES para MES/ANO
+- Ajuste de css 

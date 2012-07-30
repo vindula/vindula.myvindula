@@ -1,0 +1,23 @@
+<metal:macro define-macro="page">
+    <tal:def define="view_document python:context.restrictedTraverse('@@macro-myvindula-documentByLine');
+                     user_comment python: view_document.get_prefs_user(item.username);">
+        <tal:cond condition="user_comment">
+            <div class="commentImage">
+                <img src="defaultUser.png"
+                     alt="" border="0"
+                     height="30"
+                     tal:attributes="src python:view_document.getURLFotoUser(item.username);
+                                     alt user_comment/name|nothing;
+                                     title user_comment/name|nothing;" />
+            </div>
+            <div class="documentByLine name-user">
+                <h4><a href="" tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${item/username|nothing}">
+                        <span tal:replace="user_comment/name|item/username" /> |     
+                        <span tal:condition="item/date_creation|nothing"  
+                              tal:replace="python:item.date_creation.strftime('%d/%m/%Y  %H:%M')" />
+                    </a>
+                </h4>
+            </div>
+        </tal:cond>
+    </tal:def>
+</metal:macro>        
