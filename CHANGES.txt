@@ -198,3 +198,6 @@ Changelog
 1.1.36 - 2012-07-27
 - Correção na inversão do campo Competencia que antigamente vinha ANO/MES para MES/ANO
 - Ajuste de css 
+
+1.1.36 - 2012-07-27
+- Criada a funcionalidade de pedir o cpf do usuario para ver o holerite

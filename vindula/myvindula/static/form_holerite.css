@@ -24,3 +24,8 @@
 #holerite .width-6-5{
 	width: 36.25%;
 }
+
+#holerite-content .marginBtTp10px {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}

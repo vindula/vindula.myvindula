@@ -52,7 +52,7 @@ class MyVindulaImageView(grok.View, UtilMyvindula):
 class MacroImageProfilesUserView(grok.View, UtilMyvindula):
     grok.context(Interface)
     grok.require('zope2.View')
-    grok.name('myvindula-imageprofiles-macro')    
+    grok.name('myvindula-imageprofiles-macro')
     
 class MyVindulaUserPerfil(grok.View, UtilMyvindula):
     grok.context(Interface)
@@ -63,4 +63,3 @@ class MyVindulaUserPerfil(grok.View, UtilMyvindula):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
         if open_for_anonymousUser:
             self.request.response.redirect(self.context.absolute_url() + '/login')
-                
