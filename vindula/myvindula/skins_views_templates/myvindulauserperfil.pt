@@ -1,11 +1,15 @@
 <html metal:use-macro="here/main_template/macros/master">
+
+
 	<head>
+    		<script type="text/javascript" src="" tal:attributes="src string:${view/static}/js/mascara.js"></script>
         <metal:block fill-slot="top_slot">
             <tal:dummy tal:define="dummy python:request.set('disable_border',1);
                                    disable_column_one python:request.set('disable_plone.leftcolumn',1);
                                    disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
-        </metal:block>
-        
+                              
+                    </metal:block>
+
 	</head>
 	<body metal:fill-slot="content">  
 		<meta:macro metal:define-macro="page-view">     
@@ -134,7 +138,7 @@
                                 <td class="field" tal:content="python: view.get_label_filed('admission_date')">Data de Admiss&atilde;o</td>
                                 <td class="value" tal:condition="form_data/admission_date|nothing"  
                                                   tal:content="python:form_data.admission_date.strftime('%d/%m/%Y')"></td>
-                                <td class="value" tal:condition="not: form_data/admission_date|nothing"></td>  
+                                <td class="value" tal:condition="not: form_data/admission_date|nothing"></td>                              
                             </tr>
                             <tr tal:condition="python: view.get_ConfugCampos('cost_center')">
                                 <td class="field" tal:content="python: view.get_label_filed('cost_center')">Centro de custo</td>

@@ -182,3 +182,7 @@ Changelog
 -----------------------
 - Adição da checagem para ocultar a viewlet document_byline 
 
+1.1.33 - 2012-08-07
+-----------------------
+- Criação de máscaras aos campos de telefone, data, cep e cpf do usuário.
+

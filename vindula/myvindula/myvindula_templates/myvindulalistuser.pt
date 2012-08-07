@@ -2,15 +2,15 @@
     <head>
         <metal:js fill-slot="javascript_head_slot">
             <script type="text/javascript" tal:attributes="src string:${view/static}/js/perfil.js"></script>
-        </metal:js> 
-            
+            <script type="text/javascript" tal:attributes="src string:${view/static}/js/mascara.js"></script>
+
+        </metal:js>            
         <metal:block fill-slot="top_slot">
               <tal:dummy tal:define="dummy python:request.set('disable_border',1);
                        disable_column_one python:request.set('disable_plone.leftcolumn',1);
                        disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
         </metal:block>
-        
-    </head>
+     </head>
     <body>
         <div metal:fill-slot="content" tal:define="member python:context.portal_membership.getAuthenticatedMember();
     											   isAnonymous context/portal_membership/isAnonymousUser|python:True;
@@ -144,6 +144,7 @@
     						<tr tal:condition="python: view.get_ConfugCampos('phone_number')">
     							<td class="field" tal:content="python: view.get_label_filed('phone_number')">Telefone</td>
     							<td class="value" tal:content="form_data/phone_number|nothing"></td>
+							
     						</tr>
     						<tr tal:condition="python: view.get_ConfugCampos('cell_phone')">
     							<td class="field" tal:content="python: view.get_label_filed('cell_phone')">Celular</td>

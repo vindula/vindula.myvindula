@@ -1085,6 +1085,26 @@ class BaseFunc(BaseStore):
                                 tmp += "<a href='%s/myvindula-user-delcrop' style='display:none' class='excluir-foto'>Excluir Foto</a>" %(url)
                             
                             tmp += "</div>"
+
+                        
+                        elif campo == 'phone_number' or campo == 'cell_phone':
+                            #import pdb; pdb.set_trace()
+                            tmp += """<input id='%s' type='text' maxlength='14' onKeyDown='Mascara(this,Telefone);' onKeyPress='Mascara(this,Telefone);' onKeyUp='Mascara(this,Telefone);'
+                                             value='%s' name='%s' size='25'/>"""%(campo,self.converte_data(self.getValue(campo,self.request,data),False),campo)
+                        
+                        
+                        
+                        elif campo == 'postal_address' :
+                            tmp += """<input id='%s' type='text' maxlength='9' onKeyDown='Mascara(this,Cep);' onKeyPress='Mascara(this,Cep);' onKeyUp='Mascara(this,Cep);'
+                                             value='%s' name='%s' size='25'/>"""%(campo,self.converte_data(self.getValue(campo,self.request,data),False),campo)
+                        
+                        elif campo == 'teaching_research' :
+                            tmp += """<input id='%s' type='text' maxlength='14' onKeyDown='Mascara(this,Cpf);' onKeyPress='Mascara(this,Cpf);' onKeyUp='Mascara(this,Cpf);'
+                                             value='%s' name='%s' size='25'/>"""%(campo,self.converte_data(self.getValue(campo,self.request,data),False),campo)
+
+
+
+
                         
                         elif campo == 'date_birth' or campo == 'admission_date':
                             tmp += """<input id='%s' type='text' maxlength='10' onKeyDown='Mascara(this,Data);' onKeyPress='Mascara(this,Data);' onKeyUp='Mascara(this,Data);'
