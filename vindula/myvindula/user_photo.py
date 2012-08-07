@@ -184,9 +184,9 @@ class MyVindulaUserImage(grok.View, BaseFunc):
             campo_image = ModelsPhotoUser().get_ModelsPhotoUser_byUsername(username)
             dados_user = ModelsFuncDetails().get_FuncDetails(username)
             
-        
         else:
             campo_image = None
+            dados_user = None
 
         if campo_image:
             if 'full' in form.keys():
@@ -200,7 +200,8 @@ class MyVindulaUserImage(grok.View, BaseFunc):
             #self.request.response.setHeader('Content-Disposition','attachment; filename=%s'%(filename))
             self.request.response.write(x['data'])
         
-        elif dados_user and dados_user.photograph:
+        elif dados_user:
+            if dados_user.photograph:
                 local = dados_user.photograph.split('/')
                 try:
                     objeto = getSite()[local[0]][local[1]][local[2]]
@@ -209,7 +210,8 @@ class MyVindulaUserImage(grok.View, BaseFunc):
                         self.request.response.write(objeto.photograph.data)        
                 except:
                     self.loadDefault()
-            
+            else:
+                self.loadDefault()
         else:
             self.loadDefault()
             

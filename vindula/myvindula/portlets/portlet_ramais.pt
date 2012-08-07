@@ -68,59 +68,25 @@
 		    		<h4><strong i18n:translate="">Resultados</strong></h4>
 			    	<div>
 				    	<tal:results tal:define="busca python:results[:int(quant)];"
-					  			   	  tal:repeat="obj busca" >
-							<div id="boxPortlet" tal:define="i repeat/obj/end;
-							 								details python: view.get_details_user(obj) or None;" 
-						     					 tal:attributes="class python:view.getEnd(i);">
-								<div class="row">
-									<tal:cond condition="view/show_picture">
-										<div class="portlet-user-image">
-											<a tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${obj/username}">
-							                    <img src="defaultUser.png"
-								             		 alt="" border="0"
-						             		 		 width="50"
-								             		 tal:attributes="src string:${here/portal_url}/user-image?username=${obj/username|nothing};
-											 						 alt obj/name|nothing;
-																	 title obj/name|nothing;" />
-											</a>
-						                </div>
-									</tal:cond>
-									<div class="portlet-user-info" tal:attributes="class python: not view.show_picture and 'portlet-user-info-larg' or 'portlet-user-info' "> 											     	      	
-							        	<h4><a tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${obj/username}">
-							        		   <span tal:content="python: view.get_principal_campo(obj)">func</span></a></h4>
-							        	<!--p>	
-							        		<span tal:replace="obj/position|nothing" /><br />
-											<tal:def define="user obj/username;
-															 departamentos python: view.get_department(user)">
-								        		<tal:rep repeat="departamento departamentos">
-								        			<span tal:content="departamento/Title">Departamento</span>
-													<span tal:define="cont repeat/departamento/length;
-																      last repeat/departamento/end"
-											  			  tal:condition="python: cont > 1 and not last"> | </span>
-								        		</tal:rep>
-												<br />	
-								        	</tal:def>
-							        		<!--span tal:replace="obj/departamento/name|nothing" /><br /--
-	
-											<span tal:replace="obj/phone_number|nothing" /><br />
-							        		<span tal:replace="obj/email|nothing" /><br />
-							      	  	</p-->
-										<p class="quebraLinha" >
-											<tal:rep repeat="detail details" condition="details">
-												<span tal:condition="python: detail['label'] and detail['content']" tal:content="string: ${detail/label}: "> </span>
-												<span tal:condition="detail/content" tal:content="detail/content"> </span>
-												<br tal:condition="python: detail['label'] or detail['content']">
-											</tal:rep>
-										</p>
-									</div>
-								</div>
+					  			   	  tal:repeat="item busca" >
+							<div id="boxPortlet" tal:define="i repeat/item/end;"
+    					     					 tal:attributes="class python:view.getEnd(i);">
+						     					 
+                                    <!-- Dados para utilização da macro -->                                  
+                                    <tal:def define="size_img string:50px;
+                                                     principal_name python: view.get_principal_campo(item);
+                                                     details python: view.get_details_user(item) or [];">
+                                        <div metal:use-macro="context/myvindula-imageprofiles-macro/macros/userprofiles" />       
+                                    </tal:def>      						     					 
 						 	</div>
 						 	<div class="visualClear"></div>
 			      		</tal:results>
 					</div>
 			    	<div class="titulo_info_boxTipo2 aling-right">
 				        <h4 tal:condition="python:results.count()>int(quant)">
-				        	<a tal:attributes="href  string:${here/portal_url}/myvindulalistall?title=${request/title|nothing}&ramal=${request/ramal|nothing}&departamento=${request/departamento|nothing}&filtro=${view/filtro_departamento|python:'departamentos'}">Mais...</a>
+				        	<a tal:attributes="href  string:${here/portal_url}/myvindulalistall?title=${request/title|nothing}&
+				        	                                ramal=${request/ramal|nothing}&departamento=${request/departamento|nothing}&
+				        	                                filtro=${view/filtro_departamento|python:'departamentos'}">Mais...</a>
 				        </h4>
 				    </div>
 

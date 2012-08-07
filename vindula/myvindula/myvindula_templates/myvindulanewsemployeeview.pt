@@ -5,37 +5,32 @@
                                    disable_column_one python:request.set('disable_plone.leftcolumn',1);
                                    disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
         </metal:block>
-        
     </head>
 	<body>
 	  	<div metal:fill-slot="content-core">
 			<h2 class="h2title">Novos Usu&aacute;rios do portal</h2>
       		<meta:macro metal:define-macro="page-view">                  
-				<tal:def define="member python:context.portal_membership.getAuthenticatedMember();
-											  view python: context.restrictedTraverse('@@myvindula-news-employee');
-		  									  form_data view/load_list | python:{};">
+				<tal:def define="view python: context.restrictedTraverse('@@myvindula-news-employee');
+		  						 form_data view/load_list | python:{};">
 	                           					     
 		        	<div id="interna" class="userlist">
+		        	    <div class="visualClear"></div>
 						<div tal:condition="form_data" class="all-users">
-							<div tal:define="view_listuser python: context.restrictedTraverse('@@myvindulalistuser');
-											 view_listall python: context.restrictedTraverse('@@myvindulalistall');
-											 batch python: form_data[:10];" 
-								 class="user" 
-								 tal:repeat="item batch">
-									 	
-					            <a tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${item/username}">
-					              <img tal:attributes="src string: ${context/portal_url|nothing}/user-image?username=${item/username|nothing}">
-					              <br />
-					              <span tal:content="python:view_listall.checaValor(item.name,item.username)"></span><br>
-								  <span>Admiss&atilde;o: <span tal:content="python: view_listall.converte_data(item.admission_date)"></span></span>
-					            </a>
-
-			          		</div>
+						    
+							<div class="user" tal:repeat="item python:form_data[:10]">
+								 <!-- Dados para utilização da macro -->                                     
+                                <tal:def define="size_img string:90px;
+                                                 principal_name python: view.checaValor(item.name,item.username);
+                                                 details python: [{'label':'Adimissão',
+                                                                   'content':view.converte_data(item.admission_date) }];">
+                                    <div metal:use-macro="context/myvindula-imageprofiles-macro/macros/userprofiles" />       
+                                </tal:def>
+			                </div>
+			          		
 						</div>
-						
 						<div tal:condition="not: form_data">
 							<br>
-							<h3 tal:content="view_listall/check_no_result">N&atilde;o h&aacute; novos funci&oacute;narios.</h3>
+							<h3>N&atilde;o h&aacute; novos funci&oacute;narios.</h3>
 						</div>
 		        	</div>
 				</tal:def>

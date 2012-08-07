@@ -14,12 +14,9 @@
     <body>
         <div metal:fill-slot="content" tal:define="member python:context.portal_membership.getAuthenticatedMember();
     											   isAnonymous context/portal_membership/isAnonymousUser|python:True;
-    											   
     											   form_data view/load_list | python:{};
-    											   user form_data/username|nothing;
-    											   view_myvindula python:context.restrictedTraverse('@@myvindula');
     											   user_perfil form_data/username|nothing;
-    											   panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel')">
+    											   panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel')" >
     											   
         	<tal:cont tal:condition="form_data">
     			<tal:cond tal:condition="python: str(member.getUserName())==form_data.username">
@@ -47,89 +44,22 @@
     			</tal:cont>	
         	</tal:cont>
         	
-    		<!--input type="hidden" id="portal_url" tal:attributes="value context/portal_url|nothing">
-    		<input type="hidden" id="context_url" tal:attributes="value string:${context/REQUEST/getURL|nothing}?user=${context/REQUEST/form/user|nothing}">
-    		<input type="hidden" id="username" name="username" value="" tal:attributes="value context/@@plone_portal_state/member|nothing"-->
-    		
+   		
     		<div id="content">
-    			<div id="interna" class="userpage ">
-    				 <h2 class="h2title">Informa&ccedil;&otilde;es do Perfil</h2>
-    				<div class="titulo">
-    					<h2>
-    					    <tal:cond condition="python: view.get_ConfugCampos('name')">
-    					       <tal:cont content="form_data/name|nothing" />
-    					    </tal:cond>
-    					</h2>
-    				</div>
-    				
-    				<div class="department">
-    				    <tal:cond condition="python: view.get_ConfugCampos('vin_myvindula_department')">
-        					<tal:def define="departamentos python: view.get_department(user)">
-        		        		<tal:rep repeat="departamento departamentos">
-        		        			<span tal:content="departamento/Title|nothing">Departamento</span>
-        							<span tal:define="cont repeat/departamento/length;
-        												   last repeat/departamento/end"
-        								  tal:condition="python: cont > 1 and not last"> | </span>
-        		        		</tal:rep>
-        		        	</tal:def>
-        		        </tal:cond>
-    					<!--span tal:content="form_data/departamento/name|nothing"></span-->
-    				</div>
-    				
-    				<!-- start: Personal Information -->
-    				<div id="personal">
-        				    <div id="photo">
-        				        <tal:cond condition="python: view.get_ConfugCampos('photograph')">    
-                                    <img tal:attributes="src string: ${context/portal_url|nothing}/user-image?username=${user}">
-                                </tal:cond>
-                                <tal:cond condition="python:not view.get_ConfugCampos('photograph')">
-                                    <div style="width: 150px;height: 150px;"></div>
-                                </tal:cond>
-                            </div>
-    				
-    					<div id="data" tal:condition="view/valida_pessoal|nothing">
-    						<div class="area"><span>Pessoal</span></div>
-    							<table>
-    								<tr tal:condition="python: view.get_ConfugCampos('employee_id')">
-    									<td class="field" tal:content="python: view.get_label_filed('employee_id')">ID</td>
-    									<td class="value" tal:content="form_data/employee_id|nothing"></td>
-    								</tr>
-    								<tr tal:condition="python: view.get_ConfugCampos('nickname')">
-    									<td class="field" tal:content="python: view.get_label_filed('nickname')">Apelido</td>
-    									<td class="value" tal:content="form_data/nickname|nothing"></td>
-    								</tr>
-    								<tr tal:condition="python: view.get_ConfugCampos('pronunciation_name')">
-    									<td class="field" tal:content="python: view.get_label_filed('pronunciation_name')">Pron&uacute;ncia do nome</td>
-    									<td class="value" tal:content="form_data/pronunciation_name|nothing"></td>
-    								</tr>
-    								<tr tal:condition="python: view.get_ConfugCampos('date_birth')">
-    									<td class="field" tal:content="python: view.get_label_filed('date_birth')">Data de anivers&aacute;rio</td>
-    									<td class="value" tal:condition="form_data/date_birth|nothing"
-    													  tal:content="python: form_data.date_birth.strftime('%d/%m')"></td>
-    									<td class="value" tal:condition="not: form_data/date_birth|nothing"></td>												  
-    								</tr>
-    								<tr tal:condition="python: view.get_ConfugCampos('email')">
-    									<td class="field" tal:content="python: view.get_label_filed('email')">E-mail</td>
-    									<td class="value" tal:content="form_data/email|nothing"></td>
-    								</tr>
-    							</table>
-    						<a id="send-mail" tal:condition="form_data/email|python: view.get_ConfugCampos('email')" 
-    										  tal:attributes="href string:mailto:${form_data/email|nothing}">Enviar e-mail</a>
-    					</div>
-    				</div>
-    				<!-- end: Personal Information -->
-    			</div>
-    
+                <!-- Perfil do usuarios  -->
+    			<div metal:use-macro="context/myvindula-user-perfil/macros/page-view" />
+    			
     			<!-- Meus Pensamentos -->
-    			<div id="howareu" class="userpage geral_lista_comentarios" tal:condition="panelView/check_pensamentos">
-    				<h2 class="h2title" tal:content="string: No que ${form_data/name|nothing} est&aacute; pensando!"></h2>
-    				
-    				<tal:def define="items python: view.get_howareu(user);
-    				                 comment_type string:ModelsMyvindulaHowareu">
-    					<tal:rep tal:repeat="item items">
+                <div id="howareu" class="userpage geral_lista_comentarios" tal:condition="panelView/check_pensamentos">
+                    <h2 class="h2title" tal:content="string: No que ${form_data/name|nothing} est&aacute; pensando!"></h2>
+                    
+                    <tal:def define="items python: view.get_howareu(user);
+                                     comment_type string:ModelsMyvindulaHowareu">
+                        <tal:rep tal:repeat="item items">
     
                             <div metal:use-macro="context/macro-single-howareu/macros/page" />
     
+<<<<<<< HEAD
     					</tal:rep>	
     		        </tal:def>
     			</div>
@@ -280,6 +210,11 @@
     				</div>
     				<!-- end: Others Information -->
     			</div>
+=======
+                        </tal:rep>  
+                    </tal:def>
+                </div>
+>>>>>>> 249c41e699c59bfa5d197a7ecb1bac98691d0504
     			
     			
     			<!-- start: Scraps -->
@@ -291,11 +226,24 @@
     					<form action="" method="post" enctype="multipart/form-data" name="save-recados" 
       						  tal:attributes="action string:${context/absolute_url}/myvindulalistuser?user=${context/REQUEST/form/user|nothing}&scraps=true">	
     						
-    						<input type="hidden" name="destination" value="" tal:attributes="value user">	
+    						<input type="hidden" name="destination" value="" tal:attributes="value user_perfil">	
     						<input type="hidden" name="username" value="" tal:attributes="value python:member.getUserName()">
     						
-    						<textarea tal:condition="panelView/check_ativa_richtext" tal:attributes="title view_myvindula/getConfTyneMCE|nothing" 
-                             style="width: 100%; height: 85px;" name="text" id="text" class='mce_editable'></textarea>	
+    						<tal:cond condition="panelView/check_ativa_richtext|python:False">
+                                    <input class="cke_config_url" type="hidden" name="cke_config_url" tal:attributes="value string:${context/portal_url}/ckeditor_plone_config.js">
+                                    <input class="cke_iswidget" type="hidden" value="True" name="cke_iswidget">
+                                    <div class="widget_settings">
+                                        <input class="cke_baseHref" type="hidden" name="cke_baseHref" tal:attributes="value string:${context/portal_url}" >
+                                        <input class="cke_height" type="hidden" value="100px" name="cke_height">
+                                    </div>
+                
+                                <textarea style="width: 100%; height: 85px;" name="text"  tal:define="idRandom python:str(panelView.randomIdComents())" 
+                                                                                          tal:attributes="id string:text_coments_${idRandom}" 
+                                                                                          class="ckeditor_plone"></textarea>
+                            
+                            </tal:cond>
+    						
+    						
     						<textarea tal:condition="not:panelView/check_ativa_richtext|python:True "  style="width: 100%; height: 81px;" name="text"></textarea>
     		
     						<div class="bt_comentar">
@@ -306,32 +254,21 @@
     				</div>
     				
     				<!-- Scraps List -->
-        			<tal:def define="items python:view.get_recados(user);">
+        			<tal:def define="items python:view.get_recados(user_perfil);">
     					<div class="userpage geral_lista_comentarios" tal:condition="items">
     						<h2 class="h2title">Outros recados!</h2>
     						
     						<tal:rep tal:repeat="item items">
-    							<div class="comment item_lista" tal:define="user item/username|nothing;
-    																		form_data python:view.get_prefs_user(user) or {};"
+    							<div class="comment item_lista" tal:define="user_item item/username|nothing;
+    																		form_data python:view.get_prefs_user(user_item) or {};"
     																		
     															tal:condition="python: (str(member.getUserName()) == user_perfil) or 
-    																				   (str(member.getUserName()) == str(user)) or
+    																				   (str(member.getUserName()) == str(user_item)) or
      																				   ('Manager' in member.getRoles()) or 
      																				   panelView.check_filtro_recados_user_publicos()" > 
-    								<div class="commentImage">
-    									<a tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${user}">
-    					                    <img src="defaultUser.png" border="0" height="30"
-    						             		 tal:attributes="src string: ${context/portal_url|nothing}/user-image?username=${item/username};
-    									 						 alt form_data/name|nothing;
-    															 title form_data/name|nothing;" />
-    									</a>
-    				                </div>
-    								<div class="documentByLine name-user">
-    									<h4><a tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${user}">
-    											<span tal:replace="form_data/name|nothing" /> | 
-    					                    	<span tal:replace="python:item.date_creation.strftime('%d/%m/%Y  %H:%M')" />
-    										</a></h4>
-    				                </div>
+                                    
+                                    <div metal:use-macro="context/macro-myvindula-documentByLine/macros/page"> </div>
+
     								<div id="like" tal:condition="not: isAnonymous" >
     									<div tal:attributes="id item/id|nothing">
     										<input type="hidden" name="isPlone:boolean" id="isPlone" value="False" />

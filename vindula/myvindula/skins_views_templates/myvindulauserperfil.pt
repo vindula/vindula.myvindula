@@ -21,74 +21,78 @@
 							   user form_data/username|nothing;
 							   panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel')">
 												   
-				<div id="content">
                     <div id="interna" class="userpage ">
-                     <h2 class="h2title">Informa&ccedil;&otilde;es do Perfil</h2>
-                    <div class="titulo">
-                        <h2>
-                            <tal:cond condition="python: view.get_ConfugCampos('name')">
-                               <tal:cont content="form_data/name|nothing" />
-                            </tal:cond>
-                        </h2>
-                    </div>
-                    
-                    <div class="department">
-                        <tal:cond condition="python: view.get_ConfugCampos('vin_myvindula_department')">
-                            <tal:def define="departamentos python: view.get_department(user)">
-                                <tal:rep repeat="departamento departamentos">
-                                    <span tal:content="departamento/Title|nothing">Departamento</span>
-                                    <span tal:define="cont repeat/departamento/length;
-                                                           last repeat/departamento/end"
-                                          tal:condition="python: cont > 1 and not last"> | </span>
-                                </tal:rep>
-                            </tal:def>
-                        </tal:cond>
-                        <!--span tal:content="form_data/departamento/name|nothing"></span-->
-                    </div>
-                    
-                    
-                    <!-- start: Personal Information -->
-                    <div id="personal">
-                        <div id="photo">
-                            <tal:cond condition="python: view.get_ConfugCampos('photograph')">    
-                                <img tal:attributes="src string: ${context/portal_url|nothing}/user-image?username=${user}">
-                            </tal:cond>
-                            <tal:cond condition="python:not view.get_ConfugCampos('photograph')">
-                                <div style="width: 150px;height: 150px;"></div>
-                            </tal:cond>
+                        <h2 class="h2title">Informa&ccedil;&otilde;es do Perfil</h2>
+                        <div class="titulo">
+                            <h2>
+                                <tal:cond condition="python: view.get_ConfugCampos('name')">
+                                   <tal:cont content="form_data/name|nothing" />
+                                </tal:cond>
+                            </h2>
                         </div>
                     
-                        <div id="data" tal:condition="view/valida_pessoal|nothing">
-                            <div class="area"><span>Pessoal</span></div>
-                                <table>
-                                    <tr tal:condition="python: view.get_ConfugCampos('employee_id')">
-                                        <td class="field" tal:content="python: view.get_label_filed('employee_id')">ID</td>
-                                        <td class="value" tal:content="form_data/employee_id|nothing"></td>
-                                    </tr>
-                                    <tr tal:condition="python: view.get_ConfugCampos('nickname')">
-                                        <td class="field" tal:content="python: view.get_label_filed('nickname')">Apelido</td>
-                                        <td class="value" tal:content="form_data/nickname|nothing"></td>
-                                    </tr>
-                                    <tr tal:condition="python: view.get_ConfugCampos('pronunciation_name')">
-                                        <td class="field" tal:content="python: view.get_label_filed('pronunciation_name')">Pron&uacute;ncia do nome</td>
-                                        <td class="value" tal:content="form_data/pronunciation_name|nothing"></td>
-                                    </tr>
-                                    <tr tal:condition="python: view.get_ConfugCampos('date_birth')">
-                                        <td class="field" tal:content="python: view.get_label_filed('date_birth')">Data de anivers&aacute;rio</td>
-                                        <td class="value" tal:condition="form_data/date_birth|nothing"
-                                                          tal:content="python: form_data.date_birth.strftime('%d/%m')"></td>
-                                        <td class="value" tal:condition="not: form_data/date_birth|nothing"></td>                                                 
-                                    </tr>
-                                    <tr tal:condition="python: view.get_ConfugCampos('email')">
-                                        <td class="field" tal:content="python: view.get_label_filed('email')">E-mail</td>
-                                        <td class="value" tal:content="form_data/email|nothing"></td>
-                                    </tr>
-                                </table>
-                            <a id="send-mail" tal:condition="form_data/email|python: view.get_ConfugCampos('email')" 
-                                              tal:attributes="href string:mailto:${form_data/email|nothing}">Enviar e-mail</a>
+                        <div class="department">
+                            <tal:cond condition="python: view.get_ConfugCampos('vin_myvindula_department')">
+                                <tal:def define="departamentos python: view.get_department(user)">
+                                    <tal:rep repeat="departamento departamentos">
+                                        <span tal:content="departamento/Title|nothing">Departamento</span>
+                                        <span tal:define="cont repeat/departamento/length;
+                                                               last repeat/departamento/end"
+                                              tal:condition="python: cont > 1 and not last"> | </span>
+                                    </tal:rep>
+                                </tal:def>
+                            </tal:cond>
+                            <!--span tal:content="form_data/departamento/name|nothing"></span-->
                         </div>
-                    </div>
-                    <!-- end: Personal Information -->
+                    
+                    
+                        <!-- start: Personal Information -->
+                        <div id="personal">
+                            <div id="photo">
+                                <tal:cond condition="python: view.get_ConfugCampos('photograph')">    
+                                    <!-- Dados para utilização da macro -->                                  
+                                    <tal:def define="size_img string:150px;
+                                                     user_profiles form_data/username|nothing;
+                                                     item form_data;">
+                                        <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>       
+                                    </tal:def>
+                                </tal:cond>
+                                <tal:cond condition="python:not view.get_ConfugCampos('photograph')">
+                                    <div style="width: 150px;height: 150px;"></div>
+                                </tal:cond>
+                            </div>
+                        
+                            <div id="data" tal:condition="view/valida_pessoal|nothing">
+                                <div class="area"><span>Pessoal</span></div>
+                                    <table>
+                                        <tr tal:condition="python: view.get_ConfugCampos('employee_id')">
+                                            <td class="field" tal:content="python: view.get_label_filed('employee_id')">ID</td>
+                                            <td class="value" tal:content="form_data/employee_id|nothing"></td>
+                                        </tr>
+                                        <tr tal:condition="python: view.get_ConfugCampos('nickname')">
+                                            <td class="field" tal:content="python: view.get_label_filed('nickname')">Apelido</td>
+                                            <td class="value" tal:content="form_data/nickname|nothing"></td>
+                                        </tr>
+                                        <tr tal:condition="python: view.get_ConfugCampos('pronunciation_name')">
+                                            <td class="field" tal:content="python: view.get_label_filed('pronunciation_name')">Pron&uacute;ncia do nome</td>
+                                            <td class="value" tal:content="form_data/pronunciation_name|nothing"></td>
+                                        </tr>
+                                        <tr tal:condition="python: view.get_ConfugCampos('date_birth')">
+                                            <td class="field" tal:content="python: view.get_label_filed('date_birth')">Data de anivers&aacute;rio</td>
+                                            <td class="value" tal:condition="form_data/date_birth|nothing"
+                                                              tal:content="python: form_data.date_birth.strftime('%d/%m')"></td>
+                                            <td class="value" tal:condition="not: form_data/date_birth|nothing"></td>                                                 
+                                        </tr>
+                                        <tr tal:condition="python: view.get_ConfugCampos('email')">
+                                            <td class="field" tal:content="python: view.get_label_filed('email')">E-mail</td>
+                                            <td class="value" tal:content="form_data/email|nothing"></td>
+                                        </tr>
+                                    </table>
+                                <a id="send-mail" tal:condition="form_data/email|python: view.get_ConfugCampos('email')" 
+                                                  tal:attributes="href string:mailto:${form_data/email|nothing}">Enviar e-mail</a>
+                            </div>
+                        </div>
+                        <!-- end: Personal Information -->
                 </div>
                
                 <div id="perfil" class="userpage"> <!-- display-none"--> 
@@ -236,9 +240,7 @@
                     </div>
                     <!-- end: Others Information -->
                 </div>				    
-				    
-			</div>
-	    </div>
+	        </div>
 	</meta:macro>    
 </body>
 </html>

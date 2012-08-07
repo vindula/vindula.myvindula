@@ -34,17 +34,27 @@ class MacroSingleHowareu(grok.View, UtilMyvindula):
     grok.require('zope2.View')
     grok.name('macro-single-howareu')    
     
-class MyVindulaLikeMacro(grok.View):
+class MyVindulaLikeMacro(grok.View, UtilMyvindula):
     grok.context(Interface)
     grok.require('zope2.View')
     grok.name('myvindula-like-macro')      
+
+class MyVindulaDocumentByLineMacro(grok.View, UtilMyvindula):
+    grok.context(Interface)
+    grok.require('zope2.View')
+    grok.name('macro-myvindula-documentByLine')          
     
 class MyVindulaImageView(grok.View, UtilMyvindula):
     grok.context(Interface)
     grok.require('zope2.View')
     grok.name('myvindula-image_view')
-
-class MyVindulaUserPerfil(grok.View):
+    
+class MacroImageProfilesUserView(grok.View, UtilMyvindula):
+    grok.context(Interface)
+    grok.require('zope2.View')
+    grok.name('myvindula-imageprofiles-macro')
+    
+class MyVindulaUserPerfil(grok.View, UtilMyvindula):
     grok.context(Interface)
     grok.require('zope2.View')
     grok.name('myvindula-user-perfil')
@@ -53,4 +63,3 @@ class MyVindulaUserPerfil(grok.View):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
         if open_for_anonymousUser:
             self.request.response.redirect(self.context.absolute_url() + '/login')
-                
