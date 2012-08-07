@@ -31,7 +31,7 @@ class SchemaFunc(BaseFunc):
               'location'              : {'required': False, 'type' : to_utf8, 'label':'Localização',            'decription':u'Digite a localização do funcionário',            'ordem':14},
               'postal_address'        : {'required': False, 'type' : to_utf8, 'label':'Endereço Postal',        'decription':u'Digite o endereço postal do funcionário',        'ordem':15},
               'special_roles'         : {'required': False, 'type' : to_utf8, 'label':'Funções Especiais',      'decription':u'Digite as funções especiais do funcionário',     'ordem':16},
-              'photograph'            : {'required': False, 'type' : to_utf8, 'label':'Foto',                   'decription':u'Coloque a foto do funcionário',                  'ordem':17},
+              'photograph'            : {'required': False, 'type' : 'file',  'label':'Foto',                   'decription':u'Coloque a foto do funcionário',                  'ordem':17},
               'pronunciation_name'    : {'required': False, 'type' : to_utf8, 'label':'Pronuncia do nome',      'decription':u'Como se pronuncia o  nome do funcionário',       'ordem':18},
               'committess'            : {'required': False, 'type' : to_utf8, 'label':'Comissão',               'decription':u'Digite a comissão do funcionário',               'ordem':19},
               'projects'              : {'required': False, 'type' : to_utf8, 'label':'Projetos',               'decription':u'Digite os projetos do funcionário',              'ordem':20},

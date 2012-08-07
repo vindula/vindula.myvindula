@@ -16,6 +16,7 @@ vindula/myvindula/document_models.py
 vindula/myvindula/documentos_view.py
 vindula/myvindula/handlers.py
 vindula/myvindula/myvindula.py
+vindula/myvindula/myvindula_manage.py
 vindula/myvindula/registration.py
 vindula/myvindula/setuphandlers.py
 vindula/myvindula/skins_views.py
