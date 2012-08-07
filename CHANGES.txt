@@ -182,12 +182,6 @@ Changelog
 -----------------------
 - Adição da checagem para ocultar a viewlet document_byline 
 
-<<<<<<< HEAD
-1.1.33 - 2012-08-07
------------------------
-- Criação de máscaras aos campos de telefone, data, cep e cpf do usuário.
-
-=======
 1.1.33 - 2012-07-16
 ------------------------
 - Integração da imagem do usuário com o gravatar
@@ -205,6 +199,10 @@ Changelog
 - Correção na inversão do campo Competencia que antigamente vinha ANO/MES para MES/ANO
 - Ajuste de css 
 
-1.1.36 - 2012-07-27
+1.1.37 - 2012-07-27
 - Criada a funcionalidade de pedir o cpf do usuario para ver o holerite
->>>>>>> 249c41e699c59bfa5d197a7ecb1bac98691d0504
+
+1.1.38 - 2012-08-07
+-----------------------
+- Criação de máscaras aos campos de telefone, data, cep e cpf do usuário.
+
