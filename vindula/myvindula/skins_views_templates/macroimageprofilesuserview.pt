@@ -1,0 +1,63 @@
+<metal:macro define-macro="userprofiles"
+              tal:define="view_profiles python: context.restrictedTraverse('@@myvindula-imageprofiles-macro');
+                          user_profiles item/username|nothing;">
+    <div class="row">
+        <tal:cond condition="view/show_picture|python:True">
+            
+            <metal:macro define-macro="userimage">
+                <div class="portlet-user-image"
+                     tal:define="view_profiles python: context.restrictedTraverse('@@myvindula-imageprofiles-macro');">
+                    
+                    <tal:cond condition="not: view_manage|python:False">
+                        <a tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${user_profiles}">
+                            <img src="defaultUser.png" border="0"
+                                    tal:attributes="src python:view_profiles.getURLFotoUser(user_profiles);
+                                                    alt item/name|nothing;
+                                                    title item/name|nothing;
+                                                    width size_img|nothing" />
+                        </a>    
+                    </tal:cond>
+                    
+                    <tal:cond condition="view_manage|python:False">
+                        <a tal:attributes="href python: here.portal_url() + '/myvindulaprefs?user=' + view_profiles.encodeUser(user_profiles)">
+                            <img src="defaultUser.png" border="0"
+                                    tal:attributes="src python:view.getURLFotoUser(user_profiles);
+                                                    alt item/name|nothing;
+                                                    title item/name|nothing;
+                                                    width size_img|nothing" />
+                        </a>    
+                    </tal:cond>
+                </div>
+            </metal:macro>
+        </tal:cond>
+        <div class="portlet-user-info" tal:define="show_picture view/show_picture|python:True" 
+            tal:attributes="class python: not show_picture and 'portlet-user-info-larg' or 'portlet-user-info'">
+            <h4 tal:condition="not: view_manage|python:False">
+                <a tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${user_profiles}"
+                    tal:content="principal_name|python:''">Nome Funcionario</a>
+            </h4>
+            <h4 tal:condition="view_manage|python:False">
+                <a tal:attributes="href python: here.portal_url() + '/myvindulaprefs?user=' + view_profiles.encodeUser(user_profiles)"
+                   tal:content="principal_name|python:''">Nome Funcionario</a>
+            </h4>
+            <p class="quebraLinha">
+                <!--tal:def define="user obj/username;
+                                departamentos python: view.get_department(user)">
+                    <tal:rep repeat="departamento departamentos">
+                            <span tal:content="departamento/Title">Departamento</span>
+                            <span tal:define="cont repeat/departamento/length;
+                                              last repeat/departamento/end"
+                                              tal:condition="python: cont > 1 and not last" > | </span>
+                    </tal:rep>
+                </tal:def>
+                <span tal:content="obj/date_birth|nothing"></span><br /-->
+                <tal:rep repeat="detail details" condition="details">
+                    <span tal:condition="python: detail['label'] and detail['content']"
+                          tal:content="string: ${detail/label}: "> </span>
+                    <span tal:condition="detail/content" tal:content="detail/content"> </span>
+                    <br tal:condition="python: detail['label'] or detail['content']">
+                </tal:rep>
+            </p>
+        </div>
+    </div>
+</metal:macro>

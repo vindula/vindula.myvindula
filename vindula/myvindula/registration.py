@@ -16,7 +16,7 @@ class SchemaFunc(BaseFunc):
 
     campos = {'name'                  : {'required': False, 'type' : to_utf8, 'label':'Nome',                   'decription':u'Digite o nome do funcionário',                   'ordem':0},
               'nickname'              : {'required': False, 'type' : to_utf8, 'label':'Apelido',                'decription':u'Digite o apelido do funcionário',                'ordem':1},
-              'phone_number'          : {'required': False, 'type' : to_utf8, 'label':'Telefone',               'decription':u'Digite o telefone do funcionário',               'ordem':2},
+              'phone_number'          : {'required': False, 'type' : to_utf8, 'label':'Telefone',            'decription':u'Digite o telefone do funcionário',               'ordem':2},
               'cell_phone'            : {'required': False, 'type' : to_utf8, 'label':'Celular',                'decription':u'Digite o telefone celular do funcionário',       'ordem':3},
               'email'                 : {'required': False, 'type' : 'email', 'label':'E-mail',                 'decription':u'Digite o e-mail do funcionário',                 'ordem':4},
               'employee_id'           : {'required': False, 'type' : to_utf8, 'label':'ID Funcionário',         'decription':u'Digite o ID do funcionário',                     'ordem':5},
@@ -42,12 +42,12 @@ class SchemaFunc(BaseFunc):
               'availability'          : {'required': False, 'type' : to_utf8, 'label':'Disponibilidade',        'decription':u'Digite a disponibilidade do funcionário',        'ordem':25},
               'papers_published'      : {'required': False, 'type' : to_utf8, 'label':'Artigos Publicados',     'decription':u'Digite os artigo publicados do funcionário',     'ordem':26},
               'blogs'                 : {'required': False, 'type' : to_utf8, 'label':'Blogs',                  'decription':u'Digite os blogs do funcionário',                 'ordem':27},
-              'teaching_research'       : {'required': False, 'type' : to_utf8, 'label':'CPF',                  'decription':u'Digite o CPF do funcionário',                    'ordem':28},
-              'resume'                  : {'required': False, 'type' : to_utf8, 'label':'Personalizado 2',        'decription':u'Campo para personalizar',                      'ordem':29},
-              'delegations'             : {'required': False, 'type' : to_utf8, 'label':'Personalizado 3',        'decription':u'Campo para personalizar',                      'ordem':30},
-              'customised_message'      : {'required': False, 'type' : to_utf8, 'label':'Personalizado 4',        'decription':u'Campo para personalizar',                      'ordem':31},
+              'teaching_research'     : {'required': False, 'type' : to_utf8, 'label':'CPF',                    'decription':u'Digite o CPF do funcionário',                    'ordem':28},
+              'resume'                : {'required': False, 'type' : to_utf8, 'label':'Personalizado 2',        'decription':u'Campo para personalizar',                      'ordem':29},
+              'delegations'           : {'required': False, 'type' : to_utf8, 'label':'Personalizado 3',        'decription':u'Campo para personalizar',                      'ordem':30},
+              'customised_message'    : {'required': False, 'type' : to_utf8, 'label':'Personalizado 4',        'decription':u'Campo para personalizar',                      'ordem':31},
               
-              'username'                : {'required': True, 'type' : to_utf8, 'label':'Nome de Usuário',        'decription':u'Digite o CPF do funcionário',                    'ordem':28},}  #Campo Obrigatorio
+              'username'              : {'required': True, 'type' : to_utf8, 'label':'Nome de Usuário',        'decription':u'Digite o CPF do funcionário',                    'ordem':28},}  #Campo Obrigatorio
               #'vin_myvindula_department_id': {'required': False, 'type' : int,     'label':'Departamento'           },} #Campo Obrigatorio
 
                     

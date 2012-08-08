@@ -18,6 +18,24 @@
         v_obj.value=v_fun(v_obj.value)
     }
     
+    			
+    
+    /*Função que padroniza telefone (11) 4184-1241*/
+    function Telefone(v){
+        v=v.replace(/\D/g,"")                 
+        v=v.replace(/^(\d\d)(\d)/g,"($1) $2") 
+        v=v.replace(/(\d{4})(\d)/,"$1-$2")    
+        return v
+    }
+			
+    /*Função que padroniza DATA*/
+    function Data(v){
+        v=v.replace(/\D/g,"") 
+        v=v.replace(/(\d{2})(\d)/,"$1/$2") 
+        v=v.replace(/(\d{2})(\d)/,"$1/$2") 
+        return v
+    }
+    
     /*Função que Determina as expressões regulares dos objetos*/
     function leech(v){
         v=v.replace(/o/gi,"0")
@@ -33,21 +51,6 @@
     /*Função que permite apenas numeros*/
     function Integer(v){
         return v.replace(/\D/g,"")
-    }
-    
-    /*Função que padroniza telefone (11) 4184-1241*/
-    function Telefone(v){
-        v=v.replace(/\D/g,"")                 
-        v=v.replace(/^(\d\d)(\d)/g,"($1) $2") 
-        v=v.replace(/(\d{4})(\d)/,"$1-$2")    
-        return v
-    }
-    
-    /*Função que padroniza telefone (11) 41841241*/
-    function TelefoneCall(v){
-        v=v.replace(/\D/g,"")                 
-        v=v.replace(/^(\d\d)(\d)/g,"($1) $2")    
-        return v
     }
     
     /*Função que padroniza CPF*/
@@ -67,7 +70,7 @@
         return v
     }
     
-    /*Função que padroniza CNPJ*/
+    /*Função que padroniza CNPJ
     function Cnpj(v){
         v=v.replace(/\D/g,"")                   
         v=v.replace(/^(\d{2})(\d)/,"$1.$2")     
@@ -75,20 +78,31 @@
         v=v.replace(/\.(\d{3})(\d)/,".$1/$2")           
         v=v.replace(/(\d{4})(\d)/,"$1-$2")              
         return v
-    }
+    }*/
     
-    /*Função que permite apenas numeros Romanos*/
-    function Romanos(v){
-        v=v.toUpperCase()             
-        v=v.replace(/[^IVXLCDM]/g,"") 
-        
-        while(v.replace(/^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/,"")!="")
-            v=v.replace(/.$/,"")
-        return v
-    }
+    function FormataCnpj(campo, teclapres)
+			{
+				var tecla = teclapres.keyCode;
+				var vr = new String(campo.value);
+				vr = vr.replace(".", "");
+				vr = vr.replace("/", "");
+				vr = vr.replace("-", "");
+				tam = vr.length + 1;
+				if (tecla != 14)
+				{
+					if (tam == 3)
+						campo.value = vr.substr(0, 2) + '.';
+					if (tam == 6)
+						campo.value = vr.substr(0, 2) + '.' + vr.substr(2, 5) + '.';
+					if (tam == 10)
+						campo.value = vr.substr(0, 2) + '.' + vr.substr(2, 3) + '.' + vr.substr(6, 3) + '/';
+					if (tam == 15)
+						campo.value = vr.substr(0, 2) + '.' + vr.substr(2, 3) + '.' + vr.substr(6, 3) + '/' + vr.substr(9, 4) + '-' + vr.substr(13, 2);
+				}
+			}
     
     /*Função que padroniza o Site*/
-    function Site(v){
+    function blogs(v){
         v=v.replace(/^http:\/\/?/,"")
         dominio=v
         caminho=""
@@ -103,35 +117,4 @@
         return v
     }
 
-    /*Função que padroniza DATA*/
-    function Data(v){
-        v=v.replace(/\D/g,"") 
-        v=v.replace(/(\d{2})(\d)/,"$1/$2") 
-        v=v.replace(/(\d{2})(\d)/,"$1/$2") 
-        return v
-    }
     
-    /*Função que padroniza DATA*/
-    function Hora(v){
-        v=v.replace(/\D/g,"") 
-        v=v.replace(/(\d{2})(\d)/,"$1:$2")  
-        return v
-    }
-    
-    /*Função que padroniza valor monétario*/
-    function Valor(v){
-        v=v.replace(/\D/g,"") //Remove tudo o que não é dígito
-        v=v.replace(/^([0-9]{3}\.?){3}-[0-9]{2}$/,"$1.$2");
-        //v=v.replace(/(\d{3})(\d)/g,"$1.$2")
-        v=v.replace(/(\d)(\d{2})$/,"$1,$2") //Coloca ponto antes dos 2 últimos digitos
-        return v 
-    }
-    
-    /*Função que padroniza Area*/
-    function Area(v){
-        v=v.replace(/\D/g,"") 
-        v=v.replace(/(\d)(\d{2})$/,"$1.$2") 
-        return v
-        
-    }
-
