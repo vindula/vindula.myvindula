@@ -1,7 +1,7 @@
 <html metal:use-macro="here/main_template/macros/master">
 	<head>
 		  <metal:js fill-slot="javascript_head_slot">
-			<script type="text/javascript" src="" tal:attributes="src string:${view/static}/js/popup.js"></script>
+			<script type="text/javascript" src="" tal:attributes="src string:${context/absolute_url}/++resource++vindula.myvindula.views/js/popup.js"></script>
 		
         </metal:js>
 		

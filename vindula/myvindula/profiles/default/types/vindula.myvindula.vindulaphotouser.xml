@@ -9,12 +9,12 @@
  <property name="description" i18n:translate="">Foto do Usuário.</property>
  <property name="content_icon">++resource++vindula.myvindula.images/vindulaphotouser.png</property>
  <property name="allow_discussion">True</property>
- <property name="global_allow">True</property>
+ <property name="global_allow">False</property>
  <property name="filter_content_types">False</property>
  <property name="allowed_content_types" />
  
  <!-- schema interface -->
- <property name="schema">vindula.myvindula.vindulaphotouser.IVindulaPhotoUser</property> 
+ <property name="schema">vindula.myvindula.content.vindulaphotouser.IVindulaPhotoUser</property> 
 
  <!-- add permission -->
  <property name="add_permission">cmf.AddPortalContent</property>

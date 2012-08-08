@@ -1,28 +1,25 @@
 # coding: utf-8
 from five import grok
 from plone.app.layout.navigation.interfaces import INavigationRoot
-from Products.CMFCore.interfaces import ISiteRoot
 from zope.interface import Interface
-from plone.uuid.interfaces import IUUID
-
-from Products.CMFCore.utils import getToolByName
-from zope.app.component.hooks import getSite
-
-from vindula.myvindula.validation import valida_form
-
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
-from vindula.myvindula.user import ModelsFuncDetails
-from vindula.myvindula.vindulalistdocumentuser import IVindulaListDocumentUser
+from vindula.myvindula.models.funcdetails import ModelsFuncDetails
+from vindula.myvindula.user import BaseFunc
+from vindula.myvindula.content.vindulalistdocumentuser import IVindulaListDocumentUser
 
-from vindula.myvindula.document_models import BaseFunc, SchemaManageDocument, SchemaDocument, ModelsConfigDocuments, ModelsUserDocuments
+
+from vindula.myvindula.document_models import SchemaManageDocument, SchemaDocument
+from vindula.myvindula.models.config_documents import ModelsConfigDocuments
+from vindula.myvindula.models.user_documents import ModelsUserDocuments
+
 from datetime import datetime 
 import pickle                                   
 
 
 class MyVindulaManageDocumentView(grok.View):
     grok.context(IVindulaListDocumentUser)
-    grok.require('cmf.ManagePortal')
+    grok.require('cmf.AddPortalContent')
     grok.name('myvindula-manage-documents')
     
     def get_Documents(self):
@@ -31,7 +28,7 @@ class MyVindulaManageDocumentView(grok.View):
     
 class MyVindulaAddDocumentView(grok.View, BaseFunc):
     grok.context(IVindulaListDocumentUser)
-    grok.require('cmf.ManagePortal')
+    grok.require('cmf.AddPortalContent')
     grok.name('add-documents')
     
     def load_form(self):
@@ -40,7 +37,7 @@ class MyVindulaAddDocumentView(grok.View, BaseFunc):
     
 class MyVindulaEditDocumentView(grok.View, BaseFunc):
     grok.context(IVindulaListDocumentUser)
-    grok.require('cmf.ManagePortal')
+    grok.require('cmf.AddPortalContent')
     grok.name('edit-documents')
     
     # This may be overridden in ZCML
@@ -64,7 +61,7 @@ class MyVindulaEditDocumentView(grok.View, BaseFunc):
 
 class MyVindulaExportDocumentView(grok.View, BaseFunc):
     grok.context(INavigationRoot)
-    grok.require('cmf.ManagePortal')
+    grok.require('cmf.AddPortalContent')
     grok.name('export-documents')
     
     def render(self):
@@ -224,12 +221,6 @@ class VindulaDocumentosDownloadView(grok.View):
     grok.require('zope2.View')
     grok.name('download-document')
     
-    def decodePickle(self,valor):
-        if valor:
-            return pickle.loads(str(valor))
-        else:
-            return ''
-
     def render(self):
         pass
     

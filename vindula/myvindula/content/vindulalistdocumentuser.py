@@ -3,15 +3,16 @@ from five import grok
 from zope import schema
 from plone.directives import form
 
-from vindula.content import MessageFactory as _
+from vindula.myvindula import MessageFactory as _
+
 from zope.interface import Interface
 
 from vindula.myvindula.validation import valida_form
 
-from vindula.myvindula.document_models import BaseFunc, ModelsUserDocuments
+from vindula.myvindula.models.user_documents import ModelsUserDocuments
+from vindula.myvindula.models.funcdetails import ModelsFuncDetails
 
-from vindula.myvindula.user import ModelsFuncDetails
-
+from vindula.myvindula.tools.utils import UtilMyvindula
 
 # Interface and schema
 class IVindulaListDocumentUser(form.Schema):
@@ -30,11 +31,10 @@ class IVindulaListDocumentUser(form.Schema):
                               required=False)
     
     
-class MyVindulaListDocumentView(grok.View, BaseFunc):
+class MyVindulaListDocumentView(grok.View, UtilMyvindula):
     grok.context(IVindulaListDocumentUser)
     grok.require('zope2.View')
     grok.name('view')
-    
     
     def load_list(self):
         form = self.request.form # var tipo 'dict' que guarda todas as informacoes do formulario (keys,items,values)
@@ -92,22 +92,3 @@ class MyVindulaListDocumentView(grok.View, BaseFunc):
                 pass
         return []
     
-#    def doc_enviado(self, id):
-#        membership = self.context.portal_membership
-#        user_login = membership.getAuthenticatedMember()
-#        
-#        try:user = unicode(user_login.id, 'utf-8')
-#        except:user = user_login.id
-#        
-#        doc_user = ModelsUserDocuments().get_UserDocuments_by_user_and_doc(user,int(id)) 
-#        
-#        if doc_user:
-#            return doc_user.id
-#        else:
-#            return False
-#        
-#
-#        
-#        
-#    
-#            

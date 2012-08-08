@@ -9,8 +9,10 @@ from vindula.myvindula.user import BaseFunc, ModelsDepartment, ModelsFuncDetails
                                    ModelsMyvindulaFuncdetailCouses,ModelsMyvindulaCourses,\
                                    ModelsMyvindulaFuncdetailLanguages, ModelsMyvindulaLanguages,\
                                    ModelsConfgMyvindula
+
+from vindula.myvindula.models.base import BaseStore               
                
-class SchemaFunc(BaseFunc):
+class SchemaFunc(BaseFunc,BaseStore):
     def to_utf8(value):
         return unicode(value, 'utf-8')
 
@@ -59,6 +61,8 @@ class SchemaFunc(BaseFunc):
         form_keys = form.keys() # var tipo 'list' que guarda todas as chaves do formulario (keys)
         campos = self.campos
         #user = context.context.portal_membership.getAuthenticatedMember()
+
+        self.store = BaseStore().store
 
         if not manage:
             try:
