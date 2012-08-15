@@ -15,9 +15,10 @@
 	
 	<body>
 	    <div metal:fill-slot="content" tal:define="form_data view/load_form | python:{};
-			                              errors form_data/errors | python:{};
-										  form_values form_data/data | python:{};
-										  departamentos form_data/departametos|python:{};
+			                                       errors form_data/errors | python:{};
+										           form_values form_data/data | python:{};
+										           departamentos form_data/departametos|python:{};
+										  
 										  username form_data/username|python:{};
 										  config_myvindula form_data/config_myvindula|python:{};
 										  manage form_data/manage|python:False">
@@ -30,6 +31,7 @@
 				<tal:cont condition="manage">
 					<h1>Edite as informações pessoais do usu&aacute;rio <span tal:content="form_data/name|nothing"></span></h1>	
 				</tal:cont>
+		        
 		        <tal:cont condition="not:manage">
 					<h1>Edite suas informações pessoais</h1>	
 				</tal:cont>
@@ -50,13 +52,13 @@
 			            
 						<fieldset>
 			            	<legend>Informações Pessoais</legend>
-							<!-- ID da user--> 
+							<!-- ID da user --> 
 							
 							<input id="user" type="hidden" value="" name="user" tal:condition="manage" tal:attributes="value request/user|nothing">
 		                      
-							<!-- Select Departamento --> 
+							<!-- Select Departamento  -->
 							<div class="field" tal:attributes="class python: view.field_class(errors, 'vin_myvindula_department')"
-											   tal:condition="python: view.get_ConfugCampos('vin_myvindula_department') or manage">
+											   tal:condition="python: view.get_ConfugCampos('vin_myvindula_department') or manage" >
 								<label for="vin_myvindula_department">Departamentos</label>
 			                    <span class="fieldRequired" title="Obrigatório">(Obrigatório)</span>	
 			                    <div class="formHelp">Selecione o departamento do funcionário.</div>
@@ -70,7 +72,6 @@
 																		checked python: str(departamento.UID) in id_request"/>
 																		<label tal:content="departamento/Title | nothing"></label><br/>
 										</tal:repeat>	
-										
 			                    	</div>
 			                    </tal:cond>
 								<tal:cond condition="not: departamentos">
@@ -93,9 +94,14 @@
 			                    <span class="fieldRequired" title="Obrigatório">(Obrigatório)</span>	
 			                    <div class="formHelp">Digite o username do usuário.</div>
 								<div tal:content="errors/username|nothing"></div>
-								<input id="username-old" type="hidden" value="" name="username-old"  tal:attributes="value request/username-old | form_values/username | nothing">
-			                    <input id="username" type="text" value="" name="username"  tal:attributes="value request/username | form_values/username | nothing">
-								<input id="newuser" type="hidden" value="" name="newuser" >
+								
+								<input id="username-old" type="hidden" value="" name="username-old"  
+								       tal:attributes="value request/username-old | form_values/username | nothing">
+			                    
+			                    <input id="username" type="text" value="" name="username"  
+			                           tal:attributes="value request/username | form_values/username | nothing">
+								
+								<!--input id="newuser" type="hidden" value="" name="newuser" -->
 							</div>	
 								
 							<input id="username" type="hidden" value="" name="username" tal:attributes="value request/username| username |nothing"

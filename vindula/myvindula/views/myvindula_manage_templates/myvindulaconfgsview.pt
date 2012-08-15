@@ -11,57 +11,80 @@
   </head>  
   <body>
   <metal:main fill-slot="prefs_configlet_content">
+        <script type="text/javascript" tal:attributes="src string:${view/static}/js/ajax_ordem_campos.js"></script>
+      
+        <div metal:use-macro="context/global_statusmessage/macros/portal_message">
+         Status message
+        </div>
 
-		<div id="content" tal:define="form_data view/load_form | python:{};
-		                              errors form_data/errors | python:{};
-									  form_values form_data/data | python:{};
-									  departamentos form_data/departametos|python:{};
-									  username form_data/username|python:{};
-									  config_myvindula form_data/config_myvindula|python:{};">
+		<div id="content" tal:define="data view/load_form | python:[];">
 	        
 	        <h1>Campos do Perfil de usu&aacute;rio</h1>
 			
-			<div id="interna" >    		
-		        <form name="myvindulaconfgs" id="myvindulaconfgs" enctype="multipart/form-data"
-		        	  class="enableAutoFocus" action="myvindulaconfgs" method="POST">
-
+			<div>    	
+    			    <fieldset>
+                        <legend>Novo Campo</legend>
+                        <p>
+                            <a tal:attributes="href string:${context/portal_url}/edit_myvindulaconfgs">
+                                Cadastrar novo campo</a>
+                        </p>
+    			    </fieldset>
+   			    
 		            <fieldset>
-		            	<legend>Campos Habilitados Para Edição</legend>
-						<!-- ID da user
-						<input id="id" type="hidden" value="" name="id" tal:attributes="value request/id| id |nothing">
-						--> 
-						<tal:def define="html python:view.geraConfCampos(form_data)">
-							<tal:rep repeat="x html">
-								<div tal:define="class_odd repeat/x/odd;
-									 			 class_even repeat/x/even"
-									 tal:attributes="class python: (class_odd and 'odd') or (class_even and 'even')"   
-									tal:content="structure x" />
-							</tal:rep>
-						</tal:def>
-					
+		            	<legend>Campos Para o Perfil do Usuário</legend>
+                            
+                        <table id="listing-table" class="listing">
+                            <tr>
+                                <th></th>
+                                <th>Nome Técnico</th>
+                                <th>Habilitado para edição</th>
+                                <th>Habilitado para visão</th>
+                                <th>Titulo</th>
+                                <th>Tipo</th>
+                                <th colspan="2">ordenar</th>
+                                
+                            </tr>
+                            <tbody class="sortable" >
+                                <tal:rep repeat="item data">
+                                    <tr tal:attributes="id string:${item/fields}">
+                                        <td class="draggable draggingHook" style="cursor: ns-resize;">⣿</td>
+                                        <td>
+                                            <a title="Editar campos" alt="Editar campos"
+                                                tal:attributes="href string:${context/absolute_url}/edit_myvindulaconfgs?fields=${item/fields}"
+                                                tal:content="item/fields|nothing">fields</a>
+                                        </td>
+                                        <td tal:content="item/ativo_edit|nothing"> True </td>
+                                        <td tal:content="item/ativo_view|nothing"> True </td>
+                                        <td tal:content="item/label|nothing"> Titulo </td>    
+                                        <td tal:content="item/type|nothing">text</td>
+                                        <td class="draggable" align="center">
+                                            <a title="Mover item para cima" 
+                                               tal:condition="not:repeat/item/start"
+                                               tal:attributes="href string:${context/absolute_url|nothing}/edit_myvindulaconfgs?position=up&fields=${item/fields}">▲</a>
+                                        </td>
+                                        <td class="draggable" align="center">
+                                            <a title="Mover item para baixo"
+                                               tal:condition="not:repeat/item/end" 
+                                               tal:attributes="href string:${context/absolute_url|nothing}/edit_myvindulaconfgs?position=down&fields=${item/fields}">▼</a>
+                                        </td>
+                                    </tr>
+                                </tal:rep>
+                            </tbody>
+                        </table>
+						
+
 					</fieldset>
-					<!--fieldset style="float:right">
-		            	<legend>Campos Habilitados Para Visualização</legend>
-						<!-- ID da user-- 
-						<input id="id" type="hidden" value="" name="id" tal:attributes="value request/id| id |nothing">
-	
-						<tal:def define="html python:view.geraConfCampos(form_data,False)">
-							<tal:rep repeat="x html">
-								<div tal:content="structure x"/>
-							</tal:rep>
-						</tal:def>
-					
-					</fieldset-->
 					<div class="visualClear"></div>
 					<!-- Botões de ação -->	
 				   	<fieldset>
 			            <br />		
 						<div style="float:left; width:100%">
-							<input style="width:100px" class="button-erp" type="submit" value="Voltar" name="form.voltar">
-							<input style="width:100px;" class="button-erp" type="submit" value="Salvar" name="form.submited">
+							<input style="width:100px" class="button-erp" type="button" value="Voltar" name="form.voltar"
+							       onclick="window.location.href = 'http://'+ window.location.host + '/vindula-control-panel';"  >
+							
 						</div>
 					</fieldset>
-				</form>
+
 			</div>
 		</div>
   </metal:main>

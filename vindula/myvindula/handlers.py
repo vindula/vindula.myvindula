@@ -1,69 +1,73 @@
  #-*- coding: utf-8 -*-
 from zope.component import getUtility
 from vindula.chat.interfaces import IXMPPUsers 
-from zope.app.component.hooks import getSite
 from Products.CMFCore.interfaces import ISiteRoot
-#from zExceptions import Redirect
 
-from vindula.myvindula.user import ModelsFuncDetails
+#from vindula.myvindula.user import ModelsFuncDetails
 from vindula.chat.utils.setup import CreateUserXMPP
 from vindula.chat.utils.models import ModelsUserOpenFire
 
-import logging
+from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
+from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 
-def to_utf8(value):
-    return unicode(value, 'utf-8') 
+from vindula.myvindula.tools.utils import UtilMyvindula
 
-logger = logging.getLogger('vindula.chat')
 
 def userupdate(event):
     """ Handler for User Login in Site """
-    membership = getSite().portal_membership
-    user_login = membership.getAuthenticatedMember()
-    registro_url = getSite().absolute_url() + '/myvindula-first-registre'
-    enable = getSite().restrictedTraverse('@@myvindula-conf-userpanel').check_alert_first_access()
-    request = getSite().REQUEST        
-                
-    try:
-        user_id = to_utf8(user_login.getUserName())
-    except:
-        user_id = user_login.getUserName()
+    tools = UtilMyvindula()
+    
+    user_login = tools.membership.getAuthenticatedMember()
+    enable = tools.site.restrictedTraverse('@@myvindula-conf-userpanel').check_alert_first_access()
+    
+    user_id = tools.Convert_utf8(user_login.getUserName())      
         
-    if not ModelsFuncDetails().get_FuncDetails(user_id) or\
+    user_instance = ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id)
+        
+    if not user_instance or\
        not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id) and\
        user_id != 'admin':
         
-        if not ModelsFuncDetails().get_FuncDetails(user_id):
-            D = {}
-            D['username'] = user_id
+        if not ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id):
+            id_instance = ModelsInstanceFuncdetails().set_InstanceFuncdetails(user_id)
+            dados = {}
+            
             if user_login.getProperty('fullname'):
-                user = user_login.getProperty('fullname')
-            else:user = user_id
+                dados['name'] = user_login.getProperty('fullname')
+            else:
+                dados['name'] = user_id
             
-            try:D['name'] = to_utf8(user)
-            except:D['name'] = user
+            dados['email'] = user_login.getProperty('email')
             
-            try:D['email'] = to_utf8(user_login.getProperty('email'))
-            except:D['email'] = user_login.getProperty('email')
+            campos = ['name','email']
+            for campo in campos:
+                D={}
+                D['vin_myvindula_instance_id'] = id_instance
+                D['vin_myvindula_confgfuncdetails_fields'] = campo
+                D['valor'] = self.Convert_utf8(dados.get(campo))
+                
+                ModelsDadosFuncdetails().set_DadosFuncdetails(**D)
             
-            ModelsFuncDetails().set_FuncDetails(**D)
             logger.info("Usuario criado no myvindula")
         
         elif not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
             
             CreateUserXMPP(user_id)
         
-        request.other["came_from"]=registro_url
-        request.response.redirect(registro_url, lock=True)
+        #request.other["came_from"]=registro_url
+        #request.response.redirect(registro_url, lock=True)
+        tools.setRedirectPage('/myvindula-first-registre')
+        
         
     else:
-        user_data = ModelsFuncDetails().get_FuncDetails(user_id)
+        user_data =  tools.get_prefs_user(user_id)
         
-        if ((not user_data.name) or (not user_data.date_birth) or\
-            (not user_data.phone_number) or (not user_data.email)) and enable:
+        if ((not user_data.get('name')) or (not user_data.get('date_birth')) or\
+            (not user_data.get('phone_number')) or (not user_data.get('email'))) and enable:
             
             logger.info("Dados Incompletos no myvindula")
             
-            request.other["came_from"]=registro_url
-            request.response.redirect(registro_url, lock=True)
+            #request.other["came_from"]=registro_url
+            #request.response.redirect(registro_url, lock=True)
+            tools.setRedirectPage('/myvindula-first-registre')
             

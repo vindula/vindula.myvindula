@@ -17,6 +17,8 @@ class ModelsMyvindulaFuncdetailLanguages(Storm, BaseStore):
     vin_myvindula_funcdetail_username = Unicode(primary=True)
     vin_myvindula_languages_id = Int()
     
+    languages = Reference(vin_myvindula_languages_id, "ModelsMyvindulaLanguages.id")
+    
     def get_funcdetailLanguagesByUsername(self, user):
         data = self.store.find(ModelsMyvindulaFuncdetailLanguages, ModelsMyvindulaFuncdetailLanguages.vin_myvindula_funcdetail_username==user)
         

@@ -22,17 +22,25 @@
     
     /*Função que padroniza telefone (11) 4184-1241*/
     function Telefone(v){
-        v=v.replace(/\D/g,"")                 
-        v=v.replace(/^(\d\d)(\d)/g,"($1) $2") 
-        v=v.replace(/(\d{4})(\d)/,"$1-$2")    
+        if (v.length<=15){
+            v=v.replace(/\D/g,"")                 
+            v=v.replace(/^(\d\d)(\d)/g,"($1) $2") 
+            v=v.replace(/(\d{4})(\d)/,"$1-$2")
+        } else{
+            v = limitText(v,15)   
+        }     
         return v
     }
 			
     /*Função que padroniza DATA*/
     function Data(v){
-        v=v.replace(/\D/g,"") 
-        v=v.replace(/(\d{2})(\d)/,"$1/$2") 
-        v=v.replace(/(\d{2})(\d)/,"$1/$2") 
+        if (v.length<=10){
+            v=v.replace(/\D/g,"") 
+            v=v.replace(/(\d{2})(\d)/,"$1/$2") 
+            v=v.replace(/(\d{2})(\d)/,"$1/$2") 
+        }else{
+            v = limitText(v,10)   
+        }    
         return v
     }
     
@@ -55,30 +63,42 @@
     
     /*Função que padroniza CPF*/
     function Cpf(v){
-        v=v.replace(/\D/g,"")                    
-        v=v.replace(/(\d{3})(\d)/,"$1.$2")       
-        v=v.replace(/(\d{3})(\d)/,"$1.$2")       
-                                                 
-        v=v.replace(/(\d{3})(\d{1,2})$/,"$1-$2") 
+        if (v.length<=14){
+            v=v.replace(/\D/g,"")                    
+            v=v.replace(/(\d{3})(\d)/,"$1.$2")       
+            v=v.replace(/(\d{3})(\d)/,"$1.$2")       
+                                                     
+            v=v.replace(/(\d{3})(\d{1,2})$/,"$1-$2") 
+        }else{
+            v = limitText(v,14)   
+        }  
         return v
     }
     
     /*Função que padroniza CEP*/
     function Cep(v){
-        v=v.replace(/D/g,"")                
-        v=v.replace(/^(\d{5})(\d)/,"$1-$2") 
+        if (v.length<=9){
+            v=v.replace(/D/g,"")                
+            v=v.replace(/^(\d{5})(\d)/,"$1-$2")
+        } else{
+            v = limitText(v,9)   
+        }  
         return v
     }
     
-    /*Função que padroniza CNPJ
+    /*Função que padroniza CNPJ */
     function Cnpj(v){
-        v=v.replace(/\D/g,"")                   
-        v=v.replace(/^(\d{2})(\d)/,"$1.$2")     
-        v=v.replace(/^(\d{2})\.(\d{3})(\d)/,"$1.$2.$3") 
-        v=v.replace(/\.(\d{3})(\d)/,".$1/$2")           
-        v=v.replace(/(\d{4})(\d)/,"$1-$2")              
+        if (v.length>=18){
+            v=v.replace(/\D/g,"")                   
+            v=v.replace(/^(\d{2})(\d)/,"$1.$2")     
+            v=v.replace(/^(\d{2})\.(\d{3})(\d)/,"$1.$2.$3") 
+            v=v.replace(/\.(\d{3})(\d)/,".$1/$2")           
+            v=v.replace(/(\d{4})(\d)/,"$1-$2")
+        }else{
+            v = limitText(v,18)   
+        }                
         return v
-    }*/
+    }
     
     function FormataCnpj(campo, teclapres)
 			{
@@ -117,4 +137,10 @@
         return v
     }
 
+
+    function limitText(limit, limitNum) {
+        if (limit.length > limitNum) {
+            return limit.substring(0, limitNum);
+        } 
+    }
     

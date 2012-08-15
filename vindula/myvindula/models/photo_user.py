@@ -13,10 +13,14 @@ class ModelsPhotoUser(Storm, BaseStore):
     __storm_table__ = 'vin_myvindula_photo_user'
     
     id = Int(primary=True)
-    username = Unicode()
     date_creation = DateTime()
+    username = Unicode()
+    
     photograph = Pickle()
     thumb = Pickle()
+    
+    vin_myvindula_confgfuncdetails_fields = Unicode()
+    vin_myvindula_instance_id = Int()
         
     def set_ModelsPhotoUser(self, **kwargs):
         # adicionando...
@@ -25,12 +29,15 @@ class ModelsPhotoUser(Storm, BaseStore):
         self.store.flush()
         return setup.id          
     
-    def del_ModelsPhotoUser(self, username):
-        result = self.get_ModelsPhotoUser_byUsername(username)
-        if result:
-            self.store.remove(result)
-            self.store.flush()
+    
 
+    def get_ModelsPhotoUser_byFieldAndInstance(self,field, instance):
+        data = self.store.find(ModelsPhotoUser, ModelsPhotoUser.vin_myvindula_instance_id == instance,
+                                                ModelsPhotoUser.vin_myvindula_confgfuncdetails_fields==field).one()
+        if data:
+            return data
+        else:
+            return None
     
     def get_ModelsPhotoUser_byID(self,id):
         data = self.store.find(ModelsPhotoUser, ModelsPhotoUser.id == id).one()
@@ -39,9 +46,18 @@ class ModelsPhotoUser(Storm, BaseStore):
         else:
             return None
 
+
+# Metodos de Migração temporario
     def get_ModelsPhotoUser_byUsername(self,username):
         data = self.store.find(ModelsPhotoUser, ModelsPhotoUser.username == username).one()
         if data:
             return data
         else:
             return None
+    
+    
+    def del_ModelsPhotoUser(self, username):
+        result = self.get_ModelsPhotoUser_byUsername(username)
+        if result:
+            self.store.remove(result)
+            self.store.flush()

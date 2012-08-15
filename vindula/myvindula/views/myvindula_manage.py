@@ -19,10 +19,24 @@ from vindula.myvindula.validation import valida_form
 
 from vindula.myvindula.user import BaseFunc, ModelsFuncDetails,\
                                    ModelsFuncHolerite, ModelsFuncHoleriteDescricao
+                                   
+from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula                                 
 
 from vindula.myvindula.registration import SchemaFunc, SchemaConfgMyvindula, ImportUser, ManageCourses, ManageLanguages
 from vindula.chat.utils.models import ModelsUserOpenFire
 from vindula.myvindula.utils import UtilMyvindula
+
+
+from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
+from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
+
+
+from vindula.myvindula.models.courses import ModelsMyvindulaCourses
+from vindula.myvindula.models.languages import ModelsMyvindulaLanguages
+
+from vindula.myvindula.models.funcdetail_couses import ModelsMyvindulaFuncdetailCouses
+from vindula.myvindula.models.funcdetail_languages import ModelsMyvindulaFuncdetailLanguages
+
 
 logger = logging.getLogger('vindula.myvindula')
 
@@ -39,9 +53,129 @@ class MyVindulaConfgsView(grok.View, UtilMyvindula):
     description = _(u"Change the Settings of the Register myvindula.")   
     
     def load_form(self):
+        #return SchemaConfgMyvindula().configuration_processes(self)
+        return ModelsConfgMyvindula().get_configurationAll()
+    
+
+class MyVindulaEditConfgsView(grok.View, UtilMyvindula):
+    grok.context(INavigationRoot)
+    grok.require('cmf.ManagePortal')
+    grok.name('edit_myvindulaconfgs')
+    
+    def load_form(self):
         return SchemaConfgMyvindula().configuration_processes(self)
 
+    def update(self):
+        self.BlackList = ['vin_myvindula_department','teaching_research',
+                          'date_birth','email','phone_number','name','photograph']
 
+class MyVindulaEditOrdemConfgsView(grok.View, UtilMyvindula):
+    grok.context(INavigationRoot)
+    grok.require('cmf.ManagePortal')
+    grok.name('ordem_myvindulaconfgs')
+
+    def render(self):
+        return ''
+
+    def update(self):
+        form = self.request.form
+        
+        if 'list' in form.keys():
+            n = 0
+            list = form.get('list','').split(',')
+            for i in list:
+                #i = i.split('|')
+                campo = self.Convert_utf8(i)
+                #ordem = n
+                ModelsConfgMyvindula().set_ordemConfiguration(campo,n)
+                n += 1
+            
+
+# View de migração do banco de dedos para a versão 1.2
+class MyVindulaMigrationFuncdetailsView(grok.View,UtilMyvindula):
+    grok.context(INavigationRoot)
+    grok.require('cmf.ManagePortal')
+    grok.name('migration_funcdetails')
+    
+    def render(self):
+        return 'Migração dos dados do myvindula'
+    
+    
+    def update(self):
+       
+        allUsuarios = ModelsFuncDetails().get_allFuncDetails()
+        allCampos = ModelsConfgMyvindula().get_configurationAll()
+        tool = UtilMyvindula()
+        
+        for user in allUsuarios:
+            username = user.username
+            user_instance = ModelsInstanceFuncdetails().get_InstanceFuncdetails(username)
+            if not user_instance:
+                id_instance = ModelsInstanceFuncdetails().set_InstanceFuncdetails(username)
+            else:
+                id_instance = user_instance.id
+            
+            for campo in allCampos:
+                valor = None
+                if campo.fields in ['vin_myvindula_department']:
+                    continue
+                
+                if campo.fields == 'skills_expertise':
+                    dado_curso = ''
+                    for curso in ModelsMyvindulaCourses().get_allCourses():
+                        dado_curso += curso.title +' - ' +curso.length +'\n' 
+                     
+                    campo.list_values = self.Convert_utf8(dado_curso)
+                    
+                    cursos_user = ModelsMyvindulaFuncdetailCouses().get_funcdetailCouserByUsername(username)
+                    if cursos_user:
+                        L = []
+                        for cursos in cursos_user:
+                            curso = cursos.courses
+                            L.append(curso.title +' - ' +curso.length)
+                        
+                        valor = self.encodePickle(L)
+
+                elif campo.fields == 'languages':
+                    dado_languages = ''
+                    for language in ModelsMyvindulaLanguages().get_allLanguages():
+                        dado_languages += language.title +' - ' +language.level +'\n' 
+                     
+                    campo.list_values = self.Convert_utf8(dado_languages)
+                    
+                    languages_user = ModelsMyvindulaFuncdetailLanguages().get_funcdetailLanguagesByUsername(username)
+                    if languages_user:
+                        L = []
+                        for languages in languages_user:
+                            language = languages.languages
+                            L.append(language.title +' - ' +language.level)
+                        
+                        valor = self.encodePickle(L)
+               
+                try:
+                    if not valor:
+                        valor = user.__getattribute__(campo.fields)
+                except: 
+                    valor = None
+                
+                if valor:
+                    if type(valor) == datetime:
+                        valor = valor.strftime('%d/%m/%Y %H:%M:%S')
+                    elif type(valor) == date:
+                       valor = valor.strftime('%d/%m/%Y')
+                
+                    result_campo = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstanceAndField(id_instance,campo.fields)
+                    if result_campo: 
+                        result_campo.valor = self.Convert_utf8(valor)
+                        tool.db.store.commit()
+                    else:
+                        D={}
+                        D['vin_myvindula_instance_id'] = id_instance
+                        D['vin_myvindula_confgfuncdetails_fields'] = campo.fields
+                        D['valor'] = self.Convert_utf8(valor)
+                        
+                        ModelsDadosFuncdetails().set_DadosFuncdetails(**D)
+                
 
 class MyVindulaImportUser(grok.View, UtilMyvindula):
     grok.context(INavigationRoot)

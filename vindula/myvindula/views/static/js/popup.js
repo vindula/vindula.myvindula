@@ -24,15 +24,17 @@ function RemoveFoto(){
 
 $j(document).ready(function(){
 	
-    var common_content_filter = '#content>*:not(div.configlet),dl.portalMessage.error,dl.portalMessage.info';
-    var common_jqt_config = {fixed:false,speed:'fast',mask:{color:'#000',opacity: 0.4,loadSpeed:0,closeSpeed:0}, height:'400px'};
+    var common_content_filter = '#content=*:not(div.configlet),dl.portalMessage.error,dl.portalMessage.info';
+    var common_jqt_config = {fixed:false,speed:'fast',mask:{color:'#000',opacity: 0.4,loadSpeed:0,closeSpeed:0}};
 
     // Visual dialog
    
    $j('a.crop-foto').prepOverlay({
-        subtype: 'iframe',
-        config: common_jqt_config,
-        width:'50%'
+        subtype: 'ajax',
+        filter: common_content_filter,
+        formselector: '[name=crop_image]',
+        width: '50%',
+        config: common_jqt_config
    });
    
    $j('a.excluir-foto').prepOverlay({
@@ -41,16 +43,27 @@ $j(document).ready(function(){
         width:'20%'
    });
    
+   
+
+
+   
+   
+   
+   
+
+/*    
    $j('a.excluir-foto').click(function(){
        var height = '150px';
        $j('div.overlay iframe').css('height', height);
        
    });
    
-        
+       
    $j('a.crop-foto').click(function(){
        var height = (window.innerHeight - 22 )*0.7 +'px';
        $j('div.overlay iframe').css('height', height);
        
    });
+   
+*/   
 });

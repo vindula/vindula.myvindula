@@ -11,17 +11,17 @@ from PIL import Image
 
 from vindula.myvindula.user import ModelsFuncDetails
 
+from vindula.myvindula.tools.utils import UtilMyvindula
+
 #Imports regarding the connection of the database 'strom'
-from storm.locals import *
 from vindula.myvindula.user import BaseFunc
-from vindula.myvindula.models.base import BaseStore
 from vindula.myvindula.models.photo_user import ModelsPhotoUser
 
 from vindula.myvindula import PROJECT_ROOT_PATH
 import pickle, StringIO
 
 
-class MyVindulaUserCropImageView(grok.View):
+class MyVindulaUserCropImageView(grok.View,UtilMyvindula):
     grok.context(Interface)
     grok.require('zope2.View')
     grok.name('myvindula-user-crop')
@@ -29,14 +29,17 @@ class MyVindulaUserCropImageView(grok.View):
     def update(self):
         """ Receive itself from request and do some actions """
         form = self.request.form
+        
         submitted = form.get('form.submitted', False)
         croped = form.get('form.crop', False)
         self.error = ''
         
         if submitted:
-            try:username = unicode(form.get('username',''))
-            except:username = form.get('username','')  
-
+            
+            field = self.Convert_utf8(form.get('field',''))
+            instance = int(form.get('instance_id','0'))
+            
+                        
             if form['photo'].filename != '':
                 photo = form.get('photo',None)    
                 filename = photo.filename # pega o nome do arquivo
@@ -74,11 +77,15 @@ class MyVindulaUserCropImageView(grok.View):
                     M['filename'] = filename                        
                     photograph = pickle.dumps(M)
                     
-                    check_user = ModelsPhotoUser().get_ModelsPhotoUser_byUsername(username) 
+                    check_user = ModelsPhotoUser().get_ModelsPhotoUser_byFieldAndInstance(field,instance) 
                     if not check_user:
                         D = {}
-                        D['username'] = username 
-                        D['photograph'] = photograph           
+                        #D['username'] = username 
+                        D['photograph'] = photograph
+                        
+                        D['vin_myvindula_instance_id'] = instance
+                        D['vin_myvindula_confgfuncdetails_fields'] = field
+                                   
                         
                         self.id_photo = ModelsPhotoUser().set_ModelsPhotoUser(**D)
                     
@@ -91,8 +98,7 @@ class MyVindulaUserCropImageView(grok.View):
                 self.error = 'Insira um arquivo de imagem.'
                     
         elif croped:
-            try:username = unicode(form.get('username',''))
-            except:username = form.get('username','')
+            
             id = form.get('id','')
             
             imagem_data = campo_image = ModelsPhotoUser().get_ModelsPhotoUser_byID(int(id))
@@ -142,15 +148,18 @@ class MyVindulaUserImage(grok.View, BaseFunc):
             id = form.get('id','0')
             campo_image = ModelsPhotoUser().get_ModelsPhotoUser_byID(int(id))
 
-        elif 'username' in form.keys():
-            try: username = unicode(form.get('username',''))
-            except: username = form.get('username','')  
-            campo_image = ModelsPhotoUser().get_ModelsPhotoUser_byUsername(username)
-            dados_user = ModelsFuncDetails().get_FuncDetails(username)
+        elif 'field' in form.keys() and  'instance_id' in form.keys():
+            field = self.Convert_utf8(form.get('field',''))
+            instance_id = int(form.get('instance_id','0'))
+            
+            campo_image = ModelsPhotoUser().get_ModelsPhotoUser_byFieldAndInstance(field,instance_id)
+            dados_user = None #ModelsFuncDetails().get_FuncDetails(username)
             
         else:
             campo_image = None
             dados_user = None
+
+
 
         if campo_image:
             if 'full' in form.keys():
@@ -181,7 +190,7 @@ class MyVindulaUserImage(grok.View, BaseFunc):
             
 
     def loadDefault(self):
-        defaulUser = PROJECT_ROOT_PATH + '/static/images/defaultUser.png'
+        defaulUser = PROJECT_ROOT_PATH + '/views/static/images/defaultUser.png'
         try:
             file = open(defaulUser,'r')
             buffer = file.read()

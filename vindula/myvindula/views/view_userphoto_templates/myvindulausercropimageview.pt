@@ -1,0 +1,108 @@
+<html metal:use-macro="here/main_template/macros/master">
+    
+    <metal:block fill-slot="top_slot">
+        <tal:dummy tal:define="dummy python:request.set('disable_border',1);
+                               disable_column_one python:request.set('disable_plone.leftcolumn',1);
+                               disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+    </metal:block>
+    
+	<head>
+	    
+	</head>
+    <body  metal:fill-slot="content"
+           tal:define="error view/error|nothing;
+                      formsubmitted  python: request.get('form.submitted',None);
+                      formcrop       python: request.get('form.crop',None);">
+    	
+		<div tal:define="member context/@@plone_portal_state/member;" id="content" >
+		    
+    		    <script type="text/javascript"
+                            tal:attributes="src string:${view/static}/cropper/js/jquery.Jcrop.js"></script>    
+    	        
+    	        <script type="text/javascript" charset="utf-8" tal:condition="python: formsubmitted and not error"
+    	                tal:attributes="src string:${view/static}/js/crop_image_user.js" />
+		    
+		        <link type="text/css" charset="utf-8" rel="stylesheet" 
+					  tal:attributes="href string:${view/static}/cropper/css/jquery.Jcrop.css"/>
+		    
+				<h1>Alterar sua imagem do perfil</h1>
+				<form method="post" enctype="multipart/form-data" name="crop_image"
+                             tal:attributes="action string:${context/absolute_url|nothing}/myvindula-user-crop">
+				
+				    <input type="hidden" id="field" name="field" value=""
+                                         tal:attributes="value request/field|nothing">
+                    
+                    <input type="hidden" id="instance_id" name="instance_id" value=""
+                                         tal:attributes="value request/instance_id|nothing">
+				
+    				<div id="upload-image" tal:condition="python: not formsubmitted and not formcrop or error" >
+        				<!--div id="alert-display">
+        					<dl class="portal-Message warning" tal:condition="error">
+        						<dt id="title-alert">Informação</dt>
+        						<dd id="text-alert" tal:content="view/error|nothing">error</dd>
+        		    		</dl>	
+        				</div-->
+    					<fieldset id="fieldset-global-settings">
+    				    	<legend id="fieldsetlegend-global-settings">Faça o upload da sua foto</legend>
+    						
+    						<input name="photo" id="photo" type="file" value="" accept="image/*"/>
+    						<div id="buttom">
+    							<input type="hidden" name="form.submitted:boolean" value="True" />
+    							<input type="submit" name="submitted" value="Enviar" class="context bt_comments" />
+    						</div>
+    					</fieldset>
+    				</div>
+    				<div id="crop-image" tal:condition="python: formsubmitted and not error">
+    					
+    					<fieldset id="fieldset-global-settings">
+    				    	<legend id="fieldsetlegend-global-settings">Marque a área da foto a ser salva</legend>
+    
+    						<div class="row">
+    							<div class="cell width-6 position-0">
+    								<div id="testWrap">
+    									<img alt="Recortar Imagem" id="usertImage"
+    								 		 tal:attributes="src string:${context/portal_url|nothing}/user-image?id=${view/id_photo|nothing}&full=true"
+    								 	/>
+    								</div>
+    							</div>
+    							<div class="cell width-3 position-14">
+    								<h2>Preview</h2>
+    								<div style="width:100px;height: 100px;overflow: hidden;">
+    									<img alt="Recortar Imagem" id="preview"
+    							     		 tal:attributes="src string:${context/portal_url|nothing}/user-image?id=${view/id_photo|nothing}&full=true"/>
+    								</div>
+    							
+    							</div>
+    						</div>							
+    							
+    						<input type="hidden" name="id" id="id" tal:attributes="value view/id_photo|nothing"/>
+    						<!-- Informação de crop da imagem-->
+    						<input type="hidden" name="cort-x" id="cort-x" />
+    						<input type="hidden" name="cort-y" id="cort-y" />
+    						<input type="hidden" name="cort-x2" id="cort-x2" />
+    						<input type="hidden" name="cort-y2" id="cort-y2" />
+    						
+    						<div id="buttom">
+    							<input type="hidden" name="form.crop:boolean" value="True" />
+    							<input type="submit" name="submitted" value="Cortar" class="context bt_comments" />
+    						</div>
+    						
+    					</fieldset>
+    
+    				</div>
+    				<div id="crop-susseco" tal:condition="formcrop">
+    					<script type="text/javascript">
+    						$j = jQuery.noConflict();
+    						
+    						$j(document).ready(function(){
+    							$j('div.close', window.parent.document).trigger('click');
+    							window.parent.mostraFoto();
+    							
+    						});
+    						
+    					</script>	
+    				</div>
+				</form>
+		</div>
+	</body>
+</html>

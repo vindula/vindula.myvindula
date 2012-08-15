@@ -17,10 +17,13 @@ class ModelsMyvindulaFuncdetailCouses(Storm, BaseStore):
     vin_myvindula_funcdetail_username = Unicode()
     vin_myvindula_courses_id = Int()
     
+    courses = Reference(vin_myvindula_courses_id, "ModelsMyvindulaCourses.id")
+    
+    
     def get_funcdetailCouserByUsername(self, user):
         data = self.store.find(ModelsMyvindulaFuncdetailCouses, ModelsMyvindulaFuncdetailCouses.vin_myvindula_funcdetail_username==user)
         
-        if data:
+        if data.count() > 0:
             return data
         else:
             return None

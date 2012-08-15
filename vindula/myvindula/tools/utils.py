@@ -7,6 +7,9 @@ from vindula.myvindula import MessageFactory as _
 #from vindula.myvindula.models.funcdetails import ModelsFuncDetails
 from vindula.myvindula.models.photo_user import ModelsPhotoUser
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
+from vindula.myvindula.models.base import BaseStore
+
+from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
 
 from Products.CMFCore.utils import getToolByName
 from zope.app.component.hooks import getSite
@@ -14,25 +17,49 @@ from zope.app.component.hooks import getSite
 import hashlib, urllib, base64, pickle
 from datetime import date, datetime
 
+
 class UtilMyvindula(object):
 
     def __init__(self):
         self.site = getSite()
         
         self.catalog = getToolByName(self.site, 'portal_catalog')
-        self.portal_url = getToolByName(self.site, 'portal_url')    
+        self.portal_url = getToolByName(self.site, 'portal_url')
+        self.membership = self.site.portal_membership
+        
+        self.db = BaseStore()    
             
     
     def encodeUser(self,user):
         return base64.b16encode(user)
     
+    def decodeUser(self,hash):
+        return base64.b16decode(hash)
+        
+    
     def get_prefs_user(self, user):
-        try:
-            user_id = unicode(user, 'utf-8')    
-        except:
-            user_id = user 
+        user_id = self.Convert_utf8(user)
+        #return ModelsFuncDetails().get_FuncDetails(user_id)
+        
+        campos = ModelsConfgMyvindula().get_configurationAll()
+        dados = ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id)
+        
+        D = {}
+        for campo in campos:
+            D[campo.fields] = self.getDadoUser_byField(dados, campo.fields)
+        
+        return D
+        
+    
+    def getDadoUser_byField(self,instanceUser,campo):
+        if instanceUser:
+            return instanceUser.dadosUses.find(vin_myvindula_confgfuncdetails_fields=self.Convert_utf8(campo)).one()
+        else:
+            return None
+     
 
-        return ModelsFuncDetails().get_FuncDetails(user_id) 
+    def to_utf8(self, value):
+        return unicode(value, 'utf-8')
 
 
     # define se aparece ou nao as mensagens e marcacoes de erros  
@@ -71,9 +98,22 @@ class UtilMyvindula(object):
         else:
             return ''    
     
+    def encodePickle(self,valor):
+        if valor:
+            return pickle.dumps(valor)
+        else:
+            return u''
+    
     def Convert_utf8(self,valor):
-        try: return unicode(valor,'utf-8')
-        except: return valor
+        try: 
+            return unicode(valor,'utf-8')
+        except UnicodeDecodeError:
+            return valor.decode("utf-8", "replace")
+        except:
+            if type(valor) == unicode:
+                return valor
+            else:
+                return u'erro ao converter os caracteres'
     
     def rs_to_list(self, rs):
         if rs:
@@ -99,37 +139,49 @@ class UtilMyvindula(object):
    
     def getValue(self,campo,request,data):
         if campo in request.keys():
-            if request.get(campo, None):
+            if request.get(campo, None) != None:
                 return request.get(campo,'')
             else:
                 return ''
         elif campo in data.keys():
-            if data.get(campo, None):
+            if data.get(campo, None) != None:
                 return data.get(campo,'')
             else:
                 return ''
         else:
             return ''
     
+#    def getValueList(self,campo,request,data):
+#        if campo in request.keys():
+#            if request.get(campo, None):
+#                return request.get(campo,[])
+#            else:
+#                return []
+#        elif data:
+#            L = []
+#            for i in data:
+#                if campo == 'languages':
+#                    L.append(i.vin_myvindula_languages_id)
+#                elif campo == 'skills_expertise':
+#                    L.append(i.vin_myvindula_courses_id)
+#                else:
+#                    L.append(i.id)
+#                    
+#            return L
+#        else:
+#            return []    
+        
     def getValueList(self,campo,request,data):
         if campo in request.keys():
-            if request.get(campo, None):
+            if request.get(campo, ''):
                 return request.get(campo,[])
             else:
                 return []
         elif data:
-            L = []
-            for i in data:
-                if campo == 'languages':
-                    L.append(i.vin_myvindula_languages_id)
-                elif campo == 'skills_expertise':
-                    L.append(i.vin_myvindula_courses_id)
-                else:
-                    L.append(i.id)
-                    
+            L = data.get(campo,'')
             return L
-        else:
-            return []    
+                  
+        
         
     def getParametersFromURL(self, ctx):
         traverse = ctx.context.REQUEST.get('traverse_subpath')
@@ -167,22 +219,27 @@ class UtilMyvindula(object):
             else:
                 return ""
         elif campo in data.keys():
-            D = data.get(campo,None)
-            if D:
-                if ativa == 'edit':
-                    if D.get('edit',False):
-                        return "checked"
-                    else:
-                        return ""
-                elif ativa == 'view':
-                    if D.get('view',False):
-                        return "checked"
-                    else:
-                        return ""
-                else:
-                    return ""
+#            D = data.get(campo,None)
+#            if D:
+#                if ativa == 'edit':
+#                    if D.get('edit',False):
+#                        return "checked"
+#                    else:
+#                        return ""
+#                elif ativa == 'view':
+#                    if D.get('view',False):
+#                        return "checked"
+#                    else:
+#                        return ""
+#                else:
+#                    return ""
+#            else:
+#                return ""
+            if data.get(campo,False):
+                return 'checked'
             else:
-                return ""
+                return ''
+
         else:
             return ""    
     
@@ -238,21 +295,21 @@ class UtilMyvindula(object):
             else:
                 return data
 
-    #Retorna o label dos campos dinamicos
-    def get_label_filed(self, campo):
-        from vindula.myvindula.registration import SchemaConfgMyvindula
-        result = ModelsConfgMyvindula().get_configuration_By_fields(campo)
-        default = SchemaConfgMyvindula().campos.get(campo)
-        
-        if result:
-            label = result.__getattribute__('label') 
-            if not label:
-                return default.get('label')
-            else:
-                return label
-            
-        else:
-            return default.get('label')
+#    #Retorna o label dos campos dinamicos
+#    def get_label_filed(self, campo):
+#        from vindula.myvindula.registration import SchemaConfgMyvindula
+#        result = ModelsConfgMyvindula().get_configuration_By_fields(campo)
+#        default = SchemaConfgMyvindula().campos.get(campo)
+#        
+#        if result:
+#            label = result.__getattribute__('label') 
+#            if not label:
+#                return default.get('label')
+#            else:
+#                return label
+#            
+#        else:
+#            return default.get('label')
 
 
     def setStatusMessage(self,type,msg):   
@@ -263,12 +320,13 @@ class UtilMyvindula(object):
         IStatusMessage(self.site.REQUEST).addStatusMessage(_(self.to_utf8(msg)), type)
 
 
-
-
-
-
-
-
+    def setRedirectPage(self,local):
+        '''
+        @local = caminho relativo ao portal para redirecionar o usuario
+        '''
+        url = self.site.absolute_url() + local
+        request = self.site.REQUEST
+        request.response.redirect(url, lock=True)
 
 
     

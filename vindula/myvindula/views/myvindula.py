@@ -31,6 +31,8 @@ from vindula.controlpanel.browser.models import ModelsCompanyInformation
 from vindula.chat.utils.models import ModelsUserOpenFire
 
 from vindula.myvindula.utils import UtilMyvindula
+from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
+
 
 from vindula.controlpanel.handlers import userLogged
 
@@ -210,57 +212,39 @@ class MyVindulaPrefsView(grok.View, UtilMyvindula):
     description = _(u"Change your available information below.")   
     
     def load_form(self):
-        portal_workflow = getToolByName(getSite(), 'portal_workflow')
-        if not 'one_state_workflow' in portal_workflow.getChainForPortalType('vindula.myvindula.vindulaphotouser'):
-            portal_workflow.setChainForPortalTypes(pt_names = ('vindula.myvindula.vindulaphotouser',),
-                                                   chain=['one_state_workflow',])
+        
+#        portal_workflow = getToolByName(getSite(), 'portal_workflow')
+#        if not 'one_state_workflow' in portal_workflow.getChainForPortalType('vindula.myvindula.vindulaphotouser'):
+#            portal_workflow.setChainForPortalTypes(pt_names = ('vindula.myvindula.vindulaphotouser',),
+#                                                   chain=['one_state_workflow',])
+        
         form = self.request.form
         membership = self.context.portal_membership
         user_login = membership.getAuthenticatedMember().getUserName()
-        error_url = self.context.absolute_url() + '/@@myvindulamanagealluser'
+        permissao = self.checa_login()
         
-        if 'user' in form.keys() and not'newuser' in form.keys():
-            user_cod = base64.b16decode(form.get('user',''))
-            try:user_decodficado = unicode(user_cod, 'utf-8')
-            except:user_decodficado = user_cod
-            #user = membership.getMemberById(user_decodficado)
+        #error_url = self.context.absolute_url() + '/@@myvindulamanagealluser'
+        
+        if 'user' in form.keys() and not'newuser' in form.keys() and permissao:
+            user_cod = self.Convert_utf8(self.decodeUser(form.get('user','')))
+            return SchemaFunc().registration_processes(self, user_cod, True)
+            
+#            try:user_decodficado = unicode(user_cod, 'utf-8')
+#            except:user_decodficado = user_cod
+#            #user = membership.getMemberById(user_decodficado)
 
-            user = ModelsFuncDetails().get_FuncDetails(user_decodficado)
-            user_DB = True 
+#            user = ModelsFuncDetails().get_FuncDetails(user_decodficado)
+#            user_DB = True 
         
-        elif 'newuser' in form.keys():
-            return SchemaFunc().registration_processes(self, 'acl_users', True)    
+        elif 'newuser' in form.keys() and self.checa_login():
+            return SchemaFunc().registration_processes(self, '', True)    
         
         else:    
-            user = membership.getAuthenticatedMember()
-            user_DB = False
+            return SchemaFunc().registration_processes(self, user_login, False)
 
-        if user:
-            if self.checa_login():
-                if user_DB:
-                    if str(user.id) == str(user_login):
-                        return SchemaFunc().registration_processes(self, user, False)
-                    else:
-                        return SchemaFunc().registration_processes(self, user, True)
-                else:
-                    if str(user.getUserName()) == str(user_login):
-                        return SchemaFunc().registration_processes(self, user, False)
-                    else:
-                        return SchemaFunc().registration_processes(self, user, True)
-                    #return self.request.response.redirect(error_url)
-            else:
-                if user_DB:
-                    if str(user.id) == str(user_login):
-                        return SchemaFunc().registration_processes(self, user, False)
-                    else:
-                        return self.request.response.redirect(error_url)
-                else:
-                    if str(user.getUserName()) == str(user_login):
-                        return SchemaFunc().registration_processes(self, user, False)
-                    else:
-                        return self.request.response.redirect(error_url)
-        else:
-            return self.request.response.redirect(error_url)
+
+
+            #return self.request.response.redirect(error_url)
        
       
     
@@ -283,10 +267,43 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
     grok.require('zope2.View')
     grok.name('myvindulalistuser')
     
+    def get_ConfugCampos(self, campo):
+        configuracao= ModelsConfgMyvindula().getConfig_views(campo)
+        return configuracao
+        
+    def get_department(self, user):
+        return ModelsDepartment().get_departmentByUsername(self.Convert_utf8(user))     
+
+    def load_list(self):
+        member =  self.context.restrictedTraverse('@@plone_portal_state').member().getUserName();
+        user = self.Convert_utf8(self.request.form.get('user',str(member)))
+        #return ModelsFuncDetails().get_FuncDetails(unicode(user, 'utf-8'))
+        return ModelsInstanceFuncdetails().get_InstanceFuncdetails(user)
+
+
+    def geraDadosAreas(self,area,instanceUser):
+        campos = ModelsConfgMyvindula().getConfig_byArea(self.Convert_utf8(area))
+        L = []
+        for campo in campos:
+            D = {}
+            D['label'] = campo.label
+            try:
+                valorCampo = self.getDadoUser_byField(instanceUser, campo.fields)
+                if valorCampo:
+                    D['data'] = valorCampo.valor
+            except:
+                D['data'] = ''
+        
+            L.append(D)
+        
+        return L 
+    
+    
     def get_campos(self):
+        fields = ModelsConfgMyvindula().get_configurationAll()
         conf = {}
-        campos = SchemaConfgMyvindula().campos
-        for item in campos.keys():
+        for campos in fields:
+            item = campos.fields
             dado = ModelsConfgMyvindula().getConfig_edit(item)
             if dado:
                 conf[item] = dado
@@ -295,51 +312,48 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
         
         return conf
     
-    def get_ConfugCampos(self, campo):
-        configuracao= ModelsConfgMyvindula().getConfig_views(campo)
-        return configuracao
+    
    
-    def valida_pessoal(self):
-        #configuracao1= self.get_campos()
-        
-        campos = ['employee_id','nickname','pronunciation_name','date_birth']
-        for i in campos:
-            if ModelsConfgMyvindula().getConfig_views(i):
-                return True
-            
-        return False
-        
-    def valida_contato(self):
-        #configuracao1= self.get_campos()
-        
-        campos = ['email','phone_number','location','postal_address']
-        for i in campos:
-            if ModelsConfgMyvindula().getConfig_views(i):
-                return True
-            
-        return False
-         
-    def valida_corporativo(self):
-        #configuracao1= self.get_campos()
-        campos = ['enterprise','registration','position','admission_date','registration','cost_center',\
-                  'profit_centre','special_roles','organisational_unit','delegations','reports_to']
+#    def valida_pessoal(self):
+#        #configuracao1= self.get_campos()
+#        campos = ['employee_id','nickname','pronunciation_name','date_birth']
+#        for i in campos:
+#            if ModelsConfgMyvindula().getConfig_views(i):
+#                return True
+#            
+#        return False
+#        
+#    def valida_contato(self):
+#        #configuracao1= self.get_campos()
+#        campos = ['email','phone_number','location','postal_address']
+#        for i in campos:
+#            if ModelsConfgMyvindula().getConfig_views(i):
+#                return True
+#            
+#        return False
+#         
+#    def valida_corporativo(self):
+#        #configuracao1= self.get_campos()
+#        campos = ['enterprise','registration','position','admission_date','registration','cost_center',\
+#                  'profit_centre','special_roles','organisational_unit','delegations','reports_to']
+#
+#        for i in campos:
+#            if ModelsConfgMyvindula().getConfig_views(i):
+#                return True            
+#            
+#        return False
+#        
+#    def valida_others(self):
+#        #configuracao1= self.get_campos()
+#        campos = ['committess','registration','projects','personal_information','skills_expertise','languages',\
+#                  'availability','papers_published','teaching_research','resume','blogs','customised_message']
+#        
+#        for i in campos:
+#            if ModelsConfgMyvindula().getConfig_views(i):
+#                return True    
+#        
+#        return False
 
-        for i in campos:
-            if ModelsConfgMyvindula().getConfig_views(i):
-                return True            
-            
-        return False
-        
-    def valida_others(self):
-        #configuracao1= self.get_campos()
-        campos = ['committess','registration','projects','personal_information','skills_expertise','languages',\
-                  'availability','papers_published','teaching_research','resume','blogs','customised_message']
-        
-        for i in campos:
-            if ModelsConfgMyvindula().getConfig_views(i):
-                return True    
-        
-        return False
 
     def get_howareu(self, user):
         member =  self.context.restrictedTraverse('@@plone_portal_state').member().getUserName();
@@ -354,11 +368,7 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
         D['destination'] = user
         return ModelsMyvindulaRecados().get_myvindula_recados(**D)
     
-    def load_list(self):
-        #vars = BaseFunc().getParametersFromURL(self)
-        member =  self.context.restrictedTraverse('@@plone_portal_state').member().getUserName();
-        user = self.request.form.get('user',str(member))
-        return ModelsFuncDetails().get_FuncDetails(unicode(user, 'utf-8'))
+    
 
     def update(self):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
@@ -387,44 +397,30 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
         else:
             self.request.response.redirect(self.context.absolute_url() + '/login')              
 
-    def get_department(self, user):
-        try:
-            user_id = unicode(user, 'utf-8')    
-        except:
-            user_id = user
 
-        return ModelsDepartment().get_departmentByUsername(user)     
-
-    def get_Courses(self, user):
-        try:
-            user_id = unicode(user, 'utf-8')    
-        except:
-            user_id = user
-
-        return ModelsMyvindulaFuncdetailCouses().get_funcdetailCouserByUsername(user)     
     
-    def getCouses_byID(self,id):
-        return ModelsMyvindulaCourses().get_courses_byID(int(id))
+#    def get_Courses(self, user):
+#        try:
+#            user_id = unicode(user, 'utf-8')    
+#        except:
+#            user_id = user
+#
+#        return ModelsMyvindulaFuncdetailCouses().get_funcdetailCouserByUsername(user)     
+#    
+#    def getCouses_byID(self,id):
+#        return ModelsMyvindulaCourses().get_courses_byID(int(id))
+#
+#    def get_Languages(self, user):
+#        try:
+#            user_id = unicode(user, 'utf-8')    
+#        except:
+#            user_id = user
+#
+#        return ModelsMyvindulaFuncdetailLanguages().get_funcdetailLanguagesByUsername(user)     
+#    
+#    def getLanguages_byID(self,id):
+#        return ModelsMyvindulaLanguages().get_languages_byID(int(id))
 
-    def get_Languages(self, user):
-        try:
-            user_id = unicode(user, 'utf-8')    
-        except:
-            user_id = user
-
-        return ModelsMyvindulaFuncdetailLanguages().get_funcdetailLanguagesByUsername(user)     
-    
-    def getLanguages_byID(self,id):
-        return ModelsMyvindulaLanguages().get_languages_byID(int(id))
-
-
-    def get_department(self, user):
-        try:
-            user_id = unicode(user, 'utf-8')    
-        except:
-            user_id = user
-
-        return ModelsDepartment().get_departmentByUsername(user)
     
 
 class MyVindulaListRecados(grok.View,UtilMyvindula):

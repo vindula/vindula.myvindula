@@ -76,6 +76,11 @@ class ModelsFuncDetails(Storm, BaseStore):
             return None
         else:
             return data
+
+
+
+
+
     
     def get_FuncDetails(self, user):
         data = self.store.find(ModelsFuncDetails, ModelsFuncDetails.username==user).one()
