@@ -2,7 +2,7 @@
 from five import grok
 from zope.interface import Interface
 
-from vindula.myvindula.utils import UtilMyvindula
+from vindula.myvindula.tools.utils import UtilMyvindula
 
 class MacroSingleComment(grok.View, UtilMyvindula):
     grok.context(Interface)

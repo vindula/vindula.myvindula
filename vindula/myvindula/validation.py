@@ -129,8 +129,9 @@ def valida_form_dinamic(ctx, configuracao, form):
     # var 'campo' - usado para verificar se campo e obrigatorio
     # var 'valor' - usado para converter dos dados inseridos no fomulario
     for campo in configuracao.keys():
-        if not 'outro' in campo:
-            valor = form.get(campo)   #configuracao[campo]['campo_form'], '')
+        valor = form.get(campo,'')
+        if valor:
+            #configuracao[campo]['campo_form'], '')
             # logica para verificacao de obrigatoriedade de campo
             
             if configuracao.get(campo).get('required', None) is not None:
@@ -218,22 +219,23 @@ def valida_form_dinamic(ctx, configuracao, form):
                     convertidos[campo] = to_utf8(valor_convert)
                     
             elif configuracao[campo]['type'] == 'img':
-                data = valor.read()
-                filename = valor.filename
-                if configuracao[campo]['required'] == True and len(data) == 0:
-                    errors[campo] = u'Este campo é obrigatório' # indica o campo vazio
-
-                else:
-                    if len(data) != 0 :
-                        # Adicionado dicionario na versão 1.1 do vindula 
-                        D ={}
-                        D['data'] = data
-                        D['filename'] = filename
-                        
-                        valor_convert = pickle.dumps(D)
-                        convertidos[campo] = to_utf8(valor_convert)
+                if valor:
+                    data = valor.read()
+                    filename = valor.filename
+                    if configuracao[campo]['required'] == True and len(data) == 0:
+                        errors[campo] = u'Este campo é obrigatório' # indica o campo vazio
+    
                     else:
-                         convertidos[campo] = ''
+                        if len(data) != 0 :
+                            # Adicionado dicionario na versão 1.1 do vindula 
+                            D ={}
+                            D['data'] = data
+                            D['filename'] = filename
+                            
+                            valor_convert = pickle.dumps(D)
+                            convertidos[campo] = to_utf8(valor_convert)
+                        else:
+                             convertidos[campo] = ''
     
             #logica para converter campos tipo File           
             elif configuracao[campo]['type'] == 'file':

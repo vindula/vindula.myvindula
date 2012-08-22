@@ -14,35 +14,30 @@ from Products.statusmessages.interfaces import IStatusMessage
 
 from datetime import date, datetime 
 import logging, base64
+from copy import copy 
 
-from vindula.myvindula.validation import valida_form
-
-from vindula.myvindula.user import BaseFunc, ModelsFuncDetails,\
-                                   ModelsFuncHolerite, ModelsFuncHoleriteDescricao
-                                   
-from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula                                 
-
+from vindula.myvindula.validation import valida_form,valida_form_dinamic
+from vindula.myvindula.user import BaseFunc
 from vindula.myvindula.registration import SchemaFunc, SchemaConfgMyvindula, ImportUser, ManageCourses, ManageLanguages
 from vindula.chat.utils.models import ModelsUserOpenFire
-from vindula.myvindula.utils import UtilMyvindula
 
-
+from vindula.myvindula.tools.utils import UtilMyvindula
 from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
-
-
 from vindula.myvindula.models.courses import ModelsMyvindulaCourses
 from vindula.myvindula.models.languages import ModelsMyvindulaLanguages
-
 from vindula.myvindula.models.funcdetail_couses import ModelsMyvindulaFuncdetailCouses
 from vindula.myvindula.models.funcdetail_languages import ModelsMyvindulaFuncdetailLanguages
-
+from vindula.myvindula.models.funcdetails import ModelsFuncDetails
+from vindula.myvindula.models.holerite import ModelsFuncHolerite
+from vindula.myvindula.models.descricao_holerite import ModelsFuncHoleriteDescricao
+from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 
 logger = logging.getLogger('vindula.myvindula')
 
 
 
-class MyVindulaConfgsView(grok.View, UtilMyvindula):
+class MyVindulaConfgsView(grok.View, BaseFunc):
     grok.context(INavigationRoot)
     grok.require('cmf.ManagePortal')
     grok.name('myvindulaconfgs')
@@ -56,8 +51,11 @@ class MyVindulaConfgsView(grok.View, UtilMyvindula):
         #return SchemaConfgMyvindula().configuration_processes(self)
         return ModelsConfgMyvindula().get_configurationAll()
     
-
-class MyVindulaEditConfgsView(grok.View, UtilMyvindula):
+    def update(self):
+        self.BlackList = ['vin_myvindula_department','teaching_research',
+                          'date_birth','email','phone_number','name','photograph']
+    
+class MyVindulaEditConfgsView(grok.View, BaseFunc):
     grok.context(INavigationRoot)
     grok.require('cmf.ManagePortal')
     grok.name('edit_myvindulaconfgs')
@@ -66,10 +64,10 @@ class MyVindulaEditConfgsView(grok.View, UtilMyvindula):
         return SchemaConfgMyvindula().configuration_processes(self)
 
     def update(self):
-        self.BlackList = ['vin_myvindula_department','teaching_research',
+        self.BlackList = ['vin_myvindula_department','cpf',
                           'date_birth','email','phone_number','name','photograph']
 
-class MyVindulaEditOrdemConfgsView(grok.View, UtilMyvindula):
+class MyVindulaEditOrdemConfgsView(grok.View, BaseFunc):
     grok.context(INavigationRoot)
     grok.require('cmf.ManagePortal')
     grok.name('ordem_myvindulaconfgs')
@@ -103,7 +101,7 @@ class MyVindulaMigrationFuncdetailsView(grok.View,UtilMyvindula):
     
     def update(self):
        
-        allUsuarios = ModelsFuncDetails().get_allFuncDetails()
+        allUsuarios = ModelsFuncDetails().get_allFuncDetails_migracao()
         allCampos = ModelsConfgMyvindula().get_configurationAll()
         tool = UtilMyvindula()
         
@@ -208,11 +206,6 @@ class AjaxView(grok.View,UtilMyvindula):
     
     def importUser(self,form):
         return ImportUser().importUser(self,form)
-    
-
-
-
-
 
 class MyVindulaManageAllUser(grok.View, UtilMyvindula):
     grok.context(INavigationRoot)
@@ -244,26 +237,24 @@ class MyVindulaManageAllUser(grok.View, UtilMyvindula):
         if self.checa_login():
             #vars = BaseFunc().getParametersFromURL(self)
             if 'title' in form.keys() and not 'all' in form.keys():
-                title = form.get('title','').strip()
-                departamento= form.get('departamento','0')
-                ramal = form.get('ramal','').strip()
-                result = self.rs_to_list(ModelsFuncDetails().get_FuncBusca(unicode(title, 'utf-8'),
-                                                           unicode(departamento,'utf-8'),
-                                                           unicode(ramal, 'utf-8')))
+                form_values = [{'name':form.get('title','').strip()}]
             
-            elif not config_muit_user:
-                result = self.rs_to_list(ModelsFuncDetails().get_FuncBusca('','0',''))
+                result = ModelsDadosFuncdetails().get_FuncBusca(u'',form_values,True)
                 
-            elif 'all' in form.keys():
-                result = self.rs_to_list(ModelsFuncDetails().get_FuncBusca('','0',''))
-            
-            else:
-                result = None
-            
+                check_form = [i for i in form_values if i.values()]
+                if check_form:
+                    result = ModelsDadosFuncdetails().get_FuncBusca(u'',form_values,True)
+                    #result = self.rs_to_list(result)
+                    
+            elif not config_muit_user or 'all' in form.keys():
+                result = ModelsInstanceFuncdetails().get_AllFuncDetails()
+                    
             return result
-        else:
+            
+        else:    
             self.request.response.redirect(self.context.absolute_url() + '/login')
-
+            
+            
 
 
 class MyVindulaDelHoleriteView(grok.View, UtilMyvindula):
@@ -305,7 +296,7 @@ class MyVindulaImportHoleriteView(grok.View, UtilMyvindula):
         
     def load_file(self):
         from pprint import pprint
-        from copy import copy
+        #from copy import copy
         form = self.request.form
         erro = False
         holerite_erro = None
@@ -606,14 +597,14 @@ class MyVindulaImportFirstView(grok.View,UtilMyvindula):
                             nome = arquivo.filename
                             
                             normalizer = getUtility(IIDNormalizer)
-                            nome_arquivo = normalizer.normalize(unicode(nome, 'utf-8'))
+                            nome_arquivo = nome_org = normalizer.normalize(unicode(nome, 'utf-8'))
                             
                             count = 0
                             while nome_arquivo in pasta.objectIds():
                                 count +=1
-                                if count != 1:
-                                    nome_arquivo = nome_arquivo[:-2]
-                                nome_arquivo = nome_arquivo + '-' + str(count)         
+                                #if count != 1:
+                                #    nome_arquivo = nome_arquivo[:-2]
+                                nome_arquivo = nome_org + '-' + str(count)         
                             
                             pasta.invokeFactory('File', 
                                                 id=nome_arquivo,
@@ -660,21 +651,27 @@ class MyVindulaImportSecondView(grok.View, UtilMyvindula):
         form = self.request.form
         fields_vin = []
         i=0
-        fields = SchemaFunc().campos
-        while i < len(fields.keys())-1:
-              fields_vin.append(i)
-              i+=1
+        
+        fields = ModelsConfgMyvindula().get_configurationAll() #SchemaFunc().campos
+        FIELD_BLACKLIST = ['vin_myvindula_department',]
+
+        camposAux = copy(fields)
+        for item in camposAux:
+            if not item.fields in FIELD_BLACKLIST:
+                fields_vin.append(item.ordem)
         
         if fields:
             for field in fields:
-                index = fields[field].get('ordem',0)
-                D = {}
-                D['name'] = field
-                if field != 'username':
-                    D['label'] = self.get_label_filed(field)
-
-                fields_vin.pop(index)
-                fields_vin.insert(index, D)    
+                if not field.fields in FIELD_BLACKLIST:
+                    index = field.ordem
+                    D = {}
+                    D['name'] = field.fields
+                    if field.fields != 'username':
+                        D['label'] = field.label  #self.get_label_filed(field)
+    
+                    pos = fields_vin.index(index)
+                    fields_vin.pop(pos)
+                    fields_vin.insert(pos, D) 
                 
                 #fields_vin.append(D)
         return fields_vin
@@ -691,6 +688,7 @@ class MyVindulaImportSecondView(grok.View, UtilMyvindula):
             
     def importar_valores(self):
         form = self.request.form
+        tools = UtilMyvindula()
         if 'import' in form.keys():
             path_file = form.get('url_arquivo').split('/')
             folder = getSite()[path_file[0]][path_file[1]][path_file[2]]
@@ -698,6 +696,7 @@ class MyVindulaImportSecondView(grok.View, UtilMyvindula):
             
             linhas_error =[]
             lista_erros = []
+            campos = self.get_Dic_Campos()
             
 #            folder = self.context.get(folder)
 #            arquivo = folder.get(file)
@@ -714,80 +713,82 @@ class MyVindulaImportSecondView(grok.View, UtilMyvindula):
             url = ''
             
             for linha in arquivo.data.split('\n')[1:-1]:
-                dados = {}
-                dados_linha = linha.split(';')
-                check_user = False
-                for campo in form.keys():
-                    if form[campo] != '' and campo not in ignore_fields:
-                        indice = int(form[campo])-1
-                        dados[campo] = self.to_utf8(dados_linha[indice].replace('"',''))
-                    else: 
-                        if campo == 'username':
-                            if criar_user:
-                                name = dados_linha[int(form['name'])-1].replace('"','').lower().split(' ')
-
-                                username = name[0] + name[-1]
-                                cont = 1
- 
-                                if form['registration']:
-                                    matricula = dados_linha[int(form['registration'])-1].replace('"','')    
-                                    username += str(matricula)
-                                
-                                usr = username
-                                while ModelsFuncDetails().get_FuncDetails(self.to_utf8(usr)):
-                                    usr = username + str(cont)
-                                    cont +=1
-                                  
-                                dados[campo] = self.to_utf8(usr)
-                                check_user = True
-                                                                   
+                if linha:
+                    dados = {}
+                    dados_linha = linha.split(';')
+                    check_user = False
+                    for campo in form.keys():
+                        if form[campo] != '' and campo not in ignore_fields:
+                            indice = int(form[campo])-1
+                            dados[campo] = self.to_utf8(dados_linha[indice].replace('"',''))
+                        else: 
+                            if campo == 'username':
+                                if criar_user:
+                                    name = dados_linha[int(form['name'])-1].replace('"','').lower().split(' ')
+    
+                                    username = name[0] + name[-1]
+                                    cont = 1
+     
+                                    if form['registration']:
+                                        matricula = dados_linha[int(form['registration'])-1].replace('"','')    
+                                        username += str(matricula)
                                     
-                            elif merge_user:
-                                if form[campo] != '':
-                                    indice = int(form[campo])-1
-                                    user = self.to_utf8(dados_linha[indice].replace('"',''))
-                                    if ModelsFuncDetails().get_FuncDetails(user):    
+                                    usr = username
+                                    while ModelsInstanceFuncdetails().get_InstanceFuncdetails(self.to_utf8(usr)): 
+                                        usr = username + str(cont)
+                                        cont +=1
+                                      
+                                    dados[campo] = self.to_utf8(usr)
+                                    check_user = True
+                                        
+                                else:
+                                    if form[campo] != '':
+                                        indice = int(form[campo])-1
+                                        user = self.to_utf8(dados_linha[indice].replace('"',''))
+                                        if ModelsInstanceFuncdetails().get_InstanceFuncdetails(user) and merge_user:    
                                             dados[campo] = user
                                             check_user = True
-                            
-                            else:                            
-                                if form[campo] != '':
-                                    indice = int(form[campo])-1
-                                    user = self.to_utf8(dados_linha[indice].replace('"',''))
-                                    if not ModelsFuncDetails().get_FuncDetails(user):    
-                                        dados[campo] = user
-                                        check_user = True
-
+                                        else:
+                                            dados[campo] = user
+                                            check_user = True
+    
+                    erros, data_user = valida_form_dinamic(self,campos, dados)
+                    if not erros:
+                        username = dados['username']
+                        if check_user:
+                            user_instance = ModelsInstanceFuncdetails().get_InstanceFuncdetails(username)
+                            if user_instance:
+                                id_instance = user_instance.id
+                            else:
+                                id_instance = ModelsInstanceFuncdetails().set_InstanceFuncdetails(username)
+                                    
+                            for item in data_user.keys():
+                                field = self.Convert_utf8(item)
+                                valor = data_user[item]
+                                result_campo = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstanceAndField(id_instance,field)
+                                if result_campo: 
+                                    result_campo.valor = valor.strip()
+                                    tools.db.store.commit()
+                                else:
+                                    if valor:
+                                        D={}
+                                        D['vin_myvindula_instance_id'] = id_instance
+                                        D['vin_myvindula_confgfuncdetails_fields'] = field
+                                        D['valor'] = self.Convert_utf8(valor)
+                                        
+                                        ModelsDadosFuncdetails().set_DadosFuncdetails(**D)
+                                            
+                            success = True    
+                                
                         else:
-                            dados[campo] = u''
-                 
-                erros, data_user = valida_form(SchemaFunc().campos, dados)
-                if not erros:
-                    if check_user:
-                        if criar_user:
-                            ModelsFuncDetails().set_FuncDetails(**data_user)
-                            success = True
-                        elif merge_user:
-                            result = ModelsFuncDetails().get_FuncDetails(user)
-                            if result:
-                                success = True
-                                campos = SchemaFunc().campos
-                                for campo in campos.keys():
-                                    value = data_user.get(campo, None)
-                                    if value:
-                                        setattr(result, campo, value)
-                        else:
-                            ModelsFuncDetails().set_FuncDetails(**data_user)
-                            success = True
+                            error = 1
                     else:
-                        error = 1
-                else:
-                    linhas_error.append(linha)
-                    lista_erros.append(erros)
-                    error = 2
-                    success = False
-                
-                logger.info("%s - %s "% (erros,data_user))
+                        linhas_error.append(linha)
+                        lista_erros.append(erros)
+                        error = 2
+                        success = False
+                    
+                    logger.info("%s - %s "% (erros,data_user))
                     
             if linhas_error:
                 success = False
@@ -837,30 +838,31 @@ class MyVindulaExportUsersView(grok.View,UtilMyvindula):
             filename = 'myvindula-export-users.csv'
             self.request.response.setHeader('Content-Disposition','attachment; filename=%s'%(filename))
             
-            fields_orig = ModelsFuncDetails()._storm_columns.values()
+            fields_orig = ModelsConfgMyvindula().get_configurationAll()  #ModelsFuncDetails()._storm_columns.values()
 
             campos_vin = []
             text = ''
             
             if fields_orig:
                 for field in fields_orig:
-                    campos_vin.append(field.name)
-                    text += field.name + ';'
+                    campos_vin.append(field.fields)
+                    text += field.fields + ';'
                 text = text[:-1] + '\n'
 
-            users = ModelsFuncDetails().get_allFuncDetails()
+            users = ModelsInstanceFuncdetails().get_AllFuncDetails()
 
             for user in users:
                 for campo in campos_vin:
-                    if campo not in ('skills_expertise', 'languages'):
-                        valor = user.__getattribute__(campo)
-                        if valor == None:
-                            valor = ''
+                    valor = user.get(campo,'')
+                    
+                    if type(valor) == list:
+                        valor_list = ''
+                        for i in valor:
+                            if i :valor_list += (i + ' / ') 
                         
-                        if campo == 'customised_message':
-                            valor = str(valor).replace('\n', '').replace('\r', '').replace(';', '')
+                        valor = valor_list
                         
-                        text += '%s;' % (valor)
+                    text += '%s;' % (str(valor).replace('\n', '').replace('\r', '').replace(';', ''))
                 text += '\n'
                  
             self.request.response.write(str(text))

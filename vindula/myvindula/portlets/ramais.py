@@ -12,9 +12,10 @@ from plone.app.portlets.portlets import base
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.CMFCore.utils import getToolByName
 
-from vindula.myvindula.user import BaseFunc, ModelsDepartment, ModelsFuncDetails
-
-from vindula.myvindula.utils import UtilMyvindula
+from vindula.myvindula.user import BaseFunc
+from vindula.myvindula.models.department import ModelsDepartment #, ModelsFuncDetails
+from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
+from vindula.myvindula.tools.utils import UtilMyvindula
 
 class IPortletRamais(IPortletDataProvider):
       
@@ -140,10 +141,10 @@ class Renderer(base.Renderer, UtilMyvindula):
     def get_principal_campo(self, obj):
         campo = self.data.principal_user
         if campo:
-            try: return obj.__getattribute__(campo)
-            except: return obj.__getattribute__('name') 
+            try: return obj.get(campo)
+            except: return obj.get('name') 
         else:
-            try: return obj.__getattribute__('name')
+            try: return obj.get('name')
             except: return ''    
     
     def get_camposFilter(self):
@@ -173,7 +174,7 @@ class Renderer(base.Renderer, UtilMyvindula):
                 line = line.replace('[', '').replace(']', '').split(' | ')
                 try:
                     D['label'] = line[0]
-                    D['content'] = user.__getattribute__(line[1])
+                    D['content'] = user.get(line[1])
                     L.append(D)
                 except:
                     pass
@@ -261,7 +262,7 @@ class Renderer(base.Renderer, UtilMyvindula):
 #                    ramal = unicode(ramal, 'utf-8')
                 
                 self.form_dados = form_values
-                result = ModelsFuncDetails().get_FuncBusca_dinamic(departamento,form_values,filtro_busca)
+                result = ModelsDadosFuncdetails().get_FuncBusca(departamento,form_values,filtro_busca)
                 result = self.rs_to_list(result)
 #                if result:
 #                    for item in form_values:

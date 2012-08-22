@@ -42,7 +42,7 @@
 					            <div class="user"  tal:repeat="item batch">
                                     <!-- Dados para utilização da macro -->                                     
                                     <tal:def define="size_img string:90px;
-                                                     principal_name python: view_listall.checaValor(item.name,item.username);
+                                                     principal_name python: view_listall.checaValor(item.get('name'),item.get('username',''));
                                                      details python: [];
                                                      view_manage python:True">
                                         <div metal:use-macro="context/myvindula-imageprofiles-macro/macros/userprofiles" />       

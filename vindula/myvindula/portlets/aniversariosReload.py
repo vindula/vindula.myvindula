@@ -14,7 +14,10 @@ from zope.schema.vocabulary import SimpleTerm
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.CMFCore.utils import getToolByName
 
-from vindula.myvindula.user import BaseFunc, ModelsDepartment, ModelsFuncDetails
+from vindula.myvindula.user import BaseFunc
+from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
+from vindula.myvindula.models.department import ModelsDepartment
+
 from datetime import date
 from storm.expr import Desc
 #import datetime
@@ -287,7 +290,7 @@ class ReloadPortletView(grok.View):
             date_start = date.today().strftime('%Y-%m-%d')
             date_end = date.today().strftime('%Y-%m-%d')
             
-            results = ModelsFuncDetails().get_FuncBirthdays(date_start,date_end,random)
+            results = ModelsDadosFuncdetails().get_FuncBirthdays(date_start,date_end,random)
         
         elif type_filter == 7:
             now = DateTime()
@@ -295,7 +298,7 @@ class ReloadPortletView(grok.View):
             date_start = (now + 1 - dow).strftime('%Y-%m-%d')
             date_end = (now + 1 - dow + 6).strftime('%Y-%m-%d')
             
-            results = ModelsFuncDetails().get_FuncBirthdays(date_start,date_end)
+            results = ModelsDadosFuncdetails().get_FuncBirthdays(date_start,date_end)
         
         elif type_filter == 30:
             now = DateTime()
@@ -304,10 +307,10 @@ class ReloadPortletView(grok.View):
             date_start = now.strftime('%Y-%m-1')
             date_end = now.strftime('%Y-%m-'+str(dia))
             
-            results = ModelsFuncDetails().get_FuncBirthdays(date_start,date_end)
+            results = ModelsDadosFuncdetails().get_FuncBirthdays(date_start,date_end)
         
         elif type_filter == 'prox':
-            results = ModelsFuncDetails().get_FuncBirthdays('','','proximo')
+            results = ModelsDadosFuncdetails().get_FuncBirthdays('','','proximo')
         
         if results:
             return results #results[:int(quant)]

@@ -12,12 +12,12 @@
 			    
 				<div id="boxPortlet" tal:define="i repeat/item/end;"
 						             tal:attributes="class python:view.getEnd(i);">
-                        <!-- Dados para utilização da macro -->						             
+                        <!-- Dados para utilização da macro --> 						             
                         <tal:def define="size_img string:50px;
                                          principal_name python: view.get_principal_campo(item);
                                          details python: view.get_details_user(item) or [];">
                             <div metal:use-macro="context/myvindula-imageprofiles-macro/macros/userprofiles" />       
-                        </tal:def>						             
+                        </tal:def>				             
 					
 				</div>
 			</tal:results>

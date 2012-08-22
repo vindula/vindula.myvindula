@@ -68,8 +68,8 @@
                                         
                                     </table>
                                 <a id="send-mail" tal:define="email python:view.getDadoUser_byField(form_data,'email')" 
-                                                  tal:condition="python: email and (email.valor and view.get_ConfugCampos('email'))" 
-                                                  tal:attributes="href string:mailto:${email/valor|nothing}">Enviar e-mail</a>
+                                                  tal:condition="python:email and view.get_ConfugCampos('email')" 
+                                                  tal:attributes="href string:mailto:${email}">Enviar e-mail</a>
                             </div>
                         </div>
                         <!-- end: Personal Information -->
@@ -77,52 +77,26 @@
                
                 <div id="perfil" class="userpage"> 
                     <!-- start: Others Information -->
-                    <!-- Contact -->
-                    <div id="grupo" tal:define="dados python:view.geraDadosAreas('contact',form_data)" 
-                                    tal:condition="dados|nothing">
-                        <div class="area"><span >Contato</span></div>
-                        <img class="type-info" tal:attributes="src string:${view/static}/images/user_contact.png" />
-                        <table>
-                            <tal:rep repeat="item dados">
-                                <tr>
-                                    <td class="field" tal:content="item/label|nothing">Label</td>
-                                    <td class="value" tal:content="item/data|nothing">Data</td>
-                                </tr>
-                            </tal:rep> 
-
-                        </table>
-                    </div>
                     
-                    <!-- Corporative -->
-                    <div id="grupo" tal:define="dados python:view.geraDadosAreas('corporate',form_data)" 
-                                    tal:condition="dados|nothing">
-                        <div class="area"><span>Corporativo</span></div>
-                        <img class="type-info" tal:attributes="src string:${view/static}/images/user_business.png" />
-                        <table>
-                            <tal:rep repeat="item dados">
-                                <tr>
-                                    <td class="field" tal:content="item/label|nothing">Label</td>
-                                    <td class="value" tal:content="item/data|nothing">Data</td>
-                                </tr>
-                            </tal:rep> 
-                        </table>
-                    </div>  
+                    <tal:rep repeat="area view/getAreasDinamicas">
+                        <!-- areas -->
+                        <div id="grupo" tal:define="dados python:view.geraDadosAreas(area.get('id'),form_data)" 
+                                        tal:condition="dados|nothing">
+                            <div class="area"><span tal:content="area/title|nothing">Contato</span></div>
+                            <img class="type-info" tal:attributes="src area/url_image" />
+                            <table>
+                                <tal:rep repeat="item dados">
+                                    <tr>
+                                        <td class="field" tal:content="item/label|nothing">Label</td>
+                                        <td class="value"> <tal:cont tal:content="structure item/data|nothing"></tal:cont></td>
+                                    </tr>
+                                </tal:rep> 
+    
+                            </table>
+                        </div>
+                        
+                    </tal:rep>
                     
-                    <!-- Others -->
-                    <div id="grupo" tal:define="dados python:view.geraDadosAreas('other',form_data)" 
-                                    tal:condition="dados|nothing">
-                        <div  class="area"><span>Outras Informa&ccedil;&otilde;es</span></div>
-                        <img class="type-info" tal:attributes="src string:${view/static}/images/user_others.png" />
-                        <table>
-                            <tal:rep repeat="item dados">
-                                <tr>
-                                    <td class="field" tal:content="item/label|nothing">Label</td>
-                                    <td class="value" tal:content="item/data|nothing">Data</td>
-                                </tr>
-                            </tal:rep> 
-                            
-                        </table>
-                    </div>
                     <!-- end: Others Information -->
                 </div>				    
 	        </div>

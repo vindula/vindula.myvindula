@@ -7,7 +7,6 @@ from storm.expr import Desc, Select
 
 
 from vindula.myvindula.models.base import BaseStore
-
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 
 

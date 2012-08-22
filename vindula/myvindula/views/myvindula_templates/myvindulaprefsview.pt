@@ -4,6 +4,12 @@
 			<script type="text/javascript" tal:attributes="src string:${view/static}/js/comments.js"></script>
     		<script type="text/javascript" src="" tal:attributes="src string:${view/static}/js/popup.js"></script>
     		<script type="text/javascript" tal:attributes="src string:${view/static}/js/mascara.js"></script>
+    		
+    		<script type="text/javascript"
+                    tal:attributes="src string:${view/static}/cropper/js/jquery.Jcrop.js"></script>
+                                                
+            <script type="text/javascript" charset="utf-8"
+                    tal:attributes="src string:${view/static}/js/crop_image_user.js" ></script>
 
 		</metal:js>
 		<metal:block fill-slot="top_slot">
@@ -60,7 +66,7 @@
 							<div class="field" tal:attributes="class python: view.field_class(errors, 'vin_myvindula_department')"
 											   tal:condition="python: view.get_ConfugCampos('vin_myvindula_department') or manage" >
 								<label for="vin_myvindula_department">Departamentos</label>
-			                    <span class="fieldRequired" title="Obrigatório">(Obrigatório)</span>	
+			                    <!--span class="fieldRequired" title="Obrigatório">(Obrigatório)</span-->	
 			                    <div class="formHelp">Selecione o departamento do funcionário.</div>
 								<div tal:content="errors/vin_myvindula_department|nothing"></div>
 			                    <tal:cond condition="departamentos">
@@ -96,10 +102,10 @@
 								<div tal:content="errors/username|nothing"></div>
 								
 								<input id="username-old" type="hidden" value="" name="username-old"  
-								       tal:attributes="value request/username-old | form_values/username | nothing">
+								       tal:attributes="value request/username-old | username | nothing">
 			                    
 			                    <input id="username" type="text" value="" name="username"  
-			                           tal:attributes="value request/username | form_values/username | nothing">
+			                           tal:attributes="value request/username | username | nothing">
 								
 								<!--input id="newuser" type="hidden" value="" name="newuser" -->
 							</div>	

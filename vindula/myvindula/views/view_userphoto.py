@@ -23,7 +23,7 @@ import pickle, StringIO
 
 class MyVindulaUserCropImageView(grok.View,UtilMyvindula):
     grok.context(Interface)
-    grok.require('zope2.View')
+    grok.require('vindula.UserLogado')
     grok.name('myvindula-user-crop')
 
     def update(self):
@@ -143,39 +143,48 @@ class MyVindulaUserImage(grok.View, BaseFunc):
     
     def update(self):
         form = self.request.form
+        campo_image = None
+        dados_user = None
 
         if 'id' in form.keys():
             id = form.get('id','0')
             campo_image = ModelsPhotoUser().get_ModelsPhotoUser_byID(int(id))
 
-        elif 'field' in form.keys() and  'instance_id' in form.keys():
+        elif 'field' in form.keys() and\
+            ('instance_id' in form.keys() or 'username' in form.keys()):
+            
             field = self.Convert_utf8(form.get('field',''))
             instance_id = int(form.get('instance_id','0'))
-            
-            campo_image = ModelsPhotoUser().get_ModelsPhotoUser_byFieldAndInstance(field,instance_id)
-            dados_user = None #ModelsFuncDetails().get_FuncDetails(username)
-            
-        else:
-            campo_image = None
-            dados_user = None
-
-
+            username = self.Convert_utf8(form.get('username',''))
+            if username:
+                campo_image = ModelsPhotoUser().get_ModelsPhotoUser_byUsername(username,field)
+                
+            elif instance_id:
+                campo_image = ModelsPhotoUser().get_ModelsPhotoUser_byFieldAndInstance(field,instance_id)
+           
+            if not campo_image:
+                 dados_user = self.get_prefs_user(username)
+           
 
         if campo_image:
             if 'full' in form.keys():
                 image = campo_image.photograph
             else:    
                 image = campo_image.thumb
+
             
-            x =  pickle.loads(image)
-            filename = x['filename']
-            self.request.response.setHeader("Content-Type", "image/jpeg", 0)
-            #self.request.response.setHeader('Content-Disposition','attachment; filename=%s'%(filename))
-            self.request.response.write(x['data'])
+            if image:
+                x =  pickle.loads(image)
+                filename = x['filename']
+                self.request.response.setHeader("Content-Type", "image/jpeg", 0)
+                #self.request.response.setHeader('Content-Disposition','attachment; filename=%s'%(filename))
+                self.request.response.write(x['data'])
+            else:
+                self.loadDefault()
         
         elif dados_user:
-            if dados_user.photograph:
-                local = dados_user.photograph.split('/')
+            if dados_user.get('photograph',False):
+                local = dados_user.get('photograph','').split('/')
                 try:
                     objeto = getSite()[local[0]][local[1]][local[2]]
                     if objeto.photograph:
@@ -204,17 +213,17 @@ class MyVindulaUserImage(grok.View, BaseFunc):
 #Views de eclução da Image do usuario ---------------------------------------------------   
 class MyVindulaUserDelImage(grok.View, BaseFunc):
     grok.context(Interface)
-    grok.require('zope2.View')
+    grok.require('vindula.UserLogado')
     grok.name('myvindula-user-delcrop')
     
     def update(self):
         form = self.request.form
 
         if 'form.excluir' in form.keys():
-            try: username = unicode(form.get('username',''))
-            except: username = form.get('username','')  
+            field = self.Convert_utf8(form.get('field',''))
+            instance = int(form.get('instance_id','0'))
               
-            ModelsPhotoUser().del_ModelsPhotoUser(username)
+            ModelsPhotoUser().del_ModelsPhotoUser(field,instance)
             
             
             

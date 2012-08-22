@@ -21,8 +21,10 @@
                                          name python:memberinfo['fullname'] or member.getUserName() or member.getUserName();
                                          portrait python:context.portal_membership.getPersonalPortrait(member.getId());
                                          homeFolder python: context.portal_membership.getHomeFolder();
+                                         
                                          prefs_user python: view.get_prefs_user(member.getUserName());
                                          departamentos python: view.get_department();
+                                         
                                          view_myvindula python:context.restrictedTraverse('@@myvindula');
                                          panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel');
                                          logado python:str(member)!='Anonymous User';">	
@@ -35,7 +37,7 @@
 			    <div id="userimage">
 			        <!-- Dados para utilização da macro -->                                  
                     <tal:def define="size_img string:150px;
-                                     user_profiles prefs_user/username|nothing;
+                                     user_profiles member/getUserName|nothing;
                                      item prefs_user;">
                         <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>       
                     </tal:def>

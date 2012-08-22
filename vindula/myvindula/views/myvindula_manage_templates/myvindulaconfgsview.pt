@@ -12,6 +12,14 @@
   <body>
   <metal:main fill-slot="prefs_configlet_content">
         <script type="text/javascript" tal:attributes="src string:${view/static}/js/ajax_ordem_campos.js"></script>
+        <style type="text/css">
+            .BlackList, .BlackList td{ background-color: red !important;
+            }
+            .img img{
+                text-align: center;
+            }
+        </style>
+        
       
         <div metal:use-macro="context/global_statusmessage/macros/portal_message">
          Status message
@@ -46,15 +54,17 @@
                             </tr>
                             <tbody class="sortable" >
                                 <tal:rep repeat="item data">
-                                    <tr tal:attributes="id string:${item/fields}">
+                                    <tr tal:define="field item/fields|nothing"
+                                        tal:attributes="id string:${field};
+                                                        class python: (field in view.BlackList) and 'BlackList' or '' ">
                                         <td class="draggable draggingHook" style="cursor: ns-resize;">⣿</td>
                                         <td>
                                             <a title="Editar campos" alt="Editar campos"
                                                 tal:attributes="href string:${context/absolute_url}/edit_myvindulaconfgs?fields=${item/fields}"
                                                 tal:content="item/fields|nothing">fields</a>
                                         </td>
-                                        <td tal:content="item/ativo_edit|nothing"> True </td>
-                                        <td tal:content="item/ativo_view|nothing"> True </td>
+                                        <td class="img"><img tal:attributes="src string:${view/static}/images/field-${item/ativo_edit|nothing}.png" /> </td>
+                                        <td class="img"><img tal:attributes="src string:${view/static}/images/field-${item/ativo_view|nothing}.png" /></td>
                                         <td tal:content="item/label|nothing"> Titulo </td>    
                                         <td tal:content="item/type|nothing">text</td>
                                         <td class="draggable" align="center">

@@ -20,9 +20,9 @@
 							<div class="user" tal:repeat="item python:form_data[:10]">
 								 <!-- Dados para utilização da macro -->                                     
                                 <tal:def define="size_img string:90px;
-                                                 principal_name python: view.checaValor(item.name,item.username);
+                                                 principal_name python: view.checaValor(item.get('name'),item.get('username',''));
                                                  details python: [{'label':'Adimissão',
-                                                                   'content':view.converte_data(item.admission_date) }];">
+                                                                   'content':item.get('admission_date','') }];">
                                     <div metal:use-macro="context/myvindula-imageprofiles-macro/macros/userprofiles" />       
                                 </tal:def>
 			                </div>

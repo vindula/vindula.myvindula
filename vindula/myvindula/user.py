@@ -22,7 +22,8 @@ from vindula.myvindula import MessageFactory as _
 from storm.locals import *
 
 from vindula.myvindula.validation import valida_form
-from datetime import date 
+from datetime import date
+from copy import copy 
 import pickle
 
 
@@ -47,10 +48,9 @@ from vindula.myvindula.models.photo_user import ModelsPhotoUser
 from vindula.myvindula.tools.utils import UtilMyvindula
 
 
+class UserLogado(grok.Permission):
+    grok.name('vindula.UserLogado')
 
-
-
-         
     
         
 class BaseFunc(UtilMyvindula):
@@ -90,17 +90,23 @@ class BaseFunc(UtilMyvindula):
             
 
             FIELD_BLACKLIST = ['username',
+                               'vin_myvindula_department',
                                ]
-            for item in campos:
+            
+            html=[]
+            
+            camposAux = copy(campos)
+            for item in camposAux:
                 if item in FIELD_BLACKLIST:
                     campos.pop(item)
+                else:    
+                    html.append(campos[item].get('ordem',0))
 
-            html=[]
-            i=0
-
-            while i < len(campos.keys()):
-                html.append(i)
-                i+=1
+#            i=0
+#            while i < len(campos.keys()):
+#                html.append(i)
+#                i+=1
+            html.sort()
             
             for campo in campos.keys():
                 index = campos[campo].get('ordem',0)
@@ -137,17 +143,16 @@ class BaseFunc(UtilMyvindula):
                     instance = campos[campo].get('instance_id','0')
                     user_foto = ModelsPhotoUser().get_ModelsPhotoUser_byFieldAndInstance(self.Convert_utf8(campo),int(instance))
                     
-                    tmp +="<div id='%s'><a href='%s/myvindula-user-crop?field=%s&instance_id=%s' class='crop-foto'>Editar Foto</a>" %(campo,url,campo,instance)
+                    tmp +="<div id='%s'><a href='%s/myvindula-user-crop?field=%s&instance_id=%s' class='crop-foto' id='%s'>Editar Foto</a>" %(campo,url,campo,instance,campo)
                     if user_foto:
-                        tmp += "<div id='preview-user'><img height='150px' src='%s/user-image?field=%s&instance_id=%s' /></div>" %(url,campo,instance)
+                        tmp += "<div id='preview-user-%s'><img height='150px' src='%s/user-image?field=%s&instance_id=%s' /></div>" %(campo,url,campo,instance)
                         tmp += "<a href='%s/myvindula-user-delcrop?field=%s&instance_id=%s' class='excluir-foto'>Excluir Foto</a>" %(url,campo,instance)
                     
                     else:
-                        tmp += "<div id='preview-user'></div>"
+                        tmp += "<div id='preview-user-%s'></div>"%(campo)
                         tmp += "<a href='%s/myvindula-user-delcrop?field=%s&instance_id=%s' style='display:none' class='excluir-foto'>Excluir Foto</a>" %(url,campo,instance)
                     
                     tmp += "</div>"
-
                 
                 elif type_campo == 'file':
                     if errors:
@@ -205,16 +210,15 @@ class BaseFunc(UtilMyvindula):
                             tmp +="<option value='%s'>%s</option>"%(item[0], item[1])
 
                     tmp += "</select>"
-                
              
                 else:
                     tmp += "<input id='%s' type='text' value='%s' name='%s' size='25' %s/>"%(campo, self.getValue(campo, self.request,data), campo,mascara)
 
                 tmp += "</div>"
                 
-                
-                html.pop(index)
-                html.insert(index, tmp)    
+                pos = html.index(index)
+                html.pop(pos)
+                html.insert(pos, tmp)  
                 
             
             return html

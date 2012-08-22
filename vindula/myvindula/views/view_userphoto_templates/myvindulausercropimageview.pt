@@ -13,20 +13,15 @@
            tal:define="error view/error|nothing;
                       formsubmitted  python: request.get('form.submitted',None);
                       formcrop       python: request.get('form.crop',None);">
-    	
-		<div tal:define="member context/@@plone_portal_state/member;" id="content" >
-		    
-    		    <script type="text/javascript"
-                            tal:attributes="src string:${view/static}/cropper/js/jquery.Jcrop.js"></script>    
-    	        
-    	        <script type="text/javascript" charset="utf-8" tal:condition="python: formsubmitted and not error"
-    	                tal:attributes="src string:${view/static}/js/crop_image_user.js" />
+
+		<div id="content" >
 		    
 		        <link type="text/css" charset="utf-8" rel="stylesheet" 
 					  tal:attributes="href string:${view/static}/cropper/css/jquery.Jcrop.css"/>
-		    
+
 				<h1>Alterar sua imagem do perfil</h1>
 				<form method="post" enctype="multipart/form-data" name="crop_image"
+				             tal:condition="not: formcrop"
                              tal:attributes="action string:${context/absolute_url|nothing}/myvindula-user-crop">
 				
 				    <input type="hidden" id="field" name="field" value=""
@@ -90,19 +85,9 @@
     					</fieldset>
     
     				</div>
-    				<div id="crop-susseco" tal:condition="formcrop">
-    					<script type="text/javascript">
-    						$j = jQuery.noConflict();
-    						
-    						$j(document).ready(function(){
-    							$j('div.close', window.parent.document).trigger('click');
-    							window.parent.mostraFoto();
-    							
-    						});
-    						
-    					</script>	
-    				</div>
-				</form>
+    			</form>
+				<div id="crop-susseco" tal:condition="formcrop">
+				</div>
 		</div>
 	</body>
 </html>

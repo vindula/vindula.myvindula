@@ -6,10 +6,10 @@ from vindula.myvindula import MessageFactory as _
 
 #from vindula.myvindula.models.funcdetails import ModelsFuncDetails
 from vindula.myvindula.models.photo_user import ModelsPhotoUser
-from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
+
 from vindula.myvindula.models.base import BaseStore
 
-from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
+
 
 from Products.CMFCore.utils import getToolByName
 from zope.app.component.hooks import getSite
@@ -17,6 +17,8 @@ from zope.app.component.hooks import getSite
 import hashlib, urllib, base64, pickle
 from datetime import date, datetime
 
+import logging
+logger = logging.getLogger('vindula.myvindula')
 
 class UtilMyvindula(object):
 
@@ -38,24 +40,55 @@ class UtilMyvindula(object):
         
     
     def get_prefs_user(self, user):
+        from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
+        from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
         user_id = self.Convert_utf8(user)
         #return ModelsFuncDetails().get_FuncDetails(user_id)
-        
+
         campos = ModelsConfgMyvindula().get_configurationAll()
         dados = ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id)
         
         D = {}
+        if dados:
+            D['instance_user'] = dados.id
         for campo in campos:
             D[campo.fields] = self.getDadoUser_byField(dados, campo.fields)
         
         return D
         
+    def get_Dic_Campos(self):
+        from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
+        campos = {}
+        fields = ModelsConfgMyvindula().get_configurationAll()
+        if fields:
+            for field in fields:
+                if not field.fields in ['vin_myvindula_department']: 
+                    M={}
+                    M['required'] = field.required
+                    M['type'] = field.type
+                    M['label'] = field.label
+                    M['decription'] = field.decription
+                    M['ordem'] = field.ordem
+                    M['mascara'] = field.mascara
+                    
+                    campos[field.fields] = M
+                    
+        return campos
     
     def getDadoUser_byField(self,instanceUser,campo):
         if instanceUser:
-            return instanceUser.dadosUses.find(vin_myvindula_confgfuncdetails_fields=self.Convert_utf8(campo)).one()
-        else:
-            return None
+            tmp = instanceUser.dadosUses.find(vin_myvindula_confgfuncdetails_fields=self.Convert_utf8(campo)).one()
+            if tmp:
+                try:data = self.decodePickle(tmp.valor)
+                except:data = tmp.valor
+                if type(data) == list:
+                    str = ''
+                    for i in data:
+                        if i:str += i +' / '
+                    
+                    data = str
+                return data
+        return None
      
 
     def to_utf8(self, value):
@@ -108,7 +141,7 @@ class UtilMyvindula(object):
         try: 
             return unicode(valor,'utf-8')
         except UnicodeDecodeError:
-            return valor.decode("utf-8", "replace")
+            return valor.decode("utf-8", "ignore")
         except:
             if type(valor) == unicode:
                 return valor
@@ -151,26 +184,6 @@ class UtilMyvindula(object):
         else:
             return ''
     
-#    def getValueList(self,campo,request,data):
-#        if campo in request.keys():
-#            if request.get(campo, None):
-#                return request.get(campo,[])
-#            else:
-#                return []
-#        elif data:
-#            L = []
-#            for i in data:
-#                if campo == 'languages':
-#                    L.append(i.vin_myvindula_languages_id)
-#                elif campo == 'skills_expertise':
-#                    L.append(i.vin_myvindula_courses_id)
-#                else:
-#                    L.append(i.id)
-#                    
-#            return L
-#        else:
-#            return []    
-        
     def getValueList(self,campo,request,data):
         if campo in request.keys():
             if request.get(campo, ''):
@@ -181,7 +194,6 @@ class UtilMyvindula(object):
             L = data.get(campo,'')
             return L
                   
-        
         
     def getParametersFromURL(self, ctx):
         traverse = ctx.context.REQUEST.get('traverse_subpath')
@@ -195,46 +207,12 @@ class UtilMyvindula(object):
                 counter+=1
         return vars
                 
-    
-    def getPhoto(self,campo,request,data):
-        if campo in request.keys():
-#            if request.get(campo, None):
-#                return self.context.absolute_url()+'/'+request.get(campo, '').filename + '/image_thumb'
-#            else:
-                return self.context.absolute_url()+'/'+'defaultUser.png'
-        elif campo in data.keys():
-            if data.get(campo, None) and not ' ' in data.get(campo,None) and not data.get(campo,None) == '':
-                #return self.context.absolute_url()+'/'+data.get(campo,'') + '/image_thumb'
-                return BaseFunc().get_imageVindulaUser(data.get(campo,''))
-                
-            else:
-                return self.context.absolute_url()+'/'+'defaultUser.png'
-        else:
-            return self.context.absolute_url()+'/'+'defaultUser.png'        
-        
     def checked(self,campo,request,data,ativa='edit'):
         if campo in request.keys():
             if request.get(campo, '') == True:
                 return "checked"
             else:
                 return ""
-        elif campo in data.keys():
-#            D = data.get(campo,None)
-#            if D:
-#                if ativa == 'edit':
-#                    if D.get('edit',False):
-#                        return "checked"
-#                    else:
-#                        return ""
-#                elif ativa == 'view':
-#                    if D.get('view',False):
-#                        return "checked"
-#                    else:
-#                        return ""
-#                else:
-#                    return ""
-#            else:
-#                return ""
             if data.get(campo,False):
                 return 'checked'
             else:
@@ -311,6 +289,17 @@ class UtilMyvindula(object):
 #        else:
 #            return default.get('label')
 
+    def setLogger(self,type,msg):
+        '''
+        @types = info, warning
+        @msg = mesagem para o gravar no log
+        '''
+        cmd = 'logger.%s("%s")'%(type,msg)
+        try:
+            eval(cmd)
+        except:
+            logger.warning("Erro ao executar o camando setLogger")
+
 
     def setStatusMessage(self,type,msg):   
         '''
@@ -352,19 +341,18 @@ class UtilMyvindula(object):
     def getURLFotoUser(self,username):
         ativa_gravatar = self.context.restrictedTraverse('myvindula-conf-userpanel').check_ativa_gravatar()
         
-        try: username = unicode(username)
-        except: pass  
+        username = self.Convert_utf8(username)
         campo_image = ModelsPhotoUser().get_ModelsPhotoUser_byUsername(username)
-        dados_user = ModelsFuncDetails().get_FuncDetails(username)
+        dados_user = self.get_prefs_user(username)# ModelsFuncDetails().get_FuncDetails(username)
         
         if campo_image:
-            return self.context.portal_url() + '/user-image?username='+username
+            return self.context.portal_url() + '/user-image?username='+username+'&field=photograph'
                 
         elif ativa_gravatar and dados_user:
-            if dados_user.email:
-                return self.loadGravatarImage(dados_user.email,username)
-            elif dados_user.photograph:
-                local = dados_user.photograph.split('/')
+            if dados_user.get('email',False):
+                return self.loadGravatarImage(dados_user.get('email',''),username)
+            elif dados_user.get('photograph',False):
+                local = dados_user.get('photograph','').split('/')
                 try:
                     ctx= getSite()[local[0]][local[1]][local[2]]
                     obj = ctx.restrictedTraverse('@@images').scale('photograph', height=150, width=120)
@@ -372,13 +360,13 @@ class UtilMyvindula(object):
                 except:
                     pass
 
-        return self.context.portal_url() + '/user-image?username='+username
+        return self.context.portal_url() + '/user-image?username='+username+'&field=photograph'
         
         
         
     def loadGravatarImage(self, email,username): 
         # Imagem Padrão o usuario
-        default = self.context.portal_url() + '/user-image?username='+username
+        default = self.context.portal_url() + '/user-image?username='+username+'&field=photograph'
         size = 168
         
         gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(email.lower()).hexdigest() + "?"

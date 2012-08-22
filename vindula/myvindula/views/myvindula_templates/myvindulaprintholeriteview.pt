@@ -6,7 +6,7 @@
 		<link tal:attributes="href string:${context/portal_url|nothing}/public.css"
 			  media="all" type="text/css" rel="stylesheet" xmlns="">
 		<link rel="stylesheet" href="" type="text/css" media="all"
-			  tal:attributes="href string:${context/portal_url|nothing}/++resource++vindula.myvindula/form_holerite.css">	  
+			  tal:attributes="href string:${view/static}/form_holerite.css">	  
 		<style media="all" type="text/css">
 			body{background:none;}
 			*{font-family: Helvetica !important;margin: 0;padding:0;text-decoration:none;}
@@ -17,195 +17,16 @@
 		</script>
 	</head>
 	<body tal:define="item view/load_list|nothing">
-		
 		<div id="content"  style="width: 665px">
 			<img src="/++resource++vindula.themedefault/images/icons/logo_topo.png"
 				tal:attributes="src string:${context/portal_url|nothing}/company-logo?cnpj=${item/cnpj_empresa|nothing}"
 				height="60px"
 				 />
-			
 			<div id="holerite">
 					<div style="height: 0pt; position: relative; left: 16%; opacity: 0.25" id="logo-holerite"> 
-						<img tal:attributes="src string:${context/portal_url|nothing}/company-logo?cnpj=${item/cnpj_empresa|nothing}" width="450px"/>
-					</div>	
-					<div class="border"  style="width: 660px;">
-						<div class="row title even">
-							<div class="cell width-full position-0">
-								<span >Empresa</span>	
-							</div>
-						</div>										
-						<div class="row">
-							<div class="cell width-2 position-0">
-								<span tal:content="item/cod_empresa|nothing" />
-							</div>
-							<div class="cell width-12 position-1">
-								<span tal:content="item/empresa|nothing" />
-							</div>
-							<div class="cell width-2 position-12">
-								<span tal:content="item/cidade_empresa|nothing" />
-							</div>
-						</div>
-						<div class="row">
-							<div class="cell width-13 position-1">
-								<span tal:content="item/endereco_empresa|nothing" />		
-							</div>
-							<div class="cell width-2 position-14">
-								<span tal:content="item/estado_empresa|nothing" />		
-							</div>
-							
-						</div>
-						<div class="row">
-							<div class="cell width-7 position-1">
-								<span tal:content="item/cnpj_empresa|nothing" />		
-							</div>
-							<div class="cell width-3 position-11">
-								<span>Competência</span>
-							</div>
-							<div class="cell width-2 position-14">
-								<span tal:define="comp item/competencia|nothing"
-								tal:content="comp" />
-							</div>
-						</div>
+					   <img tal:attributes="src string:${context/portal_url|nothing}/company-logo?cnpj=${item/cnpj_empresa|nothing}" width="450px"/>
 					</div>
-					<div class="border"> 
-						<div class="row title" style="width: 660px;">
-							<div class="cell width-full position-0">
-								<span >Funcionário</span>
-							</div>
-						</div>
-						<div class="row">
-							<div class="cell width-2 position-0">
-								<span tal:content="item/matricula|nothing" />
-							</div>
-							<div class="cell width-10 position-2">
-								<span tal:content="item/nome|nothing" />
-							</div>
-							<div class="cell width-4 position-12">
-								<span tal:content="string: CPF: ${item/cpf|nothing}" />
-							</div>
-						</div>
-					</div>
-					<tal:def define="tmp item/id|nothing;
-									 descricoes python:view.get_descricao_holerite(tmp)">
-						<div class="row title" style="width: 660px;">
-							<div class="cell width-1 position-0">
-								<span>Cód.</span>
-							</div>
-							<div class="cell width-7 position-1">
-								<span>Descri&ccedil;&atilde;o</span>
-							</div>
-							<div class="cell width-2 position-8">
-								<span>Ref.</span>
-							</div>
-							<div class="cell width-3 position-10">
-								<span>Vencimentos</span>
-							</div>
-							<div class="cell width-2 position-13">
-								<span>Descontos</span>
-							</div>
-						</div> 
-						<tal:rep repeat="descricao descricoes">
-							<div tal:define="even repeat/descricao/even|nothing" 
-								class="row" style="width: 660px;">
-								<div class="cell width-1 position-0">
-									<span tal:content="descricao/codigo|nothing">Cód.</span>
-								</div>
-								<div class="cell width-7 position-1">
-									<span tal:content="descricao/descricao|nothing">Descri&ccedil;&atilde;o</span>
-								</div>
-								<div class="cell width-2 position-8 center">
-									<span tal:content="descricao/ref|nothing">Ref.</span>
-								</div>
-								<div class="cell width-3 position-10 center">
-									<span tal:content="descricao/vencimentos|nothing">Vencimentos</span>
-								</div>
-								<div class="cell width-2 position-13 center">
-									<span tal:content="descricao/descontos|nothing">Descontos</span>
-								</div>
-							</div> 
-						</tal:rep>
-					</tal:def>
-					<div class="row border" style="width: 660px;">
-						<div class="cell width-10 position-0 title">
-							<span>mensagem</span>
-							<div class="row">
-								<div class="cell width-13 position-0" >
-									<span tal:content="item/observacao|nothing">Observação</span>
-								</div>	
-							</div>
-							
-						</div>
-						<div class="cell width-6-5 position-10 border-horz">
-							<div class="row">
-								<div class="cell width-8 position-0">
-									<div class="row title">
-										<div class="cell width-full position-0">
-											<span>Total Vencimentos</span>	
-										</div>
-									</div>
-									<div class="row center">
-										<div class="cell width-full position-0">
-											<span tal:content="item/total_vencimento|nothing">Total Vencimentos</span>	
-										</div>
-									</div>
-								</div>
-								<div class="cell width-8 position-8 border-horz">
-									<div class="row title">
-										<div class="cell width-full position-0">
-											<span>Total Descontos</span>	
-										</div>
-									</div>
-									<div class="row center">
-										<div class="cell width-full position-0">
-											<span tal:content="item/total_desconto|nothing">Total Descontos</span>	
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row border center">
-								<div class="cell width-8 position-0">
-									<b><span>Valor L&iacute;quido</span></b>
-								</div>
-								<div class="cell width-8 position-8">
-									<b><span tal:content="item/valor_liquido|nothing">Valor L&iacute;quido</span></b>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="row title" style="width: 660px;">
-						<div class="cell width-3 position-0">
-							<span>Sal&aacute;rio Base</span>
-						</div>
-						<div class="cell width-3 position-3">
-							<span>Base INSS</span>
-						</div>
-						<div class="cell width-3 position-6">
-							<span>Base FGTS</span>
-						</div>
-						<div class="cell width-3 position-9">
-							<span>FGTS Mês</span>
-						</div>
-						<div class="cell width-3 position-12">
-							<span>Base IRRF</span>
-						</div>
-					</div>
-					<div class="row center" style="width: 660px;">
-						<div class="cell width-3 position-0">
-							<span tal:content="item/salario_base|nothing" />
-						</div>
-						<div class="cell width-3 position-3">
-							<span tal:content="item/base_Inss|nothing" />
-						</div>
-						<div class="cell width-3 position-6">
-							<span tal:content="item/base_fgts|nothing" />
-						</div>
-						<div class="cell width-3 position-9">
-							<span tal:content="item/fgts_mes|nothing" />
-						</div>
-						<div class="cell width-3 position-12">
-							<span tal:content="item/base_irrf|nothing" />
-						</div>								
-					</div>
+					<metal:holerite metal:use-macro="context/myvindula-holerite/macros/print-holerite" />
 			</div>
 		</div>
 		<script type="text/javascript">

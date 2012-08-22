@@ -1,4 +1,4 @@
-$j = jQuery.noConflict();
+//$j = jQuery.noConflict();
                         
 function exibePreview(c){
     var rx = 100 / c.w;
@@ -24,13 +24,11 @@ function exibePreview(c){
     $j('#cort-y2').val(c.y2);
 }
 
-
-$j(document).ready(function(){
-    $j(function(){
-        $j('#usertImage').Jcrop({
+function CarregaCrop(resp, elem){
+   var img = resp.find("#usertImage"); 
+       img.Jcrop({
             onChange: exibePreview,
             onSelect: exibePreview,
             aspectRatio: 1
         });
-    });
-});
+}

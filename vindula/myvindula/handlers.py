@@ -48,7 +48,7 @@ def userupdate(event):
                 
                 ModelsDadosFuncdetails().set_DadosFuncdetails(**D)
             
-            logger.info("Usuario criado no myvindula")
+            tools.setLogger('info',"Usuario criado no myvindula")
         
         elif not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
             
@@ -65,7 +65,7 @@ def userupdate(event):
         if ((not user_data.get('name')) or (not user_data.get('date_birth')) or\
             (not user_data.get('phone_number')) or (not user_data.get('email'))) and enable:
             
-            logger.info("Dados Incompletos no myvindula")
+            tools.setLogger('info',"Dados Incompletos no myvindula")
             
             #request.other["came_from"]=registro_url
             #request.response.redirect(registro_url, lock=True)

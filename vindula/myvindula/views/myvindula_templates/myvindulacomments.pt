@@ -32,7 +32,7 @@
 	  
 	  <input type="button" name="submit" value="Publicar" id="save-coment" class="context bt_comments" onClick="CKupdate();"/>
 	   
-	   <img tal:attributes="src string:${context/portal_url|nothing}/++resource++vindula.myvindula/images/save-load.gif"
+	   <img tal:attributes="src string:${view/static}/images/save-load.gif"
 	        id="load-save" style="display: none" />
 	   	   
 	</div>

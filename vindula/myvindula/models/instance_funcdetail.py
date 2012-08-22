@@ -55,3 +55,13 @@ class ModelsInstanceFuncdetails(Storm, BaseStore):
             self.store.remove(results)
             self.store.flush()   
     
+    
+    def get_AllFuncDetails(self):
+        L = []
+        data = self.store.find(ModelsInstanceFuncdetails)
+        if data.count() > 0:
+            for item in data:
+                L.append(item.id)
+        
+        return ModelsDadosFuncdetails().geraDic_DadosUser(L)
+    

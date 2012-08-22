@@ -21,7 +21,7 @@
             <input type="button" name="excluir" value="Excluir" 
                                  class="bt_comments excluir-howareu" tal:attributes="id item/id|nothing" />
                                  
-            <img tal:attributes="src string:${context/portal_url|nothing}/++resource++vindula.myvindula/images/save-load.gif"
+            <img tal:attributes="src string:${view/static}/images/save-load.gif"
                  id="load-save" style="display: none" />                                 
                                      
         </form>
