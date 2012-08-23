@@ -50,7 +50,7 @@ def userupdate(event):
             
             tools.setLogger('info',"Usuario criado no myvindula")
         
-        elif not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
+        if not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
             
             CreateUserXMPP(user_id)
         
