@@ -209,17 +209,20 @@ class UtilMyvindula(object):
                 
     def checked(self,campo,request,data,ativa='edit'):
         if campo in request.keys():
-            if request.get(campo, '') == True:
+            if request.get(campo, '') == True or\
+                request.get(campo,'') == 'True':
                 return "checked"
             else:
                 return ""
-            if data.get(campo,False):
-                return 'checked'
+        elif campo in data.keys():
+            if data.get(campo,'') == True or\
+                data.get(campo,'') == 'True':
+                return "checked"
             else:
-                return ''
-
+                return ""
         else:
             return ""    
+        
     
     # retorna dado convertido para o campo de valor monetario   
     def converte_valor(self, valor):

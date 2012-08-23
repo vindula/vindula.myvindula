@@ -210,4 +210,8 @@ Changelog
 -----------------------
 - Criação de máscaras aos campos de telefone, data, cep e cpf do usuário.
 
+1.1.40 - 2012-08-23
+------------------------
+- Criado mecanismo para criar dinamicamente os campos do perfil do usuario
+- Ajustes no mecanismo busca do portlet ramais para os campos dinamicos
 

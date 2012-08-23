@@ -754,7 +754,7 @@ class MyVindulaLike(grok.View,UtilMyvindula):
     
 class MyVindulaComments(grok.View, UtilMyvindula):
     grok.context(Interface)
-    grok.require('vindula.UserLogado')
+    grok.require('zope2.View')
     grok.name('myvindula-comments')
     
     def get_UID(self):

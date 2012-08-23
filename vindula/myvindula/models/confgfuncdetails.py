@@ -8,6 +8,7 @@ from storm.expr import Desc, Select
 
 from vindula.myvindula.models.base import BaseStore
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
+from vindula.myvindula.models.photo_user import ModelsPhotoUser
 
 
 class ModelsConfgMyvindula(Storm, BaseStore):
@@ -43,7 +44,8 @@ class ModelsConfgMyvindula(Storm, BaseStore):
         record = self.store.find(ModelsConfgMyvindula, ModelsConfgMyvindula.fields==campo).one()
         if record:
             ModelsDadosFuncdetails().del_DadosFuncdetails_by_field(campo)
-        
+            ModelsPhotoUser().del_PhotoUser_byCampo(campo)
+            
             self.store.remove(record)
             self.store.flush()        
         

@@ -37,10 +37,11 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
     
     def del_DadosFuncdetails(self,id_instance):
         results = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.vin_myvindula_instance_id==id_instance)
-        if results:
+        if results.count() > 0:
             for result in results:
                 self.store.remove(result)
                 self.store.flush()   
+
     
     def del_DadosFuncdetails_by_field(self,campo):
         results = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==campo)

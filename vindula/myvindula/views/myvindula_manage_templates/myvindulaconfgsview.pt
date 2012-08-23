@@ -13,9 +13,9 @@
   <metal:main fill-slot="prefs_configlet_content">
         <script type="text/javascript" tal:attributes="src string:${view/static}/js/ajax_ordem_campos.js"></script>
         <style type="text/css">
-            .BlackList, .BlackList td{ background-color: red !important;
+            .BlackList, .BlackList td{ background-color: #FFD3D3 !important;
             }
-            .img img{
+            .img{
                 text-align: center;
             }
         </style>
@@ -49,8 +49,7 @@
                                 <th>Habilitado para visão</th>
                                 <th>Titulo</th>
                                 <th>Tipo</th>
-                                <th colspan="2">ordenar</th>
-                                
+                                <th>Área de Visualização</th>
                             </tr>
                             <tbody class="sortable" >
                                 <tal:rep repeat="item data">
@@ -67,7 +66,11 @@
                                         <td class="img"><img tal:attributes="src string:${view/static}/images/field-${item/ativo_view|nothing}.png" /></td>
                                         <td tal:content="item/label|nothing"> Titulo </td>    
                                         <td tal:content="item/type|nothing">text</td>
-                                        <td class="draggable" align="center">
+                                        <td tal:define="area_de_view item/area_de_view|nothing;
+                                                        area python: (field in view.BlackList) and 'Bloqueado' or area_de_view"
+                                            tal:content="area">Área de Visualização</td>
+                                        
+                                        <!--td class="draggable" align="center">
                                             <a title="Mover item para cima" 
                                                tal:condition="not:repeat/item/start"
                                                tal:attributes="href string:${context/absolute_url|nothing}/edit_myvindulaconfgs?position=up&fields=${item/fields}">▲</a>
@@ -76,7 +79,7 @@
                                             <a title="Mover item para baixo"
                                                tal:condition="not:repeat/item/end" 
                                                tal:attributes="href string:${context/absolute_url|nothing}/edit_myvindulaconfgs?position=down&fields=${item/fields}">▼</a>
-                                        </td>
+                                        </td-->
                                     </tr>
                                 </tal:rep>
                             </tbody>

@@ -126,15 +126,16 @@ def set_field_default(context):
               u'photograph'              : {'ativo_edit':True, 'ativo_view':True, 'required': False, 'type': u'img',  'label': u'Foto',               'decription': u'Coloque a foto do funcionário',              'ordem':5, 'area_de_view': u'' },
               u'cpf'                     : {'ativo_edit':True, 'ativo_view':True, 'required': False, 'type': u'text', 'label': u'CPF',                'decription': u'Digite o CPF do funcionário',                'ordem':6, 'area_de_view': u'other' }
               }
-    
+
     for i in campos.keys():
         result_fields = ModelsConfgMyvindula().get_configuration_By_fields(i)
         if ModelsConfgMyvindula().check_fields(i): 
             #adicionando...
             data = campos[i]
+            data['fields'] = i
             ModelsConfgMyvindula().set_configuration(**data)
-            tools.setStatusMessage("info","Campo adicionado com sucesso")
+            tools.setLogger("info","Campo adicionado com sucesso= %s"%(i))
         
         else:
-            tools.setStatusMessage("error","Já existe um campo com este nome")
+            tools.setLogger("error","Já existe um campo com este nome = %s"%(i))
 

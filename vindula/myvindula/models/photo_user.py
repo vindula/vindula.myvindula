@@ -66,3 +66,12 @@ class ModelsPhotoUser(Storm, BaseStore):
         if result:
             self.store.remove(result)
             self.store.flush()
+            
+            
+    def del_PhotoUser_byCampo(self,campo):
+         results = self.store.find(ModelsPhotoUser, ModelsPhotoUser.vin_myvindula_confgfuncdetails_fields == campo)
+         if results.count() > 0:
+            for result in results:
+                self.store.remove(result)
+                self.store.flush()
+        
