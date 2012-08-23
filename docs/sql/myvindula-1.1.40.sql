@@ -76,6 +76,18 @@ UNLOCK TABLES;
 /*!40000 ALTER TABLE `vin_myvindula_confgfuncdetails` ENABLE KEYS */;
 
 
+--
+-- Definition of table `myvindulaDB`.`vin_myvindula_instance_funcdetails`
+--
+
+DROP TABLE IF EXISTS `myvindulaDB`.`vin_myvindula_instance_funcdetails`;
+CREATE TABLE  `myvindulaDB`.`vin_myvindula_instance_funcdetails` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(45) NOT NULL,
+  `date_creation` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+
 
 --
 -- Definition of table `myvindulaDB`.`vin_myvindula_dados_funcdetails`
@@ -95,18 +107,6 @@ CREATE TABLE  `myvindulaDB`.`vin_myvindula_dados_funcdetails` (
   CONSTRAINT `fk_vin_myvindula_dados_funcdetails_vin_myvindula_instance1` FOREIGN KEY (`vin_myvindula_instance_id`) REFERENCES `vin_myvindula_instance_funcdetails` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=337 DEFAULT CHARSET=latin1;
 
-
---
--- Definition of table `myvindulaDB`.`vin_myvindula_instance_funcdetails`
---
-
-DROP TABLE IF EXISTS `myvindulaDB`.`vin_myvindula_instance_funcdetails`;
-CREATE TABLE  `myvindulaDB`.`vin_myvindula_instance_funcdetails` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(45) NOT NULL,
-  `date_creation` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 
 
 --
