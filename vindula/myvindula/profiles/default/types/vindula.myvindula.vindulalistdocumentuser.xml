@@ -14,7 +14,7 @@
  <property name="allowed_content_types" />
  
  <!-- schema interface -->
- <property name="schema">vindula.myvindula.vindulalistdocumentuser.IVindulaListDocumentUser</property> 
+ <property name="schema">vindula.myvindula.content.vindulalistdocumentuser.IVindulaListDocumentUser</property> 
 
  <!-- add permission -->
  <property name="add_permission">cmf.AddPortalContent</property>

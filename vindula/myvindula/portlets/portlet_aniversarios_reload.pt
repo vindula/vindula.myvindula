@@ -19,7 +19,7 @@
 			<input type="hidden" name="b_start" id="b_start" value="0">
 			<script tal:attributes="src string:${context/portal_url}/++theme++vindula.themedefault/js/cycle.js"></script>
 			
-			<script tal:attributes="src string:${context/portal_url}/++resource++vindula.myvindula/js/ajax_reload_portlet.js"></script>
+			<script tal:attributes="src string:${context/portal_url}/++resource++vindula.myvindula.views/js/ajax_reload_portlet.js"></script>
 			
 			<!-- Cycle Divs -->
 			<div class="aniversante-cycle">

@@ -1,0 +1,105 @@
+<html metal:use-macro="here/main_template/macros/master">
+	<head>
+        <metal:block fill-slot="top_slot">
+            <tal:dummy tal:define="dummy python:request.set('disable_border',1);
+                                   disable_column_one python:request.set('disable_plone.leftcolumn',1);
+                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+        </metal:block>
+	</head>
+	<body metal:fill-slot="content">  
+		<meta:macro metal:define-macro="page-view">     
+	    	<div   tal:define="view python: context.restrictedTraverse('@@myvindulalistuser');
+	    	                   isAnonymous context/portal_membership/isAnonymousUser|python:True;
+	    	                   
+							   form_data view/load_list | python:{};
+							   user form_data/username|nothing;">
+												   
+                    <div id="interna" class="userpage ">
+                        <h2 class="h2title">Informa&ccedil;&otilde;es do Perfil</h2>
+                        <div class="titulo">
+                            <h2>
+                                <tal:cond condition="python: view.get_ConfugCampos('name')">
+                                   <tal:cont tal:define="name python:view.getDadoUser_byField(form_data,'name')" 
+                                             content="name/valor|nothing" />
+                                </tal:cond>
+                            </h2>
+                        </div>
+                    
+                        <div class="department">
+                            <tal:cond condition="python: view.get_ConfugCampos('vin_myvindula_department')">
+                                <tal:def define="departamentos python: view.get_department(user)">
+                                    <tal:rep repeat="departamento departamentos">
+                                        <span tal:content="departamento/Title|nothing">Departamento</span>
+                                        <span tal:define="cont repeat/departamento/length;
+                                                               last repeat/departamento/end"
+                                              tal:condition="python: cont > 1 and not last"> | </span>
+                                    </tal:rep>
+                                </tal:def>
+                            </tal:cond>
+                            <!--span tal:content="form_data/departamento/name|nothing"></span-->
+                        </div>
+                    
+                        <!-- start: Personal Information -->
+                        <div id="personal">
+                            <div id="photo">
+                                <tal:cond condition="python: view.get_ConfugCampos('photograph')">    
+                                    <!-- Dados para utilização da macro -->                                  
+                                    <tal:def define="size_img string:150px;
+                                                     user_profiles user|nothing;
+                                                     item form_data;">
+                                        <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>       
+                                    </tal:def>
+                                </tal:cond>
+                                <tal:cond condition="python:not view.get_ConfugCampos('photograph')">
+                                    <div style="width: 150px;height: 150px;"></div>
+                                </tal:cond>
+                            </div>
+                        
+                            <div id="data" tal:define="dados python:view.geraDadosAreas('personal',form_data)" 
+                                           tal:condition="dados|nothing">
+                                <div class="area"><span>Pessoal</span></div>
+                                    <table>
+                                        <tal:rep repeat="item dados">
+                                            <tr>
+                                                <td class="field" tal:content="item/label|nothing">Label</td>
+                                                <td class="value" tal:content="item/data|nothing">Data</td>
+                                            </tr>
+                                        </tal:rep>
+                                        
+                                    </table>
+                                <a id="send-mail" tal:define="email python:view.getDadoUser_byField(form_data,'email')" 
+                                                  tal:condition="python:email and view.get_ConfugCampos('email')" 
+                                                  tal:attributes="href string:mailto:${email}">Enviar e-mail</a>
+                            </div>
+                        </div>
+                        <!-- end: Personal Information -->
+                </div>
+               
+                <div id="perfil" class="userpage"> 
+                    <!-- start: Others Information -->
+                    
+                    <tal:rep repeat="area view/getAreasDinamicas">
+                        <!-- areas -->
+                        <div id="grupo" tal:define="dados python:view.geraDadosAreas(area.get('id'),form_data)" 
+                                        tal:condition="dados|nothing">
+                            <div class="area"><span tal:content="area/title|nothing">Contato</span></div>
+                            <img class="type-info" tal:attributes="src area/url_image" />
+                            <table>
+                                <tal:rep repeat="item dados">
+                                    <tr>
+                                        <td class="field" tal:content="item/label|nothing">Label</td>
+                                        <td class="value"> <tal:cont tal:content="structure item/data|nothing"></tal:cont></td>
+                                    </tr>
+                                </tal:rep> 
+    
+                            </table>
+                        </div>
+                        
+                    </tal:rep>
+                    
+                    <!-- end: Others Information -->
+                </div>				    
+	        </div>
+	</meta:macro>    
+</body>
+</html>

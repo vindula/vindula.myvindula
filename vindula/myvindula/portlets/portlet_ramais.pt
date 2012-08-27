@@ -9,17 +9,28 @@
 
 		<div id="busca-portlet">
 			<form action="#portlet-ramais" method="post" id="portlet-ramais">
-		    	<h4>Nome:</h4>
+		    	<!--h4>Nome:</h4>
 				<input type="text" name="title" size="26" tal:attributes="value python: request.get('title', '')"/>
 				<h4>Ramal:</h4>
-				<input type="text" name="ramal" size="26" tal:attributes="value python: request.get('ramal', '')"/>
+				<input type="text" name="ramal" size="26" tal:attributes="value python: request.get('ramal', '')"/-->
+				
+				
+				<tal:rep repeat="detail view/get_camposFilter">
+                    <h4 tal:condition="python: detail['label'] and detail['content']"
+                        tal:content="string: ${detail/label}: "> </h4>
+                    <input type="text" name="ramal" size="26"
+                           tal:define="campo  detail/content"
+                           tal:attributes="value python: request.get(campo, '');
+                                           name campo"/>
+                </tal:rep>
+				
 				<h4>Departamento:</h4>
 				<tal:def define="filtro view/filtro_departamento|nothing;
 								 ctx python:context;
 								 uid_selected python: view.get_uid_struct_org(ctx)">
 		            <tal:cond condition="python: filtro=='departamentos'">
 		            	<select size="1" id="departamento" name="departamento" style="width:100%;">
-			        		<option value="0" >Todos ...</option>
+			        		<option value="" >Todos ...</option>
 				            <tal:departamentos tal:repeat="item view/list_departamentos">
 			            		<tal:cond condition="request/SearchSubmit|nothing">
 					            	<option tal:define="id_request request/departamento | python:''" 
@@ -69,24 +80,24 @@
 			    	<div>
 				    	<tal:results tal:define="busca python:results[:int(quant)];"
 					  			   	  tal:repeat="item busca" >
-							<div id="boxPortlet" tal:define="i repeat/item/end;"
-    					     					 tal:attributes="class python:view.getEnd(i);">
+								<div id="boxPortlet" tal:define="i repeat/item/end;"
+	    					     					 tal:attributes="class python:view.getEnd(i);">
 						     					 
                                     <!-- Dados para utilização da macro -->                                  
                                     <tal:def define="size_img string:50px;
                                                      principal_name python: view.get_principal_campo(item);
                                                      details python: view.get_details_user(item) or [];">
                                         <div metal:use-macro="context/myvindula-imageprofiles-macro/macros/userprofiles" />       
-                                    </tal:def>      						     					 
+                                    </tal:def>    							
+
 						 	</div>
 						 	<div class="visualClear"></div>
 			      		</tal:results>
 					</div>
 			    	<div class="titulo_info_boxTipo2 aling-right">
-				        <h4 tal:condition="python:results.count()>int(quant)">
-				        	<a tal:attributes="href  string:${here/portal_url}/myvindulalistall?title=${request/title|nothing}&
-				        	                                ramal=${request/ramal|nothing}&departamento=${request/departamento|nothing}&
-				        	                                filtro=${view/filtro_departamento|python:'departamentos'}">Mais...</a>
+				        <h4 tal:condition="python:len(results)>int(quant)">
+				        	<a tal:attributes="href  string:${here/portal_url}/myvindulalistall?campos=${view/form_dados}&departamento=${request/departamento|nothing}&filtro=${view/filtro_departamento|python:'departamentos'}&SearchSubmit=''">Mais...</a>
+
 				        </h4>
 				    </div>
 

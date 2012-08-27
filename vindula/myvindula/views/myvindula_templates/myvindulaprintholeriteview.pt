@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<title> Impressão de Holerite</title>
+		<link tal:attributes="href string:${context/portal_url|nothing}/columns.css"
+			  media="all" type="text/css" rel="stylesheet" xmlns="">
+		<link tal:attributes="href string:${context/portal_url|nothing}/public.css"
+			  media="all" type="text/css" rel="stylesheet" xmlns="">
+		<link rel="stylesheet" href="" type="text/css" media="all"
+			  tal:attributes="href string:${view/static}/form_holerite.css">	  
+		<style media="all" type="text/css">
+			body{background:none;}
+			*{font-family: Helvetica !important;margin: 0;padding:0;text-decoration:none;}
+		</style>			  
+
+		<script type="application/javascript">
+			window.print();
+		</script>
+	</head>
+	<body tal:define="item view/load_list|nothing">
+		<div id="content"  style="width: 665px">
+			<img src="/++resource++vindula.themedefault/images/icons/logo_topo.png"
+				tal:attributes="src string:${context/portal_url|nothing}/company-logo?cnpj=${item/cnpj_empresa|nothing}"
+				height="60px"
+				 />
+			<div id="holerite">
+					<div style="height: 0pt; position: relative; left: 16%; opacity: 0.25" id="logo-holerite"> 
+					   <img tal:attributes="src string:${context/portal_url|nothing}/company-logo?cnpj=${item/cnpj_empresa|nothing}" width="450px"/>
+					</div>
+					<metal:holerite metal:use-macro="context/myvindula-holerite/macros/print-holerite" />
+			</div>
+		</div>
+		<script type="text/javascript">
+				var img = document.getElementById('logo-holerite');
+				var div = document.getElementById('holerite');
+				img.style.top =  (div.clientHeight*0.40)+'px';
+		</script>
+	</body>
+</html>

@@ -3,19 +3,19 @@
 <object name="portal_css">
 
  <stylesheet title="myvindula_user.css"
-    id="++resource++vindula.myvindula/myvindula_user.css"
+    id="++resource++vindula.myvindula.views/myvindula_user.css"
     media="screen" rel="stylesheet" rendering="import"
     cacheable="True" compression="safe" cookable="True"
     enabled="1" expression=""/>	  
 	
  <stylesheet title="myvindula_comments.css"
-    id="++resource++vindula.myvindula/myvindula_comments.css"
+    id="++resource++vindula.myvindula.views/myvindula_comments.css"
     media="screen" rel="stylesheet" rendering="import"
     cacheable="True" compression="safe" cookable="True"
     enabled="1" expression=""/>	 
 	
  <stylesheet title="myvindula_import_user.css"
-    id="++resource++vindula.myvindula/myvindula_import_user.css"
+    id="++resource++vindula.myvindula.views/myvindula_import_user.css"
     media="screen" rel="stylesheet" rendering="import"
     cacheable="True" compression="safe" cookable="True"
     enabled="1" expression=""/>  

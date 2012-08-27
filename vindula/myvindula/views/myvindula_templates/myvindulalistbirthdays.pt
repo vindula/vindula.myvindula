@@ -1,0 +1,49 @@
+<html>
+	<body metal:use-macro="here/main_template/macros/master">
+	<metal:block fill-slot="top_slot">
+        <tal:dummy tal:define="dummy python:request.set('disable_border',1);
+        					   disable_column_one python:request.set('disable_plone.leftcolumn',1);
+                               disable_column_two python:request.set('disable_plone.rightcolumn',1);"/>
+        
+	</metal:block>
+    <div metal:fill-slot="content" tal:define="member python:context.portal_membership.getAuthenticatedMember();
+									  		   form_data view/load_list | python:{}">
+									  	          
+	    <div id="content" >
+	    	<h2 class="h2title" tal:content="string:Lista dos Aniversariantes ${view/nome_filtro|nothing}" />
+			<div id="interna" class="userpage">
+				<tal:def tal:define="Batch python:modules['Products.CMFPlone'].Batch;
+				                     b_size python:20;
+				                     b_start python:0;
+				                     b_start request/b_start | b_start;
+									 batch python:Batch(form_data, b_size, int(b_start));
+									 list_campos view/get_campos_list_user|python:[]">
+					
+					<table id="birthdays">
+						<tr>
+							<tal:rep repeat="campo list_campos">
+								<td class="value" tal:content="campo/label|nothing">Nome do Colaborador</td>	
+							</tal:rep>
+						</tr>
+						<tal:rep repeat="item batch">
+							<tr>
+								<td class="field" tal:on-error="nothing">
+									<a tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${item/username}"
+									   tal:content="python: item.get('name','') or ''">Name</a>			
+								</td>
+								<tal:rep repeat="campo python: list_campos[1:]" tal:on-error="nothing">
+									<td class="field">
+				        				<span tal:content="python: item.get(campo.get('content',''),'') or ''" tal:on-error="nothing">Department</span>
+									</td>
+								</tal:rep>
+										
+							</tr>
+						</tal:rep>
+					</table>
+				
+					<div metal:use-macro="here/batch_macros/macros/navigation" />
+				</tal:def>	
+			</div>
+	    </div>
+    </div>    
+</body>
