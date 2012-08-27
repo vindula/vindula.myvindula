@@ -14,6 +14,7 @@
     <include package=".portlets" />
 	<include package=".browser" />
     <include file="skins.zcml" />
+    <include file="storm.zcml" />
 	
   	<!-- Grok the package to initialise schema interfaces and content classes -->
   	<grok:grok package="." />
@@ -33,16 +34,5 @@
 	<subscriber
     		for="Products.PluggableAuthService.interfaces.events.IUserLoggedInEvent"
     		handler=".handlers.userupdate"/>
-
-  	<!-- Storm Configuration  -->
-
-   	<!--store name="myvindula" uri="sqlite:myvindulaDB"/-->
-    
-   	<store
-	      name="myvindula"
-	      uri="mysql://root:vindula@localhost/myvindulaDB" />  
-      
-	  <!--mysql://usuario:senha@servidor/base_de_dados -->
-
 
 </configure>
