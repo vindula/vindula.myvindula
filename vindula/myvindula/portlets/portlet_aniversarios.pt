@@ -29,7 +29,7 @@
 			
 			<div class="visualClear"></div>
 			<tal:notresults tal:condition="not: view/birthdaysToday">
-				<h4 tal:content="string:Não há aniversariantes ${view/frase_filtro|python:''}.">Não há aniversariantes</h4>
+				<h4 tal:content="string: Não há aniversariantes $${view/frase_filtro|python:''}.">Não há aniversariantes</h4>
 			</tal:notresults>
 			<div class="titulo_info_boxTipo2 aling-right">
 				<br />
