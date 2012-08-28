@@ -96,7 +96,7 @@
 					</div>
 			    	<div class="titulo_info_boxTipo2 aling-right">
 				        <h4 tal:condition="python:len(results)>int(quant)">
-				        	<a tal:attributes="href  string:${here/portal_url}/myvindulalistall?campos=${view/form_dados}&departamento=${request/departamento|nothing}&filtro=${view/filtro_departamento|python:'departamentos'}&SearchSubmit=''">Mais...</a>
+				        	<a tal:attributes="href  string:$${here/portal_url}/myvindulalistall?campos=$${view/form_dados}&departamento=$${request/departamento|nothing}&filtro=$${view/filtro_departamento|python:'departamentos'}&SearchSubmit=''">Mais...</a>
 
 				        </h4>
 				    </div>

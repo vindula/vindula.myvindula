@@ -8,7 +8,6 @@ from storm.expr import Desc, Select
 
 from vindula.myvindula.models.base import BaseStore
 
-
  
 
 class ModelsMyvindulaComments(Storm, BaseStore):
@@ -26,6 +25,7 @@ class ModelsMyvindulaComments(Storm, BaseStore):
     text = Unicode()
     
     def set_myvindula_comments(self,**kwargs):
+        from vindula.myvindula.user import BaseFunc
         D={}
         base = BaseFunc() 
         D['username'] = base.Convert_utf8(kwargs.get('username',''))
