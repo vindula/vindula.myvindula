@@ -5,8 +5,10 @@
 from storm.locals import *
 from storm.expr import Desc, Select
 
-
 from vindula.myvindula.models.base import BaseStore
+
+from vindula.myvindula.tools.utils import UtilMyvindula
+from vindula.contentcore.base import BaseFunc
 
         
 class ModelsMyvindulaRecados(Storm, BaseStore):
@@ -21,11 +23,25 @@ class ModelsMyvindulaRecados(Storm, BaseStore):
     text = Unicode()
         
     def set_myvindula_recados(self,**kwargs):
+        tools = UtilMyvindula()
         D={}
         D['username'] = unicode(kwargs.get('username',''), 'utf-8')
         D['destination'] = unicode(kwargs.get('destination',''), 'utf-8')
         D['text'] = unicode(kwargs.get('text',''), 'utf-8')
         
+        user_send = tools.get_prefs_user(D['username'])
+        user_destination = tools.get_prefs_user(D['destination'])
+
+        if user_destination and user_destination.get('email',None):
+            assunto = 'Novo recado!!!'
+            msg = '''<h2>Você tem um novo recado</h2>
+                     <p>Você recebeu um novo recado do(a) <a href='%s'> %s</a> </p>
+                     <p>Para visualizar o recado acesse <a href="%s"> aqui </a></p>
+                   '''%(tools.site.absolute_url() + '/@@myvindulalistuser?user='+D['username'],
+                        user_send.get('name',''), tools.site.absolute_url() + '/@@myvindulalistrecados')
+            
+            BaseFunc().envia_email(tools.site, msg, assunto, user_destination.get('email',''), [])
+         
         # adicionando...
         recados = ModelsMyvindulaRecados(**D)
         self.store.add(recados)
