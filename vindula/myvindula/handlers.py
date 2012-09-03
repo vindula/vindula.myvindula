@@ -39,7 +39,7 @@ def userupdate(event):
             
             dados['email'] = user_login.getProperty('email')
             
-            campos = ['name','email']
+            campos = [u'name',u'email']
             for campo in campos:
                 D={}
                 D['vin_myvindula_instance_id'] = id_instance
