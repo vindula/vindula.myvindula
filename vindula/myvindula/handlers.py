@@ -44,7 +44,7 @@ def userupdate(event):
                 D={}
                 D['vin_myvindula_instance_id'] = id_instance
                 D['vin_myvindula_confgfuncdetails_fields'] = campo
-                D['valor'] = self.Convert_utf8(dados.get(campo))
+                D['valor'] = tools.Convert_utf8(dados.get(campo))
                 
                 ModelsDadosFuncdetails().set_DadosFuncdetails(**D)
             
