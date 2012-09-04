@@ -232,6 +232,13 @@ class BaseFunc(UtilMyvindula):
                 html.append(i)
                 i+=1
             for campo in campos.keys():
+                
+                mascara_campo = campos[campo].get('mascara',None)
+                if mascara_campo:
+                    mascara="onKeyDown='Mascara(this,{0});' onKeyPress='Mascara(this,{0});' onKeyUp='Mascara(this,{0});'".format(mascara_campo)
+                else:
+                    mascara = ''
+                
                 type_campo = campos[campo]['type']
                 index = campos[campo].get('ordem',0)
                 tmp = ""
@@ -250,7 +257,7 @@ class BaseFunc(UtilMyvindula):
                     
                     tmp += "<input id='%s' type='file' value='%s' name='%s' size='25'  accept='image/*'/>"%(campo,'',campo)
                 else:
-                    tmp += "<input id='%s' type='text' value='%s' name='%s' size='25'/>"%(campo,self.getValue(campo,self.request,data),campo)
+                    tmp += "<input id='%s' type='text' value='%s' name='%s' size='25' %s />"%(campo,self.getValue(campo,self.request,data),campo,mascara)
                 
                 tmp += "</div>"
                 html.pop(index)
