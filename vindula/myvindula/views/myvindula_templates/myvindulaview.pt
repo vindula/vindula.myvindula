@@ -27,7 +27,11 @@
                                          
                                          view_myvindula python:context.restrictedTraverse('@@myvindula');
                                          panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel');
-                                         logado python:str(member)!='Anonymous User';">	
+                                         logado python:str(member)!='Anonymous User';
+                                         
+                                         check_pensamentos context/@@myvindula-conf-userpanel/check_pensamentos;"
+                                         
+                                         tal:condition="check_pensamentos">	
 			
 				<div class="titulo_info cont_superior">
 					<h2 class="documentFirstHeading">Ol&aacute; <span tal:replace="name" />!</h2>	

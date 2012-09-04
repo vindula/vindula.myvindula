@@ -9,7 +9,11 @@
     <body>
         <div metal:fill-slot="content" tal:define="member python:context.portal_membership.getAuthenticatedMember();
     											   isAnonymous context/portal_membership/isAnonymousUser|python:True;
-    											   user python:member.getUserName() or None">
+    											   user python:member.getUserName() or None;
+    											   
+    											   check_recados context/@@myvindula-conf-userpanel/check_recados;"
+    											   
+    								   tal:condition="check_recados">
     											   
     		<metal:use use-macro="context/@@myvindulapanel/macros/page"/>
     		<div id="content">

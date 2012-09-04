@@ -21,7 +21,10 @@
 				<link rel="stylesheet" href="" type="text/css" tal:attributes="href string:${view/static}/form_holerite.css">
 				
 				<div id="holerite-content" tal:define=" view python:context.restrictedTraverse('@@myvindula-holerite');
-														validUser view/validateUser;">
+														validUser view/validateUser;
+														check_holerite context/@@myvindula-conf-userpanel/check_holerite;"
+										   
+										   tal:condition="check_holerite">
 					
 					<div metal:use-macro="context/global_statusmessage/macros/portal_message">
 				     Status message
@@ -246,7 +249,7 @@
     													<span tal:content="item/base_irrf|nothing" />
     												</div>								
     											</div>
-    										</metal:macro
+    										</metal:macro>
 										</div>
 										<div style="width:100%; margin-top: 10px;">
 											<input type="button" value="Imprimir" tal:attributes="onclick string:window.open('${context/portal_url}/imprimir-holerite?id=${item/id|nothing}', 'popupwindow', 'scrollbars=yes,width=670,height=600');;return true;;"/>

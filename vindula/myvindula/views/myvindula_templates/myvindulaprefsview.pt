@@ -24,10 +24,14 @@
 			                                       errors form_data/errors | python:{};
 										           form_values form_data/data | python:{};
 										           departamentos form_data/departametos|python:{};
+										           
+										           check_editfunc context/@@myvindula-conf-userpanel/check_editfunc;
 										  
 										  username form_data/username|python:{};
 										  config_myvindula form_data/config_myvindula|python:{};
-										  manage form_data/manage|python:False">
+										  manage form_data/manage|python:False"
+										  
+									   tal:condition="check_editfunc">
 	
 			<tal:cond condition="not:manage">
 	    		<metal:use use-macro="context/@@myvindulapanel/macros/page"/>

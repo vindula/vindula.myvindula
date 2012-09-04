@@ -19,7 +19,9 @@
 			<metal:page metal:define-macro="page">
 				
 				<tal:def define="view python:context.restrictedTraverse('@@myvindula-documents');
-						   	  	 docs view/load_list|nothing;">
+						   	  	 docs view/load_list|nothing;
+						   	  	 check_documents context/@@myvindula-conf-userpanel/check_documents"
+						 tal:condition="enable_documents">
 					
 					<h2>Documentos Comprobat&oacute;rios</h2>
 					<form name="myvindula-documents" id="myvindula-documents" enctype="multipart/form-data" 
