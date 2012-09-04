@@ -59,16 +59,19 @@
             </span>
             
             
-            
-            <div id="like" tal:condition="not: isAnonymous">
-                <div tal:attributes="id item_id">
-                    <input type="hidden" name="isPlone:boolean" id="isPlone" value="True" />
-                    <input type="hidden" name="type" id="type" tal:attributes="value context/portal_type|nothing" />
+            <tal:cond tal:define="isDiscussionAllowed view_coments/is_discussion_allowed;
+                                  activ_vindula context/activ_comment|context/isDiscussable|nothing;
+                                  enable python:view_coments.discussionAllowed(isDiscussionAllowed, False, activ_vindula);"
+                      condition="python: ajax_load and enable">
+                <div id="like" tal:condition="not: isAnonymous">
+                    <div tal:attributes="id item_id">
+                        <input type="hidden" name="isPlone:boolean" id="isPlone" value="True" />
+                        <input type="hidden" name="type" id="type" tal:attributes="value context/portal_type|nothing" />
+                    </div>
+                    <div metal:use-macro="context/myvindula-like-macro/macros/like-plone"> </div>
                 </div>
-                <div metal:use-macro="context/myvindula-like-macro/macros/like-plone"> </div>
-            </div>
-            <div metal:use-macro="context/macro-comments-master/macros/comments" />
-			
+                <div metal:use-macro="context/macro-comments-master/macros/comments" />
+			</tal:cond>
 			
             
         </metal:block>

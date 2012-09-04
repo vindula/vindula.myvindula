@@ -5,7 +5,9 @@ from Products.CMFCore.interfaces import ISiteRoot
 from zope.interface import Interface
 from plone.uuid.interfaces import IUUID
 
-from zope.component import getUtility
+from plone.registry.interfaces import IRegistry
+from plone.app.discussion.interfaces import IDiscussionSettings
+from zope.component import getUtility, queryUtility
 from Products.TinyMCE.interfaces.utility import ITinyMCE
 
 from Products.CMFCore.utils import getToolByName
@@ -793,6 +795,11 @@ class MyVindulaComments(grok.View, UtilMyvindula):
             return ModelsMyvindulaComments().get_comments_byID(id)
         except:
             return None
+    
+    def is_discussion_allowed(self):
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        return settings.globally_enabled
     
     def update(self):
         """ Receive itself from request and do some actions """
