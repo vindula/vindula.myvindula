@@ -144,4 +144,28 @@ $j(document).ready(function(){
         }
     });
     
+    $j('input.excluir-recados').live('click', function(){
+        var url = $j('#portal_url').val() + "/myvindulalistrecados";
+        var ctx = $j(this);
+
+        if (confirm('Deseja remover este recado?')){
+            ctx.hide();
+            ctx.parent().find('#load-save').show();
+            
+            var parametros = $j(this).parent().parent();
+            var id_recado = parametros.find('#id_recado').val();
+            
+            $j.get(url,{form_excluir:'True',
+                        form_ajax:'True',
+                        id_recado:id_recado
+                        }, function(data){
+                        
+                        var comment_pai = ctx.closest('.comment');
+                        comment_pai.remove();
+                });
+        }else{
+            return false;
+        }
+    });
+    
 });

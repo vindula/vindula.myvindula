@@ -415,7 +415,7 @@ class MyVindulaListRecados(grok.View,UtilMyvindula):
         if not open_for_anonymousUser:
             form = self.request.form
             excluir = form.get('form.excluir', False)
-                    
+        
             if excluir:
                 id_recado = int(form.get('id_recado','0'))
                 ModelsMyvindulaRecados().del_myvindula_recados(id_recado)
