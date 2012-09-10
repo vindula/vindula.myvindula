@@ -4,9 +4,9 @@
         <div metal:fill-slot="prefs_configlet_content">
             <div id="interna">
 				<div class="import-user" tal:define="export view/export_users">
-                    <h2 class="h2title">Exportar Perfil de Usu‡rios</h2>
-					<p>Os dados ser‹o exportados em formato .CSV</p>
-                    <form method="post" enctype="multipart/form-data">
+                    <h2 class="h2title">Exportar Perfil de Usu&aacute;rios</h2>
+					<p>Os dados ser&atilde;o exportados em formato .CSV</p>
+                    <form method="post" enctype="multipart/form-data" tal:attributes="action string:${context/absolute_url}/myvindula-export-users">
                         <input id="import-button" type="submit" name="export" value="Exportar">
                     </form>
                 </div>

@@ -83,17 +83,17 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
                 D['instance_user'] = ids
                 D['username'] = dados[0].instance.username
             
-            for campo in campos:
-                tmp = dados.find(vin_myvindula_confgfuncdetails_fields=tools.Convert_utf8(campo.fields)).one()
-                if tmp:
-                    try:
-                        data = tools.decodePickle(tmp.valor)
-                    except:
-                        data = tmp.valor
+                for campo in campos:
+                    tmp = dados.find(vin_myvindula_confgfuncdetails_fields=tools.Convert_utf8(campo.fields)).one()
+                    if tmp:
+                        try:
+                            data = tools.decodePickle(tmp.valor)
+                        except:
+                            data = tmp.valor
+                
+                        D[campo.fields] = data 
             
-                    D[campo.fields] = data 
-            
-            L.append(D)
+                L.append(D)
         return L
         
         
