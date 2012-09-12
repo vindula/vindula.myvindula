@@ -37,6 +37,8 @@ from vindula.myvindula.user import BaseFunc, ModelsDepartment, ModelsFuncDetails
                                    ModelsFuncHolerite, ModelsFuncHoleriteDescricao, ModelsConfgMyvindula
 
 from vindula.myvindula.registration import SchemaFunc, SchemaConfgMyvindula, ImportUser, ManageCourses, ManageLanguages
+
+from vindula.myvindula.models.holerites2 import ModelsFuncHolerite02, ModelsFuncHoleriteDescricao02
                                    
 from vindula.controlpanel.browser.models import ModelsCompanyInformation
 from vindula.chat.utils.models import ModelsUserOpenFire
@@ -1307,21 +1309,71 @@ class MyVindulaExportUsersView(grok.View):
                  
             self.request.response.write(str(text))
 
-class MyVindulaImportHoleriteView(grok.View, BaseFunc):
+
+
+
+class MyVindulaDelHoleriteView(grok.View, UtilMyvindula):
+    grok.context(INavigationRoot)
+    grok.require('cmf.ManagePortal')
+    grok.name('myvindula-del-holerite')
+    
+    def select_modelo(self):
+        modelo =  self.context.restrictedTraverse('myvindula-conf-userpanel').select_modelo_holerite()
+        return modelo
+    
+    
+    def update(self):
+        form = self.request.form
+        success_url = self.context.absolute_url() + '/myvindula-import-holerite'
+        if 'date' in form.keys() and 'empresa' in form.keys():
+            data_lote = form['date']
+            
+            try:empresa = unicode(form['empresa'],'utf-8')
+            except:empresa = form['empresa']
+
+            data_lote = datetime.strptime(data_lote,'%Y-%m-%d %H:%M')
+            
+            if self.select_modelo() == '01':
+                ModelsFuncHolerite().del_HoleritesLote(data_lote,empresa)
+            elif self.select_modelo() == '02':  
+                ModelsFuncHolerite02().del_HoleritesLote(data_lote,empresa)
+            
+        self.request.response.redirect(success_url)
+    
+    def render(self):
+        pass
+    
+    
+    
+    
+class MyVindulaImportHoleriteView(grok.View, UtilMyvindula):
     grok.context(INavigationRoot)
     grok.require('cmf.ManagePortal')
     grok.name('myvindula-import-holerite')
     
+    def select_modelo(self):
+        modelo =  self.context.restrictedTraverse('myvindula-conf-userpanel').select_modelo_holerite()
+        return modelo
+    
+    
     def get_lastImport(self):
-        result = ModelsFuncHolerite().get_FuncHolerites_Import()
+        if self.select_modelo() == '01':
+            result = ModelsFuncHolerite().get_FuncHolerites_Import()
+        elif self.select_modelo() == '02':
+            result = ModelsFuncHolerite02().get_FuncHolerites_Import()
+        
         if result: 
             return result
         else:
             return []
         
     def load_file(self):
-        from pprint import pprint
-        from copy import copy
+        if self.select_modelo() == '01':
+            return self.mecanismo01() 
+        elif self.select_modelo() == '02':
+            return self.mecanismo02() 
+        
+    def mecanismo01(self):
         form = self.request.form
         erro = False
         holerite_erro = None
@@ -1475,104 +1527,168 @@ class MyVindulaImportHoleriteView(grok.View, BaseFunc):
                                 item['vin_myvindula_holerite_id'] = id
                                 desc_convertido = self.converte_dadosByDB(item)
                                 ModelsFuncHoleriteDescricao().set_FuncHoleriteDescricao(**desc_convertido)
-                            
                     
         else:
             return None
-     
-#    def load_file_old(self):
-#        form = self.request.form
-#        if 'load_file' in form.keys():
-#            
-#            if 'txt_file' in form.keys():
-#                file = form.get('txt_file','')
-#                if file:
-#                    texto = file.read()
-#                    texto = texto.replace('\r','')
-#                    registros = texto.split('\x1b2\n')
-#                    for reg in registros:
-#                        D = {}
-#                        L = []
-#                        linhas = reg.split('\n')
-#                        max = len(linhas)-1
-#                        cont = 0
-#                        entra = False
-#                        #while cont <= max:
-#                        
-#                        for linha in linhas:
-#                            
-#                            #linha = linhas[cont]
-#                            if len(linha) == 80:
-#                                entra = True
-#                                if cont == 0:
-#                                    D['cod_empresa'] = linha[0:3] 
-#                                    D['empresa'] = linha[5:51]
-#                                    #D['cnomeidade_empresa'] = linha[] 
-#                                
-#                                elif cont == 1:
-#                                    D['endereco_empresa'] = linha[5:60]                    
-#                                    D['estado_empresa'] = linha[60:62]
-#                                
-#                                elif cont == 2:    
-#                                    D['cnpj_empresa'] = linha[5:23]
-#                                    tmp = linha[56:63]
-#                                    tmp = tmp.strip()
-#                                    tmp = tmp.split('/')
-#                                    D['competencia'] = tmp[1]+'/'+tmp[0] 
-#                                
-#                                elif cont == 4:
-#                                    
-#                                    D['matricula'] = linha[0:5]
-#                                    D['nome'] = linha[6:51]
-#                                    D['cpf']  = linha[69:80]
-#                    
-#                                elif cont >= 8 and cont <= 23:
-#                                    E = {}
-#                                    E['codigo'] = linha[0:3]
-#                                    E['descricao'] = linha[4:33]
-#                                    E['ref'] = linha[34:43]
-#                                    E['vencimentos'] = linha[44:57]
-#                                    E['descontos'] = linha[58:70]
-#                                    
-#                                    L.append(E)
-#                                elif cont == 24:
-#                                    D['total_vencimento'] = linha[42:55]
-#                                    D['total_desconto'] = linha[56:70]
-#                                
-#                                elif cont == 26:
-#                                    D['valor_liquido'] = linha[56:70]
-#                                    
-#                                elif cont == 28:
-#                                    D['salario_base'] = linha[0:13]
-#                                    D['base_Inss'] = linha[14:25]
-#                                    D['base_fgts'] = linha[26:38]
-#                                    D['fgts_mes'] = linha[40:50]
-#                                    D['base_irrf'] = linha[52:70]
-#                            if entra:    
-#                                cont += 1
-#                        if D:
-#                            convertido = self.converte_dadosByDB(D)
-#                            id = ModelsFuncHolerite().set_FuncHolerite(**convertido)
-#                            for item in L:
-#                                try:
-#                                    item['vin_myvindula_holerite_id'] = id
-#                                    desc_convertido = self.converte_dadosByDB(item)
-#                                    ModelsFuncHoleriteDescricao().set_FuncHoleriteDescricao(**item)
-#                                except:
-#                                    item['vin_myvindula_holerite_id'] = id
-#                                    desc_convertido = self.converte_dadosByDB(item)
-#                                    ModelsFuncHoleriteDescricao().set_FuncHoleriteDescricao(**item)
-#        
-#        else:
-#            return None
         
-class MyVindulaFindHoleriteView(grok.View, BaseFunc):
+     
+    def mecanismo02(self):
+        form = self.request.form
+        erro = False
+        holerite_erro = None
+        holerites = []
+        holerite_observacao = ''
+        modelo_holerite = {'empresa':None,
+                           'cnpj_empresa':None,
+                           'competencia':None,
+                           'matricula':None,
+                           'nome':None,
+                           'data_admissao':None,    
+                           'cargo':None,
+                           'setor':None,
+                           'carteira_trabalho':None,
+                           'secao':None,
+                           'dep_ir':None,
+                           'dep_sf':None,
+                           'cpf':None,
+                           'indentidade':None,
+                           'pis':None,
+                           'salario_base':None,
+                           'cod_pagamento':None, 
+                           'banco_pag':None,
+                           'agencia':None,
+                           'conta_corrente':None,
+                           'date_creation':None,
+                           'base_Inss':None,
+                           'base_fgts':None,
+                           'base_irrf':None,
+                           'salario_contribuicao':None,
+                           'total_proventos':None,
+                           'total_desconto':None,
+                           'fgts_mes':None,
+                           'valor_liquido':None,
+                           'observacao':None,
+                           
+                           'completo':False,
+                           'itens_holerite':[],}
+        
+        holerite = copy(modelo_holerite)
+        
+        if 'load_file' in form.keys():            
+            if 'txt_file' in form.keys():
+                file = form.get('txt_file','')
+                if file:
+                    texto = file.read()
+                    texto = texto.replace('\r','')
+                    cont = 1
+                    
+                    for linha in texto.split('\n'):
+                        #Checando linhas vazias, se a linha for vazia ou só espaço, vai retornar uma lista vazia e nao entrar no if.
+                        check_linha = [i for i in linha.split(' ') if i != '']
+                        #import pdb;pdb.set_trace()
+                        #Pulando linhas vazias
+                        if check_linha != []:
+                             
+                             #Buscando Registro Funcionário
+                            if linha[0:2] == '03':
+                                holerite['empresa'] = linha[2:42]
+                                holerite['cnpj_empresa'] = linha[42:61]
+                                holerite['matricula'] = linha[61:72]
+                                holerite['nome'] = linha[72:112]
+                                holerite['data_admissao'] = linha[112:122]
+                                holerite['cargo'] = linha[122:147]
+                                holerite['setor'] = linha[147:172]
+                                holerite['carteira_trabalho'] = linha[172:188]
+                                holerite['secao'] = linha[188:193]
+                                holerite['dep_ir'] = linha[193:195]
+                                holerite['dep_sf'] = linha[195:197]
+                                holerite['cpf'] = linha[197:211]
+                                holerite['indentidade'] = linha[211:231]
+                                holerite['pis'] = linha[231:245]
+                            
+                                holerite['observacao'] = holerite_observacao
+                                holerite['completo'] = True
+                            
+                            #Buscando Registro de Totais
+                            elif linha[0:2] == '02':    
+                                holerite['competencia'] = linha[2:8]
+                                holerite['cod_pagamento'] = linha[8:10]
+                                holerite['banco_pag'] = linha[10:35]
+                                holerite['agencia'] = linha[35:50]
+                                holerite['conta_corrente'] = linha[50:65]
+                                holerite['base_fgts'] = linha[65:75]
+                                holerite['base_Inss'] = linha[75:85]
+                                holerite['fgts_mes'] = linha[85:95]
+                                holerite['salario_base'] = linha[95:105]
+                                holerite['salario_contribuicao'] = linha[105:115]
+                                holerite['total_proventos'] = linha[115:125]
+                                holerite['total_desconto'] = linha[125:135]
+                                holerite['valor_liquido'] = linha[135:145]
+                                   
+                                holerite['base_irrf'] = None
+                           
+                            #Buscando Registro das Verbas
+                            elif linha[0:2] == '01':    
+
+                                itens_holerite = {'codigo':None,
+                                                  'descricao':None,
+                                                  'valor':None,
+                                                  'status':None,
+                                                  'referencial':None,}
+                                    
+                                itens = copy(itens_holerite)
+                                
+                                itens['codigo'] = linha[2:5]
+                                itens['descricao'] = linha[5:35]
+                                itens['valor'] = linha[35:45]
+                                itens['status'] = linha[45:46]
+                                itens['referencial'] = linha[46:56]
+
+                                #holerite['itens_holerite_check'] = True
+                                    
+                                holerite['itens_holerite'].append(itens)
+                                  
+                            #Buscando Registro Cabeçalho
+                            elif linha[0:2] == '00':                                          
+                                holerite_observacao = linha[2:102]
+                               
+                            if holerite['completo'] == True:
+                                holerites.append(holerite)
+                                holerite = copy(modelo_holerite)
+                                holerite['itens_holerite'] = []
+                                
+                            
+                    if holerites:
+                        for holerite in holerites:
+                            itens = copy(holerite['itens_holerite'])
+                            convertido = self.converte_dadosByDB(holerite)
+                            id = ModelsFuncHolerite02().set_FuncHolerite(**convertido)
+                            
+                            for item in itens:
+                                item['vin_myvindula_holerite02_id'] = id
+                                desc_convertido = self.converte_dadosByDB(item)
+                                ModelsFuncHoleriteDescricao02().set_FuncHoleriteDescricao(**desc_convertido)
+                    
+        else:
+            return None
+
+
+class MyVindulaFindHoleriteView(grok.View, UtilMyvindula):
     grok.context(Interface)
     grok.require('zope2.View')
     grok.name('myvindula-find-holerite')
     
+    def select_modelo(self):
+        modelo =  self.context.restrictedTraverse('myvindula-conf-userpanel').select_modelo_holerite()
+        return modelo
+    
+    
     def get_descricao_holerite(self, id_holerite):
-        result = ModelsFuncHoleriteDescricao().get_FuncHoleriteDescricoes_byid(id_holerite)
+        if self.select_modelo() == '01':
+            result = ModelsFuncHoleriteDescricao().get_FuncHoleriteDescricoes_byid(id_holerite)
+        elif self.select_modelo() == '02':
+            result = ModelsFuncHoleriteDescricao02().get_FuncHoleriteDescricoes_byid(id_holerite)
+        
         if result: 
             return result
         else:
@@ -1580,89 +1696,125 @@ class MyVindulaFindHoleriteView(grok.View, BaseFunc):
     
     def load_list(self):
         form = self.request.form
-        if 'cpf' in form.keys() and 'id' in form.keys():
-
-            try:cpf = unicode(form.get('cpf',''),'utf-8')
-            except:cpf = form.get('cpf','')
+        session = self.context.REQUEST.SESSION
+        if 'cpf' in session.keys() and 'id' in form.keys():
+            try:cpf = unicode(session.get('cpf', ''),'utf-8')
+            except:cpf = session.get('cpf', '')
             
             id = int(form.get('id','0'))
-               
-            return ModelsFuncHolerite().get_FuncHolerites_byCPFAndID(cpf, id)
-
-
-class MyVindulaDelHoleriteView(grok.View, BaseFunc):
-    grok.context(INavigationRoot)
-    grok.require('cmf.ManagePortal')
-    grok.name('myvindula-del-holerite')
-    
-    def update(self):
-        form = self.request.form
-        success_url = self.context.absolute_url() + '/myvindula-import-holerite'
-        if 'date' in form.keys() and 'empresa' in form.keys():
-            data_lote = form['date']
             
-            try:empresa = unicode(form['empresa'],'utf-8')
-            except:empresa = form['empresa']
-
-            data_lote = datetime.strptime(data_lote,'%Y-%m-%d %H:%M')
-            ModelsFuncHolerite().del_HoleritesLote(data_lote,empresa)
-            
-        self.request.response.redirect(success_url)
-    
-    def render(self):
-        pass
-        
+            return ModelsFuncHolerite02().get_FuncHolerites_byCPFAndID(cpf, id)
         
 class MyVindulaHoleriteView(grok.View, UtilMyvindula):
     grok.context(ISiteRoot)
     grok.require('zope2.View')
     grok.name('myvindula-holerite')
     
+    def select_modelo(self):
+        modelo =  self.context.restrictedTraverse('myvindula-conf-userpanel').select_modelo_holerite()
+        return modelo
+    
     def get_descricao_holerite(self, id_holerite):
-        result = ModelsFuncHoleriteDescricao().get_FuncHoleriteDescricoes_byid(id_holerite)
+        if self.select_modelo() == '01':
+            result = ModelsFuncHoleriteDescricao().get_FuncHoleriteDescricoes_byid(id_holerite)
+        elif self.select_modelo() == '02':
+            result = ModelsFuncHoleriteDescricao02().get_FuncHoleriteDescricoes_byid(id_holerite)
+        
         if result: 
             return result
         else:
             return [] 
     
     def load_list(self):
-        membership = self.context.portal_membership
-        user_login = membership.getAuthenticatedMember()
-        user = str(user_login.getUserName())
+        session = self.context.REQUEST.SESSION
+        result = []
+        if 'cpf' in session.keys():
+            cpf = session.get('cpf')
+        else:
+            membership = self.context.portal_membership
+            user_login = membership.getAuthenticatedMember()
+            user = str(user_login.getUserName())
+            prefs_user = self.get_prefs_user(user)
+            if prefs_user:
+                cpf = prefs_user.teaching_research
         
-        prefs_user = self.get_prefs_user(user)
-        if prefs_user:
-            cpf = prefs_user.teaching_research
-            holerites = ModelsFuncHolerite().get_FuncHolerites_byCPF(cpf)
+        if cpf:
+            if self.select_modelo() == '01':
+                holerites = ModelsFuncHolerite().get_FuncHolerites_byCPF(cpf)
+            elif self.select_modelo() == '02': 
+                holerites = ModelsFuncHolerite02().get_FuncHolerites_byCPF(cpf)
+                
             D = {}
             if holerites:
                 if holerites.count() > 1:
                     D['select'] = holerites 
                     D['data'] = holerites.last() 
-                    return D
+                    result =  D
                 else:
                     D['select'] = []
                     D['data'] = holerites.one() 
-                    return D
-            
-            else:
-                return []
-        
-        else:
-                return []
+                    result = D
+
+        return result
     
     def update(self):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
         if open_for_anonymousUser:
-            self.request.response.redirect(self.context.absolute_url() + '/login')            
+            self.request.response.redirect(self.context.absolute_url() + '/login')
+            
+    def validateUser(self):
+        cpf_valid = False
+        request = self.context.REQUEST
+        
+        if 'cpf' not in request.SESSION.keys():
+            if 'cpf_validate' in request.keys():
+                cpf_valid = self.CPFValid(request)
+                if not cpf_valid:
+                    IStatusMessage(self.request).addStatusMessage(_(u'CPF não é valido.'),"error")
+        elif 'cpf_time' in request.SESSION.keys():
+            if request.SESSION.get('cpf_time') < datetime.now() - timedelta(minutes=10):
+                if 'cpf_validate' in request.keys():
+                    cpf_valid = self.CPFValid(request)
+                    if not cpf_valid:
+                        IStatusMessage(self.request).addStatusMessage(_(u'CPF não é valido.'),"error")
+            else:
+                cpf_valid = True
+        else:
+            cpf_valid = True
+
+        return cpf_valid
+    
+    def CPFValid(self, request):
+        membership = self.context.portal_membership
+        user_login = membership.getAuthenticatedMember()
+        user = str(user_login.getUserName())
+        prefs_user = self.get_prefs_user(user)
+        if prefs_user:
+            cpf = prefs_user.teaching_research
+            cpf_validate = request.get('cpf_validate').replace('.', '').replace('-', '')
+            if cpf == cpf_validate:
+                request.SESSION['cpf'] = cpf
+                request.SESSION['cpf_time'] = datetime.now()
+                return True
+            
+        return False
+        
             
 class MyVindulaPrintHoleriteView(grok.View, UtilMyvindula):
     grok.context(ISiteRoot)
     grok.require('zope2.View')
     grok.name('imprimir-holerite')
     
+    def select_modelo(self):
+        modelo =  self.context.restrictedTraverse('myvindula-conf-userpanel').select_modelo_holerite()
+        return modelo
+    
     def get_descricao_holerite(self, id_holerite):
-        result = ModelsFuncHoleriteDescricao().get_FuncHoleriteDescricoes_byid(id_holerite)
+        if self.select_modelo() == '01':
+            result = ModelsFuncHoleriteDescricao().get_FuncHoleriteDescricoes_byid(id_holerite)
+        elif self.select_modelo() == '02':
+            result = ModelsFuncHoleriteDescricao02().get_FuncHoleriteDescricoes_byid(id_holerite)
+        
         if result: 
             return result
         else:
@@ -1681,11 +1833,13 @@ class MyVindulaPrintHoleriteView(grok.View, UtilMyvindula):
             except:cpf = prefs_user.teaching_research
             
             id = int(form.get('id','0'))
-                
-            return ModelsFuncHolerite().get_FuncHolerites_byCPFAndID(cpf, id)      
+            
+            if self.select_modelo() == '01':
+                return ModelsFuncHolerite().get_FuncHolerites_byCPFAndID(cpf, id)      
+            elif self.select_modelo() == '02':
+                return ModelsFuncHolerite02().get_FuncHolerites_byCPFAndID(cpf, id)
         
     def update(self):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
         if open_for_anonymousUser:
             self.request.response.redirect(self.context.absolute_url() + '/login')
-        

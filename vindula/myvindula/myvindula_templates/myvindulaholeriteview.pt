@@ -11,235 +11,462 @@
 	</head>
     <body>
 		<metal:block fill-slot="top_slot">
-			 <tal:dummy tal:define="dummy python:request.set('disable_border',1);
-                                   disable_column_one python:request.set('disable_plone.leftcolumn',1);
-                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+			<tal:dummy tal:define="dummy python:request.set('disable_border',1)" />
 		</metal:block>
-
-		 <div metal:fill-slot="content">         
-	        <!--metal:use use-macro="context/@@myvindulapanel/macros/page"/-->
+		
+		<div metal:fill-slot="content">         
 			<metal:page metal:define-macro="page">
 				<script type="text/javascript" src="" tal:attributes="src string:${view/static}/js/ajax_holerite.js"></script>
+				<script type="text/javascript" src="" tal:attributes="src string:${view/static}/js/mascara.js"></script>
 				<link rel="stylesheet" href="" type="text/css" tal:attributes="href string:${view/static}/form_holerite.css">
 				
-				<div id="content" tal:define="view python:context.restrictedTraverse('@@myvindula-holerite');
-											  load_list view/load_list|nothing;
-											  item load_list/data|nothing;
-											  select load_list/select|nothing;">
+				<div id="holerite-content" tal:define="view python:context.restrictedTraverse('@@myvindula-holerite');
+				                                       view_controler python:context.restrictedTraverse('myvindula-conf-userpanel');
+				                                       modelo view_controler/select_modelo_holerite;
+													   validUser view/validateUser;">
 					
-					<h2>Demonstrativo de Pagamento de Sal&aacute;rio</h2>
-					<tal:cond condition="python:item">
+					<div metal:use-macro="context/global_statusmessage/macros/portal_message">
+				     Status message
+				    </div>
 					
-						<div id="select-holerite">
-							<h4>Pagamentos anteriores</h4>
-							<input type="hidden" id="portal_url" tal:attributes="value context/portal_url|nothing">
-							<input type="hidden" id="cpf" tal:attributes="value item/cpf|nothing">
-							<select id="select-holerite" name="select-holerite">
-								<option value="">Competência</option>
-								<tal:rep repeat="opt select">
-									<option tal:attributes="value opt/id|nothing" 
-											tal:define="tmp opt/competencia|nothing"
-											tal:content="python:view.converte_competencia(tmp)" />
-								</tal:rep>
-				
-							</select>
-						</div>
-						<br />
-						<h4>Ultimo Pagamento</h4>
-						<!-- Spinner -->
-						<div id="spinner" class="display-none" style="text-align:center;">
-							<img src="" alt="spinner" align="center" tal:attributes="src string:${view/static}/ajaxLoader.gif" />
-						</div>										
-						<div id="holerite-cont">
-							<div id="holerite" style="width: 660px;">
-								<div class="border" style="float: none;">
-									<div class="row title even">
-										<div class="cell width-full position-0">
-											<span >Empresa</span>	
-										</div>
-									</div>										
-									<div class="row">
-										<div class="cell width-2 position-0">
-											<span tal:content="item/cod_empresa|nothing" />
-										</div>
-										<div class="cell width-12 position-1">
-											<span tal:content="item/empresa|nothing" />
-										</div>
-										<div class="cell width-2 position-12">
-											<span tal:content="item/cidade_empresa|nothing" />
-										</div>
-									</div>
-									<div class="row">
-										<div class="cell width-13 position-1">
-											<span tal:content="item/endereco_empresa|nothing" />		
-										</div>
-										<div class="cell width-2 position-14">
-											<span tal:content="item/estado_empresa|nothing" />		
-										</div>
-										
-									</div>
-									<div class="row">
-										<div class="cell width-7 position-1">
-											<span tal:content="item/cnpj_empresa|nothing" />		
-										</div>
-										<div class="cell width-3 position-11">
-											<span>Competência</span>
-										</div>
-										<div class="cell width-2 position-14">
-											<span tal:define="tmp item/competencia|nothing" 
-											      tal:content="python:view.converte_competencia(tmp)" />
-										</div>
-									</div>
-								</div>
-								<div class="border"> 
-									<div class="row title even" style="width: 660px;">
-										<div class="cell width-full position-0">
-											<span >Funcionário</span>
-										</div>
-									</div>
-									<div class="row">
-										<div class="cell width-2 position-0">
-											<span tal:content="item/matricula|nothing" />
-										</div>
-										<div class="cell width-10 position-2">
-											<span tal:content="item/nome|nothing" />
-										</div>
-										<div class="cell width-4 position-12">
-											<span tal:content="string: CPF: ${item/cpf|nothing}" />
-										</div>
-									</div>
-								</div>
-								<tal:def define="i item/id|nothing;
-										 descricoes python:view.get_descricao_holerite(i)">
-									<div class="row title even">
-										<div class="cell width-1 position-0">
-											<span>Cód.</span>
-										</div>
-										<div class="cell width-7 position-1">
-											<span>Descri&ccedil;&atilde;o</span>
-										</div>
-										<div class="cell width-2 position-8">
-											<span>Ref.</span>
-										</div>
-										<div class="cell width-3 position-10">
-											<span>Vencimentos</span>
-										</div>
-										<div class="cell width-2 position-13">
-											<span>Descontos</span>
-										</div>
-									</div> 
-									<tal:rep repeat="descricao descricoes">
-										<div tal:define="even repeat/descricao/even|nothing" 
-											class="row" tal:attributes="class python:even and 'row' or 'row even'">
-											<div class="cell width-1 position-0">
-												<span tal:content="descricao/codigo|nothing">Cód.</span>
-											</div>
-											<div class="cell width-7 position-1">
-												<span tal:content="descricao/descricao|nothing">Descri&ccedil;&atilde;o</span>
-											</div>
-											<div class="cell width-2 position-8 center">
-												<span tal:content="descricao/ref|nothing">Ref.</span>
-											</div>
-											<div class="cell width-3 position-10 center">
-												<span tal:content="descricao/vencimentos|nothing">Vencimentos</span>
-											</div>
-											<div class="cell width-2 position-13 center">
-												<span tal:content="descricao/descontos|nothing">Descontos</span>
-											</div>
-										</div> 
-									</tal:rep>
-								</tal:def>
-								<div class="row border">
-									<div class="cell width-10 position-0 title" >
-										<span>mensagem</span>
-										<div class="row">
-											<div class="cell width-13 position-0" >
-												<span tal:content="item/observacao|nothing">Observação</span>
-											</div>	
-										</div>
-									</div>
-									<div class="cell width-6-5 position-10 border-horz even">
-										<div class="row">
-											<div class="cell width-8 position-0">
-												<div class="row title">
-													<div class="cell width-full position-0">
-														<span>Total Vencimentos</span>	
-													</div>
-												</div>
-												<div class="row center">
-													<div class="cell width-full position-0">
-														<span tal:content="item/total_vencimento|nothing">Total Vencimentos</span>	
-													</div>
-												</div>
-											</div>
-											<div class="cell width-8 position-8 border-horz">
-												<div class="row title">
-													<div class="cell width-full position-0">
-														<span>Total Descontos</span>	
-													</div>
-												</div>
-												<div class="row center">
-													<div class="cell width-full position-0">
-														<span tal:content="item/total_desconto|nothing">Total Descontos</span>	
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="row border center">
-											<div class="cell width-8 position-0">
-												<b><span>Valor L&iacute;quido</span></b>
-											</div>
-											<div class="cell width-8 position-8">
-												<b><span tal:content="item/valor_liquido|nothing">Valor L&iacute;quido</span></b>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="row title even teste">
-									<div class="cell width-3 position-0">
-										<span>Sal&aacute;rio Base</span>
-									</div>
-									<div class="cell width-3 position-3">
-										<span>Base INSS</span>
-									</div>
-									<div class="cell width-3 position-6">
-										<span>Base FGTS</span>
-									</div>
-									<div class="cell width-3 position-9">
-										<span>FGTS Mês</span>
-									</div>
-									<div class="cell width-3 position-12">
-										<span>Base IRRF</span>
-									</div>
-								</div>
-								<div class="row even center teste">
-									<div class="cell width-3 position-0">
-										<span tal:content="item/salario_base|nothing" />
-									</div>
-									<div class="cell width-3 position-3">
-										<span tal:content="item/base_Inss|nothing" />
-									</div>
-									<div class="cell width-3 position-6">
-										<span tal:content="item/base_fgts|nothing" />
-									</div>
-									<div class="cell width-3 position-9">
-										<span tal:content="item/fgts_mes|nothing" />
-									</div>
-									<div class="cell width-3 position-12">
-										<span tal:content="item/base_irrf|nothing" />
-									</div>								
-								</div>
+					<tal:cond condition="not: validUser">
+	                    <form action="/@@myvindula-recursos-humanos?id=myvindula-holerite" method="post">
+							<h2>Valide seu CPF para acessar o Holerite</h2>
+							<div class="marginBtTp10px">
+		                        <label>Número do CPF</label>
+								<div class="formHelp">Digite o número do seu CPF.</div>
+		                        <input type="text" name="cpf_validate" id="cpf_validate" /><br />
+								
 							</div>
-							<br />
-							<div style="width:100%; margin-top: 10px;">
-								<input type="button" value="Imprimir" tal:attributes="onclick string:window.open('${context/portal_url}/imprimir-holerite?id=${item/id}', 'popupwindow', 'scrollbars=yes,width=670,height=600');;return true;;"
-									 />
-							</div>	
-						</div>
-					</tal:cond>
-					<tal:cond condition="not: item">
-						<h3>Voce não possui demonstrativos de pagamento.</h3>
+							<div class="bt_comentar">
+								<input type="submit" name="submitted_cpf" id="submitted_cpf" value="Validar CPF" />
+							</div>
+	                    </form>
+	                </tal:cond>
 					
+					<tal:cond condition="validUser">
+						<tal:def define="load_list view/load_list|nothing;
+										 item load_list/data|nothing;
+										 select load_list/select|nothing;">
+											  	
+	                    	<h2>Demonstrativo de Pagamento de Sal&aacute;rio</h2>
+		                    <tal:cond condition="python:item">
+		                        <div id="select-holerite">
+		                            <h4>Pagamentos anteriores</h4>
+		                            <input type="hidden" id="portal_url" tal:attributes="value context/portal_url|nothing">
+		                                <input type="hidden" id="cpf" tal:attributes="value item/cpf|nothing">
+		                            <select id="select-holerite" name="select-holerite">
+		                                <option value="">Competência</option>
+		                                <tal:rep repeat="opt select">
+		                                    <option tal:attributes="value opt/id|nothing"
+		                                            tal:define="comp opt/competencia|nothing"
+		                                            tal:condition="comp"
+		                                            tal:content="python: comp.replace('/','')[:2] + '/' + comp.replace('/','')[2:]" />
+		                                </tal:rep>
+		                            </select>
+		                        </div>
+		                        <br/>
+		                        <h4>Ultimo Pagamento</h4>
+		                        <!-- Spinner -->
+		                        <div id="spinner" class="display-none" style="text-align:center;">
+		                            <img src="" alt="spinner" align="center" tal:attributes="src string:${view/static}/ajaxLoader.gif" />
+		                        </div>
+		                        
+		                        <div id="holerite-cont">
+									<metal:macro define-macro="holerite">
+										<div id="holerite">
+										    <metal:macro define-macro="holerite-print">
+										        
+										        <tal:cond condition="python:modelo=='02'">
+                                                    <div class="border"  style="width: 660px;">
+                                                        <div class="row even">
+                                                            <div class="cell width-full position-0">
+                                                                <div class="cell width-3 position-0">
+                                                                    <img src="/++resource++vindula.themedefault/images/icons/logo_topo.png"
+                                                                         tal:attributes="src string:${context/portal_url|nothing}/company-logo?cnpj=${item/cnpj_empresa|nothing}"
+                                                                         height="60px"/>
+                                                                </div>
+                                                                <div class="cell width-13 position-3 title-text">
+                                                                    <span >Comprovante de Pagamento</span>    
+                                                                </div>
+                                                                   
+                                                            </div>
+                                                        </div>                                      
+                                                        <div class="row border">
+                                                            <div class="cell width-9 position-0">
+                                                                <span class="label">Empresa</span>
+                                                                <span tal:content="item/empresa|nothing" />
+                                                            </div>
+                                                            <div class="cell width-7 position-9 border-horz">
+                                                                <span class="label">CNPJ</span>
+                                                                <span tal:content="item/cnpj_empresa|nothing" />
+                                                            </div>
+                                                            <div class="cell width-3 position-13 border-horz even">
+                                                                <span class="label">Mês/Ano Proc.</span>
+                                                                <span tal:define="comp item/competencia|nothing"
+                                                                      tal:condition="comp" 
+                                                                      tal:content="python: comp[:2]+'/'+comp[2:]" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="row border">
+                                                            <div class="cell width-2 position-0">
+                                                                <span class="label">Matrícula</span>
+                                                                <span tal:content="item/matricula|nothing" />        
+                                                            </div>
+                                                            <div class="cell width-11 position-2 border-horz even">
+                                                                <span class="label">Nome</span>
+                                                                <span tal:content="item/nome|nothing" />      
+                                                            </div>
+                                                            <div class="cell width-3 position-13 border-horz">
+                                                                <span class="label">Data Admição</span>
+                                                                <span tal:content="item/data_admissao|nothing" />      
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        <div class="row border">
+                                                            <div class="cell width-7 position-0">
+                                                                <span class="label">Cargo</span>
+                                                                <span tal:content="item/cargo|nothing" />        
+                                                            </div>
+                                                            <div class="cell width-7 position-7 border-horz">
+                                                                <span class="label">Lotação</span>
+                                                                <span tal:content="item/setor|nothing" />
+                                                            </div>
+                                                            <div class="cell width-3 position-13 border-horz">
+                                                                <div class="cell width-1:2 position-0 ">
+                                                                    <span class="label">Dep. IR</span>
+                                                                    <span tal:content="item/dep_ir|nothing" />
+                                                                </div>
+                                                                <div class="cell width-1:2 position-1:2 border-horz">
+                                                                    <span class="label">Dep SF</span>
+                                                                    <span tal:content="item/dep_sf|nothing" />
+                                                                </div>    
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        
+                                                        <div class="row border">
+                                                            <div class="cell width-7 position-0">
+                                                                <span class="label">CPF</span>
+                                                                <span tal:content="item/cpf|nothing" />        
+                                                            </div>
+                                                            <div class="cell width-7 position-3 border-horz">
+                                                                <span class="label">Identidade</span>
+                                                                <span tal:content="item/indentidade|nothing" />
+                                                            </div>
+                                                            <div class="cell width-2 position-9 border-horz">
+                                                                <span class="label">PIS</span>
+                                                                <span tal:content="item/pis|nothing" />
+                                                            </div>
+                                                            <div class="cell width-2 position-13 border-horz">
+                                                                <span class="label">Salário Base</span>
+                                                                <span tal:content="item/salario_base|nothing" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="row border">
+                                                            <div class="cell width-7 position-0">
+                                                                <span class="label">Banco de Pagamento</span>
+                                                                <span tal:content="item/banco_pag|nothing" />        
+                                                            </div>
+                                                            <div class="cell width-3 position-10 border-horz">
+                                                                <span class="label">Agência</span>
+                                                                <span tal:content="item/agencia|nothing" />
+                                                            </div>
+                                                            <div class="cell width-3 position-13 border-horz">
+                                                                <span class="label">Conta corrente</span>
+                                                                <span tal:content="item/conta_corrente|nothing" />
+                                                            </div>
+                                                           
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    <div class="border"> 
+                                                        <tal:def define="tmp item/id|nothing;
+                                                                         descricoes python:view.get_descricao_holerite(tmp)">
+                                                            <div class="row title even border">
+                                                                <div class="cell width-1 position-0">
+                                                                    <span class="label">Cód.</span>
+                                                                </div>
+                                                                <div class="cell width-10 position-1 border-horz">
+                                                                    <span class="label">Proventos / Descontos</span>
+                                                                </div>
+                                                                <div class="cell width-3 position-10 border-horz">
+                                                                    <span class="label">Valor Prov. / Desc.</span>
+                                                                </div>
+                                                                <div class="cell width-3 position-13 border-horz">
+                                                                    <span class="label">Base de Cálculo</span>
+                                                                </div>
+    
+                                                            </div> 
+                                                            <tal:rep repeat="descricao descricoes">
+                                                                <div tal:define="even repeat/descricao/even|nothing" 
+                                                                    class="row" tal:attributes="class python:even and 'row' or 'row even'">
+                                                                    <div class="cell width-1 position-0">
+                                                                        <span tal:content="descricao/codigo|nothing">Cód.</span>
+                                                                    </div>
+                                                                    <div class="cell width-10 position-1 border-horz">
+                                                                        <span tal:content="descricao/descricao|nothing">Descri&ccedil;&atilde;o</span>
+                                                                    </div>
+                                                                    <div class="cell width-3 position-10 center border-horz">
+                                                                        <span tal:content="descricao/valor|nothing">Ref.</span>
+                                                                    </div>
+                                                                    <div class="cell width-3 position-13 center border-horz">
+                                                                        <span tal:content="descricao/referencial|nothing">Vencimentos</span>
+                                                                    </div>
+                                                                    
+                                                                </div> 
+                                                            </tal:rep>
+                                                        </tal:def>
+                                                        <div class="row border">
+                                                            <div class="row border">
+                                                                <div class="cell width-1:4 position-0">
+                                                                    <span class="label">BASE DE CÁLCULO FGTS </span>
+                                                                    <span tal:content="item/base_fgts|nothing" />
+                                                                </div>
+                                                                <div class="cell width-1:4 position-1:4 border-horz">
+                                                                    <span class="label">BASE DE CÁLCULO Inss </span>
+                                                                    <span tal:content="item/base_Inss|nothing" />
+                                                                </div>
+                                                                <div class="cell width-1:4 position-1:2 border-horz">
+                                                                    <span class="label">TOTAL PROVENTOS</span>
+                                                                    <span tal:content="item/total_proventos|nothing" />
+                                                                </div>
+                                                                <div class="cell width-1:4 position-3:4 border-horz">
+                                                                    <span class="label">TOTAL Descontos </span>
+                                                                    <span tal:content="item/total_desconto|nothing" />
+                                                                </div>
+                                                                
+                                                            </div>
+                                                            <div class="row border">
+                                                                <div class="cell width-1:4 position-0">
+                                                                    <span class="label">FGTS </span>
+                                                                    <span tal:content="item/fgts_mes|nothing" />
+                                                                </div>
+                                                                <div class="cell width-1:4 position-1:4 border-horz">
+                                                                    <span class="label">SALÁRIO CONTRIBUIÇÃO</span>
+                                                                    <span tal:content="item/salario_contribuicao|nothing" />
+                                                                </div>
+                                                                <div class="cell width-1:4 position-1:2 border-horz">
+                                                                    <span >Valor creditado em conta corrente</span>
+                                                                    
+                                                                </div>
+                                                                <div class="cell width-1:4 position-3:4 border-horz even">
+                                                                    <span class="label">TOTAL Liquido </span>
+                                                                    <span tal:content="item/valor_liquido|nothing" />
+                                                                </div>
+                                                                
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        <div class="row border">
+                                                            <div class="cell width-full position-0 title" >
+                                                                <span class="label">mensagem</span>
+                                                                <div class="row">
+                                                                    <div class="cell width-13 position-0" >
+                                                                        <span tal:content="item/observacao|nothing">Observações</span>
+                                                                    </div>  
+                                                                </div>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    										            
+										            
+										            </div>    
+										        </tal:cond>
+										        <tal:cond condition="python:modelo=='01'">
+        											<div class="border"  style="width: 660px;">
+        												<div class="row title even">
+        													<div class="cell width-full position-0">
+        														<span >Empresa</span>	
+        													</div>
+        												</div>										
+        												<div class="row">
+        													<div class="cell width-2 position-0">
+        														<span tal:content="item/cod_empresa|nothing" />
+        													</div>
+        													<div class="cell width-12 position-1">
+        														<span tal:content="item/empresa|nothing" />
+        													</div>
+        													<div class="cell width-2 position-12">
+        														<span tal:content="item/cidade_empresa|nothing" />
+        													</div>
+        												</div>
+        												<div class="row">
+        													<div class="cell width-13 position-1">
+        														<span tal:content="item/endereco_empresa|nothing" />		
+        													</div>
+        													<div class="cell width-2 position-14">
+        														<span tal:content="item/estado_empresa|nothing" />		
+        													</div>
+        													
+        												</div>
+        												<div class="row">
+        													<div class="cell width-7 position-1">
+        														<span tal:content="item/cnpj_empresa|nothing" />		
+        													</div>
+        													<div class="cell width-3 position-11">
+        														<span>Competência</span>
+        													</div>
+        													<div class="cell width-2 position-14">
+        														<span tal:define="comp item/competencia|nothing"
+        														tal:content="comp" />
+        													</div>
+        												</div>
+        											</div>
+        											<div class="border"> 
+        												<div class="row title even" style="width: 660px;">
+        													<div class="cell width-full position-0">
+        														<span >Funcionário</span>
+        													</div>
+        												</div>
+        												<div class="row">
+        													<div class="cell width-2 position-0">
+        														<span tal:content="item/matricula|nothing" />
+        													</div>
+        													<div class="cell width-10 position-2">
+        														<span tal:content="item/nome|nothing" />
+        													</div>
+        													<div class="cell width-4 position-12">
+        														<span tal:content="string: CPF: ${item/cpf|nothing}" />
+        													</div>
+        												</div>
+        											</div>
+        											<div class="border"> 
+            											<tal:def define="tmp item/id|nothing;
+            															 descricoes python:view.get_descricao_holerite(tmp)">
+            												<div class="row title even">
+            													<div class="cell width-1 position-0">
+            														<span>Cód.</span>
+            													</div>
+            													<div class="cell width-7 position-1">
+            														<span>Descri&ccedil;&atilde;o</span>
+            													</div>
+            													<div class="cell width-2 position-8">
+            														<span>Ref.</span>
+            													</div>
+            													<div class="cell width-3 position-10">
+            														<span>Vencimentos</span>
+            													</div>
+            													<div class="cell width-2 position-13">
+            														<span>Descontos</span>
+            													</div>
+            												</div> 
+            												<tal:rep repeat="descricao descricoes">
+            													<div tal:define="even repeat/descricao/even|nothing" 
+            														class="row" tal:attributes="class python:even and 'row' or 'row even'">
+            														<div class="cell width-1 position-0">
+            															<span tal:content="descricao/codigo|nothing">Cód.</span>
+            														</div>
+            														<div class="cell width-7 position-1">
+            															<span tal:content="descricao/descricao|nothing">Descri&ccedil;&atilde;o</span>
+            														</div>
+            														<div class="cell width-2 position-8 center">
+            															<span tal:content="descricao/ref|nothing">Ref.</span>
+            														</div>
+            														<div class="cell width-3 position-10 center">
+            															<span tal:content="descricao/vencimentos|nothing">Vencimentos</span>
+            														</div>
+            														<div class="cell width-2 position-13 center">
+            															<span tal:content="descricao/descontos|nothing">Descontos</span>
+            														</div>
+            													</div> 
+            												</tal:rep>
+            											</tal:def>
+            											<div class="row border">
+            												<div class="cell width-10 position-0 title" >
+            													<span>mensagem</span>
+            													<div class="row">
+            														<div class="cell width-13 position-0" >
+            															<span tal:content="item/observacao|nothing">Observações</span>
+            														</div>	
+            													</div>
+            												</div>
+            												<div class="cell width-6-5 position-10 border-horz even">
+            													<div class="row">
+            														<div class="cell width-8 position-0">
+            															<div class="row title">
+            																<div class="cell width-full position-0">
+            																	<span>Total Vencimentos</span>	
+            																</div>
+            															</div>
+            															<div class="row center">
+            																<div class="cell width-full position-0">
+            																	<span tal:content="item/total_vencimento|nothing">Total Vencimentos</span>	
+            																</div>
+            															</div>
+            														</div>
+            														<div class="cell width-8 position-8 border-horz">
+            															<div class="row title">
+            																<div class="cell width-full position-0">
+            																	<span>Total Descontos</span>	
+            																</div>
+            															</div>
+            															<div class="row center">
+            																<div class="cell width-full position-0">
+            																	<span tal:content="item/total_desconto|nothing">Total Descontos</span>	
+            																</div>
+            															</div>
+            														</div>
+            													</div>
+            													<div class="row border center">
+            														<div class="cell width-8 position-0">
+            															<b><span>Valor L&iacute;quido</span></b>
+            														</div>
+            														<div class="cell width-8 position-8">
+            															<b><span tal:content="item/valor_liquido|nothing">Valor L&iacute;quido</span></b>
+            														</div>
+            													</div>
+            												</div>
+            											</div>
+            											<div class="row title even">
+            												<div class="cell width-3 position-0">
+            													<span>Sal&aacute;rio Base</span>
+            												</div>
+            												<div class="cell width-3 position-3">
+            													<span>Base INSS</span>
+            												</div>
+            												<div class="cell width-3 position-6">
+            													<span>Base FGTS</span>
+            												</div>
+            												<div class="cell width-3 position-9">
+            													<span>FGTS Mês</span>
+            												</div>
+            												<div class="cell width-3 position-12">
+            													<span>Base IRRF</span>
+            												</div>
+            											</div>
+            											<div class="row even center">
+            												<div class="cell width-3 position-0">
+            													<span tal:content="item/salario_base|nothing" />
+            												</div>
+            												<div class="cell width-3 position-3">
+            													<span tal:content="item/base_Inss|nothing" />
+            												</div>
+            												<div class="cell width-3 position-6">
+            													<span tal:content="item/base_fgts|nothing" />
+            												</div>
+            												<div class="cell width-3 position-9">
+            													<span tal:content="item/fgts_mes|nothing" />
+            												</div>
+            												<div class="cell width-3 position-12">
+            													<span tal:content="item/base_irrf|nothing" />
+            												</div>								
+            											</div>
+        										  </div>
+    											</tal:cond>
+    											<div class="visualClear"></div>
+    										</metal:macro>
+										
+										<div style="width:100%; margin-top: 10px;">
+											<input type="button" value="Imprimir" tal:attributes="onclick string:window.open('${context/portal_url}/imprimir-holerite?id=${item/id|nothing}', 'popupwindow', 'scrollbars=yes,width=670,height=600');;return true;;"/>
+										</div>
+									</metal:macro>
+		                        </div>
+		                    </tal:cond>
+		                    <tal:cond condition="not: item">
+		                        <h3>Voce não possui demonstrativos de pagamento.</h3>
+		                    </tal:cond>
+						</tal:def>
 					</tal:cond>
 				</div>
 			</metal:page>
