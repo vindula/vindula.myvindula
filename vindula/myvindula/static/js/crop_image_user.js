@@ -33,4 +33,19 @@ $j(document).ready(function(){
             aspectRatio: 1
         });
     });
+
+    $j('form #crop-image').submit(function(){
+        if ($j(this).find('input[type="submit"]').val() == "Cortar")
+        {
+            if (($j(this).find('#cort-x').val() && $j(this).find('#cort-y').val() && $j(this).find('#cort-x2').val() && $j(this).find('#cort-y2').val()) &&
+                ($j(this).find('#cort-x').val() != $j(this).find('#cort-x2').val() && $j(this).find('#cort-y').val() != $j(this).find('#cort-y2').val()))
+            {
+                return true;
+            }
+            alert("Por favor, selecione a area que deseja cortar antes de salvar.")
+            return false;               
+        }
+        return true;
+    });
+
 });
