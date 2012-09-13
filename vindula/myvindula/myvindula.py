@@ -26,6 +26,7 @@ from datetime import date
 from DateTime.DateTime import DateTime
 from datetime import datetime 
 import calendar, logging, base64, pickle
+from copy import copy
 
 from vindula.myvindula.validation import valida_form
 
