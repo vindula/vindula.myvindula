@@ -33,10 +33,31 @@ $j(document).ready(function(){
         formselector: 'form[name=crop_image]',
         noform: 'close',
         width: '50%',
-        afterpost: function (resp, elem) { CarregaCrop(resp, elem); }, 
-        config: {fixed:false,speed:'fast',mask:{color:'#000',opacity: 0.4,loadSpeed:0,closeSpeed:0},
-                             onBeforeClose:function (e) {mostraFoto(e,this.getOverlay()); },
-                }
+        afterpost: function (resp, elem) { 
+			CarregaCrop(resp, elem);
+		},
+		beforepost: function (resp, elem) {
+			if (resp.find('input[type="submit"]').val() == "Cortar")
+			{
+				if ((resp.find('#cort-x').val() && resp.find('#cort-y').val() && resp.find('#cort-x2').val() && resp.find('#cort-y2').val()) &&
+				    (resp.find('#cort-x').val() != resp.find('#cort-x2').val() && resp.find('#cort-y').val() != resp.find('#cort-y2').val()))
+				{
+					return true;
+				}
+				alert("Por favor, selecione a area que deseja cortar antes de salvar.")
+				return false;				
+			}
+			
+			return true;
+		},
+        config: {
+			fixed:false,
+			speed:'fast',
+			mask:{color:'#000', opacity: 0.4, loadSpeed:0, closeSpeed:0},
+            onBeforeClose:function (e) {
+				mostraFoto(e,this.getOverlay()); 
+			}
+		}
    });
    common_jqt_config['onBeforeClose'] = function (e) {RemoveFoto(e,this.getOverlay());};
    $j('a.excluir-foto').prepOverlay({
