@@ -34,7 +34,7 @@ $j(document).ready(function(){
         });
     });
 
-    $j('form #crop-image').submit(function(){
+    $j('form#crop-image').submit(function(){
         if ($j(this).find('input[type="submit"]').val() == "Cortar")
         {
             if (($j(this).find('#cort-x').val() && $j(this).find('#cort-y').val() && $j(this).find('#cort-x2').val() && $j(this).find('#cort-y2').val()) &&
