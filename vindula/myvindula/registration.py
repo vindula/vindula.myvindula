@@ -164,7 +164,7 @@ class SchemaFunc(BaseFunc):
                 if manage:
                     self.setRedirectPage('/myvindulamanagealluser')
                 else:
-                    self.setRedirectPage('/myvindula')
+                    self.setRedirectPage('/myvindulalistuser')
                 
             else:
                 form_data['errors'] = errors
