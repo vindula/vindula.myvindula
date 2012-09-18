@@ -36,6 +36,8 @@
     				                <div class="comment-body">
     				                    <p tal:replace="structure item/text|nothing" />
     						  		</div>
+    						  		
+    						  		
     								<!-- Responde / Excluir recados -->
     								<div id="comments" class="bt_comentar" tal:condition="not: isAnonymous" >
     									<a>
@@ -52,6 +54,13 @@
                                                                  class="bt_comments" tal:attributes="id item/id|nothing" />    
                                         </form>
     								</div>
+    								
+    								<!--Macros de repitição dos comentarios --> 
+                                    <tal:def define="comment_type string:ModelsMyvindulaRecados">        
+                                        <!--div metal:use-macro="context/macro-input-recados/macros/input" /-->
+                                        <div metal:use-macro="context/myvindula-comments-macro/macros/comments" />
+                                    </tal:def>
+    								
     							</div>
     						</tal:rep>	
     					</div>
