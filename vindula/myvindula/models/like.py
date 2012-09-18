@@ -7,7 +7,7 @@ from storm.expr import Desc, Select
 
 
 from vindula.myvindula.models.base import BaseStore
-
+from vindula.myvindula.tools.utils import UtilMyvindula
 
 class ModelsMyvindulaLike(Storm, BaseStore):
     __storm_table__ = 'vin_myvindula_like'
@@ -21,7 +21,7 @@ class ModelsMyvindulaLike(Storm, BaseStore):
      
     def set_myvindula_like(self,**kwargs):
         D={}
-        base = BaseFunc() 
+        base = UtilMyvindula() 
         D['username'] =  base.Convert_utf8(kwargs.get('username',''))
         D['type'] =  base.Convert_utf8(kwargs.get('type',''))
         D['id_obj'] =  base.Convert_utf8(kwargs.get('id_obj',''))
