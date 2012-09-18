@@ -48,8 +48,10 @@
     			<div metal:use-macro="context/myvindula-user-perfil/macros/page-view" />
     			
     			<!-- Meus Pensamentos -->
+    			
                 <div id="howareu" class="userpage geral_lista_comentarios" tal:condition="panelView/check_pensamentos">
-                    <h2 class="h2title" tal:content="string: No que ${form_data/name|nothing} est&aacute; pensando!"></h2>
+                    <h2 class="h2title" tal:define='dic_user python:view.get_prefs_user(form_data.username)'
+                         tal:content="string: No que ${dic_user/name|nothing} est&aacute; pensando!"></h2>
                     
                     <tal:def define="items python: view.get_howareu(user);
                                      comment_type string:ModelsMyvindulaHowareu">
@@ -65,7 +67,9 @@
     				
     				<!-- Scraps Input -->
     				<div id="comment-geral" tal:condition="not: isAnonymous">
-    					<h2 class="h2title" tal:content="string:Deixe um recado para ${form_data/name|nothing}:"></h2>
+    					<h2 class="h2title" tal:define='dic_user python:view.get_prefs_user(form_data.username)' 
+    					                    tal:content="string:Deixe um recado para ${dic_user/name|nothing}:"></h2>
+    					
     					<form action="" method="post" enctype="multipart/form-data" name="save-recados" 
       						  tal:attributes="action string:${context/absolute_url}/myvindulalistuser?user=${context/REQUEST/form/user|nothing}&scraps=true">	
     						
