@@ -50,7 +50,7 @@ def user_folder(context):
                 
                 # constroi o objeto 
                 obj = {'type_name':type,'id':id,
-                       'title':'Gerenciamento de Documentos Corporativos',
+                       'title':'Documentos comprobatórios',
                        'excludeFromNav':True,}
                 
                 folder_control_panel.invokeFactory(**obj)

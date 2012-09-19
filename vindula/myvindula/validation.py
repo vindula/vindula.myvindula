@@ -22,7 +22,7 @@ def valida_form(configuracao, form):
     # var 'campo' - usado para verificar se campo e obrigatorio
     # var 'valor' - usado para converter dos dados inseridos no fomulario
     for campo in configuracao.keys():
-        valor = form.get(campo,'')   #configuracao[campo]['campo_form'], '')
+        valor = form.get(campo, u'')   #configuracao[campo]['campo_form'], '')
         # logica para verificacao de obrigatoriedade de campo
         
         

@@ -6,13 +6,11 @@ from vindula.myvindula import MessageFactory as _
 
 
 from vindula.myvindula.user import BaseFunc
+from vindula.myvindula.models.config_documents import ModelsConfigDocuments
 
 from vindula.myvindula.validation import valida_form
 import pickle
 
-
-                
- 
     
 class SchemaManageDocument(BaseFunc):
     def to_utf8(value):
