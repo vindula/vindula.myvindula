@@ -75,7 +75,7 @@
 		                        <div id="holerite-cont">
 									<metal:macro define-macro="holerite">
 										<div id="holerite">
-										    <metal:macro define-macro="holerite-print">
+										    <metal:macro define-macro="holerite-print" tal:define="view python:context.restrictedTraverse('@@myvindula-holerite');">
 										        
 										        <tal:cond condition="python:modelo=='02'">
                                                     <div class="border"  style="width: 660px;">
