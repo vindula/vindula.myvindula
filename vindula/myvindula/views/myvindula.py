@@ -334,7 +334,10 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
                         D={}
                         D['id'] = item.getId()
                         D['title'] = item.Title()
-                        D['url_image'] = item.getLogo().absolute_url()
+                        if item.getLogo():
+                            D['url_image'] = item.getLogo().absolute_url()
+                        else:
+                            D['url_image'] = ''
                     
                         areas.append(D)
                         
