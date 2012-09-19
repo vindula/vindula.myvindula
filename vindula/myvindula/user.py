@@ -57,27 +57,6 @@ class BaseFunc(UtilMyvindula):
     #default class for standard functions
 
             
-    def converte_dadosByDB(self, D):
-        keys = D.keys()
-        for item in keys:
-            if item == 'itens_holerite' or\
-               item == 'itens_holerite_check' or\
-               item == 'completo':
-                D.pop(item)
-            else: 
-                valor = D[item]
-                if type(valor) == str: 
-                    valor = valor.strip()
-                    try:
-                        D[item] = unicode(valor, 'utf-8')
-                    except:
-                        D[item] = unicode(valor, 'ISO-8859-1')
-                else:
-                    D[item] = valor
-        
-        return D
-
-
     def geraCampos(self,form_data):
         if type(form_data) == dict:
             errors = form_data.get('errors',[])

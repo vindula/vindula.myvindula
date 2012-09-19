@@ -168,6 +168,26 @@ class UtilMyvindula(object):
             ip = None
         
         return ip
+    
+    def converte_dadosByDB(self, D):
+        keys = D.keys()
+        for item in keys:
+            if item == 'itens_holerite' or\
+               item == 'itens_holerite_check' or\
+               item == 'completo':
+                D.pop(item)
+            else: 
+                valor = D[item]
+                if type(valor) == str: 
+                    valor = valor.strip()
+                    try:
+                        D[item] = unicode(valor, 'utf-8')
+                    except:
+                        D[item] = unicode(valor, 'ISO-8859-1')
+                else:
+                    D[item] = valor
+        
+        return D    
    
    
     def getValue(self,campo,request,data):

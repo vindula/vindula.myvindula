@@ -1,7 +1,7 @@
 <html>
     <body metal:use-macro="here/prefs_main_template/macros/master">
         <div metal:fill-slot="prefs_configlet_content">
-            <div id="first" tal:define="load view/load_file" style="height:300px;">
+            <div id="first" tal:define="load view/load_file">
                 <div class="import-holerite">
                     <h1>Contra-Cheque</h1>
                     <br />
@@ -11,7 +11,7 @@
                     </form>
 					<br />
 					<br />
-					<div id="last-import">
+					<div id="last-import" style="overflow: hidden;">
 						<h3>Ultimas Importações</h3>
 						<tal:def define="itens view/get_lastImport">
 							<div class="row even">
