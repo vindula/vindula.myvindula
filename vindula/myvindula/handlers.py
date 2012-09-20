@@ -24,35 +24,35 @@ def userupdate(event):
         
     user_instance = ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id)
         
-    if not user_instance or\
-       not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id) and\
-       user_id != 'admin':
+    if not user_instance:
+       #not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id) and\
+       #user_id != 'admin':
         
-        if not ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id):
-            id_instance = ModelsInstanceFuncdetails().set_InstanceFuncdetails(user_id)
-            dados = {}
-            
-            if user_login.getProperty('fullname'):
-                dados['name'] = user_login.getProperty('fullname')
-            else:
-                dados['name'] = user_id
-            
-            dados['email'] = user_login.getProperty('email')
-            
-            campos = [u'name',u'email']
-            for campo in campos:
-                D={}
-                D['vin_myvindula_instance_id'] = id_instance
-                D['vin_myvindula_confgfuncdetails_fields'] = campo
-                D['valor'] = tools.Convert_utf8(dados.get(campo))
-                
-                ModelsDadosFuncdetails().set_DadosFuncdetails(**D)
-            
-            tools.setLogger('info',"Usuario criado no myvindula")
+       # if not ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id):
+        id_instance = ModelsInstanceFuncdetails().set_InstanceFuncdetails(user_id)
+        dados = {}
         
-        if not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
+        if user_login.getProperty('fullname'):
+            dados['name'] = user_login.getProperty('fullname')
+        else:
+            dados['name'] = user_id
+        
+        dados['email'] = user_login.getProperty('email')
+        
+        campos = [u'name',u'email']
+        for campo in campos:
+            D={}
+            D['vin_myvindula_instance_id'] = id_instance
+            D['vin_myvindula_confgfuncdetails_fields'] = campo
+            D['valor'] = tools.Convert_utf8(dados.get(campo))
             
-            CreateUserXMPP(user_id)
+            ModelsDadosFuncdetails().set_DadosFuncdetails(**D)
+        
+        tools.setLogger('info',"Usuario criado no myvindula")
+        
+#        if not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
+#            
+#            CreateUserXMPP(user_id)
 
 
 #        if not request.other.get('came_from') or request.other.get('came_from') == getSite().portal_url()+'/':
