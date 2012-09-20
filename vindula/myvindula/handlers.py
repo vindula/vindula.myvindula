@@ -29,8 +29,8 @@ def userupdate(event):
     except:
         user_id = user_login.getUserName()
         
-    if not ModelsFuncDetails().get_FuncDetails(user_id) or\
-       user_id != 'admin':
+    if not ModelsFuncDetails().get_FuncDetails(user_id):
+        #user_id != 'admin':
         #not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id) and\
         
         #if not ModelsFuncDetails().get_FuncDetails(user_id):
