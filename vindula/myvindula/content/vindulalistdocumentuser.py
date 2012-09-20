@@ -10,7 +10,8 @@ from zope.interface import Interface
 from vindula.myvindula.validation import valida_form
 
 from vindula.myvindula.models.user_documents import ModelsUserDocuments
-from vindula.myvindula.models.funcdetails import ModelsFuncDetails
+#from vindula.myvindula.models.funcdetails import ModelsFuncDetails
+from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 
 from vindula.myvindula.tools.utils import UtilMyvindula
 
@@ -39,25 +40,30 @@ class MyVindulaListDocumentView(grok.View, UtilMyvindula):
     def load_list(self):
         form = self.request.form # var tipo 'dict' que guarda todas as informacoes do formulario (keys,items,values)
         form_keys = form.keys() # var tipo 'list' que guarda todas as chaves do formulario (keys)
-        
+        form_values = []
         if 'SearchSubmit' in form_keys:
             if 'filtro' in form_keys and 'title' in form_keys:
+                
                 filtro = form.get('filtro','')
                 try:title = unicode(form.get('title',''),'utf-8')
                 except:title = form.get('title','')
                 status = int(form.get('status',''))
                 L=[]
                 
-                if filtro == 'departamento':  
-                    data = ModelsFuncDetails().get_FuncDetails_by_DepartamentName(title)
-                else:
-                    data = ModelsFuncDetails().get_FuncDetails_by_dinamicFind(filtro,title) 
+                form_values.append({filtro:title})
+                
+#                if filtro == 'departamento':  
+#                    data = ModelsFuncDetails().get_FuncDetails_by_DepartamentName(title)
+#                else:
+#                    data = ModelsFuncDetails().get_FuncDetails_by_dinamicFind(filtro,title) 
+#                 
+                data = ModelsDadosFuncdetails().get_FuncBusca(form_campos=form_values)         
                  
                 if data:   
                     for item in data:
                         D = {}
-                        try:user = unicode(item.username, 'utf-8')    
-                        except:user = item.username
+                        try:user = unicode(item.get('username',''), 'utf-8')    
+                        except:user = item.get('username',u'')
                         
                         if status == 0:
                             D['user'] = item

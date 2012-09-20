@@ -13,6 +13,8 @@ from vindula.myvindula.document_models import SchemaManageDocument, SchemaDocume
 from vindula.myvindula.models.config_documents import ModelsConfigDocuments
 from vindula.myvindula.models.user_documents import ModelsUserDocuments
 
+from vindula.myvindula.tools.utils import UtilMyvindula
+
 from datetime import datetime 
 import pickle                                   
 
@@ -153,7 +155,7 @@ class MyVindulaDocumentView(grok.View, BaseFunc):
             self.request.response.redirect(self.context.absolute_url() + '/login')
 
 
-class MyVindulaListDocumentView(grok.View, BaseFunc):
+class MyVindulaListDocumentView(grok.View, UtilMyvindula):
     grok.context(INavigationRoot)
     grok.require('zope2.View')
     grok.name('list-documents')
@@ -180,13 +182,13 @@ class MyVindulaListDocumentView(grok.View, BaseFunc):
                     L.append(D)
             return L
     
-    def get_prefs_user(self, user):
-        try:
-            user_id = unicode(user, 'utf-8')    
-        except:
-            user_id = user 
-
-        return ModelsFuncDetails().get_FuncDetails(user_id)    
+#    def get_prefs_user(self, user):
+#        try:
+#            user_id = unicode(user, 'utf-8')    
+#        except:
+#            user_id = user 
+#
+#        return ModelsFuncDetails().get_FuncDetails(user_id)    
     
     
     def checaFiltro(self,user_doc):
