@@ -48,8 +48,8 @@
 
 					<br />
 
-					<p tal:condition="not: view/checkUserXMPP">
-						Não foi possível criar seu usuário no chat, contate o administrador da intranet</p> 
+					<!--p tal:condition="not: view/checkUserXMPP">
+						Não foi possível criar seu usuário no chat, contate o administrador da intranet</p--> 
 					
                     <br />
 					<form action="myvindula-first-registre" method="post" enctype="multipart/form-data">
