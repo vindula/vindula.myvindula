@@ -16,9 +16,6 @@ from plone.scale.storage import IImageScaleStorage
 
 from vindula.myvindula import MessageFactory as _
 
-
-
-
 from storm.locals import *
 
 from vindula.myvindula.validation import valida_form
@@ -34,10 +31,7 @@ from vindula.myvindula.models.department import ModelsDepartment
 from vindula.myvindula.models.howareu import ModelsMyvindulaHowareu
 from vindula.myvindula.models.comments import ModelsMyvindulaComments
 from vindula.myvindula.models.like import ModelsMyvindulaLike
-from vindula.myvindula.models.funcdetail_couses import ModelsMyvindulaFuncdetailCouses
-from vindula.myvindula.models.courses import ModelsMyvindulaCourses
-from vindula.myvindula.models.funcdetail_languages import ModelsMyvindulaFuncdetailLanguages
-from vindula.myvindula.models.languages import ModelsMyvindulaLanguages
+
 from vindula.myvindula.models.recados import ModelsMyvindulaRecados
 
 from vindula.myvindula.models.holerite import ModelsFuncHolerite
@@ -55,7 +49,6 @@ class UserLogado(grok.Permission):
         
 class BaseFunc(UtilMyvindula):
     #default class for standard functions
-
             
     def geraCampos(self,form_data):
         if type(form_data) == dict:

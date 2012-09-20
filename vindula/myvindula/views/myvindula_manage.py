@@ -18,16 +18,21 @@ from copy import copy
 
 from vindula.myvindula.validation import valida_form,valida_form_dinamic
 from vindula.myvindula.user import BaseFunc
-from vindula.myvindula.registration import SchemaFunc, SchemaConfgMyvindula, ImportUser, ManageCourses, ManageLanguages
+from vindula.myvindula.registration import SchemaFunc, SchemaConfgMyvindula, ImportUser
 from vindula.chat.utils.models import ModelsUserOpenFire
 
 from vindula.myvindula.tools.utils import UtilMyvindula
 from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
+
+
+#Import Necessario spara a migração dos dados
 from vindula.myvindula.models.courses import ModelsMyvindulaCourses
 from vindula.myvindula.models.languages import ModelsMyvindulaLanguages
 from vindula.myvindula.models.funcdetail_couses import ModelsMyvindulaFuncdetailCouses
 from vindula.myvindula.models.funcdetail_languages import ModelsMyvindulaFuncdetailLanguages
+
+
 from vindula.myvindula.models.funcdetails import ModelsFuncDetails
 from vindula.myvindula.models.holerite import ModelsFuncHolerite
 from vindula.myvindula.models.descricao_holerite import ModelsFuncHoleriteDescricao
@@ -455,128 +460,7 @@ class MyVindulaImportHoleriteView(grok.View, UtilMyvindula):
         else:
             return None
         
-     
-#    def load_file_old(self):
-#        form = self.request.form
-#        if 'load_file' in form.keys():
-#            
-#            if 'txt_file' in form.keys():
-#                file = form.get('txt_file','')
-#                if file:
-#                    texto = file.read()
-#                    texto = texto.replace('\r','')
-#                    registros = texto.split('\x1b2\n')
-#                    for reg in registros:
-#                        D = {}
-#                        L = []
-#                        linhas = reg.split('\n')
-#                        max = len(linhas)-1
-#                        cont = 0
-#                        entra = False
-#                        #while cont <= max:
-#                        
-#                        for linha in linhas:
-#                            
-#                            #linha = linhas[cont]
-#                            if len(linha) == 80:
-#                                entra = True
-#                                if cont == 0:
-#                                    D['cod_empresa'] = linha[0:3] 
-#                                    D['empresa'] = linha[5:51]
-#                                    #D['cnomeidade_empresa'] = linha[] 
-#                                
-#                                elif cont == 1:
-#                                    D['endereco_empresa'] = linha[5:60]                    
-#                                    D['estado_empresa'] = linha[60:62]
-#                                
-#                                elif cont == 2:    
-#                                    D['cnpj_empresa'] = linha[5:23]
-#                                    tmp = linha[56:63]
-#                                    tmp = tmp.strip()
-#                                    tmp = tmp.split('/')
-#                                    D['competencia'] = tmp[1]+'/'+tmp[0] 
-#                                
-#                                elif cont == 4:
-#                                    
-#                                    D['matricula'] = linha[0:5]
-#                                    D['nome'] = linha[6:51]
-#                                    D['cpf']  = linha[69:80]
-#                    
-#                                elif cont >= 8 and cont <= 23:
-#                                    E = {}
-#                                    E['codigo'] = linha[0:3]
-#                                    E['descricao'] = linha[4:33]
-#                                    E['ref'] = linha[34:43]
-#                                    E['vencimentos'] = linha[44:57]
-#                                    E['descontos'] = linha[58:70]
-#                                    
-#                                    L.append(E)
-#                                elif cont == 24:
-#                                    D['total_vencimento'] = linha[42:55]
-#                                    D['total_desconto'] = linha[56:70]
-#                                
-#                                elif cont == 26:
-#                                    D['valor_liquido'] = linha[56:70]
-#                                    
-#                                elif cont == 28:
-#                                    D['salario_base'] = linha[0:13]
-#                                    D['base_Inss'] = linha[14:25]
-#                                    D['base_fgts'] = linha[26:38]
-#                                    D['fgts_mes'] = linha[40:50]
-#                                    D['base_irrf'] = linha[52:70]
-#                            if entra:    
-#                                cont += 1
-#                        if D:
-#                            convertido = self.converte_dadosByDB(D)
-#                            id = ModelsFuncHolerite().set_FuncHolerite(**convertido)
-#                            for item in L:
-#                                try:
-#                                    item['vin_myvindula_holerite_id'] = id
-#                                    desc_convertido = self.converte_dadosByDB(item)
-#                                    ModelsFuncHoleriteDescricao().set_FuncHoleriteDescricao(**item)
-#                                except:
-#                                    item['vin_myvindula_holerite_id'] = id
-#                                    desc_convertido = self.converte_dadosByDB(item)
-#                                    ModelsFuncHoleriteDescricao().set_FuncHoleriteDescricao(**item)
-#        
-#        else:
-#            return None
-                
-        
-        
-class MyVindulaCoursesView(grok.View, UtilMyvindula):
-    grok.context(INavigationRoot)
-    grok.require('cmf.ManagePortal')
-    grok.name('myvindula-courses')
-    
-    def load_list(self):
-        return ManageCourses().load_courses(self)
-
-        
-class MyVindulaManageCoursesView(grok.View, UtilMyvindula):        
-    grok.context(INavigationRoot)
-    grok.require('cmf.ManagePortal')
-    grok.name('myvindula-manage-courses')    
-
-    def load_form(self):
-        return ManageCourses().registration_processes(self)      
-
-class MyVindulaLanguagesView(grok.View, UtilMyvindula):
-    grok.context(INavigationRoot)
-    grok.require('cmf.ManagePortal')
-    grok.name('myvindula-languages')
-    
-    def load_list(self):
-        return ManageLanguages().load_languages(self)
-        
-class MyVindulaManageLanguagesView(grok.View, UtilMyvindula):        
-    grok.context(INavigationRoot)
-    grok.require('cmf.ManagePortal')
-    grok.name('myvindula-manage-languages')    
-
-    def load_form(self):
-        return ManageLanguages().registration_processes(self)
-    
+   
 class MyVindulaImportFirstView(grok.View,UtilMyvindula):
     grok.context(INavigationRoot)
     grok.require('cmf.ManagePortal')

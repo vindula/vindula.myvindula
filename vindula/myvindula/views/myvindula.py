@@ -38,10 +38,7 @@ from vindula.myvindula.models.department import ModelsDepartment
 from vindula.myvindula.models.howareu import ModelsMyvindulaHowareu
 from vindula.myvindula.models.comments import ModelsMyvindulaComments
 from vindula.myvindula.models.like import ModelsMyvindulaLike
-from vindula.myvindula.models.funcdetail_couses import ModelsMyvindulaFuncdetailCouses
-from vindula.myvindula.models.courses import ModelsMyvindulaCourses
-from vindula.myvindula.models.funcdetail_languages import ModelsMyvindulaFuncdetailLanguages
-from vindula.myvindula.models.languages import ModelsMyvindulaLanguages
+
 from vindula.myvindula.models.recados import ModelsMyvindulaRecados
 
 from vindula.myvindula.models.holerite import ModelsFuncHolerite

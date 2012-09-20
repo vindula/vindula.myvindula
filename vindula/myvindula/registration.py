@@ -6,7 +6,6 @@ from datetime import date , datetime
 from vindula.myvindula.validation import valida_form, valida_form_dinamic
 
 from vindula.myvindula.user import BaseFunc,ModelsFuncDetails
-                                   
 
 from vindula.myvindula.models.base import BaseStore
 
@@ -16,13 +15,8 @@ from vindula.myvindula.models.photo_user import ModelsPhotoUser
 
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 from vindula.myvindula.models.department import ModelsDepartment
-from vindula.myvindula.models.funcdetail_couses import ModelsMyvindulaFuncdetailCouses
-from vindula.myvindula.models.courses import ModelsMyvindulaCourses
-from vindula.myvindula.models.funcdetail_languages import ModelsMyvindulaFuncdetailLanguages
-from vindula.myvindula.models.languages import ModelsMyvindulaLanguages
 
 from copy import copy 
-               
                
 class SchemaFunc(BaseFunc):
                     
@@ -386,175 +380,3 @@ class ImportUser(BaseFunc):
         D['email'] = user.get('email','')
         
         return D
-
-    
-class ManageCourses(BaseFunc):
-    def to_utf8(value):
-        return unicode(value, 'utf-8')
-    
-    campos = {'title'  : {'required': True,  'type' : to_utf8, 'label':'Nome do Curso',     'decription':u'Digite o nome do curso',    'ordem':0},
-              'length' : {'required': False, 'type' : to_utf8, 'label':'Duração do Curso',  'decription':u'Digite a duração do curso', 'ordem':1},}
-    
-    def load_courses(self,ctx):
-        data = ModelsMyvindulaCourses().get_allCourses()
-        
-        if data:
-            return data
-        else:
-            return []
-        
-    
-    def registration_processes(self,ctx):
-        success_url = ctx.context.absolute_url() + '/myvindula-courses'
-        access_denied = ctx.context.absolute_url() + '/@@vindula-control-panel'
-        form = ctx.request.form # var tipo 'dict' que guarda todas as informacoes do formulario (keys,items,values)
-        form_keys = form.keys() # var tipo 'list' que guarda todas as chaves do formulario (keys)
-        campos = self.campos
-        
-        # divisao dos dicionarios "errors" e "convertidos"
-        form_data = {
-            'errors': {},
-            'data': {},
-            'campos':campos,}
-        
-        # se clicou no botao "Voltar"
-        if 'form.voltar' in form_keys:
-            ctx.request.response.redirect(success_url)
-          
-        # se clicou no botao "Salvar"
-        elif 'form.submited' in form_keys:
-            # Inicia o processamento do formulario
-            # chama a funcao que valida os dados extraidos do formulario (valida_form) 
-            errors, data = valida_form(campos, form)  
-
-            if not errors:
-                
-                if 'id' in form_keys:
-                    # editando...
-                    id = int(form.get('id'))
-                    result = self.store.find(ModelsMyvindulaCourses, ModelsMyvindulaCourses.id == id).one()
-                    if result:
-                        for campo in campos.keys():
-                            value = data.get(campo, None)
-                            setattr(result, campo, value)
-
-                else:
-                    #adicionando...
-                    database = ModelsMyvindulaCourses(**data)
-                    self.store.add(database)
-                    self.store.flush()
-                        
-                #Redirect back to the front page with a status message
-                #IStatusMessage(ctx.request).addStatusMessage(_(u"Thank you for your order. We will contact you shortly"), "info")
-                ctx.request.response.redirect(success_url)
-                                   
-            else:
-                form_data['errors'] = errors
-                form_data['data'] = data
-                return form_data
-          
-        # se for um formulario de edicao 
-        elif 'id' in form_keys:
-
-            id = int(form.get('id'))
-            data = self.store.find(ModelsMyvindulaCourses, ModelsMyvindulaCourses.id == id).one()
-            
-            D = {}
-            for campo in campos.keys():
-                D[campo] = getattr(data, campo, '')
-              
-            if data:
-               form_data['data'] = D
-               return form_data
-            else:
-               return form_data
-              
-        # se o usuario não estiver logado
-        else:
-            return form_data
-    
-    
-class ManageLanguages(BaseFunc):
-    def to_utf8(value):
-        return unicode(value, 'utf-8')
-    
-    campos = {'title'  : {'required': True,  'type' : to_utf8, 'label':'Nome do Idioma',   'decription':u'Digite o nome do idioma',  'ordem':0},
-              'level'  : {'required': False, 'type' : to_utf8, 'label':'Nível do Idioma',  'decription':u'Digite o nível do idioma', 'ordem':1},}
-    
-    def load_languages(self,ctx):
-        data = ModelsMyvindulaLanguages().get_allLanguages()
-        
-        if data:
-            return data
-        else:
-            return []
-        
-    
-    def registration_processes(self,ctx):
-        success_url = ctx.context.absolute_url() + '/myvindula-languages'
-        access_denied = ctx.context.absolute_url() + '/@@vindula-control-panel'
-        form = ctx.request.form # var tipo 'dict' que guarda todas as informacoes do formulario (keys,items,values)
-        form_keys = form.keys() # var tipo 'list' que guarda todas as chaves do formulario (keys)
-        campos = self.campos
-        
-        # divisao dos dicionarios "errors" e "convertidos"
-        form_data = {
-            'errors': {},
-            'data': {},
-            'campos':campos,}
-        
-        # se clicou no botao "Voltar"
-        if 'form.voltar' in form_keys:
-            ctx.request.response.redirect(success_url)
-          
-        # se clicou no botao "Salvar"
-        elif 'form.submited' in form_keys:
-            # Inicia o processamento do formulario
-            # chama a funcao que valida os dados extraidos do formulario (valida_form) 
-            errors, data = valida_form(campos, form)  
-
-            if not errors:
-                
-                if 'id' in form_keys:
-                    # editando...
-                    id = int(form.get('id'))
-                    result = self.store.find(ModelsMyvindulaLanguages, ModelsMyvindulaLanguages.id == id).one()
-                    if result:
-                        for campo in campos.keys():
-                            value = data.get(campo, None)
-                            setattr(result, campo, value)
-
-                else:
-                    #ModelsMyvindulaLanguages().set_languages(**data)
-                    #adicionando...
-                    database = ModelsMyvindulaLanguages(**data)
-                    self.store.add(database)
-                    self.store.flush()
-                        
-                #Redirect back to the front page with a status message
-                #IStatusMessage(ctx.request).addStatusMessage(_(u"Thank you for your order. We will contact you shortly"), "info")
-                ctx.request.response.redirect(success_url)
-                                   
-            else:
-                form_data['errors'] = errors
-                form_data['data'] = data
-                return form_data
-          
-        # se for um formulario de edicao 
-        elif 'id' in form_keys:
-            id = int(form.get('id'))
-            data = self.store.find(ModelsMyvindulaLanguages, ModelsMyvindulaLanguages.id == id).one()
-            
-            D = {}
-            for campo in campos.keys():
-                D[campo] = getattr(data, campo, '') 
-              
-            if data:
-               form_data['data'] = D
-               return form_data
-            else:
-               return form_data
-              
-        # se o usuario não estiver logado
-        else:
-            return form_data
