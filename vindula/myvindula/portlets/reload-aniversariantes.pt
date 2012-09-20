@@ -1,35 +1,35 @@
-		<tal:def define="view python:context.restrictedTraverse('@@reload-aniversariantes');
-						 results view/birthdaysToday;
-						 
-						 Batch python:modules['Products.CMFPlone'].Batch;
-	                       b_size request/quantidade | string:0;
-	                       b_start python:0;
-	                       b_start request/b_start | b_start;
-						   
-						   batch python:Batch(results, int(b_size), int(b_start));">
+<tal:def define="view python:context.restrictedTraverse('@@reload-aniversariantes');
+				 results view/birthdaysToday;
+				 
+				 Batch python:modules['Products.CMFPlone'].Batch;
+                 b_size request/quantidade | string:0;
+                 b_start python:0;
+                 b_start request/b_start | b_start;
+                
+                 batch python:Batch(results, int(b_size), int(b_start));">
 
-			<input type="hidden" name="max_result" id="max_result" tal:attributes="value python:len(results)">
-			
-			<tal:results tal:repeat="item batch">
-				
-				<div id="boxPortlet" tal:define="i repeat/item/end;"
-						tal:attributes="class python:view.getEnd(i);">
-					<div class="row">
-					    
-                        <!-- Dados para utilização da macro -->                                     
-                        <tal:def define="size_img string:50px;
-                                         principal_name python: view.get_principal_campo(item);
-                                         details python: view.get_details_user(item) or [];">
-                            <div metal:use-macro="context/myvindula-imageprofiles-macro/macros/userprofiles" />       
-                        </tal:def>
-					    
-					</div>
-				</div>
-			</tal:results>
+	<input type="hidden" name="max_result" id="max_result" tal:attributes="value python:len(results)">
+	
+	<tal:results tal:repeat="item batch">
 		
-			<div class="visualClear"></div>
-			<tal:notresults tal:condition="not: view/birthdaysToday">
-				<h4 tal:content="string:Não há aniversariantes ${view/frase_filtro|python:''}.">Não há aniversariantes</h4>
-			</tal:notresults>
+		<div id="boxPortlet" tal:define="i repeat/item/end;"
+				             tal:attributes="class python:view.getEnd(i);">
+			<div class="row">
+			    
+                <!-- Dados para utilização da macro -->                                     
+                <tal:def define="size_img string:50px;
+                                 principal_name python: view.get_principal_campo(item);
+                                 details python: view.get_details_user(item) or [];">
+                    <div metal:use-macro="context/myvindula-imageprofiles-macro/macros/userprofiles" />       
+                </tal:def>
+			    
+			</div>
+		</div>
+	</tal:results>
 
-		</tal:def> 
+	<div class="visualClear"></div>
+	<tal:notresults tal:condition="not: view/birthdaysToday">
+		<h4 tal:content="string: Não há aniversariantes ${view/frase_filtro|nothing}."> Não há aniversariantes</h4>
+	</tal:notresults>
+
+</tal:def> 

@@ -39,7 +39,7 @@
 			<div class="titulo_info_boxTipo2 aling-right">
 				<br />
 				<h4>
-					<a tal:attributes="href string:${here/portal_url}/myvindulalistbirthdays?filtro=${view/get_type_search_list|nothing}"
+					<a tal:attributes="href string:${here/portal_url|nothing}/myvindulalistbirthdays?filtro=${view/get_type_search_list|nothing}"
 					   tal:content="view/nome_filtro|python:''">Aniversariantes da Semana</a>
 				</h4>
 			</div>			
