@@ -59,7 +59,7 @@ class IPortletAniversariosReload(IPortletDataProvider):
                                 vocabulary=TypesSearch().__call__())
     
     type_search_list = schema.Choice(title=unicode("Tipo de filtro para a listagem", 'utf-8'),
-                                description=unicode("Selecione o fitro que sera usado na lista de aniversariantes", 'utf-8'),
+                                description=unicode("Selecione o fitro que será usado na lista de aniversariantes", 'utf-8'),
                                 vocabulary=TypesSearch().__call__())
     
     
@@ -68,7 +68,7 @@ class IPortletAniversariosReload(IPortletDataProvider):
     
     tempo_rotacao = schema.Int(title=unicode("Tempo de Rotação dos Itens", 'utf-8'),
                                description=unicode("Tempo em milissegundos que o portlet leva para rotacionar os itens, \
-                                                      insira apenas números inteiros..", 'utf-8'),
+                                                      insira apenas números inteiros.", 'utf-8'),
                                default=8000,
                                required=True)
 
@@ -78,7 +78,7 @@ class IPortletAniversariosReload(IPortletDataProvider):
                                )
         
     search_random = schema.Bool(title=unicode("Ordem Randômica dos resultados", 'utf-8'),
-                                       description=unicode("Selecione para abilitar a ordenação randômica dos aniversariantes no portlet.", 'utf-8'))
+                                       description=unicode("Selecione para habilitar a ordenação randômica dos aniversariantes no portlet.", 'utf-8'))
 
     details_user = schema.Text(title=unicode("Detalhes do aniversariantes", 'utf-8'),
                                description=unicode("Adicione detalhes sobre o aniversariante como Empresa, Matricula e outros. \
@@ -87,7 +87,7 @@ class IPortletAniversariosReload(IPortletDataProvider):
 
     principal_user = schema.TextLine(title=unicode("Destaque do aniversariante", 'utf-8'),
                                  description=unicode("Adicione o campo com a informação princial do aniversariante como 'name' para Nome ou 'nickname' para\
-                                                      Apelido ou outros.", 'utf-8'),
+                                                      Apelido, entre outros.", 'utf-8'),
                                  default = u'name',
                                  required=True)
 

@@ -53,13 +53,13 @@ class IPortletRamais(IPortletDataProvider):
                                )
 
     show_anonymous = schema.Bool(title=unicode("Exibir portlet para anônimos", 'utf-8'),
-                               description=unicode("Selecione para mostrar o portlet para usuarios anônimos que acessarem o portal.", 'utf-8'),
+                               description=unicode("Selecione para mostrar o portlet para usuários anônimos que acessarem o portal.", 'utf-8'),
                                default=True,
                                )
    
     principal_user = schema.TextLine(title=unicode("Destaque do usuário", 'utf-8'),
-                                     description=unicode("Adicione o campo com a informação princial do usuário como 'name' para Nome ou 'nickname' para\
-                                                          Apelido ou outros.", 'utf-8'),
+                                     description=unicode("Adicione o campo com a informação principal do usuário como 'name' para Nome ou 'nickname' para\
+                                                          Apelido, entre outros.", 'utf-8'),
                                      default = u'name',
                                      required=True)
     
