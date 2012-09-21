@@ -49,11 +49,12 @@ def userupdate(event):
         ModelsFuncDetails().set_FuncDetails(**D)
         logger.info("Usuario criado no myvindula")
         
-#        elif not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
-#            CreateUserXMPP(user_id)
-        
         request.other["came_from"]=registro_url
         request.response.redirect(registro_url, lock=True)
+        
+        
+    if not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
+        CreateUserXMPP(user_id)
         
     else:
         user_data = ModelsFuncDetails().get_FuncDetails(user_id)
