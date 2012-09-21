@@ -7,27 +7,29 @@
         </metal:block>
     	
         <div metal:fill-slot="content">
+        	<style type="text/css">
+        		.contentCenter{ margin: 0 auto; }
+        		#interna h1 { font-size: 20px; margin-bottom: 8px; }
+				#interna h3 { width: 70%; color: #6E6D71; }
+				#campo-obrig{ text-align: left;margin: 40px auto 10px;width: 388px;}
+				#campo-obrig h2 { color: #000; font-size: 14px !important; }
+				#campo-obrig ul {margin-left: 20px;}	
+				#campo-obrig ul li{list-style:circle;list-style-type: disc;display: list-item;}
+				#continuar{ background: url("/++resource++vindula.myvindula/images/ok-icon.png") no-repeat scroll 0 9px transparent;
+				 			margin-right: 34px;height: 45px;width: 200px;}
+				#voltar{ background: url('/++resource++vindula.myvindula/images/erro-icon.png') no-repeat scroll 0 9px transparent;
+						 height: 45px;width: 220px;}
+			</style>
             <div id="interna">
 				<div class="import-user" tal:define="data view/load_list|nothing;
 													 userView python:context.restrictedTraverse('@@myvindulalistuser')">
                     
 					<h1 tal:content="string:${view/get_saldacao|nothing} colaborador da ${data/short_name|python:''}" />
 					
-					<h3>Verificamos que este &eacute o seu primeiro acesso e para que a Intranet funcione corretamente,
+					<h3 class="contentCenter" >Verificamos que este &eacute o seu primeiro acesso e para que a Intranet funcione corretamente,
 						precisamos que voc&ecirc; atualize seus dados pessoais.</h3>
-						
-					<br />	
 					
-					<style type="text/css">
-						#campo-obrig{ text-align: left;margin: auto;width: 500px;}
-						#campo-obrig ul {margin-left: 20px;}	
-						#campo-obrig ul li{list-style:circle;list-style-type: disc;display: list-item;}
-						#continuar{ background: url("/++resource++vindula.myvindula/images/ok-icon.png") no-repeat scroll 0 9px transparent;
-						 			margin-right: 34px;height: 45px;width: 200px;}
-						#voltar{ background: url('/++resource++vindula.myvindula/images/erro-icon.png') no-repeat scroll 0 9px transparent;
-								 height: 45px;width: 220px;}
-					</style>
-					<div id="campo-obrig">
+					<div id="campo-obrig" class="contentCenter">
 						<h2>Campos obrigatórios, por favor, acesse o seu perfil e informe:</h2>
 						<ul>
 							<li tal:condition="python: view.checkCampoVazio('name')"
@@ -44,9 +46,6 @@
 						</ul>
 												
 					</div>
-					
-
-					<br />
 
 					<!--p tal:condition="not: view/checkUserXMPP">
 						Não foi possível criar seu usuário no chat, contate o administrador da intranet</p--> 
