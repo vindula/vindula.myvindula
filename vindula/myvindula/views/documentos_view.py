@@ -4,7 +4,7 @@ from plone.app.layout.navigation.interfaces import INavigationRoot
 from zope.interface import Interface
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
-from vindula.myvindula.models.funcdetails import ModelsFuncDetails
+#from vindula.myvindula.models.funcdetails import ModelsFuncDetails
 from vindula.myvindula.user import BaseFunc
 from vindula.myvindula.content.vindulalistdocumentuser import IVindulaListDocumentUser
 
@@ -12,6 +12,8 @@ from vindula.myvindula.content.vindulalistdocumentuser import IVindulaListDocume
 from vindula.myvindula.document_models import SchemaManageDocument, SchemaDocument
 from vindula.myvindula.models.config_documents import ModelsConfigDocuments
 from vindula.myvindula.models.user_documents import ModelsUserDocuments
+
+from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 
 from vindula.myvindula.tools.utils import UtilMyvindula
 
@@ -71,6 +73,7 @@ class MyVindulaExportDocumentView(grok.View, BaseFunc):
     
     def update(self):
         form = self.request.form
+        form_values = []
         if 'export' in form.keys():
             
             self.request.response.setHeader("Content-Type", "text/csv", 0)
@@ -78,19 +81,28 @@ class MyVindulaExportDocumentView(grok.View, BaseFunc):
             self.request.response.setHeader('Content-Disposition','attachment; filename=%s'%(filename))
 
             if 'filtro' in form.keys() and 'title' in form.keys():
+                
                 filtro = form.get('filtro','')
                 try:title = unicode(form.get('title',''),'utf-8')
                 except:title = form.get('title','')
-                status = int(form.get('status','0'))                          
+                status = int(form.get('status',''))
+                L=[]
                 
-                data = ModelsFuncDetails().get_FuncDetails_by_dinamicFind(filtro,title)
-                     
+                form_values.append({filtro:title})
+                
+#                if filtro == 'departamento':  
+#                    data = ModelsFuncDetails().get_FuncDetails_by_DepartamentName(title)
+#                else:
+#                    data = ModelsFuncDetails().get_FuncDetails_by_dinamicFind(filtro,title) 
+#                 
+                data = ModelsDadosFuncdetails().get_FuncBusca(form_campos=form_values)         
+                
                 if data:   
                     L = []
                     for item in data:
                         D = {}
-                        try:user = unicode(item.username, 'utf-8')    
-                        except:user = item.username
+                        try:user = unicode(item.get('username',''), 'utf-8')    
+                        except:user = item.get('username','')
                         
                         if status == 0:
                             D['user'] = item
@@ -113,7 +125,7 @@ class MyVindulaExportDocumentView(grok.View, BaseFunc):
                 for item in L:
                     user = item['user'] 
                     valor = ''
-                    valor = str(user.registration) +';'+ str(user.name) +';' + str(user.organisational_unit) +';' + str(user.enterprise)+';\n'
+                    valor = str(user.get('registration','')) +';'+ str(user.get('name','')) +';' + str(user.get('organisational_unit','')) +';' + str(user.get('enterprise',''))+';\n'
                     
                     text += valor  
     
