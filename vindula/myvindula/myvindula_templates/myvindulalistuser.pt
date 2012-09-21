@@ -287,21 +287,22 @@
     				<!-- Scraps Input -->
     				<div id="comment-geral" tal:condition="not: isAnonymous">
     					<h2 class="h2title" tal:content="string:Deixe um recado para ${form_data/name|nothing}:"></h2>
-    					<form action="" method="post" enctype="multipart/form-data" name="save-recados" 
-      						  tal:attributes="action string:${context/absolute_url}/myvindulalistuser?user=${context/REQUEST/form/user|nothing}&scraps=true">	
-    						
-    						<input type="hidden" name="destination" value="" tal:attributes="value user">	
-    						<input type="hidden" name="username" value="" tal:attributes="value python:member.getUserName()">
-    						
-    						<textarea tal:condition="panelView/check_ativa_richtext" tal:attributes="title view_myvindula/getConfTyneMCE|nothing" 
-                             style="width: 100%; height: 85px;" name="text" id="text" class='mce_editable'></textarea>	
-    						<textarea tal:condition="not:panelView/check_ativa_richtext|python:True "  style="width: 100%; height: 81px;" name="text"></textarea>
-    		
-    						<div class="bt_comentar">
-    							<input type="hidden" name="form.submitted:boolean" value="True" />
-    							<input type="submit" name="submit" value="Publicar" id="save-recados" />
-    						</div>
-    					</form>
+    					<form action="" method="post" enctype="multipart/form-data" name="save-recados" tal:attributes="action string:${context/absolute_url}/myvindulalistuser?user=${context/REQUEST/form/user|nothing}&scraps=true">
+	                        <input type="hidden" name="destination" value="" tal:attributes="value user_perfil"><input type="hidden" name="username" value="" tal:attributes="value python:member.getUserName()">
+	                        <tal:cond condition="panelView/check_ativa_richtext|python:False">
+	                            <input class="cke_config_url" type="hidden" name="cke_config_url" tal:attributes="value string:${context/portal_url}/ckeditor_plone_config.js"><input class="cke_iswidget" type="hidden" value="True" name="cke_iswidget">
+	                            <div class="widget_settings">
+	                                <input class="cke_baseHref" type="hidden" name="cke_baseHref" tal:attributes="value string:${context/portal_url}"><input class="cke_height" type="hidden" value="100px" name="cke_height">
+	                            </div>
+	                            <textarea style="width: 100%; height: 85px;" name="text" tal:define="idRandom python:str(panelView.randomIdComents())" tal:attributes="id string:text_coments_${idRandom}" class="ckeditor_plone">
+	                            </textarea>
+	                        </tal:cond>
+	                        <textarea tal:condition="not:panelView/check_ativa_richtext|python:True " style="width: 100%; height: 81px;" name="text">
+	                        </textarea>
+	                        <div class="bt_comentar">
+	                            <input type="hidden" name="form.submitted:boolean" value="True" /><input type="submit" name="submit" value="Publicar" id="save-recados" />
+	                        </div>
+	                    </form>
     				</div>
     				
     				<!-- Scraps List -->
@@ -354,7 +355,7 @@
     				</tal:def>
     			</div>
     			<!-- end: Scraps -->
-    			
+				
     		</div>
         </div>    
     </body>
