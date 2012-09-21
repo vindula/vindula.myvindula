@@ -1616,17 +1616,19 @@ class MyVindulaImportHoleriteView(grok.View, UtilMyvindula):
                                 holerite['banco_pag'] = linha[10:35]
                                 holerite['agencia'] = linha[35:50]
                                 holerite['conta_corrente'] = linha[50:65]
-                                holerite['base_fgts'] = linha[65:75]
-                                holerite['base_Inss'] = linha[75:85]
+                                
+                                holerite['salario_base'] = linha[65:75]
+                                holerite['base_fgts'] = linha[75:85]
                                 holerite['fgts_mes'] = linha[85:95]
-                                holerite['salario_base'] = linha[95:105]
+                                
+                                holerite['base_Inss'] = None
+                                
+                                holerite['base_irrf'] = linha[95:105]
                                 holerite['salario_contribuicao'] = linha[105:115]
                                 holerite['total_proventos'] = linha[115:125]
                                 holerite['total_desconto'] = linha[125:135]
                                 holerite['valor_liquido'] = linha[135:145]
                                    
-                                holerite['base_irrf'] = None
-                           
                             #Buscando Registro das Verbas
                             elif linha[0:2] == '01':    
 
@@ -1709,6 +1711,16 @@ class MyVindulaHoleriteView(grok.View, UtilMyvindula):
     grok.context(ISiteRoot)
     grok.require('zope2.View')
     grok.name('myvindula-holerite')
+    
+    def format_moeda(self, val):
+        import locale
+        locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+        
+        if val:
+            valor = val[:-2] +'.'+ val[-2:]
+        else:
+            valor = '0.00'
+        return  locale.currency( float(valor), grouping=True)
     
     def select_modelo(self):
         modelo =  self.context.restrictedTraverse('myvindula-conf-userpanel').select_modelo_holerite()

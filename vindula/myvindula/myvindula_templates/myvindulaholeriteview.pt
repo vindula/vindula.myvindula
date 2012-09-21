@@ -75,7 +75,7 @@
 		                        <div id="holerite-cont">
 									<metal:macro define-macro="holerite">
 										<div id="holerite">
-										    <metal:macro define-macro="holerite-print">
+										    <metal:macro define-macro="holerite-print" tal:define="view python:context.restrictedTraverse('@@myvindula-holerite');">
 										        
 										        <tal:cond condition="python:modelo=='02'">
                                                     <div class="border"  style="width: 660px;">
@@ -160,7 +160,7 @@
                                                             </div>
                                                             <div class="cell width-2 position-13 border-horz">
                                                                 <span class="label">Salário Base</span>
-                                                                <span tal:content="item/salario_base|nothing" />
+                                                                <span tal:content="python: view.format_moeda(item.salario_base)" />
                                                             </div>
                                                         </div>
                                                         <div class="row border">
@@ -208,10 +208,10 @@
                                                                         <span tal:content="descricao/descricao|nothing">Descri&ccedil;&atilde;o</span>
                                                                     </div>
                                                                     <div class="cell width-3 position-10 center border-horz">
-                                                                        <span tal:content="descricao/valor|nothing">Ref.</span>
+                                                                        <span tal:content="python: view.format_moeda(descricao.valor)">Ref.</span>
                                                                     </div>
                                                                     <div class="cell width-3 position-13 center border-horz">
-                                                                        <span tal:content="descricao/referencial|nothing">Vencimentos</span>
+                                                                        <span tal:content="python: view.format_moeda(descricao.referencial)">Vencimentos</span>
                                                                     </div>
                                                                     
                                                                 </div> 
@@ -221,38 +221,38 @@
                                                             <div class="row border">
                                                                 <div class="cell width-1:4 position-0">
                                                                     <span class="label">BASE DE CÁLCULO FGTS </span>
-                                                                    <span tal:content="item/base_fgts|nothing" />
+                                                                    <span tal:content="python: view.format_moeda(item.base_fgts)" />
                                                                 </div>
                                                                 <div class="cell width-1:4 position-1:4 border-horz">
-                                                                    <span class="label">BASE DE CÁLCULO Inss </span>
-                                                                    <span tal:content="item/base_Inss|nothing" />
+                                                                    <span class="label">BASE DE CÁLCULO IR </span>
+                                                                    <span tal:content="python: view.format_moeda(item.base_irrf)" />
                                                                 </div>
                                                                 <div class="cell width-1:4 position-1:2 border-horz">
                                                                     <span class="label">TOTAL PROVENTOS</span>
-                                                                    <span tal:content="item/total_proventos|nothing" />
+                                                                    <span tal:content="python: view.format_moeda(item.total_proventos)" />
                                                                 </div>
                                                                 <div class="cell width-1:4 position-3:4 border-horz">
                                                                     <span class="label">TOTAL Descontos </span>
-                                                                    <span tal:content="item/total_desconto|nothing" />
+                                                                    <span tal:content="python: view.format_moeda(item.total_desconto)" />
                                                                 </div>
                                                                 
                                                             </div>
                                                             <div class="row border">
                                                                 <div class="cell width-1:4 position-0">
                                                                     <span class="label">FGTS </span>
-                                                                    <span tal:content="item/fgts_mes|nothing" />
+                                                                    <span tal:content="python: view.format_moeda(item.fgts_mes)" />
                                                                 </div>
                                                                 <div class="cell width-1:4 position-1:4 border-horz">
-                                                                    <span class="label">SALÁRIO CONTRIBUIÇÃO</span>
-                                                                    <span tal:content="item/salario_contribuicao|nothing" />
+                                                                    <span class="label">Salário Contribuição</span>
+                                                                    <span tal:content="python: view.format_moeda(item.salario_contribuicao)" />
                                                                 </div>
                                                                 <div class="cell width-1:4 position-1:2 border-horz">
                                                                     <span >Valor creditado em conta corrente</span>
                                                                     
                                                                 </div>
                                                                 <div class="cell width-1:4 position-3:4 border-horz even">
-                                                                    <span class="label">TOTAL Liquido </span>
-                                                                    <span tal:content="item/valor_liquido|nothing" />
+                                                                    <span class="label">Total Liquido </span>
+                                                                    <span tal:content="python: view.format_moeda(item.valor_liquido)" />
                                                                 </div>
                                                                 
                                                             </div>
