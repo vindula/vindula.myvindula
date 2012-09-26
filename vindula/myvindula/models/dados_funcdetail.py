@@ -128,8 +128,30 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
                         id = i.vin_myvindula_instance_id
                         if not id in ids_instances:
                             ids_instances.append(i.vin_myvindula_instance_id)
-                
+        
+        
+        if filtro:
+            busca = "self.store.using(*origin).find(ModelsDadosFuncdetails,"
+            busca += "ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==u'phone_number',\
+                     ModelsDadosFuncdetails.valor != u'',"
+        
+            if ids_instances:
+                busca += "ModelsDadosFuncdetails.vin_myvindula_instance_id.is_in(ids_instances),"
+        
+            if department_id:
+                busca += "ModelsDepartment.uid_plone==department_id,"
             
+            busca += ')'
+
+            data = eval(busca)
+                
+            if data.count()>0:
+                ids_instances = []   
+                for i in data:
+                    id = i.vin_myvindula_instance_id
+                    if not id in ids_instances:
+                        ids_instances.append(i.vin_myvindula_instance_id)
+        
         #busca += ").order_by(ModelsFuncDetails.name)"
         
         return self.geraDic_DadosUser(ids_instances)
