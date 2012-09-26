@@ -19,11 +19,14 @@ def user_folder(context):
     if 'control-panel-objects' in ctx.objectIds():
         folder_control_panel = ctx['control-panel-objects']
         if not 'migration-users' in folder_control_panel.objectIds():
+            ctx.portal_types.get('Folder').global_allow = True
+            
             folder_control_panel.invokeFactory('Folder', 
                                                id='migration-users', 
                                                title='Migração de usuários',
                                                description='Pasta que guarda os arquivos CSV da importação de usuários.',
                                                excludeFromNav = True)
+            
             migration = folder_control_panel['migration-users']
             
             if not 'upload' in folder_control_panel.objectIds():
@@ -39,6 +42,8 @@ def user_folder(context):
                                         title='Erros na Importação',
                                         description='Pasta que guarda os arquivos CSV sobre os erros na importação de usuários.',
                                         excludeFromNav = True)
+            
+            ctx.portal_types.get('Folder').global_allow = False
 
         if not 'list-documents-user' in folder_control_panel.objectIds():
             type = 'vindula.myvindula.vindulalistdocumentuser'
@@ -90,7 +95,8 @@ def create_mycontents(context):
     
     # Creating collect Users mycontents
     if not 'myvindula-meus-conteudos' in portal.objectIds():
-
+        portal.portal_types.get('Topic').global_allow = True
+        
         objects = {'type_name':'Topic',
                    'id': 'myvindula-meus-conteudos',
                    'title':'Meus Conteúdos',
@@ -99,7 +105,8 @@ def create_mycontents(context):
                    'customViewFields':['Title','CreationDate','Description']
                    }
 
-        portal.invokeFactory(**objects)  
+        portal.invokeFactory(**objects)
+        portal.portal_types.get('Topic').global_allow = False  
 
         if 'myvindula-meus-conteudos' in portal.keys():
             colection = portal['myvindula-meus-conteudos']
