@@ -211,6 +211,38 @@ class Renderer(base.Renderer, UtilMyvindula):
         
         return ModelsDepartment().get_departmentByUsername(user_id)      
 
+    def getBusca(self):
+        form = self.request.form
+        campos = self.get_camposFilter()
+        campo_departamento = self.filtro_departamento()
+        
+        form_values = []
+        for item in campos:
+            D = {}
+            name = item.get('content')
+            value = form.get(name).strip()
+            if type(value) != unicode:
+                D[name] = unicode(value, 'utf-8')
+            else:
+                D[name] = value
+            form_values.append(D)
+        
+        #title = form.get('title','').strip()
+        #ramal = form.get('ramal','').strip()
+        departamento = form.get('departamento','')
+        if campo_departamento != "departamentos":
+            D = {}
+            if type(departamento) != unicode:
+                D[campo_departamento] = unicode(departamento, 'utf-8')
+            else:
+                D[campo_departamento] = departamento
+            form_values.append(D)
+            departamento = None
+        else:
+            if type(departamento) != unicode:
+                departamento = unicode(departamento, 'utf-8')
+        
+        return form_values, departamento
             
 #    @view.memoize
     def busca_usuarios(self):
@@ -219,37 +251,10 @@ class Renderer(base.Renderer, UtilMyvindula):
         filtro_busca = self.context.restrictedTraverse('@@myvindula-conf-userpanel').check_filtro_busca_user()
         
         if 'SearchSubmit' in form.keys():
-            campos = self.get_camposFilter()
-            campo_departamento = self.filtro_departamento()
+
+            form_values, departamento = self.getBusca()
             
-            form_values = []
-            for item in campos:
-                D = {}
-                name = item.get('content')
-                value = form.get(name).strip()
-                if type(value) != unicode:
-                    D[name] = unicode(value, 'utf-8')
-                else:
-                    D[name] = value
-                form_values.append(D)
-            
-            #title = form.get('title','').strip()
-            #ramal = form.get('ramal','').strip()
-            departamento = form.get('departamento','')
-            if campo_departamento != "departamentos":
-                D = {}
-                if type(departamento) != unicode:
-                    D[campo_departamento] = unicode(departamento, 'utf-8')
-                else:
-                    D[campo_departamento] = departamento
-                form_values.append(D)
-                departamento = None
-            else:
-                if type(departamento) != unicode:
-                    departamento = unicode(departamento, 'utf-8')
-            
-            
-            check_form = [i for i in form_values if i.values()]
+            check_form = [i for i in form_values if i.values() != [u'']]
             if departamento or check_form:
                 #import pdb;pdb.set_trace()
 #                if type(title) != unicode:
@@ -306,15 +311,20 @@ class Renderer(base.Renderer, UtilMyvindula):
 #            return self.context.absolute_url()+'/defaultUser.png'
         
     def check_filter(self):
+
         form = self.request.form
+        campos = self.get_camposFilter()
+        campo_departamento = self.filtro_departamento()
+        
         if 'SearchSubmit' in form.keys():
-            title = form.get('title','').strip()
-            departamento= form.get('departamento','')
-            ramal = form.get('ramal','').strip()
-            if title or departamento !='0' or ramal:
+            form_values, departamento = self.getBusca()
+            
+            check_form = [i for i in form_values if i.values() != [u'']]
+            if departamento or check_form:
                 return 'Não há resultados.'
             else:
                 return 'Defina um filtro acima e execute a busca novamente.'
+                
         
 class AddForm(base.AddForm):
     """Portlet add form.

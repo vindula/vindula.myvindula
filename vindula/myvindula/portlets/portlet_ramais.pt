@@ -102,16 +102,16 @@
 				    </div>
 
 				</tal:cond>
+				<tal:cond condition="python: not results and 'SearchSubmit' in context.REQUEST.form">  
+				    <h4 tal:content="view/check_filter">N&atilde;o h&aacute; resultados.</h4>
+				</tal:cond>
 			</tal:results>
-			<tal:notresults tal:condition="python: not view.busca_usuarios() and 'SearchSubmit' in context.REQUEST.form">
-				<h4 tal:content="view/check_filter">N&atilde;o h&aacute; resultados.</h4>				
-			</tal:notresults>
+			
 			<tal:cond condition="view/get_details_text|nothing">
 				<br>
 				<div class="titulo_info_boxTipo2 aling-right">
 					<p tal:replace="structure view/get_details_text|nothing" />
 				</div>
-				
 			</tal:cond>
 			
 		</div>
