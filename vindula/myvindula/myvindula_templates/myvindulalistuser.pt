@@ -26,11 +26,10 @@
     	    		<input id="user-igual" type="hidden" value="True">
     				<metal:use use-macro="context/@@myvindulapanel/macros/page"/>                
     		    </tal:cond>
-    			
     			<tal:cont tal:condition="python: str(member.getUserName())!=form_data.username">
     				<input id="user-igual"  type="hidden" value="False">
     				<div id="edit-bar">
-    		            <h5 class="hiddenStructure">Visões</h5>
+    		            <h5 class="hiddenStructure">Vis&otilde;es</h5>
     		
     		            <ul id="content-views" class="contentViews">
     		            	<li class="selected" id="perfil-menu">
@@ -192,7 +191,7 @@
     							<td class="value" tal:content="form_data/profit_centre|nothing"></td>
     						</tr>
     						<tr tal:condition="python: view.get_ConfugCampos('special_roles')">
-    							<td class="field" tal:content="python: view.get_label_filed('special_roles')">Funções Especiais</td>
+    							<td class="field" tal:content="python: view.get_label_filed('special_roles')">Fun&ccedil;&otilde;es Especiais</td>
     							<td class="value" tal:content="form_data/special_roles|nothing"></td>
     						</tr>
     						<tr tal:condition="python: view.get_ConfugCampos('organisational_unit')">
@@ -216,7 +215,7 @@
     					<img class="type-info" tal:attributes="src string:${view/static}/images/user_others.png" />
     					<table>
     						<tr tal:condition="python: view.get_ConfugCampos('committess')">
-    							<td class="field" tal:content="python: view.get_label_filed('committess')">Comissão</td>
+    							<td class="field" tal:content="python: view.get_label_filed('committess')">Comiss&atilde;o</td>
     							<td class="value" tal:content="form_data/committess|nothing"></td>
     						</tr>
     						<tr tal:condition="python: view.get_ConfugCampos('projects')">
@@ -344,7 +343,7 @@
     				                    <p tal:replace="structure item/text|nothing" />
     						  		</div>
     								
-    								<!--Macros de repitição dos comentarios --> 
+    								<!--Macros de repiti&ccedil;&atilde;o dos comentarios --> 
     								<tal:def define="comment_type string:ModelsMyvindulaRecados">        
                                         <div metal:use-macro="context/macro-input-comments/macros/input" />
                                         <div metal:use-macro="context/myvindula-comments-macro/macros/comments" />

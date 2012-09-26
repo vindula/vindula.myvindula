@@ -500,7 +500,7 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
 
 class MyVindulaListRecados(grok.View,UtilMyvindula):
     grok.context(ISiteRoot)
-    grok.require('zope2.View')
+    grok.require('cmf.ListPortalMembers')
     grok.name('myvindulalistrecados')
 
     def get_recados(self, user):
