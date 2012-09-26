@@ -529,7 +529,7 @@ class ModelsMyvindulaRecados(Storm, BaseStore):
         user_destination = ModelsFuncDetails().get_FuncDetails(tools.Convert_utf8(D['destination']))
 
         if user_destination and user_destination.email:
-            assunto = 'Novo recado pra você na Intranet!!!!!'
+            assunto = 'Novo recado pra você na Intranet!'
             msg = '''<h2>Voc&ecirc; tem um novo recado</h2>
                      <p>Voc&ecirc; recebeu um novo recado do(a) <a href='%s'> %s</a> </p>
                      <p>Para visualizar o recado acesse <a href="%s"> aqui </a></p>
