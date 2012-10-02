@@ -41,7 +41,7 @@ from vindula.myvindula.registration import SchemaFunc, SchemaConfgMyvindula, Imp
 from vindula.controlpanel.browser.models import ModelsCompanyInformation
 from vindula.chat.utils.models import ModelsUserOpenFire
 
-from vindula.myvindula.utils import UtilMyvindula
+from vindula.myvindula.tools.utils import UtilMyvindula
 
 from vindula.controlpanel.handlers import userLogged
 
