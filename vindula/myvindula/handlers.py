@@ -52,8 +52,8 @@ def userupdate(event):
         elif not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
             
             CreateUserXMPP(user_id)
-        
-        request.other["came_from"]=registro_url
+        if not request.other.get('came_from') or request.other.get('came_from') == getSite().portal_url()+'/':
+            request.other["came_from"]=registro_url
         request.response.redirect(registro_url, lock=True)
         
     else:
@@ -64,6 +64,7 @@ def userupdate(event):
             
             logger.info("Dados Incompletos no myvindula")
             
-            request.other["came_from"]=registro_url
+            if not request.other.get('came_from') or request.other.get('came_from') == getSite().portal_url()+'/':
+                request.other["came_from"]=registro_url
             request.response.redirect(registro_url, lock=True)
             
