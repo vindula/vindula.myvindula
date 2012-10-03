@@ -323,7 +323,7 @@ class Renderer(base.Renderer, UtilMyvindula):
             if departamento or check_form:
                 return 'Não há resultados.'
             else:
-                return 'Defina um filtro acima e execute a busca novamente.'
+                return 'Nenhum campo foi preenchido, por favor preencha algum campo e efetue a busca novamente.'
                 
         
 class AddForm(base.AddForm):
