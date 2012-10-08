@@ -145,7 +145,7 @@ class SchemaFunc(BaseFunc):
                             ModelsDadosFuncdetails().set_DadosFuncdetails(**D)
                 
                 #Redirect back to the front page with a status message        
-                self.setStatusMessage("info","Seu perfil foi editado com sucesso!!")
+                self.setStatusMessage("info","Perfil editado com sucesso.")
                 if manage:
                     self.setRedirectPage('/@@usergroup-userprefs')
                 else:
@@ -181,7 +181,7 @@ class SchemaFunc(BaseFunc):
             if is_user_vindula:
                 ModelsInstanceFuncdetails().del_InstanceDadosFuncdetails(user)
         except:
-            self.setStatusMessage("erro","Erro ao excluir usuáriodo Vindula.")
+            self.setStatusMessage("erro","Erro ao excluir usuário do Vindula.")
             self.setRedirectPage('/@@usergroup-userprefs')
         
 class SchemaConfgMyvindula(BaseFunc):
