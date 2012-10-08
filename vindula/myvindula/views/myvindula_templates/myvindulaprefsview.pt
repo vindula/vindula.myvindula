@@ -27,125 +27,120 @@
 										           
 										           check_editfunc context/@@myvindula-conf-userpanel/check_editfunc;
 										  
-										  username form_data/username|python:{};
-										  config_myvindula form_data/config_myvindula|python:{};
-										  manage form_data/manage|python:False"
+												   username form_data/username|python:{};
+												   config_myvindula form_data/config_myvindula|python:{};
+												   manage form_data/manage|python:False;"
 										  
 									   tal:condition="check_editfunc">
-	
+			
 			<tal:cond condition="not:manage">
 	    		<metal:use use-macro="context/@@myvindulapanel/macros/page"/>
 			</tal:cond>
-			    
-		    <div id="content" >
-				<tal:cont condition="manage">
-					<h1>Edite as informações pessoais do usu&aacute;rio <span tal:content="form_data/name|nothing"></span></h1>	
-				</tal:cont>
-		        
-		        <tal:cont condition="not:manage">
-					<h1>Edite suas informações pessoais</h1>	
-				</tal:cont>
-				
-				<dl class="portalMessage error" tal:condition="context/REQUEST/error|nothing">
-					<tal:cont condition="python:context.REQUEST.error=='1'">
-						<dt>Error</dt>
-	            		<dd>Error when trying to upload the file.</dd>
+			<metal:config-user define-macro="config-user">
+			    <div id="content" >
+					<tal:cont condition="manage">
+						<h1>Edite as informações pessoais do usu&aacute;rio <span tal:content="form_data/name|nothing"></span></h1>	
 					</tal:cont>
-					<tal:cont condition="python:context.REQUEST.error=='2'">
-						<dt>Error</dt>
-	            		<dd>You do not have permission to add a photograph, because your home directory is not defined. Ask the site administrator.</dd>
-					</tal:cont>	
-	        	</dl>
-				<div id="interna" >    		
-			        <form name="myvindulaprefs" id="myvindulaprefs" enctype="multipart/form-data" 
-						  class="enableAutoFocus" action="myvindulaprefs" method="POST">
-			            
-						<fieldset>
-			            	<legend>Informações Pessoais</legend>
-							<!-- ID da user --> 
-							
-							<input id="user" type="hidden" value="" name="user" tal:condition="manage" tal:attributes="value request/user|nothing">
-		                      
-							<!-- Select Departamento  -->
-							<div class="field" tal:attributes="class python: view.field_class(errors, 'vin_myvindula_department')"
-											   tal:condition="python: view.get_ConfugCampos('vin_myvindula_department') or manage" >
-								<label for="vin_myvindula_department">Departamentos</label>
-			                    <!--span class="fieldRequired" title="Obrigatório">(Obrigatório)</span-->	
-			                    <div class="formHelp">Selecione o departamento do funcionário.</div>
-								<div tal:content="errors/vin_myvindula_department|nothing"></div>
-			                    <tal:cond condition="departamentos">
-			                    	<div class="boxSelecao" name="vin_myvindula_department"
-										 tal:define="id_request request/vin_myvindula_department | python: [ i.UID for i in form_values.get('vin_myvindula_department',[])] or []">
-			                    		<tal:repeat repeat="departamento departamentos">
-									           	<input value="" type="checkbox" name="vin_myvindula_department"
-														tal:attributes="value departamento/UID | nothing;
-																		checked python: str(departamento.UID) in id_request"/>
-																		<label tal:content="departamento/Title | nothing"></label><br/>
-										</tal:repeat>	
-			                    	</div>
-			                    </tal:cond>
-								<tal:cond condition="not: departamentos">
-									<span>N&atilde;o h&aacute; departamentos cadastrados no portal, informe o administrador do site </span>
-								</tal:cond>
-															
-							</div>
-							<tal:cont condition="python: not view.get_ConfugCampos('vin_myvindula_department') and not manage">
-								<tal:cont condition="python: form_values.get('vin_myvindula_department',None)">
-									<tal:rep repeat="value request/vin_myvindula_department | python: [ i.UID for i in form_values.get('vin_myvindula_department',[])] or []">
-										<input id="vin_myvindula_department" type="hidden" value="" name="vin_myvindula_department" tal:attributes="value value">									
-									</tal:rep>
+			        
+			        <tal:cont condition="not:manage">
+						<h1>Edite suas informações pessoais</h1>	
+					</tal:cont>
+					
+					<dl class="portalMessage error" tal:condition="context/REQUEST/error|nothing">
+						<tal:cont condition="python:context.REQUEST.error=='1'">
+							<dt>Error</dt>
+		            		<dd>Error when trying to upload the file.</dd>
+						</tal:cont>
+						<tal:cont condition="python:context.REQUEST.error=='2'">
+							<dt>Error</dt>
+		            		<dd>You do not have permission to add a photograph, because your home directory is not defined. Ask the site administrator.</dd>
+						</tal:cont>	
+		        	</dl>
+					<div id="interna" >    		
+				        <form name="myvindulaprefs" id="myvindulaprefs" enctype="multipart/form-data" 
+							  class="enableAutoFocus" action="myvindulaprefs" method="POST">
+				            
+							<fieldset>
+				            	<legend>Informações Pessoais</legend>
+								
+								<!-- ID da user --> 
+								<input id="user" type="hidden" value="" name="user" tal:condition="manage" tal:attributes="value request/user|request/userid|nothing">
+			                      
+								<!-- Select Departamento  -->
+								<div class="field" tal:attributes="class python: view.field_class(errors, 'vin_myvindula_department')"
+												   tal:condition="python: view.get_ConfugCampos('vin_myvindula_department') or manage" >
+									<label for="vin_myvindula_department">Departamentos</label>
+				                    <!--span class="fieldRequired" title="Obrigatório">(Obrigatório)</span-->	
+				                    <div class="formHelp">Selecione o departamento do funcionário.</div>
+									<div tal:content="errors/vin_myvindula_department|nothing"></div>
+				                    <tal:cond condition="departamentos">
+				                    	<div class="boxSelecao" name="vin_myvindula_department"
+											 tal:define="id_request request/vin_myvindula_department | python: [ i.UID for i in form_values.get('vin_myvindula_department',[])] or []">
+				                    		<tal:repeat repeat="departamento departamentos">
+										           	<input value="" type="checkbox" name="vin_myvindula_department"
+															tal:attributes="value departamento/UID | nothing;
+																			checked python: str(departamento.UID) in id_request"/>
+																			<label tal:content="departamento/Title | nothing"></label><br/>
+											</tal:repeat>	
+				                    	</div>
+				                    </tal:cond>
+									<tal:cond condition="not: departamentos">
+										<span>N&atilde;o h&aacute; departamentos cadastrados no portal, informe o administrador do site </span>
+									</tal:cond>
+																
+								</div>
+								<tal:cont condition="python: not view.get_ConfugCampos('vin_myvindula_department') and not manage">
+									<tal:cont condition="python: form_values.get('vin_myvindula_department',None)">
+										<tal:rep repeat="value request/vin_myvindula_department | python: [ i.UID for i in form_values.get('vin_myvindula_department',[])] or []">
+											<input id="vin_myvindula_department" type="hidden" value="" name="vin_myvindula_department" tal:attributes="value value">									
+										</tal:rep>
+									</tal:cont>
 								</tal:cont>
-							</tal:cont>
-							
-							
-							<div class="field" tal:attributes="class python: view.field_class(errors, 'username')"
-											   tal:condition="python: manage or 'newuser' in request.keys()">
-								<label for="username">Username</label>
-			                    <span class="fieldRequired" title="Obrigatório">(Obrigatório)</span>	
-			                    <div class="formHelp">Digite o username do usuário.</div>
-								<div tal:content="errors/username|nothing"></div>
 								
-								<input id="username-old" type="hidden" value="" name="username-old"  
-								       tal:attributes="value request/username-old | username | nothing">
-			                    
-			                    <input id="username" type="text" value="" name="username"  
-			                           tal:attributes="value request/username | username | nothing">
 								
-								<!--input id="newuser" type="hidden" value="" name="newuser" -->
-							</div>	
-								
-							<input id="username" type="hidden" value="" name="username" tal:attributes="value request/username| username |nothing"
-													 tal:condition="python: not manage and not 'newuser' in request.keys()">
+								<!--div class="field" tal:attributes="class python: view.field_class(errors, 'username')"
+												   tal:condition="python: manage or 'newuser' in request.keys()">
+									<label for="username">Username</label>
+				                    <span class="fieldRequired" title="Obrigatório">(Obrigatório)</span>	
+				                    <div class="formHelp">Digite o username do usuário.</div>
+									<div tal:content="errors/username|nothing"></div>
+									
+									<input id="username-old" type="hidden" value="" name="username-old"  
+									       tal:attributes="value request/username-old | username | request/userid | nothing">
+				                    
+				                    <input id="username" type="text" value="" name="username"  
+				                           tal:attributes="value request/username | username | request/userid | nothing">
+									
+								</div-->
+									
+								<input id="username" type="hidden" value="" name="username" tal:attributes="value request/username| username | request/userid | nothing">
 															
-							<tal:def define="html python:view.geraCampos(form_data)">
-								<tal:rep repeat="x html">
-									<div tal:content="structure x"/>
-								</tal:rep>
-							</tal:def>
-						
-						</fieldset>
-						<!-- Botões de ação -->	
-					   	<fieldset>
-					   		<br/>
-							<div style="float:left; width:100%">
-								<input style="width:100px" class="button-erp" type="submit" value="Voltar" name="form.voltar" >
-								
-								<input style="width:100px;" class="button-erp" type="submit" value="Salvar" name="form.submited"
-										tal:condition="python: not manage or 'newuser' in request.keys()">
-								
-								<tal:cond condition="python: manage and not 'newuser' in request.keys()">
+								<tal:def define="html python:view.geraCampos(form_data)">
+									<tal:rep repeat="x html">
+										<div tal:content="structure x"/>
+									</tal:rep>
+								</tal:def>
+							
+							</fieldset>
+							<!-- Botões de ação -->	
+						   	<fieldset>
+						   		<br/>
+								<div style="float:left; width:100%">
+									<input style="width:100px" class="button-erp" type="submit" value="Voltar" name="form.voltar" >
+									
 									<input style="width:100px;" class="button-erp" type="submit" value="Salvar" name="form.submited"
-											onclick="return confirmAlterarUserName();">
-								
-									<input style="width:100px;" class="button-erp" type="submit" value="Excluir" name="form.excluir"
-										   onclick="return confirmExcluir();">
-								</tal:cond>
-								
-							</div>
-						</fieldset>
-					</form>
-				</div>
-		    </div>
-	    </div>    
+											tal:condition="python: not manage or 'newuser' in request.keys()">
+									
+									<tal:cond condition="python: manage and not 'newuser' in request.keys()">
+										<input style="width:100px;" class="button-erp" type="submit" value="Salvar" name="form.submited"
+												onclick="return confirmAlterarUserName();">
+									</tal:cond>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+			    </div>
+			</metal:config-user>  
+	    </div> 
 	</body>
 </html>

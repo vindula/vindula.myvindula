@@ -8,21 +8,6 @@ function confirmExcluir(){
 		}
 	};
 
-function confirmAlterarUserName () {
-    var username = $j('#username').val();
-    var username_old = $j('#username-old').val();
-    
-    if (username != username_old){
-        if (confirm('Todas as informações criadas pelo antigo username serão excluídas. Deseja confirmar alteração?')){
-            return true;
-        }else{
-            return false;
-        }         
-    }else{
-        return true;      
-    }
-}
-
 $j(document).ready(function(){	
 	$j('#cancel-coment').live('click',function(){
 		$j(this).parent().parent().parent().parent().find('#new-comments').css('display','none');

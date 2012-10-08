@@ -11,7 +11,7 @@ from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetai
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 
 from vindula.myvindula.tools.utils import UtilMyvindula
-
+from vindula.myvindula.registration import SchemaFunc
 
 def userupdate(event):
     """ Handler for User Login in Site """
@@ -76,4 +76,8 @@ def userupdate(event):
 
             tools.setRedirectPage('/myvindula-first-registre')
 
+def onDeleteUser(event):
+    user = event.object
+    if user:
+        return SchemaFunc().deleteUser(user)
             

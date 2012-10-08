@@ -236,13 +236,16 @@ class MyVindulaPrefsView(grok.View, BaseFunc):
         user_login = membership.getAuthenticatedMember().getUserName()
         permissao = self.checa_login()
         
-        if 'user' in form.keys() and not'newuser' in form.keys() and permissao:
-            user_cod = self.Convert_utf8(self.decodeUser(form.get('user','')))
-            return SchemaFunc().registration_processes(self, user_cod, True)
+        user = form.get('user', form.get('userid', False))
         
+        if user and not'newuser' in form.keys() and permissao:
+            try:
+                user_cod = self.Convert_utf8(self.decodeUser(user))
+            except:
+                user_cod = self.Convert_utf8(user)
+            return SchemaFunc().registration_processes(self, user_cod, True)
         elif 'newuser' in form.keys() and self.checa_login():
             return SchemaFunc().registration_processes(self, '', True)    
-        
         else:    
             return SchemaFunc().registration_processes(self, user_login, False)
 
@@ -256,7 +259,6 @@ class MyVindulaPrefsView(grok.View, BaseFunc):
         self.request.set('disable_border', True)
         #return super(MyVindulaPrefsView, self).update()
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
-        
         if open_for_anonymousUser:
             self.request.response.redirect(self.context.absolute_url() + '/login')
 

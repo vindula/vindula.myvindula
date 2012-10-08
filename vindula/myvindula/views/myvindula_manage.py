@@ -212,56 +212,6 @@ class AjaxView(grok.View,UtilMyvindula):
     def importUser(self,form):
         return ImportUser().importUser(self,form)
 
-class MyVindulaManageAllUser(grok.View, UtilMyvindula):
-    grok.context(INavigationRoot)
-    grok.require('cmf.ManagePortal')
-    grok.name('myvindulamanagealluser')
-    
-    def checa_login(self):
-        membership = self.context.portal_membership
-        groups = self.context.portal_groups
-        
-        user_login = membership.getAuthenticatedMember()
-        user_groups = groups.getGroupsByUserId(user_login.getId())
-        
-        checa = False
-        if 'Manager' in user_login.getRoles():
-            checa = True
-        else:
-            for i in user_groups:
-                if i.id == 'manage-user':
-                    checa = True
-                    break 
-        
-        return checa            
-    
-    def load_list(self):
-        form = self.request.form
-        config_muit_user = self.context.restrictedTraverse('@@myvindula-conf-userpanel').config_muit_user()
-        
-        if self.checa_login():
-            #vars = BaseFunc().getParametersFromURL(self)
-            if 'title' in form.keys() and not 'all' in form.keys():
-                form_values = [{'name':form.get('title','').strip()}]
-            
-                result = ModelsDadosFuncdetails().get_FuncBusca(u'',form_values,True)
-                
-                check_form = [i for i in form_values if i.values()]
-                if check_form:
-                    result = ModelsDadosFuncdetails().get_FuncBusca(u'',form_values,True)
-                    #result = self.rs_to_list(result)
-                    
-            elif not config_muit_user or 'all' in form.keys():
-                result = ModelsInstanceFuncdetails().get_AllFuncDetails()
-                    
-            return result
-            
-        else:    
-            self.request.response.redirect(self.context.absolute_url() + '/login')
-            
-            
-
-
 class MyVindulaDelHoleriteView(grok.View, UtilMyvindula):
     grok.context(INavigationRoot)
     grok.require('cmf.ManagePortal')

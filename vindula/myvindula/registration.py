@@ -15,15 +15,17 @@ from vindula.myvindula.models.photo_user import ModelsPhotoUser
 
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 from vindula.myvindula.models.department import ModelsDepartment
+from zope.app.component.hooks import getSite
 
 from copy import copy 
                
 class SchemaFunc(BaseFunc):
                     
-    def registration_processes(self,context,user,manage=False):
+    def registration_processes(self,context,user,manage=False,delete=False):
         campos = {}
         lista_itens = {}
-        
+        if not context:
+            context = getSite()
         form = context.request # var tipo 'dict' que guarda todas as informacoes do formulario (keys,items,values)
         form_keys = form.keys() # var tipo 'list' que guarda todas as chaves do formulario (keys)
         
@@ -100,18 +102,7 @@ class SchemaFunc(BaseFunc):
                 D = camposAux[item]
                 if D.get('type') == 'img':
                     campos.pop(item)
-                
-                
-            if manage and\
-               form.get('username', None) != form.get('username-old', None):
-            
-                user_instance = ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id)
-                if user_instance: 
-                    user_instance.username = self.Convert_utf8(form.get('username',''))
-                    self.db.store.commit()
 
-    
-    
             # Inicia o processamento do formulario
             # chama a funcao que valida os dados extraidos do formulario (valida_form)
             errors, data = valida_form_dinamic(context, campos, context.request.form)
@@ -156,7 +147,7 @@ class SchemaFunc(BaseFunc):
                 #Redirect back to the front page with a status message        
                 self.setStatusMessage("info","Seu perfil foi editado com sucesso!!")
                 if manage:
-                    self.setRedirectPage('/myvindulamanagealluser')
+                    self.setRedirectPage('/@@usergroup-userprefs')
                 else:
                     self.setRedirectPage('/myvindulalistuser')
                 
@@ -164,15 +155,7 @@ class SchemaFunc(BaseFunc):
                 form_data['errors'] = errors
                 form_data['data'] = data
                 return form_data           
-          
-        #se clicou em excluir
-        elif 'form.excluir' in form_keys:
             
-            ModelsInstanceFuncdetails().del_InstanceDadosFuncdetails(user_id)
-            self.setStatusMessage("erro","Removido com sucesso.")
-            self.setRedirectPage('/myvindulamanagealluser')
-            
-
         # se for um formulario de edicao 
         elif user_id and id_instance:
             
@@ -189,7 +172,17 @@ class SchemaFunc(BaseFunc):
             return form_data
         
         else:
-            return form_data        
+            return form_data
+        
+    def deleteUser(self, user):
+        user = self.Convert_utf8(user)
+        is_user_vindula = ModelsInstanceFuncdetails().get_InstanceFuncdetails(user)
+        try:
+            if is_user_vindula:
+                ModelsInstanceFuncdetails().del_InstanceDadosFuncdetails(user)
+        except:
+            self.setStatusMessage("erro","Erro ao excluir usuáriodo Vindula.")
+            self.setRedirectPage('/@@usergroup-userprefs')
         
 class SchemaConfgMyvindula(BaseFunc):
                         

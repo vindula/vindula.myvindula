@@ -34,5 +34,9 @@
 	<subscriber
     		for="Products.PluggableAuthService.interfaces.events.IUserLoggedInEvent"
     		handler=".handlers.userupdate"/>
+			
+	<subscriber
+	    for="Products.PluggableAuthService.interfaces.events.IPrincipalDeletedEvent"
+	    handler=".handlers.onDeleteUser"/>
 
 </configure>
