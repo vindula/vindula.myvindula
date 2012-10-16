@@ -199,7 +199,7 @@ class SchemaConfgMyvindula(BaseFunc):
                   'type'       : {'required': True,  'type':'choice',       'label':'Tipo do Campo',               'decription':'Escolha o tipo do campo ',                                              'ordem':6},
                   'list_values': {'required': False, 'type':'textarea',     'label':'Lista de dados para o select','decription':u'Caso o campo seja um select ou list digite os valores para o campo\
                                                                                                                                   <br /> Digite um item por linha',                                      'ordem':7},
-                  'mascara'    : {'required': False, 'type':'choice',       'label':'Tipo da Mascara',             'decription':'Escolha um tipo de mascara para o campo ',                              'ordem':8},
+                  'mascara'    : {'required': False, 'type':'choice',       'label':'Tipo da Máscara',             'decription':'Escolha um tipo de máscara para o campo ',                              'ordem':8},
                 'area_de_view' : {'required': True,  'type':'choice',       'label':'Área de Visualização',        'decription':'Escolha um área para este campo ser visualizado no perfil do usúario',  'ordem':9},
                   'ordem'      : {'required': False, 'type':'hidden',       'label':'Ordenação',                   'decription':'',                                                                      'ordem':10},
                   }
