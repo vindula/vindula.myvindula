@@ -113,21 +113,76 @@ class SchemaFunc(BaseFunc):
                     user_id = data.get('username')
                     data.pop('username')
                 
-                if 'vin_myvindula_department' in form_keys:
+                if 'vin_myvindula_department' in form_keys or 'departaments_old' in form_keys:
                     L = []
-                    ModelsDepartment().del_department(user_id)
+                    portalGroup = getSite().portal_groups
+                    portalCatalog = getSite().portal_catalog
                     
-                    if not type(form['vin_myvindula_department']) == list:
-                        L.append(form['vin_myvindula_department'])
-                    else:
-                        L = form['vin_myvindula_department']
-                    
-                    for departament in L:
+                    if form.get('vin_myvindula_department', None):
+                        if not type(form.get('vin_myvindula_department', None)) == list:
+                            L.append(form.get('vin_myvindula_department', None))
+                        else:
+                            L = form.get('vin_myvindula_department', None)
+                    deparataments_old = form.get('departaments_old', [])
+
+                    #Adiciona o usuario do grupo da estrutura organizacional
+                    dep_adicionados = set(L) - set(deparataments_old)
+                    for departament in dep_adicionados:
                         D={}
                         D['UID'] = unicode(departament,'utf-8')
                         D['funcdetails_id'] = user_id
                         ModelsDepartment().set_department(**D)
+                        
+                        obj_org = portalCatalog(portal_type='OrganizationalStructure', UID=departament)
+                        if obj_org:
+                            obj_org = obj_org[0].getObject()
+                            
+                            #Adiciona o usuário no campo Employees
+                            if user_id not in obj_org.getEmployees():
+                                tuple_employees = list(obj_org.employees)
+                                tuple_employees.append(user_id)
+                                obj_org.employees = tuple(tuple_employees)
+                            
+                            #Adiciona o usuário no campo Permissao de Visualizacao    
+                            if user_id not in obj_org.getGroups_view():
+                                tuple_Groups_view = list(obj_org.Groups_view)
+                                tuple_Groups_view.append(user_id)
+                                obj_org.Groups_view = tuple(tuple_Groups_view)
+                        
+                        if user_id not in portalGroup.getGroupById(departament+'-view').getAllGroupMemberIds():
+                            portalGroup.getGroupById(departament+'-view').addMember(user_id)
                     
+                    #Exclui o usuario do grupo da estrutura organizacional
+                    dep_excluidos = set(deparataments_old) - set(L)
+                    for departament in dep_excluidos:
+                        ModelsDepartment().del_department(user=unicode(user_id), depUID=unicode(departament,'utf-8'))
+                        
+                        obj_org = portalCatalog(portal_type='OrganizationalStructure', UID=departament)
+                        if obj_org:
+                            obj_org = obj_org[0].getObject()
+                            if user_id != obj_org.getManager():
+                                #Removendo o usuário no campo Employees
+                                if user_id in obj_org.getEmployees():
+                                    tuple_employees = list(obj_org.employees)
+                                    tuple_employees.remove(user_id)
+                                    obj_org.employees = tuple(tuple_employees)
+                                    
+                                #Removendo o usuário no campo Permissao de Visualizacao    
+                                if user_id in obj_org.getGroups_view():
+                                    tuple_Groups_view = list(obj_org.Groups_view)
+                                    tuple_Groups_view.remove(user_id)
+                                    obj_org.Groups_view = tuple(tuple_Groups_view)
+                                    
+                                if user_id in portalGroup.getGroupById(departament+'-view').getAllGroupMemberIds():
+                                    portalGroup.getGroupById(departament+'-view').removeMember(user_id)
+                            
+                            else:
+                                self.setStatusMessage("error","O usuário é gestor do departamento %s, ele não pode ser removido." % obj_org.Title())
+                                self.setRedirectPage('/@@user-information?userid='+user_id)
+                                form_data['errors'] = errors
+                                form_data['data'] = data
+                                return form_data
+
                 for item in data.keys():
                     field = self.Convert_utf8(item)
                     valor = data[item]
@@ -154,7 +209,7 @@ class SchemaFunc(BaseFunc):
             else:
                 form_data['errors'] = errors
                 form_data['data'] = data
-                return form_data           
+                return form_data
             
         # se for um formulario de edicao 
         elif user_id and id_instance:
@@ -181,7 +236,7 @@ class SchemaFunc(BaseFunc):
             if is_user_vindula:
                 ModelsInstanceFuncdetails().del_InstanceDadosFuncdetails(user)
         except:
-            self.setStatusMessage("erro","Erro ao excluir usuário do Vindula.")
+            self.setStatusMessage("error","Erro ao excluir usuário do Vindula.")
             self.setRedirectPage('/@@usergroup-userprefs')
         
 class SchemaConfgMyvindula(BaseFunc):

@@ -37,6 +37,9 @@
 	    		<metal:use use-macro="context/@@myvindulapanel/macros/page"/>
 			</tal:cond>
 			<metal:config-user define-macro="config-user">
+				<div metal:use-macro="context/global_statusmessage/macros/portal_message">
+                 Status message
+                </div> 
 			    <div id="content" >
 					<tal:cont condition="manage">
 						<h1>Edite as informações pessoais do usu&aacute;rio <span tal:content="form_data/name|nothing"></span></h1>	
@@ -46,17 +49,7 @@
 						<h1>Edite suas informações pessoais</h1>	
 					</tal:cont>
 					
-					<dl class="portalMessage error" tal:condition="context/REQUEST/error|nothing">
-						<tal:cont condition="python:context.REQUEST.error=='1'">
-							<dt>Error</dt>
-		            		<dd>Error when trying to upload the file.</dd>
-						</tal:cont>
-						<tal:cont condition="python:context.REQUEST.error=='2'">
-							<dt>Error</dt>
-		            		<dd>You do not have permission to add a photograph, because your home directory is not defined. Ask the site administrator.</dd>
-						</tal:cont>	
-		        	</dl>
-					<div id="interna" >    		
+					<div id="interna" >  
 				        <form name="myvindulaprefs" id="myvindulaprefs" enctype="multipart/form-data" 
 							  class="enableAutoFocus" action="myvindulaprefs" method="POST">
 				            
@@ -81,7 +74,15 @@
 															tal:attributes="value departamento/UID | nothing;
 																			checked python: str(departamento.UID) in id_request"/>
 																			<label tal:content="departamento/Title | nothing"></label><br/>
-											</tal:repeat>	
+											</tal:repeat>
+											
+											<tal:repeat repeat="departamento departamentos">
+												<tal:cond tal:condition="python: str(departamento.UID) in id_request">
+													<input type="hidden" name="departaments_old:list"
+														   tal:attributes="value departamento/UID | nothing;"/>
+												</tal:cond>
+											</tal:repeat>
+											
 				                    	</div>
 				                    </tal:cond>
 									<tal:cond condition="not: departamentos">

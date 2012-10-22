@@ -32,7 +32,6 @@ class ModelsDepartment(Storm, BaseStore):
         tools = UtilMyvindula()
         caminho = tools.portal_url.getPortalPath()
         data = tools.catalog(portal_type='OrganizationalStructure', 
-                      review_state=['published','internal'],
                       sort_on = 'sortable_title',
                       path=caminho)   
         
@@ -64,9 +63,13 @@ class ModelsDepartment(Storm, BaseStore):
 #            return data
 #        else:
 #            return None
-        
-    def del_department(self, user):
-        results = self.store.find(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==user)
+
+
+    def del_department(self, user, depUID=None):
+        if depUID:
+            results = self.store.find(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==user, ModelsDepartment.uid_plone==depUID)
+        else:
+            results = self.store.find(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==user)
         if results:
             for result in results:
                 self.store.remove(result)
