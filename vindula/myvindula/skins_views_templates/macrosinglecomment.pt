@@ -31,7 +31,7 @@
             
         </div>
         <div class="comment-body">
-            <p tal:replace="item/text|nothing" />
+            <p tal:replace="structure item/text|nothing" />
         </div>
         <div class="visualClear"></div>
 

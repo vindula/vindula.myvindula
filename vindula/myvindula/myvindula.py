@@ -43,7 +43,7 @@ from vindula.myvindula.models.holerites2 import ModelsFuncHolerite02, ModelsFunc
 from vindula.controlpanel.browser.models import ModelsCompanyInformation
 from vindula.chat.utils.models import ModelsUserOpenFire
 
-from vindula.myvindula.utils import UtilMyvindula
+from vindula.myvindula.tools.utils import UtilMyvindula
 
 from vindula.controlpanel.handlers import userLogged
 
@@ -502,7 +502,7 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
 
 class MyVindulaListRecados(grok.View,UtilMyvindula):
     grok.context(ISiteRoot)
-    grok.require('zope2.View')
+    grok.require('cmf.ListPortalMembers')
     grok.name('myvindulalistrecados')
 
     def get_recados(self, user):

@@ -5,7 +5,7 @@ $j(document).ready(function(){
 	$j('#howareu').hide();
 	$j('#scraps').hide();
 	$j('#perfil').show();
-			
+	/*	
 	var variaveis = location.search.split("?");
 	var scraps = variaveis[1].lastIndexOf("scraps");
 	if (scraps != -1){
@@ -17,7 +17,7 @@ $j(document).ready(function(){
 		$j('#scraps-menu').addClass('selected');
 		$j('#perfil-menu').removeClass('selected');
 		
-	};	  
+	};*/
 	
 	$j('#howareu-menu').click(function(){
 		$j('#howareu').show();

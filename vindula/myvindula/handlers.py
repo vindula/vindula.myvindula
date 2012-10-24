@@ -40,6 +40,7 @@ def userupdate(event):
             user = user_login.getProperty('fullname')
         else:user = user_id
         
+<<<<<<< HEAD
         try:D['name'] = to_utf8(user)
         except:D['name'] = user
         
@@ -50,6 +51,13 @@ def userupdate(event):
         logger.info("Usuario criado no myvindula")
         
         request.other["came_from"]=registro_url
+=======
+        elif not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
+            
+            CreateUserXMPP(user_id)
+        if not request.other.get('came_from') or request.other.get('came_from') == getSite().portal_url()+'/':
+            request.other["came_from"]=registro_url
+>>>>>>> b888f946d016eda8d512f7aa9803b795774a4c9e
         request.response.redirect(registro_url, lock=True)
         
         
@@ -64,6 +72,7 @@ def userupdate(event):
             
             logger.info("Dados Incompletos no myvindula")
             
-            request.other["came_from"]=registro_url
+            if not request.other.get('came_from') or request.other.get('came_from') == getSite().portal_url()+'/':
+                request.other["came_from"]=registro_url
             request.response.redirect(registro_url, lock=True)
             

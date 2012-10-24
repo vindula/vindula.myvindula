@@ -172,3 +172,9 @@ Changelog
 -----------------------
 - Correção do perfil do usuario erro ao salvar campo de data bloquiado na edição
 - Opção de remover a foto do usuario na view de listauser
+
+1.1.31 - 2012-08-28
+-----------------------
+- Adição do mecanismo de enviar email ao usuario quando ele recebe mensagem
+
+

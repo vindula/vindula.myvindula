@@ -517,15 +517,32 @@ class ModelsMyvindulaRecados(Storm, BaseStore):
     text = Unicode()
         
     def set_myvindula_recados(self,**kwargs):
+        from vindula.contentcore.base import BaseFunc as Tools
+        
+        tools = BaseFunc()
         D={}
         D['username'] = unicode(kwargs.get('username',''), 'utf-8')
         D['destination'] = unicode(kwargs.get('destination',''), 'utf-8')
         D['text'] = unicode(kwargs.get('text',''), 'utf-8')
         
+        user_send = ModelsFuncDetails().get_FuncDetails(tools.Convert_utf8(D['username']))
+        user_destination = ModelsFuncDetails().get_FuncDetails(tools.Convert_utf8(D['destination']))
+
+        if user_destination and user_destination.email:
+            assunto = 'Novo recado pra você na Intranet!'
+            msg = '''<h2>Voc&ecirc; tem um novo recado</h2>
+                     <p>Voc&ecirc; recebeu um novo recado do(a) <a href='%s'> %s</a> </p>
+                     <p>Para visualizar o recado acesse <a href="%s"> aqui </a></p>
+                   '''%(getSite().absolute_url() + '/@@myvindulalistuser?user='+user_send.username ,
+                        user_send.name, getSite().absolute_url() + '/@@myvindulalistrecados')
+            
+            Tools().envia_email(getSite(),msg,assunto,user_destination.email,[])
+
         # adicionando...
         recados = ModelsMyvindulaRecados(**D)
         self.store.add(recados)
         self.store.flush()
+
     
     def get_myvindula_recados(self,**kwargs):
         if kwargs.get('destination',None):
