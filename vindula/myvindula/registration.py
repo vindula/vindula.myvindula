@@ -162,8 +162,8 @@ class SchemaFunc(BaseFunc):
                     # editando...
                     result = self.store.find(ModelsFuncDetails, ModelsFuncDetails.username == user_id).one()
                     if result:
-#                        if data['photograph'] is None:
-#                            data['photograph'] = result.photograph
+                        if data['photograph'] is None:
+                            data['photograph'] = result.photograph
                         
                         for campo in campos.keys():
                             try: value = unicode(data.get(campo,''),'utf-8')
@@ -214,8 +214,8 @@ class SchemaFunc(BaseFunc):
                         self.store.flush()
                         
                     elif not diff:
-#                        if data['photograph'] is None:
-#                            data['photograph'] = result.photograph
+                        if data['photograph'] is None:
+                            data['photograph'] = result.photograph
                         
                         for campo in campos.keys():
                             value = data.get(campo, None)
