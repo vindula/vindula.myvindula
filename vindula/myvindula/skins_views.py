@@ -24,6 +24,11 @@ class MacroInputHowareu(grok.View, UtilMyvindula):
     grok.require('zope2.View')
     grok.name('macro-input-howareu')
     
+class MacroInputRecados(grok.View, UtilMyvindula):
+    grok.context(Interface)
+    grok.require('zope2.View')
+    grok.name('macro-input-recados')    
+    
 class MacroCommentsMaster(grok.View, UtilMyvindula):
     grok.context(Interface)
     grok.require('zope2.View')

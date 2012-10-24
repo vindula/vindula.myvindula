@@ -342,10 +342,10 @@
     				                <div class="comment-body">
     				                    <p tal:replace="structure item/text|nothing" />
     						  		</div>
-    								
+									
     								<!--Macros de repitição dos comentarios --> 
     								<tal:def define="comment_type string:ModelsMyvindulaRecados">        
-                                        <div metal:use-macro="context/macro-input-comments/macros/input" />
+										<div metal:use-macro="context/macro-input-recados/macros/input" />
                                         <div metal:use-macro="context/myvindula-comments-macro/macros/comments" />
     								</tal:def>
     							</div>
