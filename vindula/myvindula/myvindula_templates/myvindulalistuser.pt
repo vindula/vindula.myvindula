@@ -342,13 +342,8 @@
     				                <div class="comment-body">
     				                    <p tal:replace="structure item/text|nothing" />
     						  		</div>
-<<<<<<< HEAD
-									
+								
     								<!--Macros de repitição dos comentarios --> 
-=======
-    								
-    								<!--Macros de repiti&ccedil;&atilde;o dos comentarios --> 
->>>>>>> b888f946d016eda8d512f7aa9803b795774a4c9e
     								<tal:def define="comment_type string:ModelsMyvindulaRecados">        
 										<div metal:use-macro="context/macro-input-recados/macros/input" />
                                         <div metal:use-macro="context/myvindula-comments-macro/macros/comments" />
