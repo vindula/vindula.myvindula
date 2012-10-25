@@ -29,7 +29,7 @@
 					<h3 class="contentCenter">Mantenha os dados do seu  Perfil atualizados.</h3>
 					<h3 class="contentCenter"> para fazer isso clique abaixo</h3>
 						
-					<!--div id="campo-obrig" class="contentCenter">
+					<div id="campo-obrig" class="contentCenter">
 						<h2>Campos obrigatórios, por favor, acesse o seu perfil e informe:</h2>
 						<ul>
 							<li tal:condition="python: view.checkCampoVazio('name')"
@@ -45,7 +45,7 @@
 							   tal:content="python: userView.get_label_filed('email')">E-mail</li>	
 						</ul>
 												
-					</div-->
+					</div>
 
 					<!--p tal:condition="not: view/checkUserXMPP">
 						Não foi possível criar seu usuário no chat, contate o administrador da intranet</p--> 
