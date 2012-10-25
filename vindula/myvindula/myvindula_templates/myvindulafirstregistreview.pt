@@ -27,7 +27,7 @@
 					<h1 tal:content="string:${view/get_saldacao|nothing} colaborador da ${data/short_name|python:''}" />
 					
 					<h3 class="contentCenter">Mantenha os dados do seu  Perfil atualizados.</h3>
-					<h3> para fazer isso clique abaixo</h3>
+					<h3 class="contentCenter"> para fazer isso clique abaixo</h3>
 						
 					<!--div id="campo-obrig" class="contentCenter">
 						<h2>Campos obrigatórios, por favor, acesse o seu perfil e informe:</h2>
