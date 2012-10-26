@@ -25,7 +25,7 @@ def userupdate(event):
     user_instance = ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id)
         
     if not user_instance:
-       #not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id) and\
+       # and\
        #user_id != 'admin':
         
        # if not ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id):
@@ -49,17 +49,12 @@ def userupdate(event):
             ModelsDadosFuncdetails().set_DadosFuncdetails(**D)
         
         tools.setLogger('info',"Usuario criado no myvindula")
-        
-#        if not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
-#            
-#            CreateUserXMPP(user_id)
-
-
-#        if not request.other.get('came_from') or request.other.get('came_from') == getSite().portal_url()+'/':
-#            request.other["came_from"]=registro_url
-#        request.response.redirect(registro_url, lock=True)
-
         tools.setRedirectPage('/myvindula-first-registre')
+        
+    if not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
+        CreateUserXMPP(user_id)
+
+        #tools.setRedirectPage('/myvindula-first-registre')
         
     else:
         user_data =  tools.get_prefs_user(user_id)
@@ -69,11 +64,6 @@ def userupdate(event):
             
             tools.setLogger('info',"Dados Incompletos no myvindula")
             
-#            if not request.other.get('came_from') or request.other.get('came_from') == getSite().portal_url()+'/':
-#                request.other["came_from"]=registro_url
-#            request.response.redirect(registro_url, lock=True)
-
-
             tools.setRedirectPage('/myvindula-first-registre')
 
 def onDeleteUser(event):
