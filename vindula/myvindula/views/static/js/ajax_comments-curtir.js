@@ -73,7 +73,7 @@ $j(document).ready(function(){
         var type = parametros.find('#type').val();
         var text = parametros.find('[name=text]').val();
         
-		if (text.lenght){
+		if (text.length){
 	        $j.get(url,{form_ajax:'True',
 	                    form_submitted_comment:'True',
 	                    id_obj:id_obj,
@@ -102,6 +102,10 @@ $j(document).ready(function(){
            ctx.parent().find('#load-save').hidew();
 		
 	   }
+	   var id_instance = parametros.find('[name=text]').attr('id');
+	   
+	   CKEDITOR.instances[id_instance].setData('');
+	   
 	});
 	
 	$j('input.excluir').live('click', function(){
