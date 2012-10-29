@@ -10,7 +10,7 @@ function confirmExcluirRecados(){
 
 $j(document).ready(function(){
 	$j('input.comments').live('click', function(){
-		var url = $j('#portal_url').val() + "/myvindula-comments";
+		var url = $j('base').attr('href') + "/myvindula-comments";
 		var ctx = $j(this);
 		
 		var id_obj = $j(this).attr('id');
@@ -26,8 +26,9 @@ $j(document).ready(function(){
 				ctx.css('display','none');
 				
 				var item = $j(data).find('.ckeditor_plone');
-				carregaEditor(item[0]);
-				
+				if (item.length) {
+					carregaEditor(item[0]);
+				}
 				//$j('#spinner').addClass('display-none');
 			});
 	});
@@ -72,27 +73,35 @@ $j(document).ready(function(){
         var type = parametros.find('#type').val();
         var text = parametros.find('[name=text]').val();
         
-        $j.get(url,{form_ajax:'True',
-                    form_submitted_comment:'True',
-                    id_obj:id_obj,
-                    type:type,
-                    isPlone:isPlone,
-                    text:text}, function(data){
-                    
-                    var comment_pai = ctx.closest('.comment')
-                    var coments_cont = comment_pai.find('.comments-cont');
-                    
-                    if(coments_cont.length > 0)
-                        coments_cont.eq(0).append(data);
-                    else
-                        comment_pai.append('<div class="comments-cont">'+data+'</div>');
-                    
-                    ctx.parents('#new-comments').html('');
-                    $j('textarea#text').val('');
-                    comment_pai.find('.bt_comments').eq(0).css('display', '')
-                    
-                    //window.location=url_sucess;
-            });
+		if (text.lenght){
+	        $j.get(url,{form_ajax:'True',
+	                    form_submitted_comment:'True',
+	                    id_obj:id_obj,
+	                    type:type,
+	                    isPlone:isPlone,
+	                    text:text}, function(data){
+	                    
+	                    var comment_pai = ctx.closest('.comment')
+	                    var coments_cont = comment_pai.find('.comments-cont');
+	                    
+	                    if(coments_cont.length > 0)
+	                        coments_cont.eq(0).append(data);
+	                    else
+	                        comment_pai.append('<div class="comments-cont">'+data+'</div>');
+	                    
+	                    ctx.parents('#new-comments').html('');
+	                    $j('textarea#text').val('');
+	                    comment_pai.find('.bt_comments').eq(0).css('display', '')
+	                    
+	                    //window.location=url_sucess;
+	            });
+	   }else{
+	   	   alert("O comentario não pode ficar em branco.");
+		   ctx.show()
+           ctx.parent().find('#cancel-coment').show();
+           ctx.parent().find('#load-save').hidew();
+		
+	   }
 	});
 	
 	$j('input.excluir').live('click', function(){

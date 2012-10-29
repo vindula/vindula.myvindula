@@ -287,7 +287,7 @@ class Renderer(base.Renderer, UtilMyvindula):
 #                            result = data
 #                        else:
 #                            result = None
-
+        
 
 
         return result

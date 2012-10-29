@@ -2,7 +2,13 @@
     <tal:def define="isAnonymous python:context.portal_membership.isAnonymousUser();
                      view_comments python:context.restrictedTraverse('@@myvindula-comments');
                      view_myvindula python:context.restrictedTraverse('@@myvindula');
-                     panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel');">
+                     panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel');
+					 
+					 
+					 folder python: context.aq_parent;
+					 comments_clear python:folder.portal_type=='VindulaPhotoAlbum' or False;
+					 
+					 ativa_richtext panelView/check_ativa_richtext|python:False">
 
         <!-- campos input necessario para a criação de comentariso -->
         <div class="geral_lista_comentarios">
@@ -13,7 +19,7 @@
                     <input type="hidden" name="type" id="type" tal:attributes="value context/portal_type|nothing">
                     <input type="hidden" name="isPlone:boolean" id="isPlone" value="True">
     
-                    <tal:cond condition="panelView/check_ativa_richtext|python:False">
+                    <tal:cond condition="python: ativa_richtext and not comments_clear">
                         <input class="cke_config_url" type="hidden" name="cke_config_url" tal:attributes="value string:${context/portal_url}/ckeditor_plone_config.js">
                         <input class="cke_iswidget" type="hidden" value="True" name="cke_iswidget">
                         <div class="widget_settings">
@@ -27,7 +33,7 @@
                             
                     </tal:cond>                                
                                     
-                    <textarea tal:condition="not: panelView/check_ativa_richtext|python:True"  
+                    <textarea tal:condition="python: ativa_richtext and comments_clear"  
                                style="width: 100%; height: 81px;" name="text" id="text"></textarea>                                         
                                          
         

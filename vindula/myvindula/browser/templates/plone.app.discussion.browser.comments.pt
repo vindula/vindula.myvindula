@@ -21,7 +21,7 @@
 					   
             		   comments python:view_coments.get_comments(item_id, item_name_class);"
 					   
-		   tal:condition="enable"
+		   tal:condition="python: enable or comments.count() > 0"
            i18n:domain="plone">
 	
 	<link rel="stylesheet" type="text/css" tal:attributes="href string:${view_coments/static}/myvindula_comments.css" />
@@ -30,7 +30,7 @@
         .geral_lista_comentarios .comments-cont .comments-cont{display:block !important;}
     </style>
 	
-	<div id="content">
+	<div>
 	    
 	    <!-- Macro Like -->
         <div id="like" tal:condition="not: isAnonymous">

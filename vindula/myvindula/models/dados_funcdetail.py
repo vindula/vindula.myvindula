@@ -102,6 +102,10 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
         from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
         ids_instances = []
         
+        if filtro:
+            form_campos.append({'phone_number':'None'})
+            
+        
         origin = [ModelsDadosFuncdetails,
                   Join(ModelsInstanceFuncdetails, ModelsInstanceFuncdetails.id==ModelsDadosFuncdetails.vin_myvindula_instance_id),
                   Join(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==ModelsInstanceFuncdetails.username),]
@@ -109,48 +113,60 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
         for item in form_campos:
             busca = "self.store.using(*origin).find(ModelsDadosFuncdetails,"
             if item.values()[0]:
-                busca += "ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==u'"+item.keys()[0]+"',\
-                         ModelsDadosFuncdetails.valor.like( '%' + '%'.join(u'"+item.values()[0]+"'.split(' ')) + '%' ),"
+                
+                if item.keys()[0] == 'phone_number':
+                    busca += "ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==u'phone_number',\
+                             ModelsDadosFuncdetails.valor, "
+                else:
+                    busca += "ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==u'"+item.keys()[0]+"',\
+                             ModelsDadosFuncdetails.valor.like( '%' + '%'.join(u'"+item.values()[0]+"'.split(' ')) + '%' ),"
         
                 if ids_instances:
                     busca += "ModelsDadosFuncdetails.vin_myvindula_instance_id.is_in(ids_instances),"
-        
+                    
                 if department_id:
                     busca += "ModelsDepartment.uid_plone==department_id,"
                 
                 busca += ')'
-
+                
+                #import pdb;pdb.set_trace()
                 data = eval(busca)
                 
-                if data.count()>0:
-                    ids_instances = []   
-                    for i in data:
-                        id = i.vin_myvindula_instance_id
-                        if not id in ids_instances:
-                            ids_instances.append(i.vin_myvindula_instance_id)
-        
-        
-        if filtro:
-            busca = "self.store.using(*origin).find(ModelsDadosFuncdetails,"
-            busca += "ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==u'phone_number',\
-                     ModelsDadosFuncdetails.valor != u'',"
-        
-            if ids_instances:
-                busca += "ModelsDadosFuncdetails.vin_myvindula_instance_id.is_in(ids_instances),"
-        
-            if department_id:
-                busca += "ModelsDepartment.uid_plone==department_id,"
-            
-            busca += ')'
-
-            data = eval(busca)
-                
-            if data.count()>0:
+                #if data.count()>0:
                 ids_instances = []   
                 for i in data:
                     id = i.vin_myvindula_instance_id
                     if not id in ids_instances:
                         ids_instances.append(i.vin_myvindula_instance_id)
+        
+        
+        
+#            import pdb;pdb.set_trace()
+#            busca = "self.store.using(*origin).find(ModelsDadosFuncdetails,"
+#            busca += "ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==u'phone_number',\
+#                     ModelsDadosFuncdetails.valor != u'',"
+#        
+#            if ids_instances:
+#                busca += "ModelsDadosFuncdetails.vin_myvindula_instance_id.is_in(ids_instances),"
+#                
+#            if filtro:
+#                 busca += "ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==u'phone_number',\
+#                            ModelsDadosFuncdetails.valor,"
+
+#        
+#            if department_id:
+#                busca += "ModelsDepartment.uid_plone==department_id,"
+#            
+#            busca += ')'
+#
+#            data = eval(busca)
+#                
+#            if data.count()>0:
+#                ids_instances = []   
+#                for i in data:
+#                    id = i.vin_myvindula_instance_id
+#                    if not id in ids_instances:
+#                        ids_instances.append(i.vin_myvindula_instance_id)
         
         #busca += ").order_by(ModelsFuncDetails.name)"
         

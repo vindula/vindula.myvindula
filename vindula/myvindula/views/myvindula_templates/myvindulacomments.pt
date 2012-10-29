@@ -5,9 +5,14 @@
 	<input type="hidden" name="isPlone:boolean" id="isPlone" tal:attributes="value context/REQUEST/isPlone|nothing">
 
     <tal:def define="view_myvindula python:context.restrictedTraverse('@@myvindula');
-                     panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel');">
+                     panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel');
+					 
+					 folder python: context.aq_parent;
+                     comments_clear python:folder.portal_type=='VindulaPhotoAlbum' or False;
+                     
+                     ativa_richtext panelView/check_ativa_richtext|python:False">
                                    
-        <tal:cond condition="panelView/check_ativa_richtext|python:False">
+        <tal:cond condition="python: ativa_richtext and not comments_clear">
             
             <input class="cke_config_url" type="hidden" name="cke_config_url" tal:attributes="value string:${context/portal_url}/ckeditor_plone_config.js">
             <input class="cke_iswidget" type="hidden" value="True" name="cke_iswidget">
@@ -22,7 +27,7 @@
                 
         </tal:cond>                                   
                                     
-        <textarea tal:condition="not: panelView/check_ativa_richtext|python:True"  
+        <textarea tal:condition="python: ativa_richtext and comments_clear" 
                    style="width: 100%; height: 81px;" name="text" id="text"></textarea>  
      </tal:def>
 	
@@ -31,8 +36,9 @@
 	  <input type="button" name="cancel" value="Cancelar" id="cancel-coment" class="context bt_comments"/>
 	  
 	  <input type="button" name="submit" value="Publicar" id="save-coment" class="context bt_comments" onClick="CKupdate();"/>
+
 	   
-	   <img tal:attributes="src string:${view/static}/images/save-load.gif"
+	  <img tal:attributes="src string:${view/static}/images/save-load.gif"
 	        id="load-save" style="display: none" />
 	   	   
 	</div>
