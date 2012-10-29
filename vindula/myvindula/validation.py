@@ -85,7 +85,10 @@ def valida_form(configuracao, form):
             convertidos[campo] = valor
         
         elif configuracao[campo]['type'] == int:
-            convertidos[campo] = int(valor)
+            try:
+                convertidos[campo] = int(valor)
+            except: 
+                convertidos[campo] = ''
             
         elif configuracao[campo]['type'] == 'email':
             if valor != '':
