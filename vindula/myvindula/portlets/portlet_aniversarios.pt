@@ -2,7 +2,7 @@
 
     <dt class="portletHeader">
     	<span class="portletTopLeft"></span>
-		<span class="tile" tal:content="view/get_title">Portlet Title</span>
+		<span class="tile" tal:content="view/get_title|nothing">Portlet Title</span>
 		<span class="portletTopRight"></span>
     </dt>
     <dd class="portletItem" >
@@ -23,19 +23,19 @@
 			</tal:results>
 			<div class="titulo_info_boxTipo2 aling-right">
 				<h4 tal:define="x python:len(results)>int(quant)" tal:condition="x">
-					<a tal:attributes="href string:${here/portal_url}/myvindulalistbirthdays?filtro=${view/get_type_search|nothing}">Todos</a>
+					<a tal:attributes="href string:${here/portal_url|nothing}/myvindulalistbirthdays?filtro=${view/get_type_search|nothing}">Todos</a>
 				</h4>
 			</div>
 			
 			<div class="visualClear"></div>
 			<tal:notresults tal:condition="not: view/birthdaysToday">
-				<h4 tal:content="string: Não há aniversariantes $${view/frase_filtro|python:''}.">Não há aniversariantes</h4>
+				<h4 tal:content="string: Não há aniversariantes ${view/frase_filtro|nothing}.">Não há aniversariantes</h4>
 			</tal:notresults>
 			<div class="titulo_info_boxTipo2 aling-right">
 				<br />
 				<h4>
 					<a tal:attributes="href string:${here/portal_url}/myvindulalistbirthdays?filtro=${view/get_type_search_list|nothing}"
-					   tal:content="view/nome_filtro|python:''">Aniversariantes da Semana</a>
+					   tal:content="view/nome_filtro|nothing">Aniversariantes da Semana</a>
 				</h4>
 			</div>
 		</div>
