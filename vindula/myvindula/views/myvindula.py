@@ -779,6 +779,19 @@ class MyVindulaComments(grok.View, UtilMyvindula):
             else:
                 return conf_global
             
+            
+    def is_discussion_allowed(self):
+        # Fetch discussion registry
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+
+        # Check if discussion is allowed globally
+        if not settings.globally_enabled:
+            return False
+        
+        return True
+            
+            
     def get_comments(self,id,type):
         D={}
         D['id_obj'] = id
