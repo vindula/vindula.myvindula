@@ -13,6 +13,7 @@ from vindula.myvindula import MessageFactory as _
 from Products.statusmessages.interfaces import IStatusMessage
 
 from datetime import date, datetime 
+from random import randint
 import logging, base64
 from copy import copy 
 
@@ -563,8 +564,11 @@ class MyVindulaImportSecondView(grok.View, UtilMyvindula):
                                     username = name[0] + name[-1]
                                     cont = 1
      
-                                    if form['registration']:
-                                        matricula = dados_linha[int(form['registration'])-1].replace('"','')    
+                                    if form.get('registration'):
+                                        matricula = dados_linha[int(form.get('registration'))-1].replace('"','')    
+                                        username += str(matricula)
+                                    else:
+                                        matricula = randint(1,pow(10,10))
                                         username += str(matricula)
                                     
                                     usr = username
