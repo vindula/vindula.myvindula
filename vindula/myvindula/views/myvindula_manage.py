@@ -539,11 +539,15 @@ class MyVindulaImportSecondView(grok.View, UtilMyvindula):
                              'url_arquivo',
                              'cria-username',
                              'atualiza-dados',
+                             'ciar-user-plone',
                              'username',]
             
             success = False
             criar_user = form.get('cria-username', False)
             merge_user = form.get('atualiza-dados', False)
+            
+            criar_user_plone = form.get('ciar-user-plone', False)
+            
             error = 0
             url = ''
             
@@ -580,8 +584,8 @@ class MyVindulaImportSecondView(grok.View, UtilMyvindula):
                                     check_user = True
                                         
                                 else:
-                                    if form[campo] != '':
-                                        indice = int(form[campo])-1
+                                    if form.get('campo') != '':
+                                        indice = int(form.get('campo'))-1
                                         user = self.to_utf8(dados_linha[indice].replace('"',''))
                                         if ModelsInstanceFuncdetails().get_InstanceFuncdetails(user) and merge_user:    
                                             dados[campo] = user
@@ -589,9 +593,12 @@ class MyVindulaImportSecondView(grok.View, UtilMyvindula):
                                         else:
                                             dados[campo] = user
                                             check_user = True
-    
+                                            
                     erros, data_user = valida_form_dinamic(self,campos, dados)
                     if not erros:
+                        if criar_user_plone:
+                            ImportUser().importUser(self,{},dados)   
+                        
                         username = dados['username']
                         if check_user:
                             user_instance = ModelsInstanceFuncdetails().get_InstanceFuncdetails(username)

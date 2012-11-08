@@ -390,7 +390,7 @@ class ImportUser(BaseFunc):
 
         return D
         
-    def importUser(self,ctx,form):
+    def importUser(self,ctx,form,user={}):
         db_user = ModelsInstanceFuncdetails().get_AllFuncDetails() #ModelsFuncDetails().get_allFuncDetails()
         plone_user = ctx.context.acl_users.getUserIds()
         #db_user = ModelsFuncDetails().get_allFuncDetails()
@@ -399,7 +399,8 @@ class ImportUser(BaseFunc):
         portal_member = ctx.context.portal_membership
         D={}
         index = int(form.get('numb_user','0'))
-        user = db_user[index]
+        if not user:
+            user = db_user[index]
         
         user_properties = {'fullname':user.get('name',''),
                            'email':user.get('email',''),

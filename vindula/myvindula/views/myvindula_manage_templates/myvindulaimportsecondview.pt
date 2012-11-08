@@ -37,7 +37,12 @@
 							<tr>
 								<td><input type="checkbox" name="atualiza-dados" value="True">
 									Realiza merge de dados já existente no vindula</td>
-							</tr>	
+							</tr>
+							<tr>
+                                <td><input type="checkbox" name="ciar-user-plone" value="True">
+                                    Criar usuário na base local do vindula</td>
+                            </tr>
+								
 						</table>
 						<br /><br />
 	                    <table class="tableImport" border=0>
