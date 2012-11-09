@@ -198,6 +198,49 @@ class MyVindulaImportUser(grok.View, UtilMyvindula):
         self.request.set('disable_border', True)
         return super(MyVindulaImportUser, self).update()
     
+    
+class MyVindulaDeParaUser(grok.View, UtilMyvindula):
+    grok.context(INavigationRoot)
+    grok.require('cmf.ManagePortal')
+    grok.name('myvindula-compare-user')
+    
+    
+    def update(self):
+        db_user = ModelsInstanceFuncdetails().get_AllFuncDetails()
+        plone_user = self.context.acl_users.getUserIds()
+        
+        self.user = []
+        for user in db_user:
+            if not user.get('username') in plone_user or\
+                user.get('username') != 'admin':
+                self.user.append(user)   
+
+class MyVindulaRemoveUser(grok.View, UtilMyvindula):
+    grok.context(INavigationRoot)
+    grok.require('cmf.ManagePortal')
+    grok.name('myvindula-remove-user')
+    
+    def render(self):
+        pass
+    
+    def update(self):
+        form = self.request.form 
+        success_url = self.context.absolute_url() + '/myvindula-compare-user'
+        
+        if 'user' in form.keys():
+            username = self.Convert_utf8(form.get('user',''))
+                    
+            is_user_vindula = ModelsInstanceFuncdetails().get_InstanceFuncdetails(username)
+            try:
+                if is_user_vindula:
+                    ModelsInstanceFuncdetails().del_InstanceDadosFuncdetails(username)
+            except:
+                self.setStatusMessage("error","Erro ao excluir usuário do Vindula.")
+                self.setRedirectPage('/@@usergroup-userprefs')
+    
+        
+        self.request.response.redirect(success_url)
+    
 class AjaxView(grok.View,UtilMyvindula):
     grok.context(ISiteRoot)
     grok.require('cmf.ManagePortal')
