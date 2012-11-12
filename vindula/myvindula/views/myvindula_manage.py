@@ -211,7 +211,7 @@ class MyVindulaDeParaUser(grok.View, UtilMyvindula):
         
         self.user = []
         for user in db_user:
-            if not user.get('username') in plone_user or\
+            if not user.get('username') in plone_user and\
                 user.get('username') != 'admin':
                 self.user.append(user)   
 
@@ -234,6 +234,7 @@ class MyVindulaRemoveUser(grok.View, UtilMyvindula):
             try:
                 if is_user_vindula:
                     ModelsInstanceFuncdetails().del_InstanceDadosFuncdetails(username)
+                    self.setStatusMessage("info","Usuário excluído com sucesso.")
             except:
                 self.setStatusMessage("error","Erro ao excluir usuário do Vindula.")
                 self.setRedirectPage('/@@usergroup-userprefs')

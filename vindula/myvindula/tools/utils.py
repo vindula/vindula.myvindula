@@ -329,15 +329,23 @@ class UtilMyvindula(object):
         @type = info, error, warning
         @msg = mesagem que sera apresentada ao usuario
         '''
-        IStatusMessage(self.site.REQUEST).addStatusMessage(_(self.to_utf8(msg)), type)
+        try:
+            request = self.site.REQUEST
+        except:
+            request =self.context.REQUEST
+        IStatusMessage(request).addStatusMessage(_(self.to_utf8(msg)), type)
 
 
     def setRedirectPage(self,local):
         '''
         @local = caminho relativo ao portal para redirecionar o usuario
         '''
-        url = self.site.absolute_url() + local
-        request = self.site.REQUEST
+        try:
+            site = self.site
+        except:
+            site =self.context
+        url = site.absolute_url() + local
+        request = site.REQUEST
         request.response.redirect(url, lock=True)
 
 
