@@ -18,7 +18,7 @@
 				<tal:rep repeat="detail view/get_camposFilter">
                     <h4 tal:condition="python: detail['label'] and detail['content']"
                         tal:content="string: ${detail/label}: "> </h4>
-                    <input type="text" name="ramal" size="26"
+                    <input type="text" name="ramal" size="23"
                            tal:define="campo  detail/content"
                            tal:attributes="value python: request.get(campo, '');
                                            name campo"/>
