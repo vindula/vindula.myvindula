@@ -7,6 +7,7 @@ from vindula.myvindula import MessageFactory as _
 
 from vindula.myvindula.user import BaseFunc
 from vindula.myvindula.models.config_documents import ModelsConfigDocuments
+from vindula.myvindula.models.user_documents import ModelsUserDocuments
 
 from vindula.myvindula.validation import valida_form
 import pickle
@@ -119,7 +120,6 @@ class SchemaDocument(BaseFunc):
         # se clicou no botao "Voltar"
         if 'form.voltar' in form_keys:
             ctx.request.response.redirect(success_url)
-          
         # se clicou no botao "Salvar"
         elif 'form.submited' in form_keys:
             # Inicia o processamento do formulario
@@ -158,34 +158,35 @@ class SchemaDocument(BaseFunc):
                                 #adicionando...
                                 ModelsUserDocuments().set_UserDocuments(**convertidos)
                 
-#                else:
-#                    convertidos = {}
-#                    doc = form['documento']
-#                    data = doc.read()
-#                    
-#                    filename = doc.filename
-#                    if len(data) != 0 :
-#                        D ={}
-#                        D['data'] = data
-#                        D['filename'] = filename 
-#                        convertidos['documento'] = pickle.dumps(D)
-#                    else:
-#                         convertidos['documento'] = ''      
-#        
-#                    id_doc = int(form['documents_id'])
-#                    convertidos['vin_myvindula_config_documents_id'] = id_doc
-#                    convertidos["vin_myvindula_funcdetails_username"] = user
-#       
-#                    #edição .....
-#                    if ModelsUserDocuments().get_UserDocuments_by_user_and_doc(user,id_doc):
-#                        ModelsUserDocuments().del_UserDocuments(user,id_doc)
-#                        
-#                        #adicionando novo...
-#                        ModelsUserDocuments().set_UserDocuments(**convertidos)
-#        
-#                    else:
-#                        #adicionando...
-#                        ModelsUserDocuments().set_UserDocuments(**convertidos)
+                else:
+                    convertidos = {}
+                    doc = form['documento']
+                    data = doc.read()
+                    filename = doc.filename
+                    if len(data) != 0 :
+                        D ={}
+                        D['data'] = data
+                        D['filename'] = filename 
+                        convertidos['documento'] = pickle.dumps(D)
+                        id_doc = int(form['documents_id'])
+                        convertidos['vin_myvindula_config_documents_id'] = id_doc
+                        convertidos["vin_myvindula_funcdetails_username"] = user
+                    else:
+                        convertidos['documento'] = ''      
+                        id_doc = int(form['documents_id'])
+                        convertidos['vin_myvindula_config_documents_id'] = id_doc
+                        convertidos["vin_myvindula_funcdetails_username"] = user
+       
+#                   #edição .....
+                    if ModelsUserDocuments().get_UserDocuments_by_user_and_doc(user,id_doc):
+                        ModelsUserDocuments().del_UserDocuments(user,id_doc)
+                        
+#                       #adicionando novo...
+                        ModelsUserDocuments().set_UserDocuments(**convertidos)
+        
+                    else:
+                        #adicionando...
+                        ModelsUserDocuments().set_UserDocuments(**convertidos)
                     
                 #Redirect back to the front page with a status message
                 IStatusMessage(ctx.request).addStatusMessage(_(u"Documento Cadastrado com sucesso"), "info")
