@@ -595,6 +595,8 @@ class MyVindulaImportSecondView(grok.View, UtilMyvindula):
             error = 0
             url = ''
             
+            arquivo.data = arquivo.data.replace('\r', '')
+            
             for linha in arquivo.data.split('\n')[1:-1]:
                 if linha:
                     dados = {}

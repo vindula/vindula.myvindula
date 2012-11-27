@@ -24,11 +24,18 @@ class SchemaFunc(BaseFunc):
     def registration_processes(self,context,user,manage=False,delete=False):
         campos = {}
         lista_itens = {}
-        if not context:
-            context = getSite()
-        form = context.request # var tipo 'dict' que guarda todas as informacoes do formulario (keys,items,values)
-        form_keys = form.keys() # var tipo 'list' que guarda todas as chaves do formulario (keys)
-        
+
+        if not isinstance(context, dict):
+            if not context:
+                context = getSite()
+            form = context.request # var tipo 'dict' que guarda todas as informacoes do formulario (keys,items,values)
+            form_keys = form.keys() # var tipo 'list' que guarda todas as chaves do formulario (keys)
+        else:
+            form = context
+            form['name'] = form.get('fullname', form.get('username', None))
+            form['form.submited'] = ['Submited']
+            form_keys = form.keys()
+            
         user_id = self.Convert_utf8(user)
         id_instance = 0
         if user_id:
@@ -82,15 +89,13 @@ class SchemaFunc(BaseFunc):
         
         # se clicou no botao "Voltar"
         if 'form.voltar' in form_keys:
-            
             if 'id_instance' in form_keys and isForm:
                 context.request.response.redirect(success_url+'/view-form')
             else:
-                context.request.response.redirect(destino_form)
+                context.request.response.redirect(getSite().portal_url() + '/@@usergroup-userprefs')
                 
         # se clicou no botao "Salvar"
         elif 'form.submited' in form_keys:
-            
             if not user_id:
                 campos['username'] = {'required': True, 'type' : self.to_utf8, 'label':''}
             
@@ -105,7 +110,12 @@ class SchemaFunc(BaseFunc):
 
             # Inicia o processamento do formulario
             # chama a funcao que valida os dados extraidos do formulario (valida_form)
-            errors, data = valida_form_dinamic(context, campos, context.request.form)
+            if not isinstance(context, dict):
+                form = context.request.form
+            else:
+                form = context
+            
+            errors, data = valida_form_dinamic(context, campos, form)
           
             if not errors:
                 if not user_id:
