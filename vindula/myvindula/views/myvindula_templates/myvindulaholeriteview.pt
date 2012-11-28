@@ -39,7 +39,7 @@
 		                        <input type="text" name="cpf_validate" id="cpf_validate" /><br />
 								
 							</div>
-							<div class="bt_comentar">
+							<div class="bt_reservas">
 								<input type="submit" name="submitted_cpf" id="submitted_cpf" value="Validar CPF" />
 							</div>
 	                    </form>
