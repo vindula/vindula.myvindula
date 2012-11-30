@@ -72,6 +72,12 @@ $j(document).ready(function(){
         var isPlone = parametros.find('#isPlone').val();
         var type = parametros.find('#type').val();
         var text = parametros.find('[name=text]').val();
+		
+		var use_ckeditor = ctx.attr('onClick');
+		if (use_ckeditor)
+			use_ckeditor = true;
+		else
+			use_ckeditor = false;
         
 		if (text.length){
 	        $j.get(url,{form_ajax:'True',
@@ -104,7 +110,8 @@ $j(document).ready(function(){
 	   }
 	   var id_instance = parametros.find('[name=text]').attr('id');
 	   
-	   CKEDITOR.instances[id_instance].setData('');
+	   if (use_ckeditor)
+	       CKEDITOR.instances[id_instance].setData('');
 	   
 	});
 	
