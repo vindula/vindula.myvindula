@@ -33,7 +33,7 @@
                             
                     </tal:cond>                                
                                     
-                    <textarea tal:condition="python: ativa_richtext and comments_clear"  
+                    <textarea tal:condition="python: comments_clear or not ativa_richtext"
                                style="width: 100%; height: 81px;" name="text" id="text"></textarea>                                         
                                          
         
