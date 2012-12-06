@@ -37,7 +37,7 @@
 							 tal:attributes="action string:${context/absolute_url|nothing}/myvindula-user-crop">
 							
 							<input type="hidden" id="username" name="username" value="" 
-								    tal:attributes="value member/getUserName|nothing">
+								    tal:attributes="value request/username|member/getUserName|nothing">
 							<input name="photo" id="photo" type="file" value="" accept="image/*"/>
 							
 							<div id="buttom">
@@ -51,12 +51,13 @@
 									 tal:condition="python: req and not error">
 					<script type="text/javascript" charset="utf-8" tal:attributes="src string:${view/static}/js/crop_image_user.js" />
 					<fieldset id="fieldset-global-settings">
+						<h1 tal:content="member"></h1>
 				    	<legend id="fieldsetlegend-global-settings">Marque a área da foto a ser salva</legend>
 						<form method="post" enctype="multipart/form-data" name="crop-imge" id="myform"
 							 tal:attributes="action string:${context/absolute_url|nothing}/myvindula-user-crop">
 							
 							<input type="hidden" id="username" name="username" value="" 
-								    tal:attributes="value member/getUserName|nothing">
+								    tal:attributes="value request/username|member/getUserName|nothing">
 
 							<div class="row">
 								<div class="cell width-6 position-0">

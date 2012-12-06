@@ -1076,7 +1076,7 @@ class BaseFunc(BaseStore):
                             from vindula.myvindula.user_photo import ModelsPhotoUser
                             user_foto = ModelsPhotoUser().get_ModelsPhotoUser_byUsername(user)
                             
-                            tmp +="<div id='%s'><a href='%s/myvindula-user-crop' class='crop-foto'>Editar Foto</a>" %(campo,url)
+                            tmp +="<div id='%s'><a href='%s/myvindula-user-crop?username=%s' class='crop-foto'>Editar Foto</a>" %(campo,url,user)
                             if user_foto:
                                 tmp += "<div id='preview-user'><img height='150px' src='%s/user-image?username=%s' /></div>" %(url,user)
                                 tmp += "<a href='%s/myvindula-user-delcrop' class='excluir-foto'>Excluir Foto</a>" %(url)
