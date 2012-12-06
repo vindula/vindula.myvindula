@@ -199,13 +199,20 @@
     
                                                             </div> 
                                                             <tal:rep repeat="descricao descricoes">
-                                                                <div tal:define="even repeat/descricao/even|nothing" 
-                                                                    class="row" tal:attributes="class python:even and 'row' or 'row even'">
+                                                                <div tal:define="even repeat/descricao/even|nothing;
+                                                                                 status descricao/status|nothing;
+                                                                                 classStatus python: status=='D' and ' state-private' or '';" 
+                                                                    class="row" tal:attributes="class python:even and 'row'+classStatus or 'row even'+classStatus">
+                                                                    
+                                                                    
                                                                     <div class="cell width-1 position-0">
                                                                         <span tal:content="descricao/codigo|nothing">Cód.</span>
                                                                     </div>
                                                                     <div class="cell width-10 position-1 border-horz">
                                                                         <span tal:content="descricao/descricao|nothing">Descri&ccedil;&atilde;o</span>
+                                                                        <span tal:condition="python: status=='D'"> (-) </span>
+																		<span tal:condition="python: status=='P'"> (+) </span>
+																		
                                                                     </div>
                                                                     <div class="cell width-3 position-10 center border-horz">
                                                                         <span tal:content="python: view.format_moeda(descricao.valor)">Ref.</span>
