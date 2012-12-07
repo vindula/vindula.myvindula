@@ -16,19 +16,16 @@ from vindula.myvindula.registration import SchemaFunc
 def userupdate(event):
     """ Handler for User Login in Site """
     tools = UtilMyvindula()
-    
+   
     user_login = tools.membership.getAuthenticatedMember()
     enable = tools.site.restrictedTraverse('@@myvindula-conf-userpanel').check_alert_first_access()
+    enable_chat = tools.site.restrictedTraverse('vindula-chat-config').enableConf()
     
     user_id = tools.Convert_utf8(user_login.getUserName())      
         
     user_instance = ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id)
         
-    if not user_instance:
-       # and\
-       #user_id != 'admin':
-        
-       # if not ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id):
+    if enable and not user_instance:
         id_instance = ModelsInstanceFuncdetails().set_InstanceFuncdetails(user_id)
         dados = {}
         
@@ -47,11 +44,15 @@ def userupdate(event):
             D['valor'] = tools.Convert_utf8(dados.get(campo))
             
             ModelsDadosFuncdetails().set_DadosFuncdetails(**D)
+    
+        if enable_chat and not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
+            CreateUserXMPP(user_id)
         
         tools.setLogger('info',"Usuario criado no myvindula")
         tools.setRedirectPage('/myvindula-first-registre')
-        
-    if not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
+    
+    
+    if enable_chat and not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
         CreateUserXMPP(user_id)
 
         #tools.setRedirectPage('/myvindula-first-registre')
@@ -65,6 +66,7 @@ def userupdate(event):
             tools.setLogger('info',"Dados Incompletos no myvindula")
             
             tools.setRedirectPage('/myvindula-first-registre')
+
 
 def onDeleteUser(event):
     user = event.object
