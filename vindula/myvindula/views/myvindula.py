@@ -717,24 +717,29 @@ class MyVindulaLike(grok.View,UtilMyvindula):
         like_user = data_like.find(username=unicode(member.getUserName())).count()
         html = ''
 
+        if eval(form.get('isPlone','False')):
+            html += '<div id="%s">' %(form.get('id_obj'))
+            html += '<input type="hidden" value="True" id="isPlone" name="isPlone:boolean">'     
+            html += '<input type="hidden" value="%s" id="type" name="type"></div>' %(form.get('type',''))    
+
         if like_user:
             if data_like.count()>2:
-                html = '<span > Você e mais '+str(data_like.count()-1)+' pessoas já curtiram isso.</span>'
+                html += '<span > Você e mais '+str(data_like.count()-1)+' pessoas já curtiram isso.</span>'
             
             elif data_like.count()==2:
-                html = '<span >Você e mais uma pessoa curtiram isso.</span>'
+                html += '<span >Você e mais uma pessoa curtiram isso.</span>'
              
             elif data_like.count()==1:
-                html = '<span >Você curtiu isso.</span>'
+                html += '<span >Você curtiu isso.</span>'
             
             html += '<span class="link" id="'+form['id_obj']+'" src="True">(Desfazer Curtir)</span>'
                 
         else:
             if data_like.count()>1:
-                html = '<span>'+str(data_like.count())+' pessoas já curtiram isso.</span>'
+                html += '<span>'+str(data_like.count())+' pessoas já curtiram isso.</span>'
             
             elif data_like.count()==1:
-                html =  '<span>'+ str(data_like.count())+' pessoa curtiu isso.</span>'
+                html +=  '<span>'+ str(data_like.count())+' pessoa curtiu isso.</span>'
         
             html += '<span class="link" id="'+form['id_obj']+'">(Curtir)</span>' 
         
