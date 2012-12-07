@@ -47,6 +47,8 @@ from vindula.myvindula.models.descricao_holerite import ModelsFuncHoleriteDescri
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
 
+import pickle, StringIO
+from PIL import Image
 
 from vindula.controlpanel.handlers import userLogged
 
@@ -133,15 +135,41 @@ class VindulahowareuImage(grok.View, UtilMyvindula):
     
     def update(self):
         form = self.request.form
+        buffer = ''
+        
         if 'id' in form.keys():
             id = form.get('id','0')
             if id != 'None':
                 campo_image = ModelsMyvindulaHowareu().get_myvindula_howareu_By_Id(id)
                 valor = campo_image.upload_image
-                x = self.decodePickle(valor)
                 
-                self.request.response.setHeader("Content-Type", "image/jpeg", 0)
-                self.request.response.write(x)                
+                data = self.decodePickle(valor)
+                        
+                img_org = Image.open(StringIO.StringIO(data))
+                # verifica se a imagem é maior que o máximo permitido
+                tamMax = (640.0,440.0)
+                imgSize = img_org.size
+                if (imgSize[0] > tamMax[0]) or (imgSize[1] > tamMax[1]):
+                    #verifica se a largura é maior que a altura
+                    if (imgSize[0] > imgSize[1]):
+                        novaLargura = tamMax[0]
+                        novaAltura = round((novaLargura / imgSize[0]) * imgSize[1])
+                    elif (imgSize[1] > imgSize[0]):
+                        #se a altura for maior que a largura
+                        novaAltura = tamMax[1]
+                        novaLargura = round((novaAltura / imgSize[1]) * imgSize[0])
+                    else:
+                        #altura == largura
+                        novaAltura = novaLargura = max(tamMax)
+                
+                    img_org.thumbnail((novaLargura, novaAltura), Image.ANTIALIAS)
+                
+                imagefile = StringIO.StringIO()
+                img_org.save(imagefile,'JPEG')
+                buffer = imagefile.getvalue()
+                
+        self.request.response.setHeader("Content-Type", "image/jpeg", 0)
+        self.request.response.write(buffer)                
 
 class VindulaHowAreUListAll(grok.View, UtilMyvindula):
     grok.context(Interface)

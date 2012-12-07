@@ -171,7 +171,6 @@ class MyVindulaUserImage(grok.View, BaseFunc):
                 image = campo_image.photograph
             else:    
                 image = campo_image.thumb
-
             
             if image:
                 x =  pickle.loads(image)
@@ -188,8 +187,12 @@ class MyVindulaUserImage(grok.View, BaseFunc):
                 try:
                     objeto = getSite()[local[0]][local[1]][local[2]]
                     if objeto.photograph:
+                        img = objeto.restrictedTraverse('@@images')
+
+                        img_red = img.scale('photograph', width=200, height=200)
+
                         self.request.response.setHeader("Content-Type", "image/jpeg", 0)
-                        self.request.response.write(objeto.photograph.data)        
+                        self.request.response.write(img_red.data.data)
                 except:
                     self.loadDefault()
             else:
