@@ -259,8 +259,8 @@ class SchemaConfgMyvindula(BaseFunc):
                   'ativo_edit' : {'required': False, 'type':'bool',         'label':'Habilitado para edição',      'decription':'Habilita a edição do campo pelo funcionário',                           'ordem':1},
                   'ativo_view' : {'required': False, 'type':'bool',         'label':'Habilitado para visualização','decription':'Habilita a visualização do campo pelo funcionário',                     'ordem':2},
                   'label'      : {'required': True,  'type':self.to_utf8,   'label':'Título',                      'decription':'Digite o nome de visualização do campo pelo funcionário',               'ordem':3},
-                  'decription' : {'required': False, 'type':'textarea',     'label':'Descrição',                   'decription':'Descrição para o preenximento do campo',                                'ordem':4},
-                  'required'   : {'required': False, 'type':'bool',         'label':'Campo Obrigatório',           'decription':'Este campo sera de preenximento obrigátorio',                           'ordem':5},
+                  'decription' : {'required': False, 'type':'textarea',     'label':'Descrição',                   'decription':'Descrição para o preenchimento do campo',                                'ordem':4},
+                  'required'   : {'required': False, 'type':'bool',         'label':'Campo Obrigatório',           'decription':'Este campo sera de preenchimento obrigátorio',                           'ordem':5},
                   'type'       : {'required': True,  'type':'choice',       'label':'Tipo do Campo',               'decription':'Escolha o tipo do campo ',                                              'ordem':6},
                   'list_values': {'required': False, 'type':'textarea',     'label':'Lista de dados para o select','decription':u'Caso o campo seja um select ou list digite os valores para o campo\
                                                                                                                                   <br /> Digite um item por linha',                                      'ordem':7},
