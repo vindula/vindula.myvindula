@@ -79,7 +79,8 @@ class IPortletAniversarios(IPortletDataProvider):
     details_user = schema.Text(title=unicode("Detalhes do aniversariante", 'utf-8'),
                                   description=unicode("Adicione detalhes sobre o aniversariante como Empresa, Matricula e outros. \
                                                        Adicione um campo por linha, no formato [Label] | [Campo].", 'utf-8'),
-                                  required=False)
+                               default = u'[] | [date_birth]',
+                               required=False)
 
 class Assignment(base.Assignment):
     """Portlet assignment.
