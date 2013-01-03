@@ -249,7 +249,14 @@ class ReloadPortletView(grok.View):
                     line = line.replace('[', '').replace(']', '').split(' | ')
                     try:
                         D['label'] = line[0]
-                        D['content'] = user.get(line[1])
+                        if line[1] == 'date_birth':
+                            dado = user.get(line[1])
+                            dado = dado.split('/')
+                            D['content'] = '/'.join(dado[:-1])
+                            
+                        else:
+                            D['content'] = user.get(line[1])                        
+                        
                         L.append(D)
                     except:
                         pass
