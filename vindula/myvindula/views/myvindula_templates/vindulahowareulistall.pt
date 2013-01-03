@@ -20,7 +20,7 @@
                     <p style="text-align: right;" tal:condition="not:isAnonymous">
                         <a tal:attributes="href string:${context/portal_url}/myvindula" class="new-howareu" 
                            title="Postar Novo Pensamento" alt="Postar Novo Pensamento" >
-                            <input type="button" name="new-howareu" value="Pensar" class="bt_comments" />
+                            <input type="button" name="new-howareu" value="Comentar" class="bt_comments" />
                         </a>
                     </p>	                           					     
 	                           					     
