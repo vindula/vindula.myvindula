@@ -269,7 +269,7 @@ class SchemaConfgMyvindula(BaseFunc):
                   'ordem'      : {'required': False, 'type':'hidden',       'label':'Ordenação',                   'decription':'',                                                                      'ordem':10},
                   }
         
-        lista_itens = {'type':[['text','Campo de Texto'],['textarea','Campo Texto Multiplas Linhas'],
+        lista_itens = {'type':[['text','Campo de Texto'],['textarea','Campo Texto Múltiplas Linhas'],
                                ['img','Campo de Upload de Imagem'], ['list','Campo de Seleção Multipla'],
                                ['choice','Campo de Escolha']],
                        
