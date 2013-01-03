@@ -230,7 +230,7 @@ class MyVindulaListDocumentView(grok.View, UtilMyvindula):
             self.request.response.redirect(self.context.absolute_url() + '/login')
 
     
-class VindulaDocumentosDownloadView(grok.View):
+class VindulaDocumentosDownloadView(grok.View, UtilMyvindula):
     grok.context(Interface)
     grok.require('zope2.View')
     grok.name('download-document')
