@@ -3,7 +3,8 @@
         <metal:block fill-slot="top_slot">
             <tal:dummy tal:define="dummy python:request.set('disable_border',1);
                                    disable_column_one python:request.set('disable_plone.leftcolumn',1);
-                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);
+                                   dummy python:request.set('ctx_help', 'myvindula')" />
         </metal:block>
     </head>
 	<body>
@@ -12,8 +13,8 @@
                 Status message
              </div>
 		              
-	        <metal:use use-macro="context/@@myvindulapanel/macros/page"/>
-			<input type="hidden" id="portal_url" tal:attributes="value context/portal_url|nothing">    
+	        <metal:use use-macro="context/@@myvindulapanel/macros/page" />
+			<input type="hidden" id="portal_url" tal:attributes="value context/portal_url|nothing" >    
 			<input type="hidden" id="context_url" tal:attributes="value string:${context/absolute_url|nothing}/myvindula">
 			<div id="content" tal:define="view python:context.restrictedTraverse('@@myvindula');
                                          memberinfo context/portal_membership/getMemberInfo;

@@ -4,6 +4,8 @@ from zope.interface import Interface
 
 from vindula.myvindula.tools.utils import UtilMyvindula
 
+from urllib2 import urlopen
+
 class MacroSingleComment(grok.View, UtilMyvindula):
     grok.context(Interface)
     grok.require('zope2.View')
@@ -68,3 +70,24 @@ class MyVindulaUserPerfil(grok.View, UtilMyvindula):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
         if open_for_anonymousUser:
             self.request.response.redirect(self.context.absolute_url() + '/login')
+            
+class MyVindulaImageUserLoad(grok.View, UtilMyvindula):
+    grok.context(Interface)
+    grok.require('zope2.View')
+    grok.name('image-user-load')
+    
+    def render(self):
+        pass
+    
+    def update(self):
+        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
+        if open_for_anonymousUser:
+            self.request.response.redirect(self.context.absolute_url() + '/login')            
+            
+        user = self.request.form.get('user','')
+        url = self.getURLFotoUser(user)
+        
+        print url
+        
+        self.request.response.redirect(url,302)
+        

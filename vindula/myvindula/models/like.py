@@ -15,6 +15,7 @@ class ModelsMyvindulaLike(Storm, BaseStore):
     id = Int(primary=True)
     username = Unicode()
     date_creation = DateTime()
+    date_transfer = DateTime()
     type = Unicode()
     id_obj = Unicode()
     isPlone = Bool()
@@ -32,6 +33,15 @@ class ModelsMyvindulaLike(Storm, BaseStore):
         self.store.add(comments)
         self.store.flush()        
 
+    def get_myvindula_like_all(self):
+        data = self.store.find(ModelsMyvindulaLike, ModelsMyvindulaLike.date_transfer ==None)
+        
+        if data.count > 0:
+            return data
+        else:
+            return []   
+
+
     def get_myvindula_like(self,**kwargs):
         id_obj = kwargs.get('id_obj','')
         type_obj = kwargs.get('type','')
@@ -44,7 +54,20 @@ class ModelsMyvindulaLike(Storm, BaseStore):
         if data.count > 0:
             return data
         else:
-            return None   
+            return []   
+        
+    def update_ModelsMyvindulaLike(self,id,D):
+        obj = self.get_LikeByID(id)
+        
+        if obj:
+            for i in D:
+                value = D.get(i)
+                setattr(obj, i, value)
+            self.store.commit()           
+
+    def get_LikeByID(self,id):
+        data = self.store.find(ModelsMyvindulaLike, ModelsMyvindulaLike.id == id).one()
+        return data
 
     def del_myvindula_like(self, **kwargs):
         id_obj = kwargs.get('id_obj','')
