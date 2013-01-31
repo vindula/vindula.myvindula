@@ -37,7 +37,7 @@ CREATE TABLE  `myvindulaDB`.`vin_myvindula_confgfuncdetails` (
   `ativo_view` tinyint(1) DEFAULT '1',
   `label` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`fields`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 -- -----------------------------------------------------
@@ -164,6 +164,11 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 11
 DEFAULT CHARACTER SET = latin1;
 
+-- -----------------------------------------------------
+-- Table `myvindulaDB`.`vin_myvindula_photo_user`
+-- -----------------------------------------------------
+
+DROP TABLE IF EXISTS `myvindulaDB`.`vin_myvindula_photo_user` ;
 
 CREATE TABLE  `myvindulaDB`.`vin_myvindula_photo_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -172,7 +177,7 @@ CREATE TABLE  `myvindulaDB`.`vin_myvindula_photo_user` (
   `photograph` longblob,
   `thumb` longblob,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 
 -- -----------------------------------------------------
@@ -190,7 +195,7 @@ CREATE  TABLE IF NOT EXISTS `myvindulaDB`.`vin_myvindula_howareu` (
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB
 AUTO_INCREMENT = 30
-DEFAULT CHARACTER SET = latin1
+DEFAULT CHARACTER SET = latin1;
 
 
 
@@ -203,6 +208,7 @@ CREATE  TABLE IF NOT EXISTS `myvindulaDB`.`vin_myvindula_like` (
   `id` INT(11) NOT NULL AUTO_INCREMENT ,
   `username` VARCHAR(45) NOT NULL ,
   `date_creation` DATETIME NOT NULL ,
+  `date_transfer` DATETIME NOT NULL ,
   `type` VARCHAR(45) NULL DEFAULT NULL ,
   `id_obj` VARCHAR(45) NULL DEFAULT NULL ,
   `isPlone` TINYINT(1) NOT NULL DEFAULT '0' ,
