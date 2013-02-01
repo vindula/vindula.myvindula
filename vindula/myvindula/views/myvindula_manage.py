@@ -630,8 +630,8 @@ class MyVindulaImportSecondView(grok.View, UtilMyvindula):
                                     check_user = True
                                         
                                 else:
-                                    if form.get('campo') != '':
-                                        indice = int(form.get('campo'))-1
+                                    if form.get('username'):
+                                        indice = int(form.get('username'))-1
                                         user = self.to_utf8(dados_linha[indice].replace('"',''))
                                         if ModelsInstanceFuncdetails().get_InstanceFuncdetails(user) and merge_user:    
                                             dados[campo] = user
