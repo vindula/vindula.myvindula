@@ -107,8 +107,9 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
             
         
         origin = [ModelsDadosFuncdetails,
-                  Join(ModelsInstanceFuncdetails, ModelsInstanceFuncdetails.id==ModelsDadosFuncdetails.vin_myvindula_instance_id),
-                  Join(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==ModelsInstanceFuncdetails.username),]
+                  Join(ModelsInstanceFuncdetails, ModelsInstanceFuncdetails.id==ModelsDadosFuncdetails.vin_myvindula_instance_id)]
+        if department_id:
+            origin.append(Join(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==ModelsInstanceFuncdetails.username))
         
         for item in form_campos:
             busca = "self.store.using(*origin).find(ModelsDadosFuncdetails,"
