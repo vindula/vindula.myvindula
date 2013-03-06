@@ -12,6 +12,8 @@ from vindula.myvindula.models.department import ModelsDepartment
 
 from vindula.myvindula.tools.utils import UtilMyvindula
 
+from datetime import datetime, date
+
 
 class ModelsDadosFuncdetails(Storm, BaseStore):
     __storm_table__ = 'vin_myvindula_dados_funcdetails'
@@ -174,41 +176,69 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
         return self.geraDic_DadosUser(ids_instances)
 
     def get_FuncBirthdays(self, date_start, date_end, filtro=''):
-        if filtro == 'proximo':
-            sql = """SELECT vin_myvindula_instance_id FROM vin_myvindula_dados_funcdetails WHERE vin_myvindula_confgfuncdetails_fields='date_birth' and 
-                     concat_ws('-',year(now()),month(STR_TO_DATE(valor,"%d/%m/%Y")),day(STR_TO_DATE(valor,"%d/%m/%Y"))) >= DATE(NOW()) ORDER BY MONTH(STR_TO_DATE(valor,"%d/%m/%Y"))
-                     ASC , DAY(STR_TO_DATE(valor,"%d/%m/%Y")) ASC;
-            """
-        else:
-            sql = '''
-                 SELECT vin_myvindula_instance_id FROM vin_myvindula_dados_funcdetails WHERE vin_myvindula_confgfuncdetails_fields='date_birth' and 
-                 DATE_FORMAT(STR_TO_DATE(valor,"%d/%m/%Y"), "%m-%d") BETWEEN DATE_FORMAT('{0}', "%m-%d") AND DATE_FORMAT('{1}', "%m-%d")
-                '''.format(date_start,date_end)
         
-            if filtro == 'random':
-                sql += ' ORDER BY RAND();'
-    
-            else:
-                sql +='ORDER BY MONTH(STR_TO_DATE(valor,"%d/%m/%Y")) ASC, DAY(STR_TO_DATE(valor,"%d/%m/%Y")) ASC;'
+        L = []
+        date_start = date(int(date_start.split('-')[0]),
+                          int(date_start.split('-')[1]),
+                          int(date_start.split('-')[2]))
+                
+        date_end = date(int(date_end.split('-')[0]),
+                        int(date_end.split('-')[1]),
+                        int(date_end.split('-')[2]))
         
-       
+        data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==u'date_birth')
+        for item in data:                                           
+
+            data_usuario = date(date.today().year,
+                        int(datetime.strptime(item.valor, "%d/%m/%Y").month),                        
+                        int(datetime.strptime(item.valor, "%d/%m/%Y").day))
             
+            if filtro == 'proximo': 
+                if data_usuario >= date.today():
+                    L.append(item)
+            else:
+                if data_usuario >= date_start and\
+                   data_usuario <= date_end:
+                    L.append(item)
+        
+        L = sorted(L, key=lambda row: datetime.strptime(row.valor, "%d/%m/%Y").day)      
+        L = sorted(L, key=lambda row: datetime.strptime(row.valor, "%d/%m/%Y").month)
+            
+        if L:
+            result = [i.vin_myvindula_instance_id for i in L]        
+            return self.geraDic_DadosUser(result)
+        else:
+            return None
+        
+            
+#            sql = """SELECT vin_myvindula_instance_id FROM vin_myvindula_dados_funcdetails WHERE vin_myvindula_confgfuncdetails_fields='date_birth' and 
+#                     concat_ws('-',year(now()),month(STR_TO_DATE(valor,"%d/%m/%Y")),day(STR_TO_DATE(valor,"%d/%m/%Y"))) >= DATE(NOW()) ORDER BY MONTH(STR_TO_DATE(valor,"%d/%m/%Y"))
+#                     ASC , DAY(STR_TO_DATE(valor,"%d/%m/%Y")) ASC;
+#            """
+#        else:
+#            sql = '''
+#                 SELECT vin_myvindula_instance_id FROM vin_myvindula_dados_funcdetails WHERE vin_myvindula_confgfuncdetails_fields='date_birth' and 
+#                 DATE_FORMAT(STR_TO_DATE(valor,"%d/%m/%Y"), "%m-%d") BETWEEN DATE_FORMAT('{0}', "%m-%d") AND DATE_FORMAT('{1}', "%m-%d")
+#                '''.format(date_start,date_end)
+#        
+#            if filtro == 'random':
+#                sql += ' ORDER BY RAND();'
+#    
+#            else:
+#                sql +='ORDER BY MONTH(STR_TO_DATE(valor,"%d/%m/%Y")) ASC, DAY(STR_TO_DATE(valor,"%d/%m/%Y")) ASC;'
+#        
             #data = self.store.execute('SELECT * FROM vin_myvindula_funcdetails WHERE DATE_FORMAT(date_birth, "%m-%d") BETWEEN DATE_FORMAT("'+date_start+'", "%m-%d") AND DATE_FORMAT("'+date_end+'", "%m-%d") ORDER BY RAND();')
             #data = self.store.execute("SELECT * FROM vin_myvindula_funcdetails WHERE concat_ws('-',year(now()),month(date_birth),day(date_birth)) >= DATE(NOW()) ORDER BY MONTH(date_birth) ASC , DAY(date_birth) ASC;")
         
 #        else:
 #            data = self.store.execute('SELECT * FROM vin_myvindula_funcdetails WHERE DATE_FORMAT(date_birth, "%m-%d") BETWEEN DATE_FORMAT("'+date_start+'", "%m-%d") AND DATE_FORMAT("'+date_end+'", "%m-%d") ORDER BY MONTH(date_birth) ASC, DAY(date_birth) ASC;')
 
-        data = self.store.execute(sql)
-        if data.rowcount != 0:
-            result=[]
-            for obj in data.get_all():
-                result.append(obj[0])       
-            
-            return self.geraDic_DadosUser(result)
-        else:
-            return None
-        
-        
-        
-        
+#        data = self.store.execute(sql)
+#        if data.rowcount != 0:
+#            result=[]
+#            for obj in data.get_all():
+#                result.append(obj[0])       
+#            
+#            return self.geraDic_DadosUser(result)
+#        else:
+#            return None
