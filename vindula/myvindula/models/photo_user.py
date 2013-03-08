@@ -48,12 +48,15 @@ class ModelsPhotoUser(Storm, BaseStore):
 
 # Metodos de Migração temporario
     def get_ModelsPhotoUser_byUsername(self,username,field=u'photograph'):
-        from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
+#        from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
         data = self.store.find(ModelsPhotoUser, ModelsPhotoUser.username == username).one()
         if not data:
-            instance_user = ModelsInstanceFuncdetails().get_InstanceFuncdetails(username)
-            if instance_user:
-                data = self.get_ModelsPhotoUser_byFieldAndInstance(field,instance_user.id)
+            #DOTO aqui avia uma consulta para as fotos dos usuarios do vindula 1.1
+            pass
+            
+#            instance_user = ModelsInstanceFuncdetails().get_InstanceFuncdetails(username)
+#            if instance_user:
+#                data = self.get_ModelsPhotoUser_byFieldAndInstance(field,instance_user.id)
         
         if data:
             return data

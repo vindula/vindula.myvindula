@@ -9,6 +9,7 @@ from vindula.myvindula.models.photo_user import ModelsPhotoUser
 
 from vindula.myvindula.models.base import BaseStore
 
+from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 
 
 from Products.CMFCore.utils import getToolByName
@@ -40,24 +41,22 @@ class UtilMyvindula(object):
         
     
     def get_prefs_user(self, user):
-        from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
-        from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
+        #from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
         user_id = self.Convert_utf8(user)
         #return ModelsFuncDetails().get_FuncDetails(user_id)
 
         campos = ModelsConfgMyvindula().get_configurationAll()
-        dados = ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id)
+        #dados = ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id)
         
-        D = {}
-        if dados:
-            D['instance_user'] = dados.id
+        D = {'username':user_id}
+#        if dados: 
+#            D['instance_user'] = dados.id
         for campo in campos:
-            D[campo.fields] = self.getDadoUser_byField(dados, campo.fields)
+            D[campo.name] = self.getDadoUser_byField(user_id, campo.id)
         
         return D
         
     def get_Dic_Campos(self):
-        from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
         campos = {}
         fields = ModelsConfgMyvindula().get_configurationAll()
         if fields:
@@ -75,20 +74,22 @@ class UtilMyvindula(object):
                     
         return campos
     
-    def getDadoUser_byField(self,instanceUser,campo):
-        if instanceUser:
-            tmp = instanceUser.dadosUses.find(vin_myvindula_confgfuncdetails_fields=self.Convert_utf8(campo)).one()
-            if tmp:
-                try:data = self.decodePickle(tmp.valor)
-                except:data = tmp.valor
-                if type(data) == list:
-                    str = ''
-                    for i in data:
-                        if i:str += i +' / '
-                    
-                    data = str
-                return data
-        return None
+    def getDadoUser_byField(self,user,campo):
+        from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
+        result = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstanceAndField(user,campo)
+        
+        #tmp = instanceUser.dadosUses.find(field=self.Convert_utf8(campo)).one()
+        if result:
+            try:data = self.decodePickle(result.value)
+            except:data = result.value
+            if type(data) == list:
+                str = ''
+                for i in data:
+                    if i:str += i +' / '
+                
+                data = str
+            return data
+        
      
 
     def to_utf8(self, value):

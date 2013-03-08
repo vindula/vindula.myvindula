@@ -26,7 +26,7 @@ import pickle
 
 from vindula.myvindula.models.base import BaseStore
 from vindula.myvindula.models.funcdetails import ModelsFuncDetails
-from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
+#from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 from vindula.myvindula.models.department import ModelsDepartment
 from vindula.myvindula.models.howareu import ModelsMyvindulaHowareu
 from vindula.myvindula.models.comments import ModelsMyvindulaComments

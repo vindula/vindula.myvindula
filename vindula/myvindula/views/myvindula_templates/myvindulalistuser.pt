@@ -16,14 +16,14 @@
     											   form_data view/load_list | python:{};
     											   user_perfil form_data/username|nothing;
     											   panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel')" >
-    											   
+    			
         	<tal:cont tal:condition="form_data">
-    			<tal:cond tal:condition="python: str(member.getUserName())==form_data.username">
+    			<tal:cond tal:condition="python: str(member.getUserName())==user_perfil">
     	    		<input id="user-igual" type="hidden" value="True">
     				<metal:use use-macro="context/@@myvindulapanel/macros/page"/>                
     		    </tal:cond>
     			
-    			<tal:cont tal:condition="python: str(member.getUserName())!=form_data.username">
+    			<tal:cont tal:condition="python: str(member.getUserName())!=user_perfil">
     				<input id="user-igual"  type="hidden" value="False">
     				<div id="edit-bar">
     		            <h5 class="hiddenStructure">Visões</h5>
@@ -50,8 +50,7 @@
     			<!-- Meus Pensamentos -->
     			
                 <div id="howareu" class="userpage geral_lista_comentarios" tal:condition="panelView/check_pensamentos">
-                    <h2 class="h2title" tal:define='dic_user python:view.get_prefs_user(form_data.username)'
-                         tal:content="string: No que ${dic_user/name|nothing} est&aacute; pensando!"></h2>
+                    <h2 class="h2title" tal:content="string: No que ${form_data/name|nothing} est&aacute; pensando!"></h2>
                     
                     <tal:def define="items python: view.get_howareu(user);
                                      comment_type string:ModelsMyvindulaHowareu">
@@ -67,8 +66,7 @@
     				
     				<!-- Scraps Input -->
     				<div id="comment-geral" tal:condition="not: isAnonymous">
-    					<h2 class="h2title" tal:define='dic_user python:view.get_prefs_user(form_data.username)' 
-    					                    tal:content="string:Deixe um recado para ${dic_user/name|nothing}:"></h2>
+    					<h2 class="h2title" tal:content="string:Deixe um recado para ${form_data/name|nothing}:"></h2>
     					
     					<form action="" method="post" enctype="multipart/form-data" name="save-recados" 
       						  tal:attributes="action string:${context/absolute_url}/myvindulalistuser?user=${context/REQUEST/form/user|nothing}&scraps=true">	

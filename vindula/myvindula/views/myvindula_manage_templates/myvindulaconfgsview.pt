@@ -53,20 +53,20 @@
                             </tr>
                             <tbody class="sortable" >
                                 <tal:rep repeat="item data">
-                                    <tr tal:define="field item/fields|nothing"
+                                    <tr tal:define="field item/name|nothing"
                                         tal:attributes="id string:${field};
                                                         class python: (field in view.BlackList) and 'BlackList' or '' ">
                                         <td class="draggable draggingHook" style="cursor: ns-resize;">⣿</td>
                                         <td>
                                             <a title="Editar campos" alt="Editar campos"
-                                                tal:attributes="href string:${context/absolute_url}/edit_myvindulaconfgs?fields=${item/fields}"
-                                                tal:content="item/fields|nothing">fields</a>
+                                                tal:attributes="href string:${context/absolute_url}/edit_myvindulaconfgs?fields=${item/name}"
+                                                tal:content="item/name|nothing">fields</a>
                                         </td>
                                         <td class="img"><img tal:attributes="src string:${view/static}/images/field-${item/ativo_edit|nothing}.png" /> </td>
                                         <td class="img"><img tal:attributes="src string:${view/static}/images/field-${item/ativo_view|nothing}.png" /></td>
                                         <td tal:content="item/label|nothing"> Titulo </td>    
                                         <td tal:content="item/type|nothing">text</td>
-                                        <td tal:define="area_de_view item/area_de_view|nothing;
+                                        <td tal:define="area_de_view item/profile_category|nothing;
                                                         area python: (field in view.BlackList) and 'Bloqueado' or area_de_view"
                                             tal:content="area">Área de Visualização</td>
                                         

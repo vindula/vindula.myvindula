@@ -19,8 +19,7 @@
                         <div class="titulo">
                             <h2>
                                 <tal:cond condition="python: view.get_ConfugCampos('name')">
-                                   <tal:cont tal:define="name python:view.getDadoUser_byField(form_data,'name')" 
-                                             content="name/valor|nothing" />
+                                   <tal:cont content="form_data/name|nothing" />
                                 </tal:cond>
                             </h2>
                         </div>
@@ -67,7 +66,7 @@
                                         </tal:rep>
                                         
                                     </table>
-                                <a id="send-mail" tal:define="email python:view.getDadoUser_byField(form_data,'email')" 
+                                <a id="send-mail" tal:define="email dados_usuario/email|nothing" 
                                                   tal:condition="python:email and view.get_ConfugCampos('email')" 
                                                   tal:attributes="href string:mailto:${email}">Enviar e-mail</a>
                             </div>

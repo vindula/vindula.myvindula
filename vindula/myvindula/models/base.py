@@ -27,5 +27,12 @@ class BaseStore(object):
         # divide o dicionario 'convertidos'
         for key in kwargs:
             setattr(self,key,kwargs[key])
-        # adiciona a data atual
-        self.date_creation = datetime.now()    
+#        
+#        try:
+#            # adiciona a data atual
+#            self.date_creation = datetime.now()    
+#        except:
+#            # adiciona a data atual
+#            self.date_created = datetime.now()
+#        
+        

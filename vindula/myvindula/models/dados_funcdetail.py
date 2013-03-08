@@ -8,7 +8,7 @@ from storm.expr import Desc, Select
 
 from vindula.myvindula.models.base import BaseStore
 from vindula.myvindula.models.department import ModelsDepartment
-
+from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 
 from vindula.myvindula.tools.utils import UtilMyvindula
 
@@ -16,29 +16,71 @@ from datetime import datetime, date
 
 
 class ModelsDadosFuncdetails(Storm, BaseStore):
-    __storm_table__ = 'vin_myvindula_dados_funcdetails'
+    #__storm_table__ = 'vin_myvindula_dados_funcdetails'
+    __storm_table__ = 'vinapp_myvindula_userschemadata'
     
     #Campos de edição
     id = Int(primary=True)
-    date_creation = DateTime()
+    username = Unicode()
+    field_id = Int()
+    value = Unicode()
+    date_created = DateTime()
+    date_modified = DateTime()
     
-    valor = Unicode()
-    vin_myvindula_confgfuncdetails_fields = Unicode()
-    vin_myvindula_instance_id = Int()
-
-    campo = Reference(vin_myvindula_confgfuncdetails_fields, "ModelsConfgMyvindula.fields")
-    instance = Reference(vin_myvindula_instance_id, "ModelsInstanceFuncdetails.id")
-
+    #vin_myvindula_confgfuncdetails_fields = Unicode()
+    #vin_myvindula_instance_id = Int()
+    
+    campo = Reference(field_id, "ModelsConfgMyvindula.id")
+#    instance = Reference(vin_myvindula_instance_id, "ModelsInstanceFuncdetails.id")
+    
+    def createUserProfile(self,data):
+        tool = UtilMyvindula()
+        username = data.get(u'username')
+        created = False
+        #Removendo valor do dicionario para criar os valores
+        data.pop(u'username')
+        #Recebe o dicionario de dados do usuario e cria o perfil                
+        for field in data.keys():
+            field_config = ModelsConfgMyvindula().get_configuration_By_fields(field)
+            if field_config:
+                field_id = field_config.id 
+            else:
+                #Caso nao exista o field chamado, loga o erro e deixa passar
+                tool.setLogger('info',"User schema field unkown: %s" % field)
+                continue
+            
+            value = tool.Convert_utf8(data[field])
+            value_object = ModelsDadosFuncdetails(**{'username':username,
+                                                     'field_id':field_id,
+                                                     'value':value,
+                                                     'date_created':datetime.now(),
+                                                     'date_modified':datetime.now()})
+            tool.setLogger('info',"User data stored: %s - %s - %s" % (username,
+                                                                      field,
+                                                                      value))
+            self.store.add(value_object)
+            created = True                   
+        
+        if created:
+            self.store.flush()
+            tool.setLogger('info',"User created on myvindula: %s" % username)
 
     def set_DadosFuncdetails(self,**kwargs):
         # adicionando...
-        dados = ModelsDadosFuncdetails(**kwargs)
-        self.store.add(dados)
-        self.store.flush()         
+        field_config = ModelsConfgMyvindula().get_configuration_By_fields(kwargs.get(u'field'))
+        if field_config:
+            kwargs.pop(u'field')
+            kwargs[u'field_id'] = field_config.id 
+            kwargs[u'date_created'] = datetime.now()
+            kwargs[u'date_modified'] = datetime.now()
+        
+            dados = ModelsDadosFuncdetails(**kwargs)
+            self.store.add(dados)
+            self.store.flush()         
 
     
     def del_DadosFuncdetails(self,id_instance):
-        results = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.vin_myvindula_instance_id==id_instance)
+        results = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.username==id_instance)
         if results.count() > 0:
             for result in results:
                 self.store.remove(result)
@@ -46,7 +88,7 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
 
     
     def del_DadosFuncdetails_by_field(self,campo):
-        results = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==campo)
+        results = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.field_id==campo)
         if results.count() > 0:
             for result in results:
                self.store.remove(result)
@@ -54,22 +96,32 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
     
     
     def get_DadosFuncdetails_byInstance(self,id_instance):
-        data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.vin_myvindula_instance_id==id_instance)
+        data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.username==id_instance)
         
         if data.count() > 0:
             return data
         else:
             return None
       
-    def get_DadosFuncdetails_byInstanceAndField(self,id_instance,fields):
-        data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.vin_myvindula_instance_id==id_instance,
-                                                       ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==fields).one()
-        
+    def get_DadosFuncdetails_byInstanceAndField(self,username,field_id):
+        data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.username==username,
+                                                       ModelsDadosFuncdetails.field_id==field_id).one()
         if data:
             return data
-        else:
-            return None
         
+        return None
+     
+    def get_DadosFuncdetails_byInstanceAndFieldName(self,username,field):
+        field_config = ModelsConfgMyvindula().get_configuration_By_fields(field)
+        if field_config:
+            field_id = field_config.id
+        
+            data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.username==username,
+                                                           ModelsDadosFuncdetails.field_id==field_id).one()
+            if data:
+                return data
+        
+        return None    
         
     def geraDic_DadosUser(self,ids_instances):
         from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
@@ -82,26 +134,28 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
             
             D = {}
             if dados:
+                
+                # ToDo: Estas duas chaves estao legadas para o resto da aplicação
                 D['instance_user'] = ids
-                D['username'] = dados[0].instance.username
+                D['username'] = ids #dados[0].instance.username
             
                 for campo in campos:
-                    tmp = dados.find(vin_myvindula_confgfuncdetails_fields=tools.Convert_utf8(campo.fields)).one()
+                    tmp = dados.find(field_id=campo.id).one()
                     if tmp:
                         try:
                             data = tools.decodePickle(tmp.valor)
                         except:
-                            data = tmp.valor
+                            data = tmp.value
                 
-                        D[campo.fields] = data 
+                        D[campo.name] = data 
             
                 L.append(D)
         return L
         
         
-#Metodos de busca de usuario para o portal    
+    #Metodos de busca de usuario para o portal    
     def get_FuncBusca(self,department_id='',form_campos=[],filtro=False):
-        from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
+        #from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
         ids_instances = []
         
         if filtro:
@@ -109,23 +163,24 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
             
         
         origin = [ModelsDadosFuncdetails,
-                  Join(ModelsInstanceFuncdetails, ModelsInstanceFuncdetails.id==ModelsDadosFuncdetails.vin_myvindula_instance_id)]
+                  Join(ModelsConfgMyvindula, ModelsConfgMyvindula.id==ModelsDadosFuncdetails.field_id)]
+        
         if department_id:
-            origin.append(Join(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==ModelsInstanceFuncdetails.username))
+            origin.append(Join(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==ModelsDadosFuncdetails.username))
         
         for item in form_campos:
             busca = "self.store.using(*origin).find(ModelsDadosFuncdetails,"
             if item.values()[0]:
                 
                 if item.keys()[0] == 'phone_number':
-                    busca += "ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==u'phone_number',\
-                             ModelsDadosFuncdetails.valor, "
+                    busca += "ModelsConfgMyvindula.name==u'phone_number',\
+                             ModelsDadosFuncdetails.value, "
                 else:
-                    busca += "ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==u'"+item.keys()[0]+"',\
-                             ModelsDadosFuncdetails.valor.like( '%' + '%'.join(u'"+item.values()[0]+"'.split(' ')) + '%' ),"
+                    busca += "ModelsConfgMyvindula.name==u'"+item.keys()[0]+"',\
+                             ModelsDadosFuncdetails.value.like( '%' + '%'.join(u'"+item.values()[0]+"'.split(' ')) + '%' ),"
         
                 if ids_instances:
-                    busca += "ModelsDadosFuncdetails.vin_myvindula_instance_id.is_in(ids_instances),"
+                    busca += "ModelsDadosFuncdetails.username.is_in(ids_instances),"
                     
                 if department_id:
                     busca += "ModelsDepartment.uid_plone==department_id,"
@@ -138,9 +193,9 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
                 #if data.count()>0:
                 ids_instances = []   
                 for i in data:
-                    id = i.vin_myvindula_instance_id
+                    id = i.username
                     if not id in ids_instances:
-                        ids_instances.append(i.vin_myvindula_instance_id)
+                        ids_instances.append(i.username)
         
         
         
@@ -178,15 +233,12 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
     def get_FuncBirthdays(self, date_start, date_end, filtro=''):
         
         L = []
-        date_start = date(int(date_start.split('-')[0]),
-                          int(date_start.split('-')[1]),
-                          int(date_start.split('-')[2]))
-                
-        date_end = date(int(date_end.split('-')[0]),
-                        int(date_end.split('-')[1]),
-                        int(date_end.split('-')[2]))
+        data = []
         
-        data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==u'date_birth')
+        field_config = ModelsConfgMyvindula().get_configuration_By_fields(u'date_birth')
+        if field_config:
+            data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.field_id==field_config.id)
+        
         for item in data:                                           
 
             data_usuario = date(date.today().year,
@@ -197,6 +249,15 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
                 if data_usuario >= date.today():
                     L.append(item)
             else:
+                
+                date_start = date(int(date_start.split('-')[0]),
+                          int(date_start.split('-')[1]),
+                          int(date_start.split('-')[2]))
+                
+                date_end = date(int(date_end.split('-')[0]),
+                                int(date_end.split('-')[1]),
+                                int(date_end.split('-')[2]))
+                
                 if data_usuario >= date_start and\
                    data_usuario <= date_end:
                     L.append(item)
@@ -205,7 +266,7 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
         L = sorted(L, key=lambda row: datetime.strptime(row.valor, "%d/%m/%Y").month)
             
         if L:
-            result = [i.vin_myvindula_instance_id for i in L]        
+            result = [i.username for i in L]        
             return self.geraDic_DadosUser(result)
         else:
             return None

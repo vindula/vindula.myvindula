@@ -307,7 +307,8 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
         member =  self.context.restrictedTraverse('@@plone_portal_state').member().getUserName();
         user = self.Convert_utf8(self.request.form.get('user',str(member)))
         #return ModelsFuncDetails().get_FuncDetails(unicode(user, 'utf-8'))
-        return ModelsInstanceFuncdetails().get_InstanceFuncdetails(user)
+        #return ModelsInstanceFuncdetails().get_InstanceFuncdetails(user)
+        return self.get_prefs_user(user)
 
 
     def geraDadosAreas(self,area,instanceUser):
@@ -317,7 +318,8 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
             D = {}
             D['label'] = campo.label
             try:
-                valor = self.getDadoUser_byField(instanceUser, campo.fields)
+#                valor = self.getDadoUser_byField(instanceUser, campo.fields)
+                valor = instanceUser.get(campo.name)
                 if type(valor) == list:
                     valor_list = ''
                     for i in valor:
