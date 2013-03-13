@@ -53,6 +53,15 @@
                                 <tal:cond condition="python:not view.get_ConfugCampos('photograph')">
                                     <div style="width: 150px;height: 150px;"></div>
                                 </tal:cond>
+                  		    <div id="name" width="50%">  
+							  <h2>
+                                <tal:cond condition="python: view.get_ConfugCampos('name')">
+                                   <tal:cont tal:define="name python:view.getDadoUser_byField(form_data,'name')" 
+                                             content="name/valor|name" />
+                                   </tal:cond>
+                            	</h2>
+						     <div style="width: 150px;height: 150px;"></div>
+ 						    </div>		
                             </div>
                         
                             <div id="data" tal:define="dados python:view.geraDadosAreas('personal',form_data)" 
