@@ -178,13 +178,6 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
     def get_FuncBirthdays(self, date_start, date_end, filtro=''):
         
         L = []
-        date_start = date(int(date_start.split('-')[0]),
-                          int(date_start.split('-')[1]),
-                          int(date_start.split('-')[2]))
-                
-        date_end = date(int(date_end.split('-')[0]),
-                        int(date_end.split('-')[1]),
-                        int(date_end.split('-')[2]))
         
         data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==u'date_birth')
         for item in data:                                           
@@ -197,7 +190,15 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
                 if data_usuario >= date.today():
                     L.append(item)
             else:
-                if data_usuario >= date_start and\
+               date_start = date(int(date_start.split('-')[0]),
+                          int(date_start.split('-')[1]),
+                          int(date_start.split('-')[2]))
+                
+               date_end = date(int(date_end.split('-')[0]),
+                                int(date_end.split('-')[1]),
+                                int(date_end.split('-')[2]))
+                
+               if data_usuario >= date_start and\
                    data_usuario <= date_end:
                     L.append(item)
         

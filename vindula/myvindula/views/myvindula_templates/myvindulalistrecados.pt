@@ -9,7 +9,7 @@
     <body>
         <div metal:fill-slot="content" tal:define="member python:context.portal_membership.getAuthenticatedMember();
     											   isAnonymous context/portal_membership/isAnonymousUser|python:True;
-    											   user python:member.getUserName() or None;
+    											   user_login python:member.getUserName() or None;
     											   
     											   check_recados context/@@myvindula-conf-userpanel/check_recados;"
     											   
@@ -19,7 +19,7 @@
     		<div id="content">
     			<div id="scraps" class="userpage geral_lista_comentarios">
     				<h2 class="h2title">Recados que deixaram para você!</h2>
-        			<tal:def define="items python:view.get_recados(user);">
+        			<tal:def define="items python:view.get_recados(user_login);">
     					<div class="userpage geral_lista_comentarios" tal:condition="items">
     						<tal:rep tal:repeat="item items">
     							<div class="comment item_lista" > 
@@ -41,7 +41,7 @@
     								<!-- Responde / Excluir recados -->
     								<div id="comments" class="bt_comentar" tal:condition="not: isAnonymous" >
     									<a>
-    										<input type="button" tal:attributes="onClick string: location.href='${context/portal_url}/myvindulalistuser?user=${user}&scraps=true'"
+    										<input type="button" tal:attributes="onClick string: location.href='${context/portal_url}/myvindulalistuser?user=${item/username}&scraps=true'"
         										   class="comments bt_comments" value="Responder" />
     									</a>
     									<form action="#" method="post" enctype="multipart/form-data" style="float:right"
