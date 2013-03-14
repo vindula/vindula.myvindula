@@ -3,12 +3,13 @@
                      view_comments python:context.restrictedTraverse('@@myvindula-comments');
                      view_myvindula python:context.restrictedTraverse('@@myvindula');
                      panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel');
-					 
-					 
+					 ativa_richtext panelView/check_ativa_richtext|python:False;
+					 comments_clear python:False;">
+					 <!-- 
 					 folder python: context.aq_parent;
 					 comments_clear python:folder.portal_type=='VindulaPhotoAlbum' or False;
+					  -->
 					 
-					 ativa_richtext panelView/check_ativa_richtext|python:False">
 
         <!-- campos input necessario para a criação de comentariso -->
         <div class="geral_lista_comentarios">

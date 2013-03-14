@@ -6,11 +6,14 @@
 
     <tal:def define="view_myvindula python:context.restrictedTraverse('@@myvindula');
                      panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel');
+					 ativa_richtext panelView/check_ativa_richtext|python:False;
+					 comments_clear python:False;">
 					 
+					 <!-- 
 					 folder python: context.aq_parent;
                      comments_clear python:folder.portal_type=='VindulaPhotoAlbum' or False;
+                      -->
                      
-                     ativa_richtext panelView/check_ativa_richtext|python:False">
         
         <tal:cond condition="python: ativa_richtext and not comments_clear">
             <input class="cke_config_url" type="hidden" name="cke_config_url" tal:attributes="value string:${context/portal_url}/ckeditor_plone_config.js">
