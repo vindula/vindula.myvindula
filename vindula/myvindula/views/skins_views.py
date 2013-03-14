@@ -3,6 +3,7 @@ from five import grok
 from zope.interface import Interface
 
 from vindula.myvindula.tools.utils import UtilMyvindula
+from vindula.myvindula.models.user_session_token import UserSessionToken
 
 from urllib2 import urlopen
 
@@ -90,4 +91,21 @@ class MyVindulaImageUserLoad(grok.View, UtilMyvindula):
         print url
         
         self.request.response.redirect(url,302)
+        
+                   
+class MyVindulaSetTokem(grok.View, UtilMyvindula):
+    grok.context(Interface)
+    grok.require('zope2.View')
+    grok.name('myvindula-user-token')
+    
+    def render(self):
+        pass
+    
+    def update(self):
+        session = self.request.get("SESSION")
+        member = self.context.portal_membership.getAuthenticatedMember()
+        isAnonymous = self.context.portal_membership.isAnonymousUser()
+        
+        if not 'user_token' in session.keys() and not isAnonymous:
+            UserSessionToken().set_new_token(session,member,self.get_ip(self.request))
         
