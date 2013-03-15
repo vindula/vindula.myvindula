@@ -972,7 +972,7 @@ class MyVindulaHoleriteView(grok.View, UtilMyvindula):
         user = str(user_login.getUserName())
         prefs_user = self.get_prefs_user(user)
         if prefs_user:
-            cpf = prefs_user.get('cpf')
+            cpf = prefs_user.get('cpf').replace('.', '').replace('-', '')
             cpf_validate = request.get('cpf_validate').replace('.', '').replace('-', '')
             if cpf == cpf_validate:
                 request.SESSION['cpf'] = cpf
