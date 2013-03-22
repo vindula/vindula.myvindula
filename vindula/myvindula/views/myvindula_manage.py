@@ -735,11 +735,15 @@ class MyVindulaExportUsersView(grok.View,UtilMyvindula):
             text = ''
             
             if fields_orig:
+                campos_vin.append('username')    
+                text += 'username;'
+                
                 for field in fields_orig:
                     campos_vin.append(field.fields)
                     text += field.fields + ';'
+            
                 text = text[:-1] + '\n'
-
+            
             users = ModelsInstanceFuncdetails().get_AllFuncDetails()
 
             for user in users:
