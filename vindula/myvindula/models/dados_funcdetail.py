@@ -183,31 +183,31 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
         return self.geraDic_DadosUser(ids_instances)
 
     def get_FuncBirthdays(self, date_start, date_end, filtro=''):
-        
         L = []
         
         data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==u'date_birth')
         for item in data:                                           
+            if item.valor:
+                data_usuario = date(date.today().year,
+                                    int(datetime.strptime(item.valor, "%d/%m/%Y").month),                        
+                                    int(datetime.strptime(item.valor, "%d/%m/%Y").day))
+                
+                if filtro == 'proximo': 
+                    if data_usuario >= date.today():
+                        L.append(item)
+                else:
+                   date_start_obj = date(int(date_start.split('-')[0]),
+                                         int(date_start.split('-')[1]),
+                                         int(date_start.split('-')[2]))
+                    
+                   date_end_obj = date(int(date_end.split('-')[0]),
+                                       int(date_end.split('-')[1]),
+                                       int(date_end.split('-')[2]))
+                    
+                   if data_usuario >= date_start_obj and\
+                       data_usuario <= date_end_obj:
+                        L.append(item)
 
-            data_usuario = date(date.today().year,
-                        int(datetime.strptime(item.valor, "%d/%m/%Y").month),                        
-                        int(datetime.strptime(item.valor, "%d/%m/%Y").day))
-            
-            if filtro == 'proximo': 
-                if data_usuario >= date.today():
-                    L.append(item)
-            else:
-               date_start_obj = date(int(date_start.split('-')[0]),
-                                     int(date_start.split('-')[1]),
-                                     int(date_start.split('-')[2]))
-                
-               date_end_obj = date(int(date_end.split('-')[0]),
-                                   int(date_end.split('-')[1]),
-                                   int(date_end.split('-')[2]))
-                
-               if data_usuario >= date_start_obj and\
-                   data_usuario <= date_end_obj:
-                    L.append(item)
         
         L = sorted(L, key=lambda row: datetime.strptime(row.valor, "%d/%m/%Y").day)      
         L = sorted(L, key=lambda row: datetime.strptime(row.valor, "%d/%m/%Y").month)
