@@ -75,6 +75,7 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
         from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
         tools = UtilMyvindula()
         L = []
+        departamentos = []
         campos = ModelsConfgMyvindula().get_configurationAll()
         
         for ids in ids_instances:
@@ -82,9 +83,10 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
             
             D = {}
             if dados:
+                user_obj = dados[0].instance
                 D['instance_user'] = ids
-                D['username'] = dados[0].instance.username
-            
+                D['username'] = user_obj.username
+                
                 for campo in campos:
                     tmp = dados.find(vin_myvindula_confgfuncdetails_fields=tools.Convert_utf8(campo.fields)).one()
                     if tmp:
@@ -94,6 +96,11 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
                             data = tmp.valor
                 
                         D[campo.fields] = data 
+            
+                for departamento in user_obj.departamentos():
+                    departamentos = (departamento.UID, departamento.Title)
+                    
+                D['vin_myvindula_department'] = departamentos
             
                 L.append(D)
         return L

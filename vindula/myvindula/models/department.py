@@ -52,10 +52,9 @@ class ModelsDepartment(Storm, BaseStore):
                     L.append(obj[0])
             if L:
                 return L
-            else:
-                return []
-        else:
-            return []
+
+
+        return []
 
 #    def get_departmentByID(self,id):
 #        data = self.store.find(ModelsDepartment, ModelsDepartment.id==int(id)).one()

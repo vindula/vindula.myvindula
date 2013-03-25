@@ -8,6 +8,7 @@ from storm.expr import Desc, Select
 
 from vindula.myvindula.models.base import BaseStore
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
+from vindula.myvindula.models.department import ModelsDepartment
 
 
 class ModelsInstanceFuncdetails(Storm, BaseStore):
@@ -19,6 +20,10 @@ class ModelsInstanceFuncdetails(Storm, BaseStore):
     date_creation = DateTime()
     
     dadosUses = ReferenceSet(id, "ModelsDadosFuncdetails.vin_myvindula_instance_id")
+    
+    def departamentos(self):
+        result = ModelsDepartment().get_departmentByUsername(self.username)
+        return result
 
     def set_InstanceFuncdetails(self,username):
         D={}
