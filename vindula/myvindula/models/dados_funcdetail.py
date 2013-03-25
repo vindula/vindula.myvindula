@@ -197,16 +197,16 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
                 if data_usuario >= date.today():
                     L.append(item)
             else:
-               date_start = date(int(date_start.split('-')[0]),
-                          int(date_start.split('-')[1]),
-                          int(date_start.split('-')[2]))
+               date_start_obj = date(int(date_start.split('-')[0]),
+                                     int(date_start.split('-')[1]),
+                                     int(date_start.split('-')[2]))
                 
-               date_end = date(int(date_end.split('-')[0]),
-                                int(date_end.split('-')[1]),
-                                int(date_end.split('-')[2]))
+               date_end_obj = date(int(date_end.split('-')[0]),
+                                   int(date_end.split('-')[1]),
+                                   int(date_end.split('-')[2]))
                 
-               if data_usuario >= date_start and\
-                   data_usuario <= date_end:
+               if data_usuario >= date_start_obj and\
+                   data_usuario <= date_end_obj:
                     L.append(item)
         
         L = sorted(L, key=lambda row: datetime.strptime(row.valor, "%d/%m/%Y").day)      
