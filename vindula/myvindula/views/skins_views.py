@@ -109,3 +109,7 @@ class MyVindulaSetTokem(grok.View, UtilMyvindula):
         if not 'user_token' in session.keys() and not isAnonymous:
             UserSessionToken().set_new_token(session,member,self.get_ip(self.request))
         
+        
+    def getOwner(self):
+        return self.context.getOwner().getUserName()
+        
