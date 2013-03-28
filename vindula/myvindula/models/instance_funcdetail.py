@@ -7,7 +7,7 @@ from storm.expr import Desc, Select
 
 
 from vindula.myvindula.models.base import BaseStore
-#from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
+from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 
 
 class ModelsInstanceFuncdetails(Storm, BaseStore):
@@ -61,7 +61,7 @@ class ModelsInstanceFuncdetails(Storm, BaseStore):
         data = self.store.find(ModelsInstanceFuncdetails)
         if data.count() > 0:
             for item in data:
-                L.append(item.id)
+                L.append(item.username)
         
         return ModelsDadosFuncdetails().geraDic_DadosUser(L)
     
