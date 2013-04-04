@@ -125,13 +125,13 @@ def set_field_default(context):
     tools = UtilMyvindula()
     
     campos = {#Campos Edição
-              u'vin_myvindula_department': {'ativo_edit':True, 'ativo_view':True, 'required': False, 'type': u'text', 'label': u'Departamento',       'decription': u'',                                           'ordem':0, 'area_de_view': u'' },
-              u'name'                    : {'ativo_edit':True, 'ativo_view':True, 'required': False, 'type': u'text', 'label': u'Nome',               'decription': u'Digite o nome do funcionário',               'ordem':1, 'area_de_view': u'' },
-              u'email'                   : {'ativo_edit':True, 'ativo_view':True, 'required': False, 'type': u'text', 'label': u'E-mail',             'decription': u'Digite o e-mail do funcionário',             'ordem':2, 'area_de_view': u'contact' },
-              u'phone_number'            : {'ativo_edit':True, 'ativo_view':True, 'required': False, 'type': u'text', 'label': u'Telefone',           'decription': u'Digite o telefone do funcionário',           'ordem':3, 'area_de_view': u'contact' },
-              u'date_birth'              : {'ativo_edit':True, 'ativo_view':True, 'required': False, 'type': u'text', 'label': u'Data de Nascimento', 'decription': u'Digite a data de nascimento do funcionário', 'ordem':4, 'area_de_view': u'corporate', 'mascara':'Data'},
-              u'photograph'              : {'ativo_edit':True, 'ativo_view':True, 'required': False, 'type': u'img',  'label': u'Foto',               'decription': u'Coloque a foto do funcionário',              'ordem':5, 'area_de_view': u'' },
-              u'cpf'                     : {'ativo_edit':True, 'ativo_view':True, 'required': False, 'type': u'text', 'label': u'CPF',                'decription': u'Digite o CPF do funcionário',                'ordem':6, 'area_de_view': u'other' }
+              u'vin_myvindula_department': {'ativo_edit':True, 'ativo_view':True, 'required': False, 'type': u'text', 'label': u'Departamento',       'decription': u'',                                           'order_position':0, 'profile_category': u'' },
+              u'name'                    : {'ativo_edit':True, 'ativo_view':True, 'required': False, 'type': u'text', 'label': u'Nome',               'decription': u'Digite o nome do funcionário',               'order_position':1, 'profile_category': u'' },
+              u'email'                   : {'ativo_edit':True, 'ativo_view':True, 'required': False, 'type': u'text', 'label': u'E-mail',             'decription': u'Digite o e-mail do funcionário',             'order_position':2, 'profile_category': u'contact' },
+              u'phone_number'            : {'ativo_edit':True, 'ativo_view':True, 'required': False, 'type': u'text', 'label': u'Telefone',           'decription': u'Digite o telefone do funcionário',           'order_position':3, 'profile_category': u'contact' },
+              u'date_birth'              : {'ativo_edit':True, 'ativo_view':True, 'required': False, 'type': u'text', 'label': u'Data de Nascimento', 'decription': u'Digite a data de nascimento do funcionário', 'order_position':4, 'profile_category': u'corporate', 'mask':u'Data'},
+              u'photograph'              : {'ativo_edit':True, 'ativo_view':True, 'required': False, 'type': u'img',  'label': u'Foto',               'decription': u'Coloque a foto do funcionário',              'order_position':5, 'profile_category': u'' },
+              u'cpf'                     : {'ativo_edit':True, 'ativo_view':True, 'required': False, 'type': u'text', 'label': u'CPF',                'decription': u'Digite o CPF do funcionário',                'order_position':6, 'profile_category': u'other' }
               }
 
     for i in campos.keys():
@@ -139,7 +139,7 @@ def set_field_default(context):
         if ModelsConfgMyvindula().check_fields(i): 
             #adicionando...
             data = campos[i]
-            data['fields'] = i
+            data['name'] = i
             ModelsConfgMyvindula().set_configuration(**data)
             tools.setLogger("info","Campo adicionado com sucesso= %s"%(i))
         

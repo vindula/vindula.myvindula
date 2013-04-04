@@ -30,7 +30,7 @@ class UserSessionToken(Storm, BaseStore):
         
         username = user.getUserName()
         token = md5(username+session.token+session.id).hexdigest()
-        hash = md5('UserSessionToken'+token).hexdigest()
+        hash = md5('UserSessionToken'+username).hexdigest()
           
         session.set('user_token', token)
         

@@ -4,7 +4,9 @@ from zope.interface import Interface
 
 from vindula.myvindula.tools.utils import UtilMyvindula
 from vindula.myvindula.models.user_session_token import UserSessionToken
+from plone.app.layout.viewlets.content import ContentHistoryView
 
+from Products.CMFCore.utils import getToolByName
 from urllib2 import urlopen
 
 class MacroSingleComment(grok.View, UtilMyvindula):
@@ -112,4 +114,10 @@ class MyVindulaSetTokem(grok.View, UtilMyvindula):
         
     def getOwner(self):
         return self.context.getOwner().getUserName()
+    
+    
+    def gethistory(self):
+        context = self.context
+        HistoryView = ContentHistoryView(context, context.REQUEST)
+        return HistoryView.fullHistory()
         
