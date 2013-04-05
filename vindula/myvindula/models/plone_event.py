@@ -13,14 +13,16 @@ class PloneEvent(Storm, BaseStore):
 
     id = Int(primary=True)
     uid = Unicode()
+    type = Unicode()
     status = Bool()
     date_created = DateTime()
     
-    def set_event(self,uid):
+    def set_event(self,uid,portal_type):
         tool = UtilMyvindula()
        
         D={}
         D['uid'] = tool.Convert_utf8(uid)
+        D['type'] = tool.Convert_utf8(portal_type)
         D['status'] = False
         D['date_created'] = datetime.now()
         
