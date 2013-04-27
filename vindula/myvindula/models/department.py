@@ -8,11 +8,11 @@ from storm.expr import Desc, Select
 from vindula.myvindula.models.base import BaseStore
 
 from vindula.myvindula.tools.utils import UtilMyvindula
-         
+
 class ModelsDepartment(Storm, BaseStore):
     __storm_table__ = 'vin_myvindula_department'
     __storm_primary__ = "uid_plone", "vin_myvindula_funcdetails_id"
-    
+
     #id = Int(primary=True)
     uid_plone = Unicode()
     vin_myvindula_funcdetails_id = Unicode()
@@ -21,28 +21,31 @@ class ModelsDepartment(Storm, BaseStore):
         D={}
         D['uid_plone'] = kwargs.get('UID','')
         D['vin_myvindula_funcdetails_id'] = kwargs.get('funcdetails_id')
-        
+
         # adicionando...
         department = ModelsDepartment(**D)
         self.store.add(department)
-        self.store.flush()        
-    
-    #loads data into the combo "departamento_id"    
-    def get_department(self): 
+        self.store.flush()
+
+    #loads data into the combo "departamento_id"
+    def get_department(self):
         tools = UtilMyvindula()
         caminho = tools.portal_url.getPortalPath()
-        data = tools.catalog(portal_type='OrganizationalStructure', 
+        data = tools.catalog(portal_type='OrganizationalStructure',
                       sort_on = 'sortable_title',
-                      path=caminho)   
-        
+                      path=caminho)
+
         #data = self.store.find(ModelsDepartment)
-        if data: 
+        if data:
             return data
         else:
             return []
-        
+
     def get_departmentByUsername(self,user):
         tools = UtilMyvindula()
+        if type(user) != unicode:
+            user = unicode(user, 'utf-8')
+
         datas = self.store.find(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==user)
         if datas.count() != 0:
             L=[]
