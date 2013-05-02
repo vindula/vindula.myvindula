@@ -17,9 +17,30 @@ from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 from vindula.myvindula.models.department import ModelsDepartment
 from zope.app.component.hooks import getSite
 
+
+from vindula.myvindula.tools.utils import UtilMyvindula
+
+
 from copy import copy 
                
 class SchemaFunc(BaseFunc):
+
+
+    # TODO: colocar isso em um lugar especifico. Está redundante aqui
+    def get_unidade_organizacional_text(self):
+        tools = UtilMyvindula()
+        caminho = tools.portal_url.getPortalPath()
+        data = tools.catalog(portal_type='OrganizationalStructure',
+                      sort_on = 'sortable_title',
+                      path=caminho)
+
+        if data:
+            unidades = []
+            for unidade in data:
+                unidades.append([unidade.UID,unidade.Title])
+            return unidades
+        else:
+            return []
                     
     def registration_processes(self,context,user,manage=False,delete=False):
         campos = {}
@@ -64,10 +85,18 @@ class SchemaFunc(BaseFunc):
                 
                 if field.type == 'choice' or\
                    field.type == 'list':
-                    items = field.list_values.splitlines()
+                    import pdb; pdb.set_trace()
+                    items = field.choices.splitlines()
                     valores=[]
+
+                    # TODO: Otimizar este codigo, podemos dizer que estah muito lento e incorreto.
                     for i in items:
-                        valores.append([i, i])
+                        if i == "###unidadesorganizacionais###":
+                            unidades = self.get_unidade_organizacional_text()
+                            for unidade in unidades:
+                                valores.append([unidade[0],unidade[1]])
+                        else:
+                            valores.append([i, i])
                         
                     lista_itens[field.name] = valores
 

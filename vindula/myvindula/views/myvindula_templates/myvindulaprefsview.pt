@@ -63,6 +63,7 @@
 								<div class="field" tal:attributes="class python: view.field_class(errors, 'vin_myvindula_department')"
 												   tal:condition="python: view.get_ConfugCampos('vin_myvindula_department') or manage" >
 									<label for="vin_myvindula_department">Departamentos</label>
+
 				                    <!--span class="fieldRequired" title="Obrigatório">(Obrigatório)</span-->	
 				                    <div class="formHelp">Selecione o departamento do funcionário.</div>
 									<div tal:content="errors/vin_myvindula_department|nothing"></div>
@@ -97,7 +98,59 @@
 										</tal:rep>
 									</tal:cont>
 								</tal:cont>
-								
+
+
+
+                                 <!--Select Unidade Organizacional Principal TODO: Corrigir isso urgente, muito ruim essa implementacao-->
+								<!--<div class="field" tal:attributes="class python: view.field_class(errors, 'vin_myvindula_department_principal')"-->
+												   <!--tal:condition="python: view.get_ConfugCampos('vin_myvindula_department') or manage" >-->
+									<!--<label for="vin_myvindula_department_principal">Unidades Organizacionais</label>-->
+
+				                    <!--&lt;!&ndash;span class="fieldRequired" title="Obrigatório">(Obrigatório)</span&ndash;&gt;-->
+				                    <!--<div class="formHelp">Selecione a Unidade Organizacional Principal do Usuário.</div>-->
+									<!--<div tal:content="errors/vin_myvindula_department_principal|nothing"></div>-->
+				                    <!--<tal:cond condition="departamentos">-->
+				                    	<!--<div class="boxSelecao" name="vin_myvindula_department_principal"-->
+											 <!--tal:define="id_request request/vin_myvindula_department_principal | python: [ i.UID for i in form_values.get('vin_myvindula_department_principal',[])] or []">-->
+				                    		<!--<tal:repeat repeat="departamento departamentos">-->
+										           	<!--<input value="" type="checkbox" name="vin_myvindula_department_principal"-->
+															<!--tal:attributes="value departamento/UID | nothing;-->
+																			<!--checked python: str(departamento.UID) in id_request"/>-->
+																			<!--<label tal:content="departamento/Title | nothing"></label><br/>-->
+											<!--</tal:repeat>-->
+
+											<!--<tal:repeat repeat="departamento departamentos">-->
+												<!--<tal:cond tal:condition="python: str(departamento.UID) in id_request">-->
+													<!--<input type="hidden" name="departaments_old:list"-->
+														   <!--tal:attributes="value departamento/UID | nothing;"/>-->
+												<!--</tal:cond>-->
+											<!--</tal:repeat>-->
+
+				                    	<!--</div>-->
+				                    <!--</tal:cond>-->
+									<!--<tal:cond condition="not: departamentos">-->
+										<!--<span>N&atilde;o h&aacute; departamentos cadastrados no portal, informe o administrador do site </span>-->
+									<!--</tal:cond>-->
+
+
+
+
+
+
+                                <!--</div>-->
+								<!--<tal:cont condition="python: not view.get_ConfugCampos('vin_myvindula_department_principal') and not manage">-->
+									<!--<tal:cont condition="python: form_values.get('vin_myvindula_department_principal',None)">-->
+										<!--<tal:rep repeat="value request/vin_myvindula_department_principal | python: [ i.UID for i in form_values.get('vin_myvindula_department_principal',[])] or []">-->
+											<!--<input id="vin_myvindula_department_principal" type="hidden" value="" name="vin_myvindula_department_principal" tal:attributes="value value">-->
+										<!--</tal:rep>-->
+									<!--</tal:cont>-->
+								<!--</tal:cont>-->
+
+
+
+
+
+
 								
 								<!--div class="field" tal:attributes="class python: view.field_class(errors, 'username')"
 												   tal:condition="python: manage or 'newuser' in request.keys()">

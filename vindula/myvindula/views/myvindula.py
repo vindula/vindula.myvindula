@@ -304,6 +304,12 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
     grok.require('zope2.View')
     grok.name('myvindulalistuser')
 
+
+    def getUnidadeUID(self, uid):
+        rtool = getToolByName(self, 'reference_catalog')
+        return rtool.lookupObject(uid)
+
+
     def get_ConfugCampos(self, campo):
         configuracao= ModelsConfgMyvindula().getConfig_views(campo)
         return configuracao
