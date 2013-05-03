@@ -90,6 +90,21 @@ class UtilMyvindula(object):
         else:
             return []
 
+
+    def getDadoUser_byFieldName(self,user,campo):
+
+        # TODO: Corrigir esse metodo. Esta retornando informacao valida, mas com sintaxe ruim.
+
+
+        usuario = unicode(user)
+        result = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstanceAndFieldName(usuario,campo)
+
+
+        if result:
+            return result.value
+        else:
+            return []
+
     def getSiglaUnidade(self, uid):
         """
          Passar unidade em formato UID para o campo uid

@@ -141,8 +141,20 @@ def set_field_default(context):
             data = campos[i]
             data['name'] = i
             ModelsConfgMyvindula().set_configuration(**data)
+
             tools.setLogger("info","Campo adicionado com sucesso= %s"%(i))
         
         else:
             tools.setLogger("error","Já existe um campo com este nome = %s"%(i))
 
+        # # TODO: Melhorar essa rotina para inclusao de forma mais dinamica
+        # # Adicionando um campo especial.
+        # import pdb; pdb.set_trace()
+        #
+        # campo = 'unidadeprincipal'
+        # tipo = 'choice'
+        # if ModelsConfgMyvindula().check_fields(campo):
+        #     print "naotem"
+        # else:
+        #     print "tem"
+        # #u'unidadeprincipal'        : {'ativo_edit':True, 'ativo_view':True, 'required': False, 'type': u'choice', 'label': u'Unidade Principal',                'decription': u'Unidade Principal do Usuário',                'order_position':6, 'profile_category': u'corporate' }
