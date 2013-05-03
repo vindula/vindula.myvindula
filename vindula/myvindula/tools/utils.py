@@ -25,21 +25,21 @@ class UtilMyvindula(object):
 
     def __init__(self):
         self.site = getSite()
-        
+
         self.catalog = getToolByName(self.site, 'portal_catalog')
         self.portal_url = getToolByName(self.site, 'portal_url')
         self.membership = self.site.portal_membership
-        
-        self.db = BaseStore()    
-            
-    
+
+        self.db = BaseStore()
+
+
     def encodeUser(self,user):
         return base64.b16encode(user)
-    
+
     def decodeUser(self,hash):
         return base64.b16decode(hash)
-        
-    
+
+
     def get_prefs_user(self, user):
         #from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
         user_id = self.Convert_utf8(user)
@@ -47,21 +47,21 @@ class UtilMyvindula(object):
 
         campos = ModelsConfgMyvindula().get_configurationAll()
         #dados = ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id)
-        
+
         D = {'username':user_id}
-#        if dados: 
+#        if dados:
 #            D['instance_user'] = dados.id
         for campo in campos:
             D[campo.name] = self.getDadoUser_byField(user_id, campo.id)
-        
+
         return D
-        
+
     def get_Dic_Campos(self):
         campos = {}
         fields = ModelsConfgMyvindula().get_configurationAll()
         if fields:
             for field in fields:
-                if not field.fields in ['vin_myvindula_department']: 
+                if not field.fields in ['vin_myvindula_department']:
                     M={}
                     M['required'] = field.required
                     M['type'] = field.type
@@ -69,15 +69,15 @@ class UtilMyvindula(object):
                     M['decription'] = field.decription
                     M['ordem'] = field.ordem
                     M['mascara'] = field.mascara
-                    
+
                     campos[field.fields] = M
-                    
+
         return campos
-    
+
     def getDadoUser_byField(self,user,campo):
         from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
         result = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstanceAndField(user,campo)
-        
+
         #tmp = instanceUser.dadosUses.find(field=self.Convert_utf8(campo)).one()
         if result:
             try:data = self.decodePickle(result.value)
@@ -86,26 +86,26 @@ class UtilMyvindula(object):
                 str = ''
                 for i in data:
                     if i:str += i +' / '
-                
+
                 data = str
             return data
-        
-     
+
+
 
     def to_utf8(self, value):
         return unicode(value, 'utf-8')
 
 
-    # define se aparece ou nao as mensagens e marcacoes de erros  
+    # define se aparece ou nao as mensagens e marcacoes de erros
     def field_class(self, errors, field_name):
         if errors is not None:
             if errors.get(field_name, None) is not None:
-                return 'field error'                   
+                return 'field error'
             else:
                  return 'field'
         else:
               return 'field'
-          
+
     #pega o valor entre dois campos
     def checaValor(self, x, y):
         if not x and not y:
@@ -115,8 +115,8 @@ class UtilMyvindula(object):
         elif y:
              return y
         else:
-             return '' 
-          
+             return ''
+
     def checaEstado(self,config, campo):
         if config:
             try:
@@ -130,16 +130,16 @@ class UtilMyvindula(object):
         if valor:
             return pickle.loads(str(valor))
         else:
-            return ''    
-    
+            return ''
+
     def encodePickle(self,valor):
         if valor:
             return pickle.dumps(valor)
         else:
             return u''
-    
+
     def Convert_utf8(self,valor):
-        try: 
+        try:
             return unicode(valor,'utf-8')
         except UnicodeDecodeError:
             return valor.decode("utf-8", "ignore")
@@ -148,14 +148,14 @@ class UtilMyvindula(object):
                 return valor
             else:
                 return u'erro ao converter os caracteres'
-    
+
     def rs_to_list(self, rs):
         if rs:
             return [i for i in rs]
-   
+
     def get_ip(self, request):
         """ Extract the client IP address from the HTTP request in a proxy-compatible way.
-        
+
         @return: IP address as a string or None if not available
         """
         if "HTTP_X_FORWARDED_FOR" in request.environ:
@@ -167,9 +167,9 @@ class UtilMyvindula(object):
         else:
             # Unit test code?
             ip = None
-        
+
         return ip
-    
+
     def converte_dadosByDB(self, D):
         keys = D.keys()
         for item in keys:
@@ -177,9 +177,9 @@ class UtilMyvindula(object):
                item == 'itens_holerite_check' or\
                item == 'completo':
                 D.pop(item)
-            else: 
+            else:
                 valor = D[item]
-                if type(valor) == str: 
+                if type(valor) == str:
                     valor = valor.strip()
                     try:
                         D[item] = unicode(valor, 'utf-8')
@@ -187,10 +187,10 @@ class UtilMyvindula(object):
                         D[item] = unicode(valor, 'ISO-8859-1')
                 else:
                     D[item] = valor
-        
-        return D    
-   
-   
+
+        return D
+
+
     def getValue(self,campo,request,data):
         if campo in request.keys():
             if request.get(campo, None) != None:
@@ -204,7 +204,7 @@ class UtilMyvindula(object):
                 return ''
         else:
             return ''
-    
+
     def getValueList(self,campo,request,data):
         if campo in request.keys():
             if request.get(campo, ''):
@@ -214,8 +214,8 @@ class UtilMyvindula(object):
         elif data:
             L = data.get(campo,'')
             return L
-                  
-        
+
+
     def getParametersFromURL(self, ctx):
         traverse = ctx.context.REQUEST.get('traverse_subpath')
         vars = {}
@@ -227,7 +227,7 @@ class UtilMyvindula(object):
                 vars.update({traverse[position]:traverse[position+1]})
                 counter+=1
         return vars
-                
+
     def checked(self,campo,request,data,ativa='edit'):
         if campo in request.keys():
             if request.get(campo, '') == True or\
@@ -242,10 +242,10 @@ class UtilMyvindula(object):
             else:
                 return ""
         else:
-            return ""    
-        
-    
-    # retorna dado convertido para o campo de valor monetario   
+            return ""
+
+
+    # retorna dado convertido para o campo de valor monetario
     def converte_valor(self, valor):
         if valor is not None:
             if type(valor) == Decimal:
@@ -254,11 +254,11 @@ class UtilMyvindula(object):
                 valor = valor.replace('.', ',')
                 #valor = 'R$ ' + valor
                 return valor
-            else: 
-                return None  
+            else:
+                return None
         else:
-            return None        
-    
+            return None
+
     #retorno a data de competencia no ordem coreta
     def converte_competencia(self, valor):
         if valor is not None:
@@ -266,8 +266,8 @@ class UtilMyvindula(object):
             return tmp[1]+'/'+tmp[0]
         else:
             return None
-        
-    # retorna dado convertido para o campos de data 
+
+    # retorna dado convertido para o campos de data
     def converte_data(self, data, data_atual=False):
         if data is not None and data != '':
             if type(data) == date:
@@ -280,20 +280,20 @@ class UtilMyvindula(object):
                 dia = data.day
                 mes = data.month
                 ano = data.year
-        
+
                 if dia < 10:
                     dia = '0' + str(dia)
                 else:
                     dia = str(dia)
-                    
+
                 if mes < 10:
                     mes = '0' + str(mes)
                 else:
                     mes = str(mes)
-                    
+
                 datastr = dia + '/' + mes + '/' + str(ano)
-        
-                return datastr  
+
+                return datastr
             else:
                 return data
 
@@ -302,14 +302,14 @@ class UtilMyvindula(object):
 #        from vindula.myvindula.registration import SchemaConfgMyvindula
 #        result = ModelsConfgMyvindula().get_configuration_By_fields(campo)
 #        default = SchemaConfgMyvindula().campos.get(campo)
-#        
+#
 #        if result:
-#            label = result.__getattribute__('label') 
+#            label = result.__getattribute__('label')
 #            if not label:
 #                return default.get('label')
 #            else:
 #                return label
-#            
+#
 #        else:
 #            return default.get('label')
 
@@ -325,7 +325,7 @@ class UtilMyvindula(object):
             logger.warning("Erro ao executar o camando setLogger")
 
 
-    def setStatusMessage(self,type,msg):   
+    def setStatusMessage(self,type,msg):
         '''
         @type = info, error, warning
         @msg = mesagem que sera apresentada ao usuario
@@ -350,58 +350,53 @@ class UtilMyvindula(object):
         request.response.redirect(url, lock=True)
 
 
-    
+
     def checa_login(self):
         membership = self.context.portal_membership
         groups = self.context.portal_groups
-        
+
         user_login = membership.getAuthenticatedMember()
         user_groups = groups.getGroupsByUserId(user_login.getId())
-        
+
         checa = False
         if 'Manager' in user_login.getRoles():
             checa = True
         else:
             for i in user_groups:
                 if i.id == 'manage-user':
-                    checa = True 
+                    checa = True
                     break
-        
-        return checa       
-    
-    
-    def getURLFotoUser(self,username):
-        ativa_gravatar = self.context.restrictedTraverse('myvindula-conf-userpanel').check_ativa_gravatar()
-        
-        username = self.Convert_utf8(username)
-        campo_image = ModelsPhotoUser().get_ModelsPhotoUser_byUsername(username)
-        dados_user = self.get_prefs_user(username)# ModelsFuncDetails().get_FuncDetails(username)
-        
-        if campo_image:
-            return self.context.portal_url() + '/user-image?username='+username+'&field=photograph'
-                
-        elif ativa_gravatar and dados_user:
-            if dados_user.get('email',False):
-                return self.loadGravatarImage(dados_user.get('email',''),username)
-            elif dados_user.get('photograph',False):
-                local = dados_user.get('photograph','').split('/')
-                try:
-                    ctx= getSite()[local[0]][local[1]][local[2]]
-                    obj = ctx.restrictedTraverse('@@images').scale('photograph', height=150, width=120)
-                    return obj.url
-                except:
-                    pass
 
-        return self.context.portal_url() + '/user-image?username='+username+'&field=photograph'
-        
-        
-        
-    def loadGravatarImage(self, email,username): 
-        # Imagem Padrão o usuario
-        default = self.context.portal_url() + '/user-image?username='+username+'&field=photograph'
-        size = 168
-        
-        gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(email.lower()).hexdigest() + "?"
-        gravatar_url += urllib.urlencode({'d':default,'s':str(size)})
-        
-        return gravatar_url       
+        return checa
+
+
+    def getURLFotoUser(self,username,field='photograph'):
+
+        ativa_gravatar = self.context.restrictedTraverse('myvindula-conf-userpanel').check_ativa_gravatar()
+
+        username = self.Convert_utf8(username)
+
+        # # campo_image = ModelsPhotoUser().get_ModelsPhotoUser_byUsername(username)
+
+        # dados_user = self.get_prefs_user(username) # ModelsFuncDetails().get_FuncDetails(username)
+
+        # # if campo_image:
+        # #     return self.context.portal_url() + '/user-image?username='+username+'&field=photograph'
+
+        # if ativa_gravatar and dados_user.get('email',False):
+        #     return self.loadGravatarImage(dados_user.get('email',''),username)
+
+
+        return self.context.portal_url() + '/vindula-api/myvindula/user-picture/'+field+'/'+username+'/'+str(ativa_gravatar)
+
+
+
+    # def loadGravatarImage(self, email,username):
+    #     # Imagem Padrão o usuario
+    #     default = self.context.portal_url() + '/vindula-api/myvindula/user-picture/photograph/'+username+'/'
+    #     size = 168
+
+    #     gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(email.lower()).hexdigest() + "?"
+    #     gravatar_url += urllib.urlencode({'d':default,'s':str(size)})
+
+    #     return gravatar_url

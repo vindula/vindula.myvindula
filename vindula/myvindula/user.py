@@ -110,16 +110,25 @@ class BaseFunc(UtilMyvindula):
                     url = getSite().portal_url()
                     instance = campos[campo].get('instance_id','0')
                     #user_foto = ModelsPhotoUser().get_ModelsPhotoUser_byFieldAndInstance(self.Convert_utf8(campo),instance)
-                    user_foto = None
+                    # user_foto = None
+                    token = self.request['SESSION'].get('user_token')
 
-                    tmp +="<div id='%s'><a href='%s/myvindula-user-crop?field=%s&instance_id=%s' class='crop-foto' id='%s'>Editar Foto</a>" %(campo,url,campo,instance,campo)
-                    if user_foto:
-                        tmp += "<div id='preview-user-%s'><img height='150px' src='%s/user-image?field=%s&instance_id=%s' /></div>" %(campo,url,campo,instance)
-                        tmp += "<a href='%s/myvindula-user-delcrop?field=%s&instance_id=%s' class='excluir-foto'>Excluir Foto</a>" %(url,campo,instance)
+                    tmp +='''<div id='%s'>
+                                <a href='%s/vindula-api/myvindula/user-profile-picture/%s/%s/%s' id='%s'>Editar Foto</a>
+                           '''%(campo,url,token,campo,instance,campo)
 
-                    else:
-                        tmp += "<div id='preview-user-%s'></div>"%(campo)
-                        tmp += "<a href='%s/myvindula-user-delcrop?field=%s&instance_id=%s' style='display:none' class='excluir-foto'>Excluir Foto</a>" %(url,campo,instance)
+                    tmp += "<div id='preview-user-%s'><img height='150px' src='%s' /></div>" %(campo,self.getURLFotoUser(instance,campo))
+                    #TODO:
+                    # tmp += "<a href='%s/myvindula-user-delcrop?field=%s&instance_id=%s' class='excluir-foto'>Excluir Foto</a>" %(url,campo,instance)
+
+
+                    # if user_foto:
+                    #     tmp += "<div id='preview-user-%s'><img height='150px' src='%s/user-image?field=%s&instance_id=%s' /></div>" %(campo,url,campo,instance)
+                    #     tmp += "<a href='%s/myvindula-user-delcrop?field=%s&instance_id=%s' class='excluir-foto'>Excluir Foto</a>" %(url,campo,instance)
+
+                    # else:
+                    #     tmp += "<div id='preview-user-%s'></div>"%(campo)
+                    #     tmp += "<a href='%s/myvindula-user-delcrop?field=%s&instance_id=%s' style='display:none' class='excluir-foto'>Excluir Foto</a>" %(url,campo,instance)
 
                     tmp += "</div>"
 
