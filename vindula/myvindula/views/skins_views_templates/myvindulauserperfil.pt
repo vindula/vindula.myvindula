@@ -85,10 +85,33 @@
                             <img class="type-info" tal:attributes="src area/url_image" />
                             <table>
                                 <tal:rep repeat="item dados">
+
+                                    <tal:comment tal:replace="nothing">
+
+                                        *********
+
+                                        TODO:
+                                        Corrigir este codigo. Criado desta maneira para resolver rapidamente.
+
+                                        *********
+
+                                    </tal:comment>
+                                    <span tal:content="item/label" />
+                                    <tal:condition condition="python: item.get('label') == 'Unidade Organizacional Principal'">
+                                    <tr>
+                                        <td class="field" tal:content="item/label|nothing">Label</td>
+                                        <td class="value">
+                                            <tal:cont tal:content="python: view.getUnidadeUID(item.get('data')).Title()"></tal:cont>
+                                        </td>
+                                    </tr>
+                                    </tal:condition>
+
+                                    <tal:condition condition="not: python: item.get('label') == 'Unidade Organizacional Principal'">
                                     <tr>
                                         <td class="field" tal:content="item/label|nothing">Label</td>
                                         <td class="value"> <tal:cont tal:content="structure item/data|nothing"></tal:cont></td>
                                     </tr>
+                                    </tal:condition>
                                 </tal:rep> 
     
                             </table>

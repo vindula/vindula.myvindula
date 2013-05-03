@@ -71,7 +71,7 @@ class MyVindulaEditConfgsView(grok.View, BaseFunc):
 
     def update(self):
         self.BlackList = ['vin_myvindula_department','cpf',
-                          'date_birth','email','phone_number','name','photograph']
+                          'date_birth','email','phone_number','name','photograph', 'unidadeprincipal']
 
 class MyVindulaEditOrdemConfgsView(grok.View, BaseFunc):
     grok.context(INavigationRoot)

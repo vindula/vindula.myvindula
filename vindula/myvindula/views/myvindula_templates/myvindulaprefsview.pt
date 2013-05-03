@@ -6,9 +6,9 @@
     		<script type="text/javascript" tal:attributes="src string:${view/static}/js/mascara.js"></script>
 
     		<!--script type="text/javascript"
-                    tal:attributes="src string:${view/static}/cropper/js/jquery.Jcrop.js"></script-->
+                    tal:attributes="src string:${view/static}/cropper/js/jquery.Jcrop.js"></script>
 
-            <!--script type="text/javascript" charset="utf-8"
+            <script type="text/javascript" charset="utf-8"
                     tal:attributes="src string:${view/static}/js/crop_image_user.js" ></script-->
 
 		</metal:js>
