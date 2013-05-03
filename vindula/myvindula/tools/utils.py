@@ -114,16 +114,16 @@ class UtilMyvindula(object):
          Passar unidade em formato UID para o campo uid
 
         """
-
-
+        
+        result = ''
         rtool = getToolByName(self, 'reference_catalog')
         objetounidade = rtool.lookupObject(uid)
 
         #import pdb; pdb.set_trace()
+        if objetounidade:
+            result = objetounidade.getSiglaunidade()
 
-        sigla = objetounidade.getSiglaunidade()
-
-        return sigla
+        return result
 
 
     def getUnidadePrincipalSigla(self, usuario, m=0):
