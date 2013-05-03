@@ -10,7 +10,7 @@ from vindula.myvindula.models.photo_user import ModelsPhotoUser
 from vindula.myvindula.models.base import BaseStore
 
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
-from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
+
 
 
 from Products.CMFCore.utils import getToolByName
@@ -98,6 +98,7 @@ class UtilMyvindula(object):
 
         # TODO: Corrigir esse metodo. Esta retornando informacao valida, mas com sintaxe ruim.
 
+        from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 
         usuario = unicode(user)
         result = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstanceAndFieldName(usuario,campo)
