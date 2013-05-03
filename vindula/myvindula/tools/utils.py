@@ -94,7 +94,7 @@ class UtilMyvindula(object):
     def getDadoUser_byFieldName(self,user,campo):
 
         # TODO: Corrigir esse metodo. Esta retornando informacao valida, mas com sintaxe ruim.
-
+        from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 
         usuario = unicode(user)
         result = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstanceAndFieldName(usuario,campo)
