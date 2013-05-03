@@ -10,6 +10,7 @@ from vindula.myvindula.models.photo_user import ModelsPhotoUser
 from vindula.myvindula.models.base import BaseStore
 
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
+from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 
 
 from Products.CMFCore.utils import getToolByName
@@ -75,6 +76,9 @@ class UtilMyvindula(object):
         return campos
     
     def getDadoUser_byField(self,user,campo):
+
+
+
         from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
         result = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstanceAndField(user,campo)
         
@@ -90,7 +94,61 @@ class UtilMyvindula(object):
                 data = str
             return data
         
-     
+    def getDadoUser_byFieldName(self,user,campo):
+
+        # TODO: Corrigir esse metodo. Esta retornando informacao valida, mas com sintaxe ruim.
+
+
+        usuario = unicode(user)
+        result = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstanceAndFieldName(usuario,campo)
+
+
+        if result:
+            return result.value
+        else:
+            return []
+
+    def getSiglaUnidade(self, uid):
+        """
+         Passar unidade em formato UID para o campo uid
+
+        """
+
+
+        rtool = getToolByName(self, 'reference_catalog')
+        objetounidade = rtool.lookupObject(uid)
+
+        #import pdb; pdb.set_trace()
+
+        sigla = objetounidade.getSiglaunidade()
+
+        return sigla
+
+
+    def getUnidadePrincipalSigla(self, usuario, m=0):
+
+        # TODO: Corrigir esse metodo. Esta retornando informacao valida, mas com sintaxe ruim.
+        # passar m=1 caso queira a sigla em maiuscula
+
+
+        dados = self.getDadoUser_byFieldName(usuario, 'unidadeprincipal')
+
+        sigla = self.getSiglaUnidade(dados)
+
+        sigla = sigla.replace('<p>','').replace('</p>','')
+
+        if m == 1:
+            return str(sigla).upper()
+        else:
+            return sigla
+
+
+
+
+
+
+
+
 
     def to_utf8(self, value):
         return unicode(value, 'utf-8')

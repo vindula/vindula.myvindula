@@ -85,7 +85,7 @@ class SchemaFunc(BaseFunc):
                 
                 if field.type == 'choice' or\
                    field.type == 'list':
-                    import pdb; pdb.set_trace()
+
                     items = field.choices.splitlines()
                     valores=[]
 

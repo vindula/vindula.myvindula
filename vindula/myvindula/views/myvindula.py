@@ -305,6 +305,7 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
     grok.name('myvindulalistuser')
 
 
+    # Este metodo esta repetido. Ele existe tambem em utils.py. Refatorar
     def getUnidadeUID(self, uid):
         rtool = getToolByName(self, 'reference_catalog')
         return rtool.lookupObject(uid)
