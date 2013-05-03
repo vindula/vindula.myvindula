@@ -386,8 +386,8 @@ class SchemaConfgMyvindula(BaseFunc):
             self.setRedirectPage('/myvindulaconfgs')
         
         # se for um formulario de edicao 
-        elif 'name' in form_keys: #'forms_id'in form_keys and :
-            fields = form.get('name','')
+        elif 'fields' in form_keys: #'forms_id'in form_keys and :
+            fields = form.get('fields','')
             if fields in context.BlackList:
                 campos['name']['type'] = 'hidden'
                 campos['type']['type'] = 'hidden'

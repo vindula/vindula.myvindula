@@ -21,9 +21,11 @@
         </script>    
         <div id="content" tal:define="form_data view/load_form | python:{};
                                       form_values form_data/data | python:{}">
+
+
             
             <h1>Campos do Perfil de Usu&aacute;rio</h1>
-            <h2 tal:content="string:Editar o Campo '${form_values/label|nothing}' do formularios"> </h2>
+            <h2 tal:content="string:Editar o Campo '${form_values/name|nothing}' do formularios"> </h2>
             
             <div id="interna" >         
                 <form name="myvindulaconfgs" id="myvindulaconfgs" enctype="multipart/form-data"
