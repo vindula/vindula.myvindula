@@ -80,6 +80,17 @@ class MyVindulaView(grok.View, UtilMyvindula):
         return ModelsMyvindulaNotificacao().cont_notificacao_new(username)
 
 
+    def name_user_top(self,full_name):
+        limit = 12
+        str = full_name
+
+        while str > limit and len(str.split(' ')) > 1:
+            str = ' '.join(str.split(' ')[:-1])
+
+        return str
+
+
+
     def checkHomeFolder(self):
         """ Check if exist homeFolder """
         homefolder = self.context.portal_membership.getHomeFolder()

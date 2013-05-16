@@ -129,10 +129,10 @@ class UtilMyvindula(object):
 
 
         dados = self.getDadoUser_byFieldName(usuario, 'unidadeprincipal')
-
+        # import pdb; pdb.set_trace()
         sigla = self.getSiglaUnidade(dados)
 
-        sigla = sigla.replace('<p>','').replace('</p>','')
+        # sigla = sigla.replace('<p>','').replace('</p>','')
 
         if m == 1:
             return str(sigla).upper()
