@@ -254,7 +254,7 @@ class Renderer(base.Renderer):
             results = self.get_birthdaysToday(type_filter)
             ch.set('PortletAviversarinates_birthdaysToday',results)
 
-        results:
+        return results
 
 
     def getEnd(self,i):
