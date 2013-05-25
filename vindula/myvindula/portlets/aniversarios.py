@@ -25,7 +25,7 @@ from storm.expr import Desc
 from DateTime.DateTime import DateTime
 import calendar
 
-from cache import Cache
+from vindula.myvindula.cache import Cache
 
 class TypesSearch():
     """ Cria SimpleVocabulary """

@@ -49,7 +49,7 @@ from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetai
 
 import pickle, StringIO
 from PIL import Image
-from cache import Cache
+from vindula.myvindula.cache import Cache
 
 from vindula.controlpanel.handlers import userLogged
 
