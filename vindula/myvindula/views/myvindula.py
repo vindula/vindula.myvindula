@@ -49,6 +49,7 @@ from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetai
 
 import pickle, StringIO
 from PIL import Image
+from cache import Cache
 
 from vindula.controlpanel.handlers import userLogged
 
@@ -721,16 +722,22 @@ class MyVindulaListBirthdays(grok.View,UtilMyvindula):
 
     def load_list(self):
         form = self.request.form
+        ch = Cache()
         filtro = form.get('filtro',1)
         if filtro == 'prox':
-            results = self.get_birthdaysToday(filtro)
-        else:
-            results = self.get_birthdaysToday(int(filtro))
 
-        if results:
-            return results
+            results = ch.get('MyVindulaListBirthdays_birthdaysToday_prox')
+            if not results:
+                results = self.get_birthdaysToday(filtro)
+                ch.set('MyVindulaListBirthdays_birthdaysToday_prox',results)
+
         else:
-            return []
+            results = ch.get('MyVindulaListBirthdays_birthdaysToday_'+str(filtro))
+            if not results:
+                results = self.get_birthdaysToday(int(filtro))
+                ch.set('MyVindulaListBirthdays_birthdaysToday_'+str(filtro),results)
+
+        return results
 
     def update(self):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
