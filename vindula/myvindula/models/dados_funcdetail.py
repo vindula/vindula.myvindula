@@ -6,8 +6,8 @@ from storm.locals import *
 from storm.expr import Desc, Select
 
 
-from vindula.myvindula.models.base import BaseStore
-from vindula.myvindula.models.department import ModelsDepartment
+from vindula.myvindula.models.base import BaseStoreMyvindula
+# from vindula.myvindula.models.department import ModelsDepartment
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 
 from vindula.myvindula.tools.utils import UtilMyvindula
@@ -15,24 +15,19 @@ from vindula.myvindula.tools.utils import UtilMyvindula
 from datetime import datetime, date
 from hashlib import md5
 
-class ModelsDadosFuncdetails(Storm, BaseStore):
+class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
     #__storm_table__ = 'vin_myvindula_dados_funcdetails'
     __storm_table__ = 'vinapp_myvindula_userschemadata'
 
     #Campos de edição
-    id = Int(primary=True)
-    hash = Unicode()
     username = Unicode()
     field_id = Int()
     value = Unicode()
-    date_created = DateTime()
-    date_modified = DateTime()
 
     #vin_myvindula_confgfuncdetails_fields = Unicode()
     #vin_myvindula_instance_id = Int()
 
     campo = Reference(field_id, "ModelsConfgMyvindula.id")
-#    instance = Reference(vin_myvindula_instance_id, "ModelsInstanceFuncdetails.id")
 
     def createUserProfile(self,data):
         tool = UtilMyvindula()
@@ -62,6 +57,7 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
                                                      'hash' : unicode(hash),
                                                      'date_created':datetime.now(),
                                                      'date_modified':datetime.now()})
+
             tool.setLogger('info',"User data stored: %s - %s - %s" % (username,
                                                                       field,
                                                                       value))
@@ -72,23 +68,23 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
             self.store.flush()
             tool.setLogger('info',"User created on myvindula: %s" % username)
 
-    def set_DadosFuncdetails(self,**kwargs):
-        # adicionando...
-        field_config = ModelsConfgMyvindula().get_configuration_By_fields(kwargs.get(u'field'))
-        if field_config:
-            kwargs.pop(u'field')
+    # def set_DadosFuncdetails(self,**kwargs):
+    #     # adicionando...
+    #     field_config = ModelsConfgMyvindula().get_configuration_By_fields(kwargs.get(u'field'))
+    #     if field_config:
+    #         kwargs.pop(u'field')
 
-            str_data = datetime.now().strftime('%Y-%m-%d|%H:%M:%S')
-            kwargs[u'field_id'] = field_config.id
+    #         str_data = datetime.now().strftime('%Y-%m-%d|%H:%M:%S')
+    #         kwargs[u'field_id'] = field_config.id
 
-            hash = md5('ModelsDadosFuncdetails'+str(kwargs.get('username',u''))+str(kwargs.get(u'field_id',u''))+str_data).hexdigest()
-            kwargs[u'hash'] = unicode(hash)
-            kwargs[u'date_created'] = datetime.now()
-            kwargs[u'date_modified'] = datetime.now()
+    #         hash = md5('ModelsDadosFuncdetails'+str(kwargs.get('username',u''))+str(kwargs.get(u'field_id',u''))+str_data).hexdigest()
+    #         kwargs[u'hash'] = unicode(hash)
+    #         kwargs[u'date_created'] = datetime.now()
+    #         kwargs[u'date_modified'] = datetime.now()
 
-            dados = ModelsDadosFuncdetails(**kwargs)
-            self.store.add(dados)
-            self.store.flush()
+    #         dados = ModelsDadosFuncdetails(**kwargs)
+    #         self.store.add(dados)
+    #         self.store.flush()
 
 
     def del_DadosFuncdetails(self,id_instance):
@@ -135,6 +131,12 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
 
         return None
 
+
+
+
+
+
+
     def geraDic_DadosUser(self,ids_instances):
         from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
         tools = UtilMyvindula()
@@ -167,7 +169,6 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
 
     #Metodos de busca de usuario para o portal
     def get_FuncBusca(self,department_id='',form_campos=[],filtro=False):
-        #from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
         ids_instances = []
 
         if filtro:
@@ -177,8 +178,8 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
         origin = [ModelsDadosFuncdetails,
                   Join(ModelsConfgMyvindula, ModelsConfgMyvindula.id==ModelsDadosFuncdetails.field_id)]
 
-        if department_id:
-            origin.append(Join(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==ModelsDadosFuncdetails.username))
+        # if department_id:
+        #     origin.append(Join(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==ModelsDadosFuncdetails.username))
 
         for item in form_campos:
             busca = "self.store.using(*origin).find(ModelsDadosFuncdetails,"
@@ -194,8 +195,8 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
                 if ids_instances:
                     busca += "ModelsDadosFuncdetails.username.is_in(ids_instances),"
 
-                if department_id:
-                    busca += "ModelsDepartment.uid_plone==department_id,"
+                # if department_id:
+                #     busca += "ModelsDepartment.uid_plone==department_id,"
 
                 busca += ')'
 

@@ -21,20 +21,20 @@ from datetime import date, datetime, timedelta
 from DateTime.DateTime import DateTime
 import calendar, logging, base64, pickle
 
-from vindula.myvindula.user import BaseFunc, ModelsFuncDetails
+from vindula.myvindula.user import BaseFunc
 
 
 
 from vindula.myvindula.registration import SchemaFunc, SchemaConfgMyvindula
 
 from vindula.controlpanel.browser.models import ModelsCompanyInformation
-from vindula.chat.utils.models import ModelsUserOpenFire
+# from vindula.chat.utils.models import ModelsUserOpenFire
 
 from vindula.myvindula.tools.utils import UtilMyvindula
-from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
+
 
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
-from vindula.myvindula.models.department import ModelsDepartment
+# from vindula.myvindula.models.department import ModelsDepartment
 from vindula.myvindula.models.howareu import ModelsMyvindulaHowareu
 from vindula.myvindula.models.comments import ModelsMyvindulaComments
 from vindula.myvindula.models.like import ModelsMyvindulaLike
@@ -46,7 +46,7 @@ from vindula.myvindula.models.holerite import ModelsFuncHolerite
 from vindula.myvindula.models.descricao_holerite import ModelsFuncHoleriteDescricao
 
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
-from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
+# from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
 
 import pickle, StringIO
 from PIL import Image
@@ -71,7 +71,8 @@ class MyVindulaView(grok.View, UtilMyvindula):
         return ModelsMyvindulaHowareu().get_myvindula_howareu(**D)
 
     def get_department(self,username=u''):
-        return ModelsDepartment().get_departmentByUsername(username)
+        # return ModelsDepartment().get_departmentByUsername(username)
+        return 'TODO mudar'
 
     def count_recados_new(self, username):
         return ModelsMyvindulaRecados().cont_recados_new(username)
@@ -286,29 +287,29 @@ class MyVindulaPrefsView(grok.View, BaseFunc):
     label = _(u"Personal Information")
     description = _(u"Change your available information below.")
 
-    def load_form(self):
-        form = self.request.form
-        membership = self.context.portal_membership
-        user_login = membership.getAuthenticatedMember().getUserName()
-        permissao = self.checa_login()
+    # def load_form(self):
+    #     form = self.request.form
+    #     membership = self.context.portal_membership
+    #     user_login = membership.getAuthenticatedMember().getUserName()
+    #     permissao = self.checa_login()
 
-        user = form.get('user', form.get('userid', False))
+    #     user = form.get('user', form.get('userid', False))
 
-        if user and not'newuser' in form.keys() and permissao:
-            try:
-                user_cod = self.Convert_utf8(self.decodeUser(user))
-            except:
-                user_cod = self.Convert_utf8(user)
-            return SchemaFunc().registration_processes(self, user_cod, True)
-        elif 'newuser' in form.keys() and self.checa_login():
-            return SchemaFunc().registration_processes(self, '', True)
-        else:
-            return SchemaFunc().registration_processes(self, user_login, False)
+    #     if user and not'newuser' in form.keys() and permissao:
+    #         try:
+    #             user_cod = self.Convert_utf8(self.decodeUser(user))
+    #         except:
+    #             user_cod = self.Convert_utf8(user)
+    #         return SchemaFunc().registration_processes(self, user_cod, True)
+    #     elif 'newuser' in form.keys() and self.checa_login():
+    #         return SchemaFunc().registration_processes(self, '', True)
+    #     else:
+    #         return SchemaFunc().registration_processes(self, user_login, False)
 
 
-    def get_ConfugCampos(self, campo):
-        configuracao= ModelsConfgMyvindula().getConfig_edit(campo)
-        return configuracao
+    # def get_ConfugCampos(self, campo):
+    #     configuracao= ModelsConfgMyvindula().getConfig_edit(campo)
+    #     return configuracao
 
     def update(self):
         # disable Plone's editable border
@@ -317,6 +318,9 @@ class MyVindulaPrefsView(grok.View, BaseFunc):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
         if open_for_anonymousUser:
             self.request.response.redirect(self.context.absolute_url() + '/login')
+
+
+
 
 
 class MyVindulaListUser(grok.View, UtilMyvindula):
@@ -336,13 +340,13 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
         return configuracao
 
     def get_department(self, user):
-        return ModelsDepartment().get_departmentByUsername(self.Convert_utf8(user))
+        return 'TODO mudar'
+        # return ModelsDepartment().get_departmentByUsername(self.Convert_utf8(user))
 
     def load_list(self):
         member =  self.context.restrictedTraverse('@@plone_portal_state').member().getUserName();
         user = self.Convert_utf8(self.request.form.get('user',str(member)))
-        #return ModelsFuncDetails().get_FuncDetails(unicode(user, 'utf-8'))
-        #return ModelsInstanceFuncdetails().get_InstanceFuncdetails(user)
+
         return self.get_prefs_user(user)
 
 
@@ -643,13 +647,13 @@ class MyVindulaFirstRegistreView(grok.View, UtilMyvindula):
 
     def checkUserXMPP(self):
         member = getSite().portal_membership
-        try: user = self.to_utf8(member.getAuthenticatedMember().getUserName())
-        except: user =  member.getAuthenticatedMember().getUserName()
-        data = ModelsUserOpenFire().get_UserOpenFire_by_username(user)
-        if data:
-            return True
-        else:
-            return False
+        # try: user = self.to_utf8(member.getAuthenticatedMember().getUserName())
+        # except: user =  member.getAuthenticatedMember().getUserName()
+        # data = ModelsUserOpenFire().get_UserOpenFire_by_username(user)
+        # if data:
+        #     return True
+        # else:
+        return False
 
 
     def get_saldacao(self):
@@ -688,8 +692,8 @@ class MyVindulaListBirthdays(grok.View,UtilMyvindula):
             user_id = unicode(user, 'utf-8')
         except:
             user_id = user
-
-        return ModelsDepartment().get_departmentByUsername(user)
+        return 'TODO mudar'
+        # return ModelsDepartment().get_departmentByUsername(user)
 
     def get_campos_list_user(self):
         if 'control-panel-objects' in  getSite().keys():

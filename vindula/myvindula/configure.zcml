@@ -9,20 +9,20 @@
 
   	<!-- Include configuration for dependencies listed in setup.py -->
   	<includeDependencies package="." />
-   
+
     <include package="plone.namedfile" />
     <include package=".portlets" />
 	<include package=".browser" />
     <include file="skins.zcml" />
     <include file="storm.zcml" />
-	
+
   	<!-- Grok the package to initialise schema interfaces and content classes -->
   	<grok:grok package="." />
   	<i18n:registerTranslations directory="locales" />
 
   	<!-- Register an extension profile to make the product installable
        in Plone -->
-       
+
 	  <genericsetup:registerProfile
 	      name="default"
 	      title="Vindula MyVindula"
@@ -30,13 +30,13 @@
 	      description="Extension profile for Vindula MyVindula"
 	      provides="Products.GenericSetup.interfaces.EXTENSION"
 	      />
-	
+
 	<subscriber
     		for="Products.PluggableAuthService.interfaces.events.IUserLoggedInEvent"
     		handler=".handlers.userupdate"/>
-			
-	<subscriber
+
+	<!--subscriber
 	    for="Products.PluggableAuthService.interfaces.events.IPrincipalDeletedEvent"
-	    handler=".handlers.onDeleteUser"/>
+	    handler=".handlers.onDeleteUser"/-->
 
 </configure>

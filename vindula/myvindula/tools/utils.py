@@ -4,7 +4,6 @@ from Products.statusmessages.interfaces import IStatusMessage
 from vindula.myvindula import MessageFactory as _
 
 
-#from vindula.myvindula.models.funcdetails import ModelsFuncDetails
 from vindula.myvindula.models.photo_user import ModelsPhotoUser
 
 from vindula.myvindula.models.base import BaseStore
@@ -42,16 +41,11 @@ class UtilMyvindula(object):
 
 
     def get_prefs_user(self, user):
-        #from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
         user_id = self.Convert_utf8(user)
-        #return ModelsFuncDetails().get_FuncDetails(user_id)
-
         campos = ModelsConfgMyvindula().get_configurationAll()
-        #dados = ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id)
 
         D = {'username':user_id}
-#        if dados:
-#            D['instance_user'] = dados.id
+
         for campo in campos:
             D[campo.name] = self.getDadoUser_byField(user_id, campo.name)
 
@@ -419,21 +413,8 @@ class UtilMyvindula(object):
 
 
     def getURLFotoUser(self,username,field='photograph'):
-
         ativa_gravatar = self.context.restrictedTraverse('myvindula-conf-userpanel').check_ativa_gravatar()
-
         username = self.Convert_utf8(username)
-
-        # # campo_image = ModelsPhotoUser().get_ModelsPhotoUser_byUsername(username)
-
-        # dados_user = self.get_prefs_user(username) # ModelsFuncDetails().get_FuncDetails(username)
-
-        # # if campo_image:
-        # #     return self.context.portal_url() + '/user-image?username='+username+'&field=photograph'
-
-        # if ativa_gravatar and dados_user.get('email',False):
-        #     return self.loadGravatarImage(dados_user.get('email',''),username)
-
 
         return self.context.portal_url() + '/vindula-api/myvindula/user-picture/'+field+'/'+username+'/'+str(ativa_gravatar)
 
