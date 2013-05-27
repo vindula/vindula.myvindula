@@ -22,10 +22,7 @@ class ModelsMyvindulaRecados(Storm, BaseStore):
     text = Unicode()
     viewed = Bool()
 
-    date_creation = DateTime()
-
-
-
+    date_created = DateTime()
 
 
     # def set_myvindula_recados(self,**kwargs):
@@ -56,29 +53,29 @@ class ModelsMyvindulaRecados(Storm, BaseStore):
 
     def cont_recados_new(self,user):
         data = self.get_myvindula_recados(destination=user)
-        if data:
-            data = data.find(ModelsMyvindulaRecados.viewed==False)
-            return data.count()
+        #if data:
+        data = data.find(ModelsMyvindulaRecados.viewed==False)
+        return data.count()
 
         return 0
 
-
-
-
     def get_myvindula_recados(self,**kwargs):
+        #Todo: colocar um limite de itens retornados
         if kwargs.get('destination',None):
-            user = kwargs.get('receiver','')
+            user = kwargs.get('receiver',None)
+            if user == None:
+                user = kwargs.get('destination',None)
 
             if type(user) != unicode:
-                user = unicode(kwargs.get('receiver',''), 'utf-8')
+                user = unicode(user, 'utf-8')
 
             data = self.store.find(ModelsMyvindulaRecados,
-                                   ModelsMyvindulaRecados.receiver==user).order_by(Desc(ModelsMyvindulaRecados.date_creation))
-
-            if data.count() > 0:
-                return data
-            else:
-                return None
+                                   ModelsMyvindulaRecados.receiver==user).order_by(Desc(ModelsMyvindulaRecados.date_created))
+            return data
+            #if data.count() > 0:
+            #    return data
+            #else:
+            #    return []
         else:
             return None
 

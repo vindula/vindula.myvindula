@@ -76,9 +76,14 @@ class MyVindulaView(grok.View, UtilMyvindula):
     def count_recados_new(self, username):
         return ModelsMyvindulaRecados().cont_recados_new(username)
 
+    def get_recados(self,username):
+        return ModelsMyvindulaRecados().get_myvindula_recados(receiver=username,destination=username)
+
     def count_notificacao_new(self, username):
         return ModelsMyvindulaNotificacao().cont_notificacao_new(username)
 
+    def get_notificacoes(self,username):
+        return ModelsMyvindulaNotificacao().get_myvindula_notificacao(username=username)
 
     def name_user_top(self,full_name):
         limit = 12
@@ -88,8 +93,6 @@ class MyVindulaView(grok.View, UtilMyvindula):
             str = ' '.join(str.split(' ')[:-1])
 
         return str
-
-
 
     def checkHomeFolder(self):
         """ Check if exist homeFolder """
@@ -435,8 +438,6 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
         D={}
         D['destination'] = user
         return ModelsMyvindulaRecados().get_myvindula_recados(**D)
-
-
 
     def update(self):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();

@@ -22,7 +22,7 @@ class ModelsMyvindulaNotificacao(Storm, BaseStore):
     action = Unicode()
     viewed = Bool()
 
-    date_creation = DateTime()
+    date_created = DateTime()
 
 
     def cont_notificacao_new(self,user):
@@ -33,8 +33,6 @@ class ModelsMyvindulaNotificacao(Storm, BaseStore):
 
         return 0
 
-
-
     def get_myvindula_notificacao(self,**kwargs):
         if kwargs.get('username',None):
             user = kwargs.get('username','')
@@ -43,12 +41,14 @@ class ModelsMyvindulaNotificacao(Storm, BaseStore):
                 user = unicode(kwargs.get('username',''), 'utf-8')
 
             data = self.store.find(ModelsMyvindulaNotificacao,
-                                   ModelsMyvindulaNotificacao.username==user).order_by(Desc(ModelsMyvindulaNotificacao.date_creation))
+                                   ModelsMyvindulaNotificacao.username==user,
+                                   ModelsMyvindulaNotificacao.viewed==False).order_by(Desc(ModelsMyvindulaNotificacao.date_created,))
 
-            if data.count() > 0:
-                return data
-            else:
-                return None
+            return data
+            #if data.count() > 0:
+            #    return data
+            #else:
+            #    return None
         else:
             return None
 
