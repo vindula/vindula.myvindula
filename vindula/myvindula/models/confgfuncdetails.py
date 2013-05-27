@@ -6,32 +6,28 @@ from storm.locals import *
 from storm.expr import Desc, Select
 
 
-from vindula.myvindula.models.base import BaseStore
+from vindula.myvindula.models.base import BaseStoreMyvindula
 
 from hashlib import md5
 from datetime import datetime
 
 
-class ModelsConfgMyvindula(Storm, BaseStore):
+class ModelsConfgMyvindula(Storm, BaseStoreMyvindula):
     #__storm_table__ = 'vin_myvindula_confgfuncdetails'
     __storm_table__ = 'vinapp_myvindula_userschemafields'
 
     #Campos de edição
-    id = Int(primary=True)
-    hash = Unicode()
-    name = Unicode()
-    label = Unicode()
-    decription = Unicode()
-    required = Bool()
-    ativo_edit = Bool()
-    ativo_view = Bool()
-    type = Unicode()
-    choices =  Unicode()
-    order_position = Int()
-    mask = Unicode()
-    profile_category = Unicode()
-    date_created = DateTime()
-    date_modified = DateTime()
+    name = Unicode(default=u'')
+    label = Unicode(default=u'')
+    decription = Unicode(default=u'')
+    required = Bool(default=False)
+    ativo_edit = Bool(default=True)
+    ativo_view = Bool(default=True)
+    type = Unicode(default=u'')
+    choices =  Unicode(default=u'')
+    order_position = Int(default=0)
+    mask = Unicode(default=u'')
+    profile_category = Unicode(default=u'')
 
 
     def set_configuration(self,**kwargs):

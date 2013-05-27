@@ -35,3 +35,13 @@ class BaseStore(object):
             # adiciona a data atual
             self.date_created = datetime.now()
 
+
+# Models de Migração
+class BaseStoreMyvindula(BaseStore):
+
+    id = Int(primary=True)
+    hash = Unicode(default=u'')
+    deleted = Bool(default=False)
+    date_created = DateTime(default=datetime.now())
+    date_modified = DateTime(default=datetime.now())
+    date_excluded = DateTime(default=datetime(1970,1,1,0,0,0))
