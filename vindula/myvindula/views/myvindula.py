@@ -987,7 +987,8 @@ class MyVindulaHoleriteView(grok.View, UtilMyvindula):
         user = str(user_login.getUserName())
         prefs_user = self.get_prefs_user(user)
         if prefs_user:
-            cpf = prefs_user.get('cpf').replace('.', '').replace('-', '')
+            cpf = prefs_user.get('cpf') or prefs_user.get('teaching_research') or ''
+	        cpf = cpf.replace('.', '').replace('-', '')
             cpf_validate = request.get('cpf_validate').replace('.', '').replace('-', '')
             if cpf == cpf_validate:
                 request.SESSION['cpf'] = cpf
@@ -1017,9 +1018,10 @@ class MyVindulaPrintHoleriteView(grok.View, UtilMyvindula):
         prefs_user = self.get_prefs_user(user_login.getUserName())
 
         if prefs_user and 'id' in form.keys():
+   	    cpf = prefs_user.get('cpf') or prefs_user.get('teaching_research') or ''
 
-            try:cpf = unicode(prefs_user.get('cpf',''),'utf-8')
-            except:cpf = prefs_user.get('cpf','')
+            try:cpf = unicode(cpf, 'utf-8')
+            except:pass
 
             id = int(form.get('id','0'))
 
