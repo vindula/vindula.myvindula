@@ -360,7 +360,6 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
             D = {}
             D['label'] = campo.label
             try:
-#                valor = self.getDadoUser_byField(instanceUser, campo.fields)
                 valor = instanceUser.get(campo.name)
                 if type(valor) == list:
                     valor_list = ''

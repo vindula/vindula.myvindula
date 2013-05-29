@@ -5,29 +5,30 @@
         </metal:js>            
         <metal:block fill-slot="top_slot">
               <tal:dummy tal:define="dummy python:request.set('disable_border',1);
-                       disable_column_one python:request.set('disable_plone.leftcolumn',1);
-                       disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+                         disable_column_one python:request.set('disable_plone.leftcolumn',1);
+                         disable_column_two python:request.set('disable_plone.rightcolumn',1);">
+              </tal:dummy>
         </metal:block>
     </head>
     <body>
         <div metal:fill-slot="content" tal:define="member python:context.portal_membership.getAuthenticatedMember();
     											   isAnonymous context/portal_membership/isAnonymousUser|python:True;
     											   
-    											   form_data view/load_list | python:{};
-    											   user_perfil form_data/username|nothing;
+    											   user_profile view/load_list | python:{};
+    											   username user_profile/username|nothing;
     											   panelView python:context.restrictedTraverse('@@myvindula-conf-userpanel')" >
     			
-        	<tal:cont tal:condition="form_data">
-    			<tal:cond tal:condition="python: str(member.getUserName())==user_perfil">
+        	<tal:cont tal:condition="user_profile">
+    			<tal:cond tal:condition="python: str(member.getUserName())==username">
     	    		<input id="user-igual" type="hidden" value="True">
     				<metal:use use-macro="context/@@myvindulapanel/macros/page"/>                
     		    </tal:cond>
     			
-    			<tal:cont tal:condition="python: str(member.getUserName())!=user_perfil">
+    			<tal:cont tal:condition="python: str(member.getUserName())!=username">
     				<input id="user-igual"  type="hidden" value="False">
     				<div id="edit-bar">
     		            <h5 class="hiddenStructure">Visões</h5>
-    		
+
     		            <ul id="content-views" class="contentViews">
     		            	<li class="selected" id="perfil-menu">
     		                    <a id="perfil-menu"  style="cursor:pointer;" >Perfil P&uacute;blico</a>
@@ -48,9 +49,8 @@
     			<div metal:use-macro="context/myvindula-user-perfil/macros/page-view" />
     			
     			<!-- Meus Pensamentos -->
-    			
                 <div id="howareu" class="userpage geral_lista_comentarios" tal:condition="panelView/check_pensamentos">
-                    <h2 class="h2title" tal:content="string: No que ${form_data/name|nothing} est&aacute; pensando!"></h2>
+                    <h2 class="h2title" tal:content="string: No que ${user_profile/name|nothing} est&aacute; pensando!"></h2>
                     
                     <tal:def define="items python: view.get_howareu(user);
                                      comment_type string:ModelsMyvindulaHowareu">
@@ -63,15 +63,13 @@
     			
     			<!-- start: Scraps -->
     			<div id="scraps" class=" geral_lista_comentarios" tal:condition="panelView/check_recados">
-    				
     				<!-- Scraps Input -->
     				<div id="comment-geral" tal:condition="not: isAnonymous">
-    					<h2 class="h2title" tal:content="string:Deixe um recado para ${form_data/name|nothing}:"></h2>
-    					
+    					<h2 class="h2title" tal:content="string:Deixe um recado para ${user_profile/name|nothing}:"></h2>
     					<form action="" method="post" enctype="multipart/form-data" name="save-recados" 
       						  tal:attributes="action string:${context/absolute_url}/myvindulalistuser?user=${context/REQUEST/form/user|nothing}&scraps=true">	
     						
-    						<input type="hidden" name="destination" value="" tal:attributes="value user_perfil">	
+    						<input type="hidden" name="destination" value="" tal:attributes="value username">	
     						<input type="hidden" name="username" value="" tal:attributes="value python:member.getUserName()">
     						
     						<tal:cond condition="panelView/check_ativa_richtext|python:False">
@@ -85,10 +83,7 @@
                                 <textarea style="width: 100%; height: 85px;" name="text"  tal:define="idRandom python:str(panelView.randomIdComents())" 
                                                                                           tal:attributes="id string:text_coments_${idRandom}" 
                                                                                           class="ckeditor_plone"></textarea>
-                            
                             </tal:cond>
-    						
-    						
     						<textarea tal:condition="not:panelView/check_ativa_richtext|python:True "  style="width: 100%; height: 81px;" name="text"></textarea>
     		
     						<div class="bt_comentar">
@@ -99,19 +94,17 @@
     				</div>
     				
     				<!-- Scraps List -->
-        			<tal:def define="items python:view.get_recados(user_perfil);">
+        			<tal:def define="items python:view.get_recados(username);">
     					<div class="userpage geral_lista_comentarios" tal:condition="items">
     						<h2 class="h2title">Outros recados!</h2>
-    						
     						<tal:rep tal:repeat="item items">
     							<div class="comment item_lista" tal:define="user_item item/username|nothing;
-    																		form_data python:view.get_prefs_user(user_item) or {};"
+    																		user_profile python:view.get_prefs_user(user_item) or {};"
     																		
-    															tal:condition="python: (str(member.getUserName()) == user_perfil) or 
+    															tal:condition="python: (str(member.getUserName()) == username) or 
     																				   (str(member.getUserName()) == str(user_item)) or
      																				   ('Manager' in member.getRoles()) or 
      																				   panelView.check_filtro_recados_user_publicos()" > 
-                                    
                                     <div metal:use-macro="context/macro-myvindula-documentByLine/macros/page"> </div>
 
     								<div id="like" tal:condition="not: isAnonymous" >
@@ -136,8 +129,6 @@
     					</div>
     				</tal:def>
     			</div>
-    			<!-- end: Scraps -->
-    			
     		</div>
         </div>    
     </body>

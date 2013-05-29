@@ -11,116 +11,214 @@
 	    	<div   tal:define="view python: context.restrictedTraverse('@@myvindulalistuser');
 	    	                   isAnonymous context/portal_membership/isAnonymousUser|python:True;
 	    	                   
-							   form_data view/load_list | python:{};
-							   user form_data/username|nothing;">
-												   
-                    <div id="interna" class="userpage ">
-                        <h2 class="h2title">Informa&ccedil;&otilde;es do Perfil</h2>
-                        <div class="titulo">
-                            <h2>
-                                <tal:cond condition="python: view.get_ConfugCampos('name')">
-                                   <tal:cont content="form_data/name|nothing" />
-                                </tal:cond>
-                            </h2>
-                        </div>
-                    
-                        <div class="department">
-                            <tal:cond condition="python: view.get_ConfugCampos('vin_myvindula_department')">
-                                <tal:def define="departamentos python: view.get_department(user)">
-                                    <tal:rep repeat="departamento departamentos">
-                                        <span tal:content="departamento/Title|nothing">Departamento</span>
-                                        <span tal:define="cont repeat/departamento/length;
-                                                               last repeat/departamento/end"
-                                              tal:condition="python: cont > 1 and not last"> | </span>
-                                    </tal:rep>
-                                </tal:def>
-                            </tal:cond>
-                            <!--span tal:content="form_data/departamento/name|nothing"></span-->
-                        </div>
-                    
-                        <!-- start: Personal Information -->
-                        <div id="personal">
-                            <div id="photo">
-                                <tal:cond condition="python: view.get_ConfugCampos('photograph')">    
-                                    <!-- Dados para utilização da macro -->                                  
-                                    <tal:def define="size_img string:150px;
-                                                     user_profiles user|nothing;
-                                                     item form_data;">
-                                        <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>       
-                                    </tal:def>
-                                </tal:cond>
-                                <tal:cond condition="python:not view.get_ConfugCampos('photograph')">
-                                    <div style="width: 150px;height: 150px;"></div>
-                                </tal:cond>
+							   user_profile view/load_list | python:{};
+							   username user_profile/username|nothing;">
+                <h5>
+                    <tal:cond condition="python:view.get_ConfugCampos('name')">
+                       <tal:cont content="user_profile/name|nothing" />
+                    </tal:cond>
+                    <hr/>
+                </h5>
+                <div class="row">
+                    <div class="columns large-9">
+                        <div class="row">
+                            <div class="columns large-12">
+                                <div class="container-tiles-section section-container auto" data-section>
+                                    <section>
+                                        <p class="title" data-section-title><a href="#panel1">Info</a></p>
+                                        <div class="content" data-section-content>
+                                            <div id="tile-org-info">
+                                                <div class="row">
+                                                    <div class="columns large-4">
+                                                        <div id="photo">
+                                                            <tal:cond condition="python: view.get_ConfugCampos('photograph')">    
+                                                                <!-- Dados para utilização da macro -->                                  
+                                                                <tal:def define="size_img string:150px;
+                                                                                 user_profiles user|nothing;
+                                                                                 item user_profile;">
+                                                                    <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>       
+                                                                </tal:def>
+                                                            </tal:cond>
+                                                            <tal:cond condition="python:not view.get_ConfugCampos('photograph')">
+                                                                <div style="width: 150px;height: 150px;"></div>
+                                                            </tal:cond>
+                                                        </div>
+                                                    </div>
+                                                    <div class="columns large-8">
+                                                        <div>
+                                                            <h5>Apresentação</h5>
+                                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                                            Nam ut imperdiet urna. Nullam a lacus velit, id sollicitudin nisi.
+                                                            Curabitur at justo eget nulla pellentesque vestibulum.
+                                                            </span>
+                                                        </div>
+            
+                                                        <div class="container-manager">
+                                                            <div>
+                                                                <strong>Status</strong>
+                                                            </div>
+                                                            <div>
+                                                                <span>
+                                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                                                                    Suspendisse mauris ante, dignissim sit amet euismod id, aliquet ut sem.
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="columns large-12 label-team">
+                                                        <strong><a href="">Seguidores</a></strong><span>(41)</span>
+                                                    </div>
+                                                    <div class="columns large-12">
+                                                        <div class="pagination pag-left"><a href="#"></a></div>
+                                                        <div class="pagination pag-right"><a href="#"></a></div>
+                                                        <ul class="small-block-grid-9 large-block-grid-9 members-team">
+                                                            <li>
+                                                                <img tal:attributes="src string:${context/portal_url}/++resource++vindula.content/images/demo/equipe-org-demo.png" />
+                                                            </li>
+                                                            <li>
+                                                                <img tal:attributes="src string:${context/portal_url}/++resource++vindula.content/images/demo/equipe-org-demo.png" />
+                                                            </li>
+                                                            <li>
+                                                                <img tal:attributes="src string:${context/portal_url}/++resource++vindula.content/images/demo/equipe-org-demo.png" />
+                                                            </li>
+                                                            <li>
+                                                                <img tal:attributes="src string:${context/portal_url}/++resource++vindula.content/images/demo/equipe-org-demo.png" />
+                                                            </li>
+                                                            <li>
+                                                                <img tal:attributes="src string:${context/portal_url}/++resource++vindula.content/images/demo/equipe-org-demo.png" />
+                                                            </li>
+                                                            <li>
+                                                                <img tal:attributes="src string:${context/portal_url}/++resource++vindula.content/images/demo/equipe-org-demo.png" />
+                                                            </li>
+                                                            <li>
+                                                                <img tal:attributes="src string:${context/portal_url}/++resource++vindula.content/images/demo/equipe-org-demo.png" />
+                                                            </li>
+                                                            <li>
+                                                                <img tal:attributes="src string:${context/portal_url}/++resource++vindula.content/images/demo/equipe-org-demo.png" />
+                                                            </li>
+                                                            <li>
+                                                                <img tal:attributes="src string:${context/portal_url}/++resource++vindula.content/images/demo/equipe-org-demo.png" />
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <section>
+                                        <p class="title" data-section-title><a href="#panel2">Meus Conteúdos</a></p>
+                                        <div class="content" data-section-content>
+                                            <p>Content of section 2.</p>
+                                        </div>
+                                    </section>
+                                </div>   
                             </div>
-                        
-                            <div id="data" tal:define="dados python:view.geraDadosAreas('personal',form_data)" 
-                                           tal:condition="dados|nothing">
-                                <div class="area"><span>Pessoal</span></div>
-                                    <table>
-                                        <tal:rep repeat="item dados">
-                                            <tr>
-                                                <td class="field" tal:content="item/label|nothing">Label</td>
-                                                <td class="value" tal:content="item/data|nothing">Data</td>
-                                            </tr>
-                                        </tal:rep>
+                            
+                            <div class="columns large-6">
+                                <div class="row">
+                                    <div class="columns large-12 shadow-line">
+                                        <h5>
+                                            INFORMAÇÕES
+                                            <hr/>
+                                        </h5>
                                         
-                                    </table>
-                                <a id="send-mail" tal:define="email dados_usuario/email|nothing" 
-                                                  tal:condition="python:email and view.get_ConfugCampos('email')" 
-                                                  tal:attributes="href string:mailto:${email}">Enviar e-mail</a>
+                                        <div>
+                                            <ul class="no-bullet">
+                                                <li>
+                                                    <strong>Unidade:</strong>
+                                                    <tal:cond condition="python: view.get_ConfugCampos('vin_myvindula_department')">
+                                                        <tal:def define="departamentos python: view.get_department(username)">
+                                                            <tal:rep repeat="departamento departamentos">
+                                                                <span tal:content="departamento/Title|nothing">Departamento</span>
+                                                                <span tal:define="cont repeat/departamento/length;
+                                                                                       last repeat/departamento/end"
+                                                                      tal:condition="python: cont > 1 and not last"> | </span>
+                                                            </tal:rep>
+                                                        </tal:def>
+                                                    </tal:cond>
+                                                </li>
+                                                
+                                                <tal:rep repeat="field user_profile">
+                                                    <li>
+                                                        <strong tal:content="field"></strong>
+                                                        <span tal:content="python:user_profile.get(field)"></span>
+                                                    </li>
+                                                </tal:rep>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="columns large-12 shadow-line">
+                                        <h5>
+                                            PARTICIPANDO
+                                            <hr/>
+                                        </h5>
+                                        
+                                        <div class="content_itens">
+                                            <tal:cond condition="python: view.get_ConfugCampos('vin_myvindula_department')">
+                                                <tal:def define="departamentos python: view.get_department(username)">
+                                                    <p tal:repeat="departamento departamentos">
+                                                        <img width="16" height="16" alt=""/>
+                                                        <a tal:attributes="href string:#"
+                                                           tal:content="departamento/Title|nothing">Lorem ipsum dolor sit amet </a>
+                                                    </p>
+                                                </tal:def>
+                                            </tal:cond>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#" class="more-icon">
+                                                <h1 class="subheader vindula-icon-plus-sign left"></h1>
+                                                <span class="left">Ver todos</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            
+                            <div class="columns large-6">
+                                <div class="row">
+                                    <div id="tile-list-bullet" class="columns large-12 shadow-line">
+                                        <h5>
+                                            ATIVIDADES
+                                            <hr/>
+                                        </h5>
+                                        
+                                        <ul class="square">
+                                            <li><span>Lorem ipsum dolor sit amet</span></li>
+                                            <li><span>Consectetur adipiscing elit.</span></li>
+                                            <li><span>Suspendisse mauris ante.</span></li>
+                                            <li><span>Dignissim sit amet euismod id.</span></li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div id="tile-list-bullet" class="columns large-12 shadow-line">
+                                        <h5>
+                                            PROJETOS
+                                            <hr/>
+                                        </h5>
+                                        
+                                        <ul class="square">
+                                            <li><a href="#">Lorem ipsum dolor sit amet</a></li>
+                                            <li><a href="#">Consectetur adipiscing elit.</a></li>
+                                            <li><a href="#">Suspendisse mauris ante.</a></li>
+                                            <li><a href="#">Dignissim sit amet euismod id.</a></li>
+                                        </ul>
+                                        
+                                        <a href="#" class="more-icon">
+                                            <h1 class="subheader vindula-icon-plus-sign left"></h1>
+                                            <span class="left">Ver todos</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
                         </div>
-                        <!-- end: Personal Information -->
-                </div>
-               
-                <div id="perfil" class="userpage"> 
-                    <!-- start: Others Information -->
-                    
-                    <tal:rep repeat="area view/getAreasDinamicas">
-                        <!-- areas -->
-                        <div id="grupo" tal:define="dados python:view.geraDadosAreas(area.get('id'),form_data)" 
-                                        tal:condition="dados|nothing">
-                            <div class="area"><span tal:content="area/title|nothing">Contato</span></div>
-                            <img class="type-info" tal:attributes="src area/url_image" />
-                            <table>
-                                <tal:rep repeat="item dados">
-
-                                    <tal:comment tal:replace="nothing">
-
-                                        *********
-
-                                        TODO:
-                                        Corrigir este codigo. Criado desta maneira para resolver rapidamente.
-
-                                        *********
-
-                                    </tal:comment>
-                                    <span tal:content="item/label" />
-                                    <tal:condition condition="python: item.get('label') == 'Unidade Organizacional Principal'">
-                                    <tr>
-                                        <td class="field" tal:content="item/label|nothing">Label</td>
-                                        <td class="value">
-                                            <tal:cont tal:content="python: view.getUnidadeUID(item.get('data')).Title()"></tal:cont>
-                                        </td>
-                                    </tr>
-                                    </tal:condition>
-
-                                    <tal:condition condition="not: python: item.get('label') == 'Unidade Organizacional Principal'">
-                                    <tr>
-                                        <td class="field" tal:content="item/label|nothing">Label</td>
-                                        <td class="value"> <tal:cont tal:content="structure item/data|nothing"></tal:cont></td>
-                                    </tr>
-                                    </tal:condition>
-                                </tal:rep> 
-    
-                            </table>
-                        </div>
+                    </div>
+                    <div class="columns large-3">
                         
-                    </tal:rep>
-                    
-                    <!-- end: Others Information -->
-                </div>				    
+                    </div>
+                </div>					   
 	        </div>
 	</meta:macro>    
 </body>
