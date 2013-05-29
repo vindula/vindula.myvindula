@@ -5,13 +5,13 @@
 from storm.locals import *
 from storm.expr import Desc, Select
 
-from vindula.myvindula.models.base import BaseStore
+from vindula.myvindula.models.base import BaseStoreMyvindula
 
 from vindula.myvindula.tools.utils import UtilMyvindula
 from vindula.contentcore.base import BaseFunc
 
 
-class ModelsMyvindulaNotificacao(Storm, BaseStore):
+class ModelsMyvindulaNotificacao(Storm, BaseStoreMyvindula):
     __storm_table__ = 'vinapp_social_notification'
 
     _name_class = "ModelsMyvindulaNotificacao"
@@ -22,7 +22,7 @@ class ModelsMyvindulaNotificacao(Storm, BaseStore):
     action = Unicode()
     viewed = Bool()
 
-    date_created = DateTime()
+    # date_created = DateTime()
 
 
     def cont_notificacao_new(self,user):
@@ -34,21 +34,14 @@ class ModelsMyvindulaNotificacao(Storm, BaseStore):
         return 0
 
     def get_myvindula_notificacao(self,**kwargs):
-        if kwargs.get('username',None):
-            user = kwargs.get('username','')
+        user = kwargs.get('username','')
 
-            if type(user) != unicode:
-                user = unicode(kwargs.get('username',''), 'utf-8')
+        if type(user) != unicode:
+            user = unicode(kwargs.get('username',''), 'utf-8')
 
-            data = self.store.find(ModelsMyvindulaNotificacao,
-                                   ModelsMyvindulaNotificacao.username==user,
-                                   ModelsMyvindulaNotificacao.viewed==False).order_by(Desc(ModelsMyvindulaNotificacao.date_created,))
+        data = self.store.find(ModelsMyvindulaNotificacao,
+                               ModelsMyvindulaNotificacao.username==user).order_by(Desc(ModelsMyvindulaNotificacao.date_created,))
 
-            return data
-            #if data.count() > 0:
-            #    return data
-            #else:
-            #    return None
-        else:
-            return None
+        return data
+
 

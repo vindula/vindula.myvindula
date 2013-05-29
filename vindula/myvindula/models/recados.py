@@ -5,13 +5,13 @@
 from storm.locals import *
 from storm.expr import Desc, Select
 
-from vindula.myvindula.models.base import BaseStore
+from vindula.myvindula.models.base import BaseStoreMyvindula
 
 from vindula.myvindula.tools.utils import UtilMyvindula
 from vindula.contentcore.base import BaseFunc
 
 
-class ModelsMyvindulaRecados(Storm, BaseStore):
+class ModelsMyvindulaRecados(Storm, BaseStoreMyvindula):
     __storm_table__ = 'vinapp_social_message'
 
     _name_class = "ModelsMyvindulaRecados"
@@ -22,7 +22,7 @@ class ModelsMyvindulaRecados(Storm, BaseStore):
     text = Unicode()
     viewed = Bool()
 
-    date_created = DateTime()
+    # date_created = DateTime()
 
 
     # def set_myvindula_recados(self,**kwargs):
@@ -61,23 +61,13 @@ class ModelsMyvindulaRecados(Storm, BaseStore):
 
     def get_myvindula_recados(self,**kwargs):
         #Todo: colocar um limite de itens retornados
-        if kwargs.get('destination',None):
-            user = kwargs.get('receiver',None)
-            if user == None:
-                user = kwargs.get('destination',None)
+        user = kwargs.get('receiver','')
+        if type(user) != unicode:
+            user = unicode(user, 'utf-8')
 
-            if type(user) != unicode:
-                user = unicode(user, 'utf-8')
-
-            data = self.store.find(ModelsMyvindulaRecados,
-                                   ModelsMyvindulaRecados.receiver==user).order_by(Desc(ModelsMyvindulaRecados.date_created))
-            return data
-            #if data.count() > 0:
-            #    return data
-            #else:
-            #    return []
-        else:
-            return None
+        data = self.store.find(ModelsMyvindulaRecados,
+                               ModelsMyvindulaRecados.receiver==user).order_by(Desc(ModelsMyvindulaRecados.date_created))
+        return data
 
     def del_myvindula_recados(self, id):
         record = self.store.find(ModelsMyvindulaRecados, ModelsMyvindulaRecados.id==id).one()

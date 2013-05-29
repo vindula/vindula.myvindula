@@ -471,30 +471,7 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
             self.request.response.redirect(self.context.absolute_url() + '/login')
 
 
-class MyVindulaListRecados(grok.View,UtilMyvindula):
-    grok.context(ISiteRoot)
-    grok.require('zope2.View')
-    grok.name('myvindulalistrecados')
 
-    def get_recados(self, user):
-        D={}
-        D['destination'] = user
-        return ModelsMyvindulaRecados().get_myvindula_recados(**D)
-
-    def update(self):
-        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
-
-        if not open_for_anonymousUser:
-            form = self.request.form
-            excluir = form.get('form.excluir', False)
-
-            if excluir:
-                id_recado = int(form.get('id_recado','0'))
-                ModelsMyvindulaRecados().del_myvindula_recados(id_recado)
-                IStatusMessage(self.request).addStatusMessage(_(u'Registro removido com sucesso.'),"info")
-
-        else:
-            self.request.response.redirect(self.context.absolute_url() + '/login')
 
 class MyVindulalistAll(grok.View, UtilMyvindula):
     grok.context(Interface)

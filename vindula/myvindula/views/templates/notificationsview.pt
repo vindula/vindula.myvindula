@@ -1,0 +1,42 @@
+<html metal:use-macro="here/main_template/macros/master">
+    <head>
+        <metal:block fill-slot="top_slot">
+            <tal:dummy tal:define="dummy python:request.set('disable_border',1);
+                                   disable_column_one python:request.set('disable_plone.leftcolumn',1);
+                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+        </metal:block>
+    </head>
+    <body>
+        <div metal:fill-slot="content" tal:define="member python:context.portal_membership.getAuthenticatedMember();
+                                                   isAnonymous context/portal_membership/isAnonymousUser|python:True;
+                                                   username python:member.getUserName() or None;">
+
+            <div id="content">
+                <div class="userpage geral_lista_comentarios">
+                    <h2 class="h2title">Suas notificações!</h2>
+
+                    <tal:rep repeat="notificacao python:view.get_notificacao(username)">
+                        <div>
+                            <div class="clear">
+                                <div class="circle-mark">
+                                </div>
+                                <img class="left" width="50" height="50"
+                                     tal:attributes="src string:${here/portal_url}/vindula-api/myvindula/user-picture/photograph/${notificacao/actor}/True">
+                                <div class="left info-updates">
+                                    <div>
+                                        <strong tal:content="notificacao/actor">Catarina</strong>
+                                        <span tal:content="notificacao/action">Like</span>
+                                    </div>
+                                    <div>
+                                        <span tal:content="python:view.getTimeAgo(notificacao.get_date_created,notificacao.action)"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tal:rep>
+
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -6,7 +6,7 @@ from storm.locals import *
 from storm.expr import Desc, Select
 from storm.zope.interfaces import IZStorm
 from zope.component import getUtility
-from datetime import date , datetime
+from datetime import date , datetime, timedelta
 
 
 #import sys
@@ -45,3 +45,8 @@ class BaseStoreMyvindula(BaseStore):
     date_created = DateTime(default=datetime.now())
     date_modified = DateTime(default=datetime.now())
     date_excluded = DateTime(default=datetime(1970,1,1,0,0,0))
+
+    @property
+    def get_date_created(self):
+        date = self.date_created - timedelta(hours=3)
+        return date

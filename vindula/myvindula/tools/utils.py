@@ -9,7 +9,7 @@ from vindula.myvindula.models.photo_user import ModelsPhotoUser
 from vindula.myvindula.models.base import BaseStore
 
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
-
+from vindula.myvindula.tools.ago import human
 
 
 from Products.CMFCore.utils import getToolByName
@@ -410,6 +410,10 @@ class UtilMyvindula(object):
                     break
 
         return checa
+
+    def getTimeAgo(self,time,texto='Acessado'):
+        # to find out how long ago, use the human function
+        return texto + human(time)
 
 
     def getURLFotoUser(self,username,field='photograph'):
