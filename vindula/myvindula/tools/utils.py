@@ -41,15 +41,21 @@ class UtilMyvindula(object):
 
 
     def get_prefs_user(self, user):
+        from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
         user_id = self.Convert_utf8(user)
-        campos = ModelsConfgMyvindula().get_configurationAll()
 
-        D = {'username':user_id}
+        return ModelsDadosFuncdetails().get_DadosFuncdetails_byInstance(user_id)
 
-        for campo in campos:
-            D[campo.name] = self.getDadoUser_byField(user_id, campo.name)
+    # def get_prefs_user(self, user):
+    #     user_id = self.Convert_utf8(user)
+    #     campos = ModelsConfgMyvindula().get_configurationAll()
 
-        return D
+    #     D = {'username':user_id}
+
+    #     for campo in campos:
+    #         D[campo.name] = self.getDadoUser_byField(user_id, campo.name)
+
+    #     return D
 
     def get_Dic_Campos(self):
         campos = {}
@@ -69,35 +75,35 @@ class UtilMyvindula(object):
 
         return campos
 
-    def getDadoUser_byField(self,user,campo):
+    # def getDadoUser_byField(self,user,campo):
 
-        # TODO: Corrigir esse metodo. Esta retornando informacao valida, mas com sintaxe ruim.
+    #     # TODO: Corrigir esse metodo. Esta retornando informacao valida, mas com sintaxe ruim.
 
-        from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
+    #     from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 
-        usuario = unicode(user)
-        result = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstanceAndFieldName(usuario,campo)
-
-
-        if result:
-            return result.value
-        else:
-            return []
+    #     usuario = unicode(user)
+    #     result = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstanceAndFieldName(usuario,campo)
 
 
-    def getDadoUser_byFieldName(self,user,campo):
-
-        # TODO: Corrigir esse metodo. Esta retornando informacao valida, mas com sintaxe ruim.
-        from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
-
-        usuario = unicode(user)
-        result = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstanceAndFieldName(usuario,campo)
+    #     if result:
+    #         return result.value
+    #     else:
+    #         return []
 
 
-        if result:
-            return result.value
-        else:
-            return []
+    # def getDadoUser_byFieldName(self,user,campo):
+
+    #     # TODO: Corrigir esse metodo. Esta retornando informacao valida, mas com sintaxe ruim.
+    #     from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
+
+    #     usuario = unicode(user)
+    #     result = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstanceAndFieldName(usuario,campo)
+
+
+    #     if result:
+    #         return result.value
+    #     else:
+    #         return []
 
     def getSiglaUnidade(self, uid):
         """
@@ -109,7 +115,6 @@ class UtilMyvindula(object):
         rtool = getToolByName(self, 'reference_catalog')
         objetounidade = rtool.lookupObject(uid)
 
-        #import pdb; pdb.set_trace()
         if objetounidade:
             result = objetounidade.getSiglaunidade()
 
@@ -120,14 +125,10 @@ class UtilMyvindula(object):
 
         # TODO: Corrigir esse metodo. Esta retornando informacao valida, mas com sintaxe ruim.
         # passar m=1 caso queira a sigla em maiuscula
-
-
-        dados = self.getDadoUser_byFieldName(usuario, 'unidadeprincipal')
-        # import pdb; pdb.set_trace()
+        dados = self.get_prefs_user(usuario).get('unidadeprincipal','')
         sigla = self.getSiglaUnidade(dados)
 
         # sigla = sigla.replace('<p>','').replace('</p>','')
-
         if m == 1:
             return str(sigla).upper()
         else:

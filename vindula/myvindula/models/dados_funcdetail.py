@@ -68,24 +68,6 @@ class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
             self.store.flush()
             tool.setLogger('info',"User created on myvindula: %s" % username)
 
-    # def set_DadosFuncdetails(self,**kwargs):
-    #     # adicionando...
-    #     field_config = ModelsConfgMyvindula().get_configuration_By_fields(kwargs.get(u'field'))
-    #     if field_config:
-    #         kwargs.pop(u'field')
-
-    #         str_data = datetime.now().strftime('%Y-%m-%d|%H:%M:%S')
-    #         kwargs[u'field_id'] = field_config.id
-
-    #         hash = md5('ModelsDadosFuncdetails'+str(kwargs.get('username',u''))+str(kwargs.get(u'field_id',u''))+str_data).hexdigest()
-    #         kwargs[u'hash'] = unicode(hash)
-    #         kwargs[u'date_created'] = datetime.now()
-    #         kwargs[u'date_modified'] = datetime.now()
-
-    #         dados = ModelsDadosFuncdetails(**kwargs)
-    #         self.store.add(dados)
-    #         self.store.flush()
-
 
     def del_DadosFuncdetails(self,id_instance):
         results = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.username==id_instance)
@@ -104,41 +86,72 @@ class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
 
 
     def get_DadosFuncdetails_byInstance(self,id_instance):
+        tools = UtilMyvindula()
         data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.username==id_instance)
 
         if data.count() > 0:
-            return data
+            D={}
+            D['username'] = id_instance
+
+            for item in data:
+                try:
+                    valor = tools.decodePickle(item.value)
+                except:
+                    valor = item.value
+
+                D[item.campo.name] = valor
+
+            return D
         else:
-            return None
+            return {}
 
-    def get_DadosFuncdetails_byInstanceAndField(self,username,field_id):
-        data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.username==username,
-                                                       ModelsDadosFuncdetails.field_id==field_id).one()
-        if data:
-            return data
+    def get_AllFuncDetails(self):
+        L_username = []
+        L_retorno = []
+        data = self.store.find(ModelsDadosFuncdetails)
+        if data.count() > 0:
+            for item in data:
+                if not item.username in L_username:
+                    L_username.append(item.username)
+                    L_retorno.append(self.get_DadosFuncdetails_byInstance(item.username))
 
-        return None
-
-    def get_DadosFuncdetails_byInstanceAndFieldName(self,username,field):
-        field_config = ModelsConfgMyvindula().get_configuration_By_fields(field)
-        if field_config:
-            field_id = field_config.id
-
-            data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.username==username,
-                                                           ModelsDadosFuncdetails.field_id==field_id).one()
-            if data:
-                return data
-
-        return None
+        return L_retorno
 
 
 
+    # def get_DadosFuncdetails_byInstanceAndField(self,username,field_id):
+    #     data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.username==username,
+    #                                                    ModelsDadosFuncdetails.field_id==field_id).one()
+    #     if data:
+    #         return data
+
+    #     return None
+
+    # def get_DadosFuncdetails_byInstanceAndFieldName(self,username,field):
+    #     field_config = ModelsConfgMyvindula().get_configuration_By_fields(field)
+    #     if field_config:
+    #         field_id = field_config.id
+
+    #         data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.username==username,
+    #                                                        ModelsDadosFuncdetails.field_id==field_id).one()
+    #         if data:
+    #             return data
+
+    #     return None
 
 
+
+
+
+
+
+
+
+#-------------------------------------------------------
+#TODO: metodos antigos reavaliar estes metodos
 
 
     def geraDic_DadosUser(self,ids_instances):
-        from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
         tools = UtilMyvindula()
         L = []
         campos = ModelsConfgMyvindula().get_configurationAll()
@@ -146,24 +159,24 @@ class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
         for ids in ids_instances:
             dados = self.get_DadosFuncdetails_byInstance(ids)
 
-            D = {}
-            if dados:
+            # D = {}
+            # if dados:
 
-                # ToDo: Estas duas chaves estao legadas para o resto da aplicação
-                D['instance_user'] = ids
-                D['username'] = ids #dados[0].instance.username
+            #     # ToDo: Estas duas chaves estao legadas para o resto da aplicação
+            #     D['instance_user'] = ids
+            #     D['username'] = ids #dados[0].instance.username
 
-                for campo in campos:
-                    tmp = dados.find(field_id=campo.id).one()
-                    if tmp:
-                        try:
-                            data = tools.decodePickle(tmp.value)
-                        except:
-                            data = tmp.value
+            #     for campo in campos:
+            #         tmp = dados.find(field_id=campo.id).one()
+            #         if tmp:
+            #             try:
+            #                 data = tools.decodePickle(tmp.value)
+            #             except:
+            #                 data = tmp.value
 
-                        D[campo.name] = data
+            #             D[campo.name] = data
 
-                L.append(D)
+            L.append(dados)
         return L
 
 
