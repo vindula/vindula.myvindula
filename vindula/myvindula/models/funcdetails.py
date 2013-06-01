@@ -42,11 +42,17 @@ class FuncDetails(object):
                                      self.get('cell_phone',''))
 
 
+
+
+
     @staticmethod
-    def get_AllFuncDetails():
+    def get_AllFuncDetails(filter=None):
         L_username = []
         L_retorno = []
         data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails)
+        if filter:
+            data = data.find(ModelsDadosFuncdetails.value.like('%'+filter+'%'))
+
         if data.count() > 0:
             for item in data:
                 if not item.username in L_username:
