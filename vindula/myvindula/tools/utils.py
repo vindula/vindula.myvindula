@@ -4,11 +4,13 @@ from Products.statusmessages.interfaces import IStatusMessage
 from vindula.myvindula import MessageFactory as _
 
 
-from vindula.myvindula.models.photo_user import ModelsPhotoUser
+# from vindula.myvindula.models.photo_user import ModelsPhotoUser
 
 from vindula.myvindula.models.base import BaseStore
 
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
+
+
 from vindula.myvindula.tools.ago import human
 
 
@@ -41,10 +43,9 @@ class UtilMyvindula(object):
 
 
     def get_prefs_user(self, user):
-        from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
-        user_id = self.Convert_utf8(user)
-
-        return ModelsDadosFuncdetails().get_DadosFuncdetails_byInstance(user_id)
+        # from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
+        from vindula.myvindula.models.funcdetails import FuncDetails
+        return FuncDetails(self.Convert_utf8(user))
 
     # def get_prefs_user(self, user):
     #     user_id = self.Convert_utf8(user)

@@ -11,7 +11,7 @@ from vindula.myvindula.models.base import BaseStore
 
 # from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
-from vindula.myvindula.models.photo_user import ModelsPhotoUser
+# from vindula.myvindula.models.photo_user import ModelsPhotoUser
 
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 # from vindula.myvindula.models.department import ModelsDepartment

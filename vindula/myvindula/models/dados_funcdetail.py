@@ -105,17 +105,6 @@ class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
         else:
             return {}
 
-    def get_AllFuncDetails(self):
-        L_username = []
-        L_retorno = []
-        data = self.store.find(ModelsDadosFuncdetails)
-        if data.count() > 0:
-            for item in data:
-                if not item.username in L_username:
-                    L_username.append(item.username)
-                    L_retorno.append(self.get_DadosFuncdetails_byInstance(item.username))
-
-        return L_retorno
 
 
 

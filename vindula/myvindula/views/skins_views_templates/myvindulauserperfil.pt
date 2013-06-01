@@ -6,11 +6,11 @@
                                    disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
         </metal:block>
 	</head>
-	<body metal:fill-slot="content">  
-		<meta:macro metal:define-macro="page-view">     
+	<body metal:fill-slot="content">
+		<meta:macro metal:define-macro="page-view">
 	    	<div   tal:define="view python: context.restrictedTraverse('@@myvindulalistuser');
 	    	                   isAnonymous context/portal_membership/isAnonymousUser|python:True;
-	    	                   
+
 							   user_profile view/load_list | python:{};
 							   username user_profile/username|nothing;">
                 <h5>
@@ -31,12 +31,12 @@
                                                 <div class="row">
                                                     <div class="columns large-4">
                                                         <div id="photo">
-                                                            <tal:cond condition="python: view.get_ConfugCampos('photograph')">    
-                                                                <!-- Dados para utilização da macro -->                                  
+                                                            <tal:cond condition="python: view.get_ConfugCampos('photograph')">
+                                                                <!-- Dados para utilização da macro -->
                                                                 <tal:def define="size_img string:150px;
                                                                                  user_profiles user|nothing;
                                                                                  item user_profile;">
-                                                                    <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>       
+                                                                    <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>
                                                                 </tal:def>
                                                             </tal:cond>
                                                             <tal:cond condition="python:not view.get_ConfugCampos('photograph')">
@@ -52,14 +52,14 @@
                                                             Curabitur at justo eget nulla pellentesque vestibulum.
                                                             </span>
                                                         </div>
-            
+
                                                         <div class="container-manager">
                                                             <div>
                                                                 <strong>Status</strong>
                                                             </div>
                                                             <div>
                                                                 <span>
-                                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                                                                     Suspendisse mauris ante, dignissim sit amet euismod id, aliquet ut sem.
                                                                 </span>
                                                             </div>
@@ -111,9 +111,9 @@
                                             <p>Content of section 2.</p>
                                         </div>
                                     </section>
-                                </div>   
+                                </div>
                             </div>
-                            
+
                             <div class="columns large-6">
                                 <div class="row">
                                     <div class="columns large-12 shadow-line">
@@ -121,7 +121,7 @@
                                             INFORMAÇÕES
                                             <hr/>
                                         </h5>
-                                        
+
                                         <div>
                                             <ul class="no-bullet">
                                                 <li>
@@ -137,23 +137,23 @@
                                                         </tal:def>
                                                     </tal:cond>
                                                 </li>
-                                                
-                                                <tal:rep repeat="field user_profile">
+
+                                                <tal:rep repeat="field user_profile/fields">
                                                     <li>
-                                                        <strong tal:content="field"></strong>
-                                                        <span tal:content="python:user_profile.get(field)"></span>
+                                                        <strong tal:content="field/label"></strong>
+                                                        <span tal:content="python:user_profile.get(field.name)"></span>
                                                     </li>
                                                 </tal:rep>
                                             </ul>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="columns large-12 shadow-line">
                                         <h5>
                                             PARTICIPANDO
                                             <hr/>
                                         </h5>
-                                        
+
                                         <div class="content_itens">
                                             <tal:cond condition="python: view.get_ConfugCampos('vin_myvindula_department')">
                                                 <tal:def define="departamentos python: view.get_department(username)">
@@ -165,7 +165,7 @@
                                                 </tal:def>
                                             </tal:cond>
                                         </div>
-                                        
+
                                         <div>
                                             <a href="#" class="more-icon">
                                                 <h1 class="subheader vindula-icon-plus-sign left"></h1>
@@ -175,7 +175,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="columns large-6">
                                 <div class="row">
                                     <div id="tile-list-bullet" class="columns large-12 shadow-line">
@@ -183,7 +183,7 @@
                                             ATIVIDADES
                                             <hr/>
                                         </h5>
-                                        
+
                                         <ul class="square">
                                             <li><span>Lorem ipsum dolor sit amet</span></li>
                                             <li><span>Consectetur adipiscing elit.</span></li>
@@ -191,20 +191,20 @@
                                             <li><span>Dignissim sit amet euismod id.</span></li>
                                         </ul>
                                     </div>
-                                    
+
                                     <div id="tile-list-bullet" class="columns large-12 shadow-line">
                                         <h5>
                                             PROJETOS
                                             <hr/>
                                         </h5>
-                                        
+
                                         <ul class="square">
                                             <li><a href="#">Lorem ipsum dolor sit amet</a></li>
                                             <li><a href="#">Consectetur adipiscing elit.</a></li>
                                             <li><a href="#">Suspendisse mauris ante.</a></li>
                                             <li><a href="#">Dignissim sit amet euismod id.</a></li>
                                         </ul>
-                                        
+
                                         <a href="#" class="more-icon">
                                             <h1 class="subheader vindula-icon-plus-sign left"></h1>
                                             <span class="left">Ver todos</span>
@@ -212,14 +212,14 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
                     <div class="columns large-3">
-                        
+
                     </div>
-                </div>					   
+                </div>
 	        </div>
-	</meta:macro>    
+	</meta:macro>
 </body>
 </html>

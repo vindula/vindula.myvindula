@@ -35,7 +35,7 @@ from vindula.myvindula.models.recados import ModelsMyvindulaRecados
 
 from vindula.myvindula.models.holerite import ModelsFuncHolerite
 from vindula.myvindula.models.descricao_holerite import ModelsFuncHoleriteDescricao
-from vindula.myvindula.models.photo_user import ModelsPhotoUser
+# from vindula.myvindula.models.photo_user import ModelsPhotoUser
 
 
 from vindula.myvindula.tools.utils import UtilMyvindula
