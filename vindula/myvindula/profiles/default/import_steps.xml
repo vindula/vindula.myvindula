@@ -14,13 +14,6 @@
 	    	<dependency step="componentregistry"/>
 		</import-step>
 
-		<!--import-step id="vindula.myvindula.set_field_default"
-					 version="20111031-01"
-	                 handler="vindula.myvindula.setuphandlers.set_field_default"
-	                 title="My Vindula: Hablita campos padrão para edição pelo usuario">
-	    	<dependency step="componentregistry"/>
-		</import-step-->
-
 		<import-step id="vindula.myvindula.create_mycontents"
                      version="20120618-01"
                      handler="vindula.myvindula.setuphandlers.create_mycontents"
