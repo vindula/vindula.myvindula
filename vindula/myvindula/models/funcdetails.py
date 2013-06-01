@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
-
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
+
+from vindula.myvindula.tools.utils import UtilMyvindula
 
 def por_name(item):
     return item.get('name','')
@@ -41,8 +42,12 @@ class FuncDetails(object):
                                      self.get('phone_number',''),
                                      self.get('cell_phone',''))
 
-
-
+    def get_unidadeprincipal(self):
+        OU = UtilMyvindula().lookupObject(self.get('unidadeprincipal'))
+        if OU:
+            return OU.getSiglaunidade() or OU.Title()
+        else:
+            return ''
 
 
     @staticmethod

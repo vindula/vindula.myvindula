@@ -29,6 +29,7 @@ class UtilMyvindula(object):
         self.site = getSite()
 
         self.catalog = getToolByName(self.site, 'portal_catalog')
+        self.rtool = getToolByName(self.site, 'reference_catalog')
         self.portal_url = getToolByName(self.site, 'portal_url')
         self.membership = self.site.portal_membership
 
@@ -106,28 +107,18 @@ class UtilMyvindula(object):
     #     else:
     #         return []
 
-    def getSiglaUnidade(self, uid):
-        """
-         Passar unidade em formato UID para o campo uid
-
-        """
-
-        result = ''
-        rtool = getToolByName(self, 'reference_catalog')
-        objetounidade = rtool.lookupObject(uid)
-
-        if objetounidade:
-            result = objetounidade.getSiglaunidade()
-
-        return result
+    def lookupObject(self, uid):
+        '''
+            Passa o uid para retornar o objcet do plone
+        '''
+        return self.rtool.lookupObject(uid)
 
 
     def getUnidadePrincipalSigla(self, usuario, m=0):
 
         # TODO: Corrigir esse metodo. Esta retornando informacao valida, mas com sintaxe ruim.
         # passar m=1 caso queira a sigla em maiuscula
-        dados = self.get_prefs_user(usuario).get('unidadeprincipal','')
-        sigla = self.getSiglaUnidade(dados)
+        sigla = self.get_prefs_user(usuario).get_unidadeprincipal()
 
         # sigla = sigla.replace('<p>','').replace('</p>','')
         if m == 1:
