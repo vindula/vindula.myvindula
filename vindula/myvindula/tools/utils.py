@@ -118,7 +118,7 @@ class UtilMyvindula(object):
 
         # TODO: Corrigir esse metodo. Esta retornando informacao valida, mas com sintaxe ruim.
         # passar m=1 caso queira a sigla em maiuscula
-        sigla = self.get_prefs_user(usuario).get_unidadeprincipal()
+        sigla = self.get_prefs_user(usuario).get_unidadeprincipal().get('title')
 
         # sigla = sigla.replace('<p>','').replace('</p>','')
         if m == 1:

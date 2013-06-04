@@ -8,19 +8,19 @@
 
 	<head></head>
 	<body>
-	   <div class="cell width-full position-0" 
+	   <div class="cell width-full position-0"
 	         metal:fill-slot="content">
-	         
+
 		   <metal:page metal:define-macro="page">
 		        <div id="edit-bar">
 		            <h5 class="hiddenStructure"
 		                i18n:translate="heading_views">Views</h5>
-		
+
 		            <ul class="contentViews"
 		                id="content-views"
 		                tal:define="view_name view/__name__"
 		                i18n:domain="plone">
-		                	
+
 						<li id="contentview-user_data-personal-data"
 		                    tal:define="member python:context.portal_membership.getAuthenticatedMember().getUserName();
 										link context/@@myvindulapanel/getPersonalPrefsLink;
@@ -47,6 +47,7 @@
 			                    </a>
 			                </li>
 						</tal:cond>
+						<!--
 						<tal:cond define="enable context/@@myvindula-conf-userpanel/check_pensamentos;"
 								  condition="enable">
 			                <li id="contentview-user_data-personal-information"
@@ -60,6 +61,7 @@
 			                    </a>
 			                </li>
 						</tal:cond>
+						-->
 						<li id="contentview-user_data-personal-content"
 		                    tal:define="link context/@@myvindulapanel/getPersonalPrefsLink;
 		                                selected python:view_name=='myvindula-meus-conteudos';"
@@ -83,8 +85,9 @@
 			                       i18n:translate="">
 			                        Recados para Você
 			                    </a>
-			                </li>	
+			                </li>
 						</tal:cond>
+						<!--
 						<tal:cond define="enable_holeite context/@@myvindula-conf-userpanel/check_holerite;
 										  enable_documents context/@@myvindula-conf-userpanel/check_documents"
 								  condition="python: enable_holeite or enable_documents ">
@@ -111,10 +114,11 @@
 			                       Minhas Reservas
 			                    </a>
 			            </li>
+			        	-->
 		            </ul>
 			        <div class="contentActions">&nbsp;</div>
 		        </div>
-		      </metal:page>    
+		      </metal:page>
 	    </div>
 	</body>
 </html>

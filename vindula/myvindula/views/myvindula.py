@@ -64,15 +64,14 @@ class MyVindulaView(grok.View, UtilMyvindula):
     grok.require('zope2.View')
     grok.name('myvindula')
 
-
     def get_howareu(self, user):
         D={}
         D['username'] = user
         return ModelsMyvindulaHowareu().get_myvindula_howareu(**D)
 
-    def get_department(self,username=u''):
-        # return ModelsDepartment().get_departmentByUsername(username)
-        return 'TODO mudar'
+    # def get_department(self,username=u''):
+    #     # return ModelsDepartment().get_departmentByUsername(username)
+    #     return 'TODO mudar'
 
     def count_recados_new(self, username):
         return ModelsMyvindulaRecados().cont_recados_new(username)
@@ -331,20 +330,21 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
     grok.require('zope2.View')
     grok.name('myvindulalistuser')
 
+    black_list = ['vin_myvindula_department','photograph','about','unidadeprincipal' ]
 
-    # Este metodo esta repetido. Ele existe tambem em utils.py. Refatorar
-    def getUnidadeUID(self, uid):
-        rtool = getToolByName(self, 'reference_catalog')
-        return rtool.lookupObject(uid)
+    # # Este metodo esta repetido. Ele existe tambem em utils.py. Refatorar
+    # def getUnidadeUID(self, uid):
+    #     rtool = getToolByName(self, 'reference_catalog')
+    #     return rtool.lookupObject(uid)
 
 
     def get_ConfugCampos(self, campo):
         configuracao= ModelsConfgMyvindula().getConfig_views(campo)
         return configuracao
 
-    def get_department(self, user):
-        return 'TODO mudar'
-        # return ModelsDepartment().get_departmentByUsername(self.Convert_utf8(user))
+    # def get_department(self, user):
+    #     return 'TODO mudar'
+    #     # return ModelsDepartment().get_departmentByUsername(self.Convert_utf8(user))
 
     def load_list(self):
         member =  self.context.restrictedTraverse('@@plone_portal_state').member().getUserName();
@@ -353,80 +353,80 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
         return self.get_prefs_user(user)
 
 
-    def geraDadosAreas(self,area,instanceUser):
-        campos = ModelsConfgMyvindula().getConfig_byArea(self.Convert_utf8(area))
-        L = []
-        for campo in campos:
-            D = {}
-            D['label'] = campo.label
-            try:
-                valor = instanceUser.get(campo.name)
-                if type(valor) == list:
-                    valor_list = ''
-                    for i in valor:
-                        if i :valor_list += (i + ' / ')
+    # def geraDadosAreas(self,area,instanceUser):
+    #     campos = ModelsConfgMyvindula().getConfig_byArea(self.Convert_utf8(area))
+    #     L = []
+    #     for campo in campos:
+    #         D = {}
+    #         D['label'] = campo.label
+    #         try:
+    #             valor = instanceUser.get(campo.name)
+    #             if type(valor) == list:
+    #                 valor_list = ''
+    #                 for i in valor:
+    #                     if i :valor_list += (i + ' / ')
 
-                    valor = "<span>"+valor_list+"</span>"
+    #                 valor = "<span>"+valor_list+"</span>"
 
-                elif campo.type == 'img':
-                    site = self.context.portal_url.getPortalObject()
-                    valor = "<img height='150px' src='%s/user-image?field=%s&instance_id=%s' />"%(site.absolute_url(),campo.fields,instanceUser.id)
+    #             elif campo.type == 'img':
+    #                 site = self.context.portal_url.getPortalObject()
+    #                 valor = "<img height='150px' src='%s/user-image?field=%s&instance_id=%s' />"%(site.absolute_url(),campo.fields,instanceUser.id)
 
-                D['data']  = valor
-            except:
-                D['data'] = ''
+    #             D['data']  = valor
+    #         except:
+    #             D['data'] = ''
 
-            L.append(D)
+    #         L.append(D)
 
-        return L
+    #     return L
 
-    def getAreasDinamicas(self):
-        areas = [{'id':'contact',
-                  'title':'Contato',
-                  'url_image': self.static()+'/images/user_contact.png'},
-                  {'id':'corporate',
-                   'title':'Corporativo',
-                   'url_image': self.static()+'/images/user_business.png'},
-                  {'id':'other',
-                   'title':'Outras Informações',
-                   'url_image': self.static()+'/images/user_others.png'}
-                 ]
+    # def getAreasDinamicas(self):
+    #     areas = [{'id':'contact',
+    #               'title':'Contato',
+    #               'url_image': self.static()+'/images/user_contact.png'},
+    #               {'id':'corporate',
+    #                'title':'Corporativo',
+    #                'url_image': self.static()+'/images/user_business.png'},
+    #               {'id':'other',
+    #                'title':'Outras Informações',
+    #                'url_image': self.static()+'/images/user_others.png'}
+    #              ]
 
-        site = self.context.portal_url.getPortalObject()
-        pw = site.portal_workflow
-        if 'control-panel-objects' in  site.keys():
-            control = site['control-panel-objects']
-            if 'fieldset-myvindula' in control.keys():
-                folder_Areas = control['fieldset-myvindula']
-                for item in folder_Areas.objectValues():
+    #     site = self.context.portal_url.getPortalObject()
+    #     pw = site.portal_workflow
+    #     if 'control-panel-objects' in  site.keys():
+    #         control = site['control-panel-objects']
+    #         if 'fieldset-myvindula' in control.keys():
+    #             folder_Areas = control['fieldset-myvindula']
+    #             for item in folder_Areas.objectValues():
 
-                    if pw.getInfoFor(item,'review_state') == 'published':
-                        D={}
-                        D['id'] = item.getId()
-                        D['title'] = item.Title()
-                        if item.getLogo():
-                            D['url_image'] = item.getLogo().absolute_url()
-                        else:
-                            D['url_image'] = ''
+    #                 if pw.getInfoFor(item,'review_state') == 'published':
+    #                     D={}
+    #                     D['id'] = item.getId()
+    #                     D['title'] = item.Title()
+    #                     if item.getLogo():
+    #                         D['url_image'] = item.getLogo().absolute_url()
+    #                     else:
+    #                         D['url_image'] = ''
 
-                        areas.append(D)
+    #                     areas.append(D)
 
-                return areas
-            else:
-                return areas
-        else:
-            return areas
+    #             return areas
+    #         else:
+    #             return areas
+    #     else:
+    #         return areas
 
 
-    def get_campos(self):
-        fields = ModelsConfgMyvindula().get_configurationAll()
-        conf = {}
-        for campos in fields:
-            item = campos.fields
-            dado = ModelsConfgMyvindula().getConfig_edit(item)
-            conf[item] = dado
+    # def get_campos(self):
+    #     fields = ModelsConfgMyvindula().get_configurationAll()
+    #     conf = {}
+    #     for campos in fields:
+    #         item = campos.fields
+    #         dado = ModelsConfgMyvindula().getConfig_edit(item)
+    #         conf[item] = dado
 
-        return conf
+    #     return conf
 
 
     def get_howareu(self, user):

@@ -45,13 +45,28 @@ class FuncDetails(object):
     def get_unidadeprincipal(self):
         OU = UtilMyvindula().lookupObject(self.get('unidadeprincipal'))
         if OU:
-            return OU.getSiglaunidade() or OU.Title()
+            return {'title':OU.getSiglaunidade() or OU.Title(),
+                    'url': OU.absolute_url(),
+                    'obj': OU}
         else:
-            return ''
+            return {}
+
+    def get_department(self):
+        OUs_uid = eval(self.get('vin_myvindula_department') or '[]')
+        result = []
+        for OU_uid in OUs_uid:
+            OU = UtilMyvindula().lookupObject(OU_uid)
+            if OU:
+                result.append({'title': OU.getSiglaunidade() or OU.Title(),
+                                'url' : OU.absolute_url(),
+                                'obj': OU })
+
+        return result
 
 
     @staticmethod
     def get_AllFuncDetails(filter=None):
+        #TODO: Melhorar, colocar o distinct do storm
         L_username = []
         L_retorno = []
         data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails)

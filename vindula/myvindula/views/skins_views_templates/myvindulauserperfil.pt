@@ -12,6 +12,7 @@
 	    	                   isAnonymous context/portal_membership/isAnonymousUser|python:True;
 
 							   user_profile view/load_list | python:{};
+                               session request/SESSION|python:{};
 							   username user_profile/username|nothing;">
                 <h5>
                     <tal:cond condition="python:view.get_ConfugCampos('name')">
@@ -34,7 +35,6 @@
                                                             <tal:cond condition="python: view.get_ConfugCampos('photograph')">
                                                                 <!-- Dados para utilização da macro -->
                                                                 <tal:def define="size_img string:150px;
-                                                                                 user_profiles user|nothing;
                                                                                  item user_profile;">
                                                                     <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>
                                                                 </tal:def>
@@ -42,12 +42,13 @@
                                                             <tal:cond condition="python:not view.get_ConfugCampos('photograph')">
                                                                 <div style="width: 150px;height: 150px;"></div>
                                                             </tal:cond>
+                                                            <a href="" tal:attributes="href string:${context/portal_url}/vindula-api/myvindula/user-profile-picture/${session/user_token}/photograph/${username}">Editar Foto</a>
                                                         </div>
                                                     </div>
                                                     <div class="columns large-8">
                                                         <div>
                                                             <h5>Apresentação</h5>
-                                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                                            <span tal:content="user_profile/about|string: ">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                                                             Nam ut imperdiet urna. Nullam a lacus velit, id sollicitudin nisi.
                                                             Curabitur at justo eget nulla pellentesque vestibulum.
                                                             </span>
@@ -124,26 +125,19 @@
 
                                         <div>
                                             <ul class="no-bullet">
-                                                <li>
+                                                <li tal:define="unidadeprincial user_profile/get_unidadeprincipal">
                                                     <strong>Unidade:</strong>
-                                                    <tal:cond condition="python: view.get_ConfugCampos('vin_myvindula_department')">
-                                                        <tal:def define="departamentos python: view.get_department(username)">
-                                                            <tal:rep repeat="departamento departamentos">
-                                                                <span tal:content="departamento/Title|nothing">Departamento</span>
-                                                                <span tal:define="cont repeat/departamento/length;
-                                                                                       last repeat/departamento/end"
-                                                                      tal:condition="python: cont > 1 and not last"> | </span>
-                                                            </tal:rep>
-                                                        </tal:def>
-                                                    </tal:cond>
+                                                    <a tal:attributes="href unidadeprincial/url|nothing"
+                                                       tal:content="unidadeprincial/title|string: ">ASCON</a>
                                                 </li>
 
                                                 <tal:rep repeat="field user_profile/fields">
-                                                    <li>
+                                                    <li tal:condition="python: not field.name in view.black_list">
                                                         <strong tal:content="field/label"></strong>
                                                         <span tal:content="python:user_profile.get(field.name)"></span>
                                                     </li>
                                                 </tal:rep>
+
                                             </ul>
                                         </div>
                                     </div>
@@ -153,14 +147,14 @@
                                             PARTICIPANDO
                                             <hr/>
                                         </h5>
-
                                         <div class="content_itens">
                                             <tal:cond condition="python: view.get_ConfugCampos('vin_myvindula_department')">
-                                                <tal:def define="departamentos python: view.get_department(username)">
+                                                <tal:def define="departamentos user_profile/get_department">
                                                     <p tal:repeat="departamento departamentos">
-                                                        <img width="16" height="16" alt=""/>
-                                                        <a tal:attributes="href string:#"
-                                                           tal:content="departamento/Title|nothing">Lorem ipsum dolor sit amet </a>
+                                                        <img width="16" height="16" alt="" tal:attributes="src departamento/obj/getImageIcone|nothing;
+                                                                                                           alt departamento/title" />
+                                                        <a tal:attributes="href departamento/url|nothing"
+                                                           tal:content="departamento/title|nothing">Lorem ipsum dolor sit amet </a>
                                                     </p>
                                                 </tal:def>
                                             </tal:cond>
@@ -179,6 +173,7 @@
                             <div class="columns large-6">
                                 <div class="row">
                                     <div id="tile-list-bullet" class="columns large-12 shadow-line">
+                                        <!--
                                         <h5>
                                             ATIVIDADES
                                             <hr/>
@@ -190,9 +185,11 @@
                                             <li><span>Suspendisse mauris ante.</span></li>
                                             <li><span>Dignissim sit amet euismod id.</span></li>
                                         </ul>
+                                        -->
                                     </div>
 
                                     <div id="tile-list-bullet" class="columns large-12 shadow-line">
+                                        <!--
                                         <h5>
                                             PROJETOS
                                             <hr/>
@@ -209,6 +206,7 @@
                                             <h1 class="subheader vindula-icon-plus-sign left"></h1>
                                             <span class="left">Ver todos</span>
                                         </a>
+                                        -->
                                     </div>
                                 </div>
                             </div>
