@@ -10,10 +10,13 @@
 		<meta:macro metal:define-macro="page-view">
 	    	<div   tal:define="view python: context.restrictedTraverse('@@myvindulalistuser');
 	    	                   isAnonymous context/portal_membership/isAnonymousUser|python:True;
+                               member context/@@plone_portal_state/member;
 
 							   user_profile view/load_list | python:{};
                                session request/SESSION|python:{};
-							   username user_profile/username|nothing;">
+                               username user_profile/username|nothing;
+                               user_request request/user|username;
+                               user_login member/getUserName;">
                 <h5>
                     <tal:cond condition="python:view.get_ConfugCampos('name')">
                        <tal:cont content="user_profile/name|nothing" />
@@ -42,7 +45,8 @@
                                                             <tal:cond condition="python:not view.get_ConfugCampos('photograph')">
                                                                 <div style="width: 150px;height: 150px;"></div>
                                                             </tal:cond>
-                                                            <a href="" tal:attributes="href string:${context/portal_url}/vindula-api/myvindula/user-profile-picture/${session/user_token}/photograph/${username}">Editar Foto</a>
+                                                            <a href="" tal:condition="python: user_login == user_request"
+                                                               tal:attributes="href string:${context/portal_url}/vindula-api/myvindula/user-profile-picture/${session/user_token}/photograph/${username}">Editar Foto</a>
                                                         </div>
                                                     </div>
                                                     <div class="columns large-8">
@@ -61,7 +65,7 @@
                                                             <div>
                                                                 <span>
                                                                     <div class="vd_status" data_type="UserObject"
-                                                                                            tal:attributes="data_uid username"></div>
+                                                                                           tal:attributes="data_uid username"></div>
 
                                                                 </span>
                                                             </div>
