@@ -188,7 +188,7 @@
     															</div>
     															<div class="row center">
     																<div class="cell width-full position-0">
-    																	<span tal:content="item/total_vencimento|nothing">Total Vencimentos</span>	
+    																	<!--<span tal:content="item/total_vencimento|nothing">Total Vencimentos</span>-->	
     																</div>
     															</div>
     														</div>
@@ -200,7 +200,8 @@
     															</div>
     															<div class="row center">
     																<div class="cell width-full position-0">
-    																	<span tal:content="item/total_desconto|nothing">Total Descontos</span>	
+    																	<!--span tal:content="item/total_desconto|nothing">Total Descontos</span-->	
+    													<span tal:content="python: view.format_moeda(item.total_desconto)">Total Descontos</span>
     																</div>
     															</div>
     														</div>
@@ -210,7 +211,8 @@
     															<b><span>Valor L&iacute;quido</span></b>
     														</div>
     														<div class="cell width-8 position-8">
-    															<b><span tal:content="item/valor_liquido|nothing">Valor L&iacute;quido</span></b>
+    															<!--<b><span tal:content="item/valor_liquido|nothing">Valor L&iacute;quido</span></b>-->
+    													<b><span tal:content="python: view.format_moeda(item.valor_liquido)">Valor L&iacute;quido</span></b>
     														</div>
     													</div>
     												</div>
@@ -234,19 +236,25 @@
     											</div>
     											<div class="row even center">
     												<div class="cell width-3 position-0">
-    													<span tal:content="item/salario_base|nothing" />
+    													<!--span tal:content="item/salario_base|nothing" /-->
+    													<span tal:content="python: view.format_moeda(item.salario_base)" />
+                                                                                                        
     												</div>
     												<div class="cell width-3 position-3">
-    													<span tal:content="item/base_Inss|nothing" />
+    													<!--span tal:content="item/base_Inss|nothing" /-->
+    													<span tal:content="python: view.format_moeda(item.base_Inss)" />
     												</div>
     												<div class="cell width-3 position-6">
-    													<span tal:content="item/base_fgts|nothing" />
+    													<!--span tal:content="item/base_fgts|nothing" /-->
+    													<span tal:content="python: view.format_moeda(item.base_fgts)" />
     												</div>
     												<div class="cell width-3 position-9">
-    													<span tal:content="item/fgts_mes|nothing" />
+    													<!--span tal:content="item/fgts_mes|nothing" /-->
+    													<span tal:content="python: view.format_moeda(item.fgts_mes)" />
     												</div>
     												<div class="cell width-3 position-12">
-    													<span tal:content="item/base_irrf|nothing" />
+    													<!--span tal:content="item/base_irrf|nothing" /-->
+    													<span tal:content="python: view.format_moeda(item.base_irrf)" />
     												</div>								
     											</div>
     										</metal:macro>
