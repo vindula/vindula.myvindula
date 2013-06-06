@@ -60,8 +60,9 @@
                                                             </div>
                                                             <div>
                                                                 <span>
-                                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                                                    Suspendisse mauris ante, dignissim sit amet euismod id, aliquet ut sem.
+                                                                    <div class="vd_status" data_type="UserObject"
+                                                                                            tal:attributes="data_uid username"></div>
+
                                                                 </span>
                                                             </div>
                                                         </div>
