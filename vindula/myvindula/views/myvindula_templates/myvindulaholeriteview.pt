@@ -74,16 +74,16 @@
 		                        
 		                        <div id="holerite-cont">
 									<metal:macro define-macro="holerite">
-										<div id="holerite">
+										<div id="holerite" style="margin-top:40px;">
 										    <metal:macro define-macro="holerite-print" tal:define="view python:context.restrictedTraverse('@@myvindula-holerite');">
 										        
 										        <tal:cond condition="python:modelo=='02'">
                                                     <div class="border"  style="width: 910px;">
                                                         <div class="row even">
                                                             <div class="cell width-full position-0">
-                                                                <div class="cell width-3 position-0">
+                                                                <div class="cell width-3 position-0" tal:define="cnpj python: view.format(item.cnpj_empresa)">
                                                                     <img src="/++resource++vindula.themedefault/images/icons/logo_topo.png"
-                                                                         tal:attributes="src string:${context/portal_url|nothing}/company-logo?cnpj=${item/cnpj_empresa|nothing}"
+                                                                         tal:attributes="src string:${context/portal_url|nothing}/company-logo?cnpj=${cnpj|nothing}"
                                                                          height="60px"/>
                                                                 </div>
                                                                 <div class="cell width-13 position-3 title-text">
