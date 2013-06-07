@@ -936,6 +936,7 @@ class MyVindulaHoleriteView(grok.View, UtilMyvindula):
     grok.require('vindula.UserLogado')
     grok.name('myvindula-holerite')
 
+    
     def format_moeda(self, val):
         import locale
         locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
@@ -944,7 +945,8 @@ class MyVindulaHoleriteView(grok.View, UtilMyvindula):
             valor = val[:-2] +'.'+ val[-2:]
         else:
             valor = '0.00'
-        return  locale.currency( float(valor), grouping=True)
+	x = locale.currency( float(valor), grouping=True)
+	return x  
     
     def select_modelo(self):
         modelo =  self.context.restrictedTraverse('myvindula-conf-userpanel').select_modelo_holerite()
@@ -952,6 +954,7 @@ class MyVindulaHoleriteView(grok.View, UtilMyvindula):
 
 
     def get_descricao_holerite(self, id_holerite):
+
         if self.select_modelo() == '01':
             result = ModelsFuncHoleriteDescricao().get_FuncHoleriteDescricoes_byid(id_holerite)
         elif self.select_modelo() == '02':
@@ -1086,7 +1089,8 @@ class MyVindulaPrintHoleriteView(grok.View, UtilMyvindula):
             if self.select_modelo() == '01':
                 return ModelsFuncHolerite().get_FuncHolerites_byCPFAndID(cpf, id)      
             elif self.select_modelo() == '02':
-                return ModelsFuncHolerite02().get_FuncHolerites_byCPFAndID(cpf, id)
+		cpf = cpf.replace('.','').replace('-','')
+		return ModelsFuncHolerite02().get_FuncHolerites_byCPFAndID(cpf, id)
 
     def update(self):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
