@@ -1054,6 +1054,16 @@ class MyVindulaPrintHoleriteView(grok.View, UtilMyvindula):
     grok.require('vindula.UserLogado')
     grok.name('imprimir-holerite')
 
+    def format(self, cnpj):
+        """
+        Method to format cnpj numbers.
+        Tests:
+        
+        >>> print Cnpj().format('53612734000198')
+        53.612.734/0001-98
+        """
+        return "%s.%s.%s/%s-%s" % ( cnpj[0:2], cnpj[2:5], cnpj[5:8], cnpj[8:12], cnpj[12:14] )
+
 
     def format_moeda(self, val):
         import locale

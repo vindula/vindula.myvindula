@@ -78,7 +78,7 @@
 										    <metal:macro define-macro="holerite-print" tal:define="view python:context.restrictedTraverse('@@myvindula-holerite');">
 										        
 										        <tal:cond condition="python:modelo=='02'">
-                                                    <div class="border"  style="width: 910px;">
+                                                    <div class="border"  style="width: 660px;">
                                                         <div class="row even">
                                                             <div class="cell width-full position-0">
                                                                 <div class="cell width-3 position-0" tal:define="cnpj python: view.format(item.cnpj_empresa)">
