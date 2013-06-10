@@ -46,7 +46,7 @@ from vindula.myvindula.models.holerite import ModelsFuncHolerite
 from vindula.myvindula.models.descricao_holerite import ModelsFuncHoleriteDescricao
 
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
-# from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
+from vindula.myvindula.models.follow import ModelsFollow
 
 import pickle, StringIO
 from PIL import Image
@@ -351,6 +351,27 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
         user = self.Convert_utf8(self.request.form.get('user',str(member)))
 
         return self.get_prefs_user(user)
+
+    def get_follow(self,username):
+        return ModelsFollow.get_followers(self.Convert_utf8(username))
+
+    def format_follow(self, obj_list):
+        lista = []
+        L = None
+        for count, obj in enumerate(obj_list):
+            if count == 0 or count % 9 == 0:
+                L = []
+
+            L.append(obj)
+
+            if (count + 1) % 9 == 0:
+                lista.append(L)
+                L = None
+
+        if L:
+            lista.append(L)
+
+        return lista
 
 
     # def geraDadosAreas(self,area,instanceUser):
