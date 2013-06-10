@@ -29,3 +29,8 @@ class MyContentsView(grok.View):
                      })
 
         return portal_catalog(**query)
+
+
+    def get_title_WF(self,review_state,obj):
+        portal_workflow = getToolByName(self.context, 'portal_workflow')
+        return portal_workflow.getTitleForStateOnType(review_state, obj.portal_type)
