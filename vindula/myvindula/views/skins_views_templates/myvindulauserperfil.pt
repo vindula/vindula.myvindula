@@ -41,7 +41,7 @@
                                         <div class="content" data-section-content>
                                             <div id="tile-org-info">
                                                 <div class="row">
-                                                    <div class="columns large-4">
+                                                    <div class="columns large-3">
                                                         <div id="photo">
                                                             <tal:cond condition="python: view.get_ConfugCampos('photograph')">
                                                                 <!-- Dados para utilização da macro -->
@@ -57,6 +57,7 @@
                                                                tal:attributes="href string:${context/portal_url}/vindula-api/myvindula/user-profile-picture/${session/user_token}/photograph/${username}">Editar Foto</a>
                                                         </div>
                                                     </div>
+
                                                     <div class="columns large-8">
                                                         <div class="vd-social-left rigth" tal:define="UID username;
                                                                                                       TYPES string:UserObject;"
@@ -64,7 +65,9 @@
 
                                                             <div metal:use-macro="context/macro-follow-content/macros/view" />
                                                         </div>
+                                                    </div>
 
+                                                    <div class="columns large-9">
                                                         <div>
                                                             <h5>Apresentação</h5>
                                                             <span tal:content="user_profile/about|string: ">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -75,7 +78,7 @@
 
                                                         <div class="container-manager">
                                                             <div>
-                                                                <strong>Status</strong>
+                                                                <h4>Status</h4>
                                                             </div>
                                                             <div>
                                                                 <span>
