@@ -22,16 +22,22 @@
 
                              batch python:Batch(conteudos, b_size, int(b_start));">
 
-                    <tal:rep repeat="obj batch">
+                <table>
+                    <tr>
+                        <th>Titulo</th>
+                        <th>Descrição</th>
+                        <th>Modificado</th>
+                        <th>Estado</th>
+                    </tr>
 
-                        <dl tal:on-error="nothing"
+                    <tal:rep repeat="obj batch">
+                        <tr tal:on-error="nothing"
                             tal:define="item obj/getObject|nothing;
                                         item_type item/portal_type;
                                         item_type_class python:'contenttype-' + normalizeString(item_type);
                                         item_wf_state item/review_state|python: context.portal_workflow.getInfoFor(item, 'review_state', '');
                                         item_wf_state_class python:'state-' + normalizeString(item_wf_state);">
-
-                            <dt>
+                            <td>
                                 <span class="summary" tal:define="item_icon python:plone_view.getIcon(obj);">
                                     <img tal:replace="structure item_icon/html_tag" />
                                     <a href="#" class="contenttype-folder state-published url"
@@ -39,16 +45,21 @@
                                                        class string:$item_type_class $item_wf_state_class url"
                                        tal:content="item/title|item/id|nothing">Item Title</a>
                                 </span>
-                            </dt>
-                            <dd tal:condition="item/description|nothing">
-                                <span class="description" tal:content="item/description|nothing">description</span>
-                            </dd>
-                        </dl>
-                    </tal:rep>
+                            </td>
+                            <td class="description" tal:content="item/description|string: ">
+                                description
+                            </td>
+                            <td tal:content="python: item.bobobase_modification_time().strftime('%d/%m/%Y %H:%M')"></td>
 
-                    <div class="navigation-users">
-                        <div metal:use-macro="here/batch_macros/macros/navigation" />
-                    </div>
+                            <td tal:content="python: view.get_title_WF(item_wf_state, item)"></td>
+
+                        </tr>
+                    </tal:rep>
+                </table>
+
+                <div class="navigation-users">
+                    <div metal:use-macro="here/batch_macros/macros/navigation" />
+                </div>
 
             </div>
 
