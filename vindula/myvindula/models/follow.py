@@ -23,8 +23,10 @@ class ModelsFollow(Storm, BaseStoreMyvindula):
     def get_followers(content):
         content_obj = ModelsContent().getContent_by_uid(content)
         if content_obj:
-            data = ModelsFollow().store.find(ModelsFollow, ModelsFollow.content_id==content_obj.id)
-            return data
+            content_obj_id = content_obj.id
         else:
-            []
+            content_obj_id = 0
+
+        data = ModelsFollow().store.find(ModelsFollow, ModelsFollow.content_id==content_obj_id)
+        return data
 
