@@ -3,7 +3,6 @@
                           username item/username|nothing">
     <div class="row">
         <tal:cond condition="view/show_picture|python:True">
-
             <metal:macro define-macro="userimage">
                 <div class="portlet-user-image"
                      tal:define="view_profiles python: context.restrictedTraverse('@@myvindula-imageprofiles-macro');
@@ -15,20 +14,20 @@
                                     tal:attributes="src python:view_profiles.getURLFotoUser(username);
                                                     alt item/name|nothing;
                                                     title item/name|nothing;
-                                                    width size_img|nothing" />
-                        </a>
-                    </tal:cond>
+                                                    width size_img|nothing"/>
 
-                    <tal:cond condition="view_manage|python:False">
-                        <a tal:attributes="href python: here.portal_url() + '/myvindulaprefs?user=' + view_profiles.encodeUser(username)">
-                            <img src="defaultUser.png" border="0"
-                                    tal:attributes="src python:view.getURLFotoUser(username);
-                                                    alt item/name|nothing;
-                                                    title item/name|nothing;
-                                                    width size_img|nothing" />
                         </a>
                     </tal:cond>
-                </div>
+		            <tal:cond condition="view_manage|python:False">
+		                  <a tal:attributes="href python: here.portal_url() + '/myvindulaprefs?user=' + view_profiles.encodeUser(username)">
+		                            <img src="defaultUser.png" border="0"
+		                                    tal:attributes="src python:view.getURLFotoUser(username);
+		                                                    alt item/name|nothing;
+		                                                    title item/name|nothing;
+		                                                    width size_img|nothing" />
+		                        </a>
+		                    </tal:cond>
+				</div>
             </metal:macro>
         </tal:cond>
         <div class="portlet-user-info" tal:define="show_picture view/show_picture|python:True"

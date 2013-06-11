@@ -8,6 +8,7 @@
 	</head>
 	<body metal:fill-slot="content">
 		<meta:macro metal:define-macro="page-view">
+			
 	    	<div   tal:define="view python: context.restrictedTraverse('@@myvindulalistuser');
 	    	                   isAnonymous context/portal_membership/isAnonymousUser|python:True;
                                member context/@@plone_portal_state/member;
@@ -21,14 +22,19 @@
                                followers python: view.get_follow(username);
                                activities user_profile/atividades|nothing;">
 
+				<div id="myModal" class="reveal-modal">
+				 	 <div class="vd_user_profile_picture" data_field="photograph" tal:attributes="data_token session/user_token;
+																								 data_username username ">
+
+					 </div>	
+				</div>
+
                 <h5>
                     <tal:cond condition="python:view.get_ConfugCampos('name')">
                        <tal:cont content="user_profile/name|nothing" />
                     </tal:cond>
                     <hr/>
                 </h5>
-
-
 
                 <div class="row">
                     <div class="columns large-9">
@@ -53,8 +59,10 @@
                                                             <tal:cond condition="python:not view.get_ConfugCampos('photograph')">
                                                                 <div style="width: 150px;height: 150px;"></div>
                                                             </tal:cond>
-                                                            <a href="" tal:condition="python: user_login == user_request"
-                                                               tal:attributes="href string:${context/portal_url}/vindula-api/myvindula/user-profile-picture/${session/user_token}/photograph/${username}">Editar Foto</a>
+															<div class="edit-foto">
+	                                                            <a href="#" data-reveal-id="myModal" tal:condition="python: user_login == user_request"
+	                                                               tal:attributes="href string:${context/portal_url}/vindula-api/myvindula/user-profile-picture/${session/user_token}/photograph/${username}">Editar Foto</a>
+															</div>
                                                         </div>
                                                     </div>
 
