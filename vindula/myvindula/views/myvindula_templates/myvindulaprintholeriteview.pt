@@ -65,6 +65,11 @@
 		#holerite .cell{
 		    padding-left: 5px;
 		} 
+
+		.state-private {
+			color: Red !important;
+		}
+		
 		</style>			  
 
 		<script type="application/javascript">
