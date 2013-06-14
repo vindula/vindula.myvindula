@@ -22,10 +22,11 @@
                                followers python: view.get_follow(username);
                                activities user_profile/atividades|nothing;">
 
-				<div id="myModal" class="reveal-modal">
+				<div id="myModal" class="reveal-modal large" >
 				 	 <div class="vd_user_profile_picture" data_field="photograph" tal:attributes="data_token session/user_token;
 																								 data_username username ">
-
+						
+					  <a class="close-reveal-modal">×</a>
 					 </div>	
 				</div>
 
@@ -59,14 +60,14 @@
                                                             <tal:cond condition="python:not view.get_ConfugCampos('photograph')">
                                                                 <div style="width: 150px;height: 150px;"></div>
                                                             </tal:cond>
-															<div class="edit-foto">
-	                                                            <a href="#" data-reveal-id="myModal" tal:condition="python: user_login == user_request"
+															<div class="edit-foto" tal:condition="python: user_login == user_request">
+	                                                            <a href="#" data-reveal-id="myModal"
 	                                                               tal:attributes="href string:${context/portal_url}/vindula-api/myvindula/user-profile-picture/${session/user_token}/photograph/${username}">Editar Foto</a>
 															</div>
                                                         </div>
                                                     </div>
 
-                                                    <div class="columns large-8">
+                                                    <div class="columns large-9">
                                                         <div class="vd-social-left rigth" tal:define="UID username;
                                                                                                       TYPES string:UserObject;"
                                                                                            tal:condition="python: user_login != user_request">
@@ -102,10 +103,12 @@
                                                         <span tal:content="python: '('+ str(followers.count()) + ')' ">(41)</span>
                                                     </div>
                                                     <div class="columns large-12">
-                                                        <div class="pagination pag-left"><a href="#" class="orbit-prev" ></a></div>
-                                                        <div class="pagination pag-right"><a href="#" class="orbit-next" ></a></div>
+														
+														<div tal:condition="not: followers/count">
+															<strong> Não possuí nenhum seguidor</strong>
+														</div>														
 
-                                                        <div class="orbit-container">
+                                                        <div tal:condition="followers/count" class="orbit-container">
                                                           <ul data-orbit="bullets:false, " class="orbit-slides-container">
 
                                                             <tal:rep repeat="bloco_follow python: view.format_follow(followers)">
