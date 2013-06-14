@@ -64,6 +64,13 @@ class MyVindulaView(grok.View, UtilMyvindula):
     grok.require('zope2.View')
     grok.name('myvindula')
 
+
+    action_social = {'Like': ' curtiu ',
+                     'Comment': ' comentou ',
+                     'Share' : ' compartilhou ',
+                     'Follow' : ' seguiu ',
+                     'History' : ' atualizou ',}
+
     def get_howareu(self, user):
         D={}
         D['username'] = user

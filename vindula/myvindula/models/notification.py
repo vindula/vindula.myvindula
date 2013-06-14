@@ -21,14 +21,16 @@ class ModelsMyvindulaNotificacao(Storm, BaseStoreMyvindula):
     actor = Unicode()
     action = Unicode()
     viewed = Bool()
+    notified = Bool()
+    content_id = Int()
 
-    # date_created = DateTime()
+    content = Reference(content_id, "ModelsContent.id")
 
 
     def cont_notificacao_new(self,user):
         data = self.get_myvindula_notificacao(username=user)
         if data:
-            data = data.find(ModelsMyvindulaNotificacao.viewed==False)
+            data = data.find(ModelsMyvindulaNotificacao.notified==True)
             return data.count()
 
         return 0

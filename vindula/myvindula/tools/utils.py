@@ -35,7 +35,6 @@ class UtilMyvindula(object):
 
         self.db = BaseStore()
 
-
     def encodeUser(self,user):
         return base64.b16encode(user)
 
@@ -111,7 +110,7 @@ class UtilMyvindula(object):
         '''
             Passa o uid para retornar o objcet do plone
         '''
-        return self.rtool.lookupObject(uid)
+        return UtilMyvindula().rtool.lookupObject(uid)
 
 
     def getUnidadePrincipalSigla(self, usuario, m=0):

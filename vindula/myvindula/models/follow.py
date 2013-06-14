@@ -27,6 +27,6 @@ class ModelsFollow(Storm, BaseStoreMyvindula):
         else:
             content_obj_id = 0
 
-        data = ModelsFollow().store.find(ModelsFollow, ModelsFollow.content_id==content_obj_id)
+        data = ModelsFollow().store.find(ModelsFollow, ModelsFollow.content_id==content_obj_id, ModelsFollow.deleted==False)
         return data
 
