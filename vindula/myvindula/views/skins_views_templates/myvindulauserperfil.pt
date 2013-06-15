@@ -105,14 +105,8 @@
                                                     <div class="columns large-12">
 
 														<div tal:condition="not: followers/count">
-<<<<<<< HEAD
 															<strong> Não possui nenhum assinante</strong>
 														</div>														
-=======
-															<strong> Não possuí nenhum seguidor</strong>
-														</div>
->>>>>>> 57c5faefcf1abbae310caaeebf1e5172101a4743
-
                                                         <div tal:condition="followers/count" class="orbit-container">
                                                           <ul data-orbit="bullets:false, " class="orbit-slides-container">
 
@@ -143,7 +137,7 @@
                                                 </div>
                                             </div>
                                         </div>
-<div class="row">
+										<div class="row">
                                                 <div class="columns large-6 shadow-line">
                                                         <h5>
                                                             INFORMAÇÕES
@@ -235,12 +229,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-<<<<<<< HEAD
-=======
                                             <div class="clear"></div>
                                         </div>
->>>>>>> 57c5faefcf1abbae310caaeebf1e5172101a4743
-
                                     </section>
 
                                     <section tal:condition="python: user_login == user_request" id="prefs_edit">
