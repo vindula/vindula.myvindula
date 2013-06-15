@@ -238,28 +238,28 @@
 
                                     </section>
 
-                                    <section tal:condition="python: user_login == user_request">
+                                    <section tal:condition="python: user_login == user_request" id="prefs_edit">
                                         <p class="title" data-section-title><a href="#panel2">Editar Perfil</a></p>
                                         <div class="content" data-section-content>
                                             <metal:use use-macro="context/myvindulaprefs/macros/page-view" />
                                         </div>
                                     </section>
 
-                                    <section tal:condition="python: user_login == user_request">
-                                        <p class="title" data-section-title><a href="#panel2">Meus Conteúdos</a></p>
+                                    <section tal:condition="python: user_login == user_request" id="my_content">
+                                        <p class="title" data-section-title><a href="#panel3">Meus Conteúdos</a></p>
                                         <div class="content" data-section-content>
                                             <metal:use use-macro="context/myvindula_my_contents/macros/page-view" />
                                         </div>
                                     </section>
 
-                                    <section tal:condition="python: user_login == user_request">
-                                        <p class="title" data-section-title><a href="#panel2">Meus Mensagens</a></p>
+                                    <section tal:condition="python: user_login == user_request" id="messages">
+                                        <p class="title" data-section-title><a href="#panel3">Minhas Mensagens</a></p>
                                         <div class="content" data-section-content>
                                             <metal:use use-macro="context/myvindulalistrecados/macros/page-view" />
                                         </div>
                                     </section>
-                                    <section tal:condition="python: user_login == user_request">
-                                        <p class="title" data-section-title><a href="#panel2">Minhas Notificações</a></p>
+                                    <section tal:condition="python: user_login == user_request" id="notification">
+                                        <p class="title" data-section-title><a href="#panel4">Minhas Notificações</a></p>
                                         <div class="content" data-section-content>
                                             <metal:use use-macro="context/myvindula-notifications/macros/page-view" />
                                         </div>

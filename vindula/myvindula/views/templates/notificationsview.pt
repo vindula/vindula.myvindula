@@ -39,7 +39,7 @@
                                       <div>
                                           <strong tal:content="user_actor/name|notificacao/acto"></strong>
                                           <span tal:content="python:view_myvindula.action_social.get(notificacao.action,'')"></span>
-                                          o conteudo
+                                          <span tal:content="obj_action/Title"></span>
 
                                           <span tal:content="python:view_myvindula.getTimeAgo(notificacao.get_date_created,'')"></span>
                                       </div>

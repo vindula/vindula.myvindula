@@ -20,7 +20,7 @@
                                  isAnonymous context/portal_membership/isAnonymousUser|python:True;
                                  user python:member.getUserName() or None;" >
 
-                    <h2 class="h2title">Recados que deixaram para você!</h2>
+                    <h2 class="h2title">Mensagens que deixaram para você!</h2>
 
                     <tal:def define="view_myvindula python:context.restrictedTraverse('@@myvindula');
                                      items python:view_myvindula.get_recados(user);">
@@ -60,7 +60,7 @@
                                         </form>
     								</div>
                                     -->
-
+                                    <br/>
     							</div>
 
     						</tal:rep>
