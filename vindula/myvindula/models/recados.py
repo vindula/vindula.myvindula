@@ -21,6 +21,7 @@ class ModelsMyvindulaRecados(Storm, BaseStoreMyvindula):
     receiver = Unicode()
     text = Unicode()
     viewed = Bool()
+    notified = Bool()
 
     # date_created = DateTime()
 
@@ -52,9 +53,9 @@ class ModelsMyvindulaRecados(Storm, BaseStoreMyvindula):
 
 
     def cont_recados_new(self,user):
-        data = self.get_myvindula_recados(destination=user)
+        data = self.get_myvindula_recados(receiver=user)
         #if data:
-        data = data.find(ModelsMyvindulaRecados.viewed==False)
+        data = data.find(ModelsMyvindulaRecados.notified==True)
         return data.count()
 
         return 0

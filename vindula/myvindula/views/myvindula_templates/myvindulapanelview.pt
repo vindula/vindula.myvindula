@@ -61,7 +61,7 @@
 			                    </a>
 			                </li>
 						</tal:cond>
-						-->
+
 						<li id="contentview-user_data-personal-content"
 		                    tal:define="link context/@@myvindulapanel/getPersonalPrefsLink;
 		                                selected python:view_name=='myvindula-meus-conteudos';"
@@ -73,6 +73,7 @@
 		                        Meus Conteúdos
 		                    </a>
 		                </li>
+
 						<tal:cond define="enable context/@@myvindula-conf-userpanel/check_recados;"
 								  condition="enable">
 							<li id="contentview-user_data-personal-preferences"
@@ -87,6 +88,18 @@
 			                    </a>
 			                </li>
 						</tal:cond>
+						<li id="contentview-user_data-personal-content"
+		                    tal:define="link context/@@myvindulapanel/getPersonalPrefsLink;
+		                                selected python:view_name=='myvindula-notifications';"
+		                    tal:condition="link|nothing"
+		                    tal:attributes="class python:selected and 'selected' or 'plain'">
+		                    <a href=""
+		                       tal:attributes="href string:${context/portal_url}/myvindula-notifications"
+		                       i18n:translate="">
+		                        Notificações
+		                    </a>
+		                </li>
+		                -->
 						<!--
 						<tal:cond define="enable_holeite context/@@myvindula-conf-userpanel/check_holerite;
 										  enable_documents context/@@myvindula-conf-userpanel/check_documents"

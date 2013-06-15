@@ -8,7 +8,7 @@
 	</head>
 	<body metal:fill-slot="content">
 		<meta:macro metal:define-macro="page-view">
-			
+
 	    	<div   tal:define="view python: context.restrictedTraverse('@@myvindulalistuser');
 	    	                   isAnonymous context/portal_membership/isAnonymousUser|python:True;
                                member context/@@plone_portal_state/member;
@@ -25,9 +25,9 @@
 				<div id="myModal" class="reveal-modal large" >
 				 	 <div class="vd_user_profile_picture" data_field="photograph" tal:attributes="data_token session/user_token;
 																								 data_username username ">
-						
+
 					  <a class="close-reveal-modal">×</a>
-					 </div>	
+					 </div>
 				</div>
 
                 <h5>
@@ -103,10 +103,15 @@
                                                         <span tal:content="python: '('+ str(followers.count()) + ')' ">(41)</span>
                                                     </div>
                                                     <div class="columns large-12">
-														
+
 														<div tal:condition="not: followers/count">
+<<<<<<< HEAD
 															<strong> Não possui nenhum assinante</strong>
 														</div>														
+=======
+															<strong> Não possuí nenhum seguidor</strong>
+														</div>
+>>>>>>> 57c5faefcf1abbae310caaeebf1e5172101a4743
 
                                                         <div tal:condition="followers/count" class="orbit-container">
                                                           <ul data-orbit="bullets:false, " class="orbit-slides-container">
@@ -230,14 +235,41 @@
                                                     </div>
                                                 </div>
                                             </div>
+<<<<<<< HEAD
+=======
+                                            <div class="clear"></div>
+                                        </div>
+>>>>>>> 57c5faefcf1abbae310caaeebf1e5172101a4743
 
                                     </section>
+
+                                    <section tal:condition="python: user_login == user_request">
+                                        <p class="title" data-section-title><a href="#panel2">Editar Perfil</a></p>
+                                        <div class="content" data-section-content>
+                                            <metal:use use-macro="context/myvindulaprefs/macros/page-view" />
+                                        </div>
+                                    </section>
+
                                     <section tal:condition="python: user_login == user_request">
                                         <p class="title" data-section-title><a href="#panel2">Meus Conteúdos</a></p>
                                         <div class="content" data-section-content>
                                             <metal:use use-macro="context/myvindula_my_contents/macros/page-view" />
                                         </div>
                                     </section>
+
+                                    <section tal:condition="python: user_login == user_request">
+                                        <p class="title" data-section-title><a href="#panel2">Meus Mensagens</a></p>
+                                        <div class="content" data-section-content>
+                                            <metal:use use-macro="context/myvindulalistrecados/macros/page-view" />
+                                        </div>
+                                    </section>
+                                    <section tal:condition="python: user_login == user_request">
+                                        <p class="title" data-section-title><a href="#panel2">Minhas Notificações</a></p>
+                                        <div class="content" data-section-content>
+                                            <metal:use use-macro="context/myvindula-notifications/macros/page-view" />
+                                        </div>
+                                    </section>
+
                                 </div>
                             </div>
 
