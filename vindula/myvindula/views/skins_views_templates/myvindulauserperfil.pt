@@ -103,7 +103,6 @@
                                                         <span tal:content="python: '('+ str(followers.count()) + ')' ">(41)</span>
                                                     </div>
                                                     <div class="columns large-12">
-
 														<div tal:condition="not: followers/count">
 															<strong> Não possui nenhum assinante</strong>
 														</div>														
@@ -124,15 +123,12 @@
                                                                                 </tal:def>
                                                                             </li>
 
-                                                                        </tal:rep>
-
-                                                                        </ul>
-                                                                    </li>
+                                                                         </tal:rep>
+                                                                     </ul>
+                                                                </li>
                                                             </tal:rep>
-
                                                           </ul>
                                                         </div>
-
                                                     </div>
                                                 </div>
                                             </div>
@@ -187,8 +183,7 @@
                                                             </a>
                                                         </div>
                                                     </div>
-                                            </div>
-
+											  </div>
                                             <div class="row">
                                                 <div class="columns large-6">
                                                     <div id="tile-list-bullet">
@@ -230,7 +225,7 @@
                                                 </div>
                                             </div>
                                             <div class="clear"></div>
-                                        </div>
+
                                     </section>
 
                                     <section tal:condition="python: user_login == user_request" id="prefs_edit">
