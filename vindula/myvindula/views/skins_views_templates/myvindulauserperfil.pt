@@ -40,12 +40,12 @@
                 <div class="row">
                     <div class="columns large-9">
                         <div class="row">
-                            <div class="columns large-12">
+                            <div class="columns large-12 container-perfil">
                                 <div class="container-tiles-section section-container auto" data-section>
 
                                     <section>
                                         <p class="title" data-section-title><a href="#panel1">Info</a></p>
-                                        <div class="content" data-section-content>
+                                        <div class="content bloco-perfil" data-section-content>
                                             <div id="tile-org-info">
                                                 <div class="row">
                                                     <div class="columns large-3">
@@ -99,14 +99,19 @@
                                                         </div>
                                                     </div>
                                                     <div class="columns large-12 label-team">
-                                                        <strong><a href="">Seguidores</a></strong>
+                                                        <strong><a href="">Assinantes</a></strong>
                                                         <span tal:content="python: '('+ str(followers.count()) + ')' ">(41)</span>
                                                     </div>
                                                     <div class="columns large-12">
 
 														<div tal:condition="not: followers/count">
+<<<<<<< HEAD
+															<strong> Não possui nenhum assinante</strong>
+														</div>														
+=======
 															<strong> Não possuí nenhum seguidor</strong>
 														</div>
+>>>>>>> 57c5faefcf1abbae310caaeebf1e5172101a4743
 
                                                         <div tal:condition="followers/count" class="orbit-container">
                                                           <ul data-orbit="bullets:false, " class="orbit-slides-container">
@@ -137,10 +142,9 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <div class="columns large-6">
-                                                <div class="row">
-                                                    <div class="columns large-12 shadow-line">
+                                        </div>
+<div class="row">
+                                                <div class="columns large-6 shadow-line">
                                                         <h5>
                                                             INFORMAÇÕES
                                                             <hr/>
@@ -160,12 +164,11 @@
                                                                         <span tal:content="python:user_profile.get(field.name)"></span>
                                                                     </li>
                                                                 </tal:rep>
-
                                                             </ul>
                                                         </div>
                                                     </div>
 
-                                                    <div class="columns large-12 shadow-line">
+                                                    <div class="columns large-6 shadow-line">
                                                         <h5>
                                                             PARTICIPANDO
                                                             <hr/>
@@ -190,12 +193,11 @@
                                                             </a>
                                                         </div>
                                                     </div>
-                                                </div>
                                             </div>
 
-                                            <div class="columns large-6">
-                                                <div class="row">
-                                                    <div id="tile-list-bullet" class="columns large-12 shadow-line">
+                                            <div class="row">
+                                                <div class="columns large-6">
+                                                    <div id="tile-list-bullet">
 
                                                         <h5>
                                                             ATIVIDADES
@@ -233,8 +235,11 @@
                                                     </div>
                                                 </div>
                                             </div>
+<<<<<<< HEAD
+=======
                                             <div class="clear"></div>
                                         </div>
+>>>>>>> 57c5faefcf1abbae310caaeebf1e5172101a4743
 
                                     </section>
 
