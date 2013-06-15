@@ -7,18 +7,21 @@
         </metal:block>
     </head>
     <body>
-        <div metal:fill-slot="content" tal:define="member python:context.portal_membership.getAuthenticatedMember();
-                                                   view_myvindula python:context.restrictedTraverse('@@myvindula');
-                                                   isAnonymous context/portal_membership/isAnonymousUser|python:True;
-                                                   username python:member.getUserName() or None;">
+        <div metal:fill-slot="content" >
 
             <metal:use use-macro="context/@@myvindulapanel/macros/page"/>
 
-            <div id="content">
-                <div class="userpage geral_lista_comentarios">
+            <div id="content" metal:define-macro="page-view">
+
+                <div class="userpage geral_lista_comentarios"
+                     tal:define="member python:context.portal_membership.getAuthenticatedMember();
+                                 view_myvindula python:context.restrictedTraverse('@@myvindula');
+                                 isAnonymous context/portal_membership/isAnonymousUser|python:True;
+                                 username python:member.getUserName() or None;">
+
                     <h2 class="h2title">Suas notificações!</h2>
 
-                    <tal:rep repeat="notificacao python:view.get_notificacao(username)">
+                    <tal:rep repeat="notificacao python:view_myvindula.get_notificacoes(username)">
 
 
                         <div tal:define="user_actor python:view_myvindula.get_prefs_user(notificacao.actor);

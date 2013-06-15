@@ -457,18 +457,18 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
     #     return conf
 
 
-    def get_howareu(self, user):
-        member =  self.context.restrictedTraverse('@@plone_portal_state').member().getUserName();
-        user = self.request.form.get('user',str(member))
-        D={}
-        D['username'] = user
-        return ModelsMyvindulaHowareu().get_myvindula_howareu(**D)
+    # def get_howareu(self, user):
+    #     member =  self.context.restrictedTraverse('@@plone_portal_state').member().getUserName();
+    #     user = self.request.form.get('user',str(member))
+    #     D={}
+    #     D['username'] = user
+    #     return ModelsMyvindulaHowareu().get_myvindula_howareu(**D)
 
 
-    def get_recados(self, user):
-        D={}
-        D['destination'] = user
-        return ModelsMyvindulaRecados().get_myvindula_recados(**D)
+    # def get_recados(self, user):
+    #     D={}
+    #     D['destination'] = user
+    #     return ModelsMyvindulaRecados().get_myvindula_recados(**D)
 
     def update(self):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();

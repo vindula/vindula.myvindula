@@ -7,20 +7,23 @@
         </metal:block>
     </head>
     <body>
-        <div metal:fill-slot="content" tal:define="member python:context.portal_membership.getAuthenticatedMember();
-    											   isAnonymous context/portal_membership/isAnonymousUser|python:True;
-    											   user python:member.getUserName() or None;
-
-    											   check_recados context/@@myvindula-conf-userpanel/check_recados;"
-
+        <div metal:fill-slot="content" tal:define="check_recados context/@@myvindula-conf-userpanel/check_recados;"
     								   tal:condition="check_recados">
 
     		<metal:use use-macro="context/@@myvindulapanel/macros/page"/>
 
-    		<div id="content">
-    			<div id="scraps" class="userpage geral_lista_comentarios">
-    				<h2 class="h2title">Recados que deixaram para você!</h2>
-        			<tal:def define="items python:view.get_recados(user);">
+    		<div id="content" >
+
+                <div metal:define-macro="page-view"
+                     class="userpage geral_lista_comentarios"
+                     tal:define="member python:context.portal_membership.getAuthenticatedMember();
+                                 isAnonymous context/portal_membership/isAnonymousUser|python:True;
+                                 user python:member.getUserName() or None;" >
+
+                    <h2 class="h2title">Recados que deixaram para você!</h2>
+
+                    <tal:def define="view_myvindula python:context.restrictedTraverse('@@myvindula');
+                                     items python:view_myvindula.get_recados(user);">
     					<div class="userpage geral_lista_comentarios" tal:condition="items">
     						<tal:rep tal:repeat="item items">
     							<div class="comment item_lista" >
@@ -59,13 +62,13 @@
                                     -->
 
     							</div>
-                                <div class="clear"> </div>
 
     						</tal:rep>
     					</div>
     				</tal:def>
     			</div>
     		</div>
+
         </div>
     </body>
 </html>

@@ -2,15 +2,6 @@
 	<head>
 		<metal:js fill-slot="javascript_head_slot">
 
-			<script type="text/javascript"  tal:attributes="src string:${context/portal_url|nothing}/vindula-api/static/js/vindula_myvindula.js"></script>
-
-			<script type="text/javascript"
-					tal:define="member context/@@plone_portal_state/member;"
-					tal:content="python: '''
-								$j(document).ready(function(){
-									$j('#myvindula').myvindula(null, {username : '%s', dominio: '%s', user_token: '%s'});
-								});
-								'''%(member.getUserName(),context.portal_url(),session.get('user_token'))" ></script>
 
 		</metal:js>
 		<metal:block fill-slot="top_slot">
@@ -21,18 +12,31 @@
 	</head>
 
 	<body>
-	    <div metal:fill-slot="content" tal:define="member context/@@plone_portal_state/member;">
+	    <div metal:fill-slot="content">
+	    	<div metal:define-macro="page-view">
 
-			<input id="user-igual" type="hidden" value="True">
-			<metal:use use-macro="context/@@myvindulapanel/macros/page"/>
+				<tal:def define="member context/@@plone_portal_state/member;">
+
+					<script type="text/javascript"  tal:attributes="src string:${context/portal_url|nothing}/vindula-api/static/js/vindula_myvindula.js"></script>
+
+					<script type="text/javascript"
+							tal:content="python: '''
+										$j(document).ready(function(){
+											$j('#myvindula').myvindula(null, {username : '%s', dominio: '%s', user_token: '%s'});
+										});
+										'''%(member.getUserName(),context.portal_url(),session.get('user_token'))" ></script>
 
 
-	    	<div id="myvindula">
+					<input id="user-igual" type="hidden" value="True">
+					<!-- metal:use use-macro="context/@@myvindulapanel/macros/page"/-->
 
-				<div class="vd_myvindula_edit" tal:attributes="data_username member/getUserName;"></div>
+			    	<div id="myvindula">
 
+						<div class="vd_myvindula_edit" tal:attributes="data_username member/getUserName;"></div>
+
+					</div>
+				</tal:def>
 			</div>
-
 	    </div>
 	</body>
 </html>

@@ -61,7 +61,7 @@
 			                    </a>
 			                </li>
 						</tal:cond>
-						-->
+
 						<li id="contentview-user_data-personal-content"
 		                    tal:define="link context/@@myvindulapanel/getPersonalPrefsLink;
 		                                selected python:view_name=='myvindula-meus-conteudos';"
@@ -99,6 +99,7 @@
 		                        Notificações
 		                    </a>
 		                </li>
+		                -->
 						<!--
 						<tal:cond define="enable_holeite context/@@myvindula-conf-userpanel/check_holerite;
 										  enable_documents context/@@myvindula-conf-userpanel/check_documents"
