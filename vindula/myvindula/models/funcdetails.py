@@ -43,7 +43,8 @@ class FuncDetails(object):
                                      self.get('cell_phone',''))
 
     def get_unidadeprincipal(self):
-        OU = UtilMyvindula().lookupObject(self.get('unidadeprincipal'))
+        list_ou = eval(self.get('unidadeprincipal', '[" "]'))
+        OU = UtilMyvindula().lookupObject(list_ou[0])
         if OU:
             return {'title':OU.getSiglaunidade() or OU.Title(),
                     'url': OU.absolute_url(),
