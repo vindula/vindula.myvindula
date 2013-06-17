@@ -42,7 +42,6 @@
                         <div class="row">
                             <div class="columns large-12 container-perfil">
                                 <div class="container-tiles-section section-container auto" data-section>
-
                                     <section>
                                         <p class="title" data-section-title><a href="#panel1">Info</a></p>
                                         <div class="content bloco-perfil" data-section-content>
@@ -130,7 +129,6 @@
                                                           </ul>
                                                         </div>
                                                     </div>
-                                                </div>
                                             </div>
                                         </div>
 										<div class="row">
@@ -201,31 +199,8 @@
                                                         </ul>
 
                                                     </div>
-
-                                                    <div id="tile-list-bullet" class="columns large-12 shadow-line">
-                                                        <!--
-                                                        <h5>
-                                                            PROJETOS
-                                                            <hr/>
-                                                        </h5>
-
-                                                        <ul class="square">
-                                                            <li><a href="#">Lorem ipsum dolor sit amet</a></li>
-                                                            <li><a href="#">Consectetur adipiscing elit.</a></li>
-                                                            <li><a href="#">Suspendisse mauris ante.</a></li>
-                                                            <li><a href="#">Dignissim sit amet euismod id.</a></li>
-                                                        </ul>
-
-                                                        <a href="#" class="more-icon">
-                                                            <h1 class="subheader vindula-icon-plus-sign left"></h1>
-                                                            <span class="left">Ver todos</span>
-                                                        </a>
-                                                        -->
-                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="clear"></div>
-
                                     </section>
 
                                     <section tal:condition="python: user_login == user_request" id="prefs_edit">
