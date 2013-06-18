@@ -31,7 +31,7 @@ class FuncDetails(object):
 
 
     def get(self,attribute,default=''):
-        valor = getattr(self, attribute)
+        valor = getattr(self, attribute, default)
         if valor:
             return valor
 
