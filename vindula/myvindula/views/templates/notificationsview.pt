@@ -37,9 +37,9 @@
 
                                   <div class="left info-updates">
                                       <div>
-                                          <strong tal:content="user_actor/name|notificacao/acto"></strong>
+                                          <strong tal:content="user_actor/name|notificacao/acto|string: "></strong>
                                           <span tal:content="python:view_myvindula.action_social.get(notificacao.action,'')"></span>
-                                          <span tal:content="obj_action/Title"></span>
+                                          <span tal:content="obj_action/Title|string: "></span>
 
                                           <span tal:content="python:view_myvindula.getTimeAgo(notificacao.get_date_created,'')"></span>
                                       </div>

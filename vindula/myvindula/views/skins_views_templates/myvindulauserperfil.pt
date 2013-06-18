@@ -104,7 +104,7 @@
                                                     <div class="columns large-12">
 														<div tal:condition="not: followers/count">
 															<strong> Não possui nenhum assinante</strong>
-														</div>														
+														</div>
                                                         <div tal:condition="followers/count" class="orbit-container">
                                                           <ul data-orbit="bullets:false, " class="orbit-slides-container">
 
@@ -117,7 +117,7 @@
                                                                                 <!-- Dados para utilização da macro -->
                                                                                 <tal:def define="size_img string:30px;
                                                                                                  item python: view.get_prefs_user(follower.username);
-                                                                                                 username follower/username;">
+                                                                                                 username follower/username|string: ;">
                                                                                     <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>
                                                                                 </tal:def>
                                                                             </li>
@@ -148,7 +148,7 @@
 
                                                                 <tal:rep repeat="field user_profile/fields">
                                                                     <li tal:condition="python: not field.name in view.black_list">
-                                                                        <strong tal:content="field/label"></strong>
+                                                                        <strong tal:content="field/label|string: "></strong>
                                                                         <span tal:content="python:user_profile.get(field.name)"></span>
                                                                     </li>
                                                                 </tal:rep>
@@ -163,10 +163,10 @@
                                                         </h5>
                                                         <div class="content_itens">
                                                             <tal:cond condition="python: view.get_ConfugCampos('vin_myvindula_department')">
-                                                                <tal:def define="departamentos user_profile/get_department">
+                                                                <tal:def define="departamentos user_profile/get_department|python:[]">
                                                                     <p tal:repeat="departamento departamentos">
                                                                         <img width="16" height="16" alt="" tal:attributes="src departamento/obj/getImageIcone|nothing;
-                                                                                                                           alt departamento/title" />
+                                                                                                                           alt departamento/title|string: " />
                                                                         <a tal:attributes="href departamento/url|nothing"
                                                                            tal:content="departamento/title|nothing">Lorem ipsum dolor sit amet </a>
                                                                     </p>
