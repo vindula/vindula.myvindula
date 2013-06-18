@@ -37,6 +37,10 @@ class FuncDetails(object):
     def getImageIcone(self):
         return '/vindula-api/myvindula/user-picture/photograph/%s/True' %(self.username)
 
+    def getUrlPerfil(self):
+        return '/myvindulalistuser?user=%s' %(self.username)
+
+
     def getContato(self):
         return '%s<br />%s<br />%s'%(self.get('email',''),
                                      self.get('phone_number',''),
