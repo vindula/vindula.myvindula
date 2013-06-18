@@ -31,7 +31,11 @@ class FuncDetails(object):
 
 
     def get(self,attribute,default=''):
-        return getattr(self, attribute, default)
+        valor = getattr(self, attribute)
+        if valor:
+            return valor
+
+        return  default
 
 
     def getImageIcone(self):
@@ -47,7 +51,15 @@ class FuncDetails(object):
                                      self.get('cell_phone',''))
 
     def get_unidadeprincipal(self):
-        list_ou = eval(self.get('unidadeprincipal', '[" "]'))
+
+        try:
+            list_ou = eval(self.get('unidadeprincipal', '[" "]'))
+        except SyntaxError:
+            try:
+                valor = '["%s"]' % self.get('unidadeprincipal')
+                list_ou =  eval(valor)
+            except: list_ou = ['']
+
         OU = UtilMyvindula().lookupObject(list_ou[0])
         if OU:
             return {'title':OU.getSiglaunidade() or OU.Title(),
