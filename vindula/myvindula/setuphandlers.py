@@ -76,7 +76,7 @@ def user_folder(context):
 
 def set_AllowedType_Members(context):
     portal = context.getSite()
-    Types = ['vindula.myvindula.vindulaphotouser', 'Folder','Image','RTRemoteVideo','RTInternalVideo', 'Document', 'File',]
+    Types = ['Folder','Image','RTRemoteVideo','RTInternalVideo', 'Document', 'File',]
 
     if 'Members' in portal.keys():
         folder_members = portal['Members']
