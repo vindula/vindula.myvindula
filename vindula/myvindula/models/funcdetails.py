@@ -4,6 +4,7 @@ from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 
 from vindula.myvindula.tools.utils import UtilMyvindula
+from datetime import datetime, date
 
 def por_name(item):
     return item.get('name','')
@@ -97,3 +98,35 @@ class FuncDetails(object):
                     L_retorno.append(FuncDetails(item.username))
 
         return sorted(L_retorno, key=por_name)
+
+
+
+    @staticmethod
+    def get_FuncBirthdays(date_start, date_end ):
+        L = []
+        data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, ModelsConfgMyvindula.name==u'date_birth',
+                                                                           ModelsDadosFuncdetails.field_id==ModelsConfgMyvindula.id)
+
+        for item in data:
+            if item.value:
+
+                try:
+                    data_usuario = date(date.today().year,
+                                        int(datetime.strptime(item.value, "%d/%m/%Y").month),
+                                        int(datetime.strptime(item.value, "%d/%m/%Y").day))
+
+                    if data_usuario >= date_start and\
+                       data_usuario <= date_end:
+                        L.append(item)
+
+                except ValueError:
+                    pass
+
+        L = sorted(L, key=lambda row: datetime.strptime(row.value, "%d/%m/%Y").day)
+        L = sorted(L, key=lambda row: datetime.strptime(row.value, "%d/%m/%Y").month)
+
+        if L:
+            result = [FuncDetails(i.username) for i in L]
+            return result
+        else:
+            return []
