@@ -13,6 +13,7 @@
 	float:left;
 }
 #holerite .border-horz{
+	
 	border-left:solid #000 1px;
 	float:left;
 }
@@ -27,31 +28,4 @@
 #holerite-content .marginBtTp10px {
 	margin-top: 10px;
 	margin-bottom: 10px;
-}
-#holerite-cont{
-    overflow: hidden;
-    width: 662px;
-}
-
-
-/* Holerite Modelo 2  */
-#holerite div.position-0{ margin-left: -100.2%;}
-#holerite div.width-11{width: 68%;}
-
-#holerite .label{
-    font-size: 10px;
-    width: 100%;
-    display: block;
-}
-
-#holerite .title-text{
-   text-align: right;
-   font-size: 20px;
-   font-weight: bold;
-   position: relative;
-   top: 40px;    
-}
-
-#holerite .cell{
-    padding-left: 5px;
 }

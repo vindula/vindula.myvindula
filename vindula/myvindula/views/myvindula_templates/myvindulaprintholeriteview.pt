@@ -6,27 +6,98 @@
 		<link tal:attributes="href string:${context/portal_url|nothing}/public.css"
 			  media="all" type="text/css" rel="stylesheet" xmlns="">
 		<link rel="stylesheet" href="" type="text/css" media="all"
-			  tal:attributes="href string:${view/static}/form_holerite.css">	  
+			  tal:attributes="href string:${context/portal_url|nothing}/++resource++vindula.myvindula/form_holerite.css">	  
 		<style media="all" type="text/css">
-			body{background:none;}
-			*{font-family: Helvetica !important;margin: 0;padding:0;text-decoration:none;}
+                    #holerite{
+			border:solid #000 1px;
+			float:left;
+			}
+		    #holerite .title{
+			text-align:center;
+			font-size:10px;	
+			}
+
+		    #holerite .border{
+			border-top:solid #000 1px;
+			border-bottom:solid #000 1px;
+			float:left;
+			}
+		    #holerite .border-horz{
+			border-left:solid #000 1px;
+			float:left;
+			}
+
+		   #holerite .center{
+			text-align:center;
+			}
+		   #holerite .width-6-5{
+			width: 36.25%;
+			}
+
+		   #holerite-content .marginBtTp10px {
+			margin-top: 10px;
+			margin-bottom: 10px;
+			}
+		   #holerite-cont{
+		    overflow: hidden;
+		    width: 662px;
+			}
+
+			.even {
+				background: #DDD;
+			}
+
+	/* Holerite Modelo 2  */
+		#holerite div.position-0{ margin-left: -100.2%;}
+		#holerite div.width-11{width: 68%;}
+
+		#holerite .label{
+		    font-size: 10px;
+		    width: 100%;
+		    display: block;
+		}
+
+		#holerite .title-text{
+		   text-align: right;
+		   font-size: 20px;
+		   font-weight: bold;
+		   position: relative;
+		   top: 40px;    
+		}
+
+		#holerite .cell{
+		    padding-left: 5px;
+		} 
+
+		.state-private {
+			color: Red !important;
+		}
+		
 		</style>			  
 
 		<script type="application/javascript">
 			window.print();
 		</script>
 	</head>
-	<body tal:define="item view/load_list|nothing">
+	<body tal:define="item view/load_list|nothing;
+	                  view_controler python:context.restrictedTraverse('myvindula-conf-userpanel');
+                          cnpj python: view.format(item.cnpj_empresa);
+                      modelo view_controler/select_modelo_holerite;">
+		
 		<div id="content"  style="width: 665px">
+			
 			<img src="/++resource++vindula.themedefault/images/icons/logo_topo.png"
-				tal:attributes="src string:${context/portal_url|nothing}/company-logo?cnpj=${item/cnpj_empresa|nothing}"
-				height="60px"
-				 />
+				tal:attributes="src string:${context/portal_url|nothing}/company-logo?cnpj=${cnpj|nothing}"
+				height="60px" tal:condition="python:modelo=='01'"
+				 /> 
+			
 			<div id="holerite">
 					<div style="height: 0pt; position: relative; left: 16%; opacity: 0.25" id="logo-holerite"> 
-					   <img tal:attributes="src string:${context/portal_url|nothing}/company-logo?cnpj=${item/cnpj_empresa|nothing}" width="450px"/>
-					</div>
-					<metal:holerite metal:use-macro="context/myvindula-holerite/macros/print-holerite" />
+						<img tal:attributes="src string:${context/portal_url|nothing}/company-logo?cnpj=${cnpj|nothing}" width="450px"/>
+					</div>	
+					
+					<metal:holerite metal:use-macro="context/myvindula-holerite/macros/holerite-print" />
+				
 			</div>
 		</div>
 		<script type="text/javascript">
@@ -36,3 +107,4 @@
 		</script>
 	</body>
 </html>
+

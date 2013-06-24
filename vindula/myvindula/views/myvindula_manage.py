@@ -39,6 +39,8 @@ from vindula.myvindula.models.holerite import ModelsFuncHolerite
 from vindula.myvindula.models.descricao_holerite import ModelsFuncHoleriteDescricao
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 
+from vindula.myvindula.models.holerites2 import ModelsFuncHolerite02, ModelsFuncHoleriteDescricao02
+
 logger = logging.getLogger('vindula.myvindula')
 
 
@@ -257,10 +259,16 @@ class AjaxView(grok.View,UtilMyvindula):
     def importUser(self,form):
         return ImportUser().importUser(self,form)
 
+
 class MyVindulaDelHoleriteView(grok.View, UtilMyvindula):
     grok.context(INavigationRoot)
     grok.require('cmf.ManagePortal')
     grok.name('myvindula-del-holerite')
+    
+    def select_modelo(self):
+        modelo =  self.context.restrictedTraverse('myvindula-conf-userpanel').select_modelo_holerite()
+        return modelo
+    
     
     def update(self):
         form = self.request.form
@@ -272,31 +280,45 @@ class MyVindulaDelHoleriteView(grok.View, UtilMyvindula):
             except:empresa = form['empresa']
 
             data_lote = datetime.strptime(data_lote,'%Y-%m-%d %H:%M')
-            ModelsFuncHolerite().del_HoleritesLote(data_lote,empresa)
+            
+            if self.select_modelo() == '01':
+                ModelsFuncHolerite().del_HoleritesLote(data_lote,empresa)
+            elif self.select_modelo() == '02':  
+                ModelsFuncHolerite02().del_HoleritesLote(data_lote,empresa)
             
         self.request.response.redirect(success_url)
     
     def render(self):
         pass
-    
-    
-    
-    
+       
 class MyVindulaImportHoleriteView(grok.View, UtilMyvindula):
     grok.context(INavigationRoot)
     grok.require('cmf.ManagePortal')
     grok.name('myvindula-import-holerite')
     
+    def select_modelo(self):
+        modelo =  self.context.restrictedTraverse('myvindula-conf-userpanel').select_modelo_holerite()
+        return modelo
+    
+    
     def get_lastImport(self):
-        result = ModelsFuncHolerite().get_FuncHolerites_Import()
+        if self.select_modelo() == '01':
+            result = ModelsFuncHolerite().get_FuncHolerites_Import()
+        elif self.select_modelo() == '02':
+            result = ModelsFuncHolerite02().get_FuncHolerites_Import()
+        
         if result: 
             return result
         else:
             return []
         
     def load_file(self):
-        from pprint import pprint
-        #from copy import copy
+        if self.select_modelo() == '01':
+            return self.mecanismo01() 
+        elif self.select_modelo() == '02':
+            return self.mecanismo02() 
+        
+    def mecanismo01(self):
         form = self.request.form
         erro = False
         holerite_erro = None
@@ -450,11 +472,154 @@ class MyVindulaImportHoleriteView(grok.View, UtilMyvindula):
                                 item['vin_myvindula_holerite_id'] = id
                                 desc_convertido = self.converte_dadosByDB(item)
                                 ModelsFuncHoleriteDescricao().set_FuncHoleriteDescricao(**desc_convertido)
-                            
                     
         else:
             return None
         
+     
+    def mecanismo02(self):
+        form = self.request.form
+        erro = False
+        holerite_erro = None
+        holerites = []
+        holerite_observacao = ''
+        modelo_holerite = {'empresa':None,
+                           'cnpj_empresa':None,
+                           'competencia':None,
+                           'matricula':None,
+                           'nome':None,
+                           'data_admissao':None,    
+                           'cargo':None,
+                           'setor':None,
+                           'carteira_trabalho':None,
+                           'secao':None,
+                           'dep_ir':None,
+                           'dep_sf':None,
+                           'cpf':None,
+                           'indentidade':None,
+                           'pis':None,
+                           'salario_base':None,
+                           'cod_pagamento':None, 
+                           'banco_pag':None,
+                           'agencia':None,
+                           'conta_corrente':None,
+                           'date_creation':None,
+                           'base_Inss':None,
+                           'base_fgts':None,
+                           'base_irrf':None,
+                           'salario_contribuicao':None,
+                           'total_proventos':None,
+                           'total_desconto':None,
+                           'fgts_mes':None,
+                           'valor_liquido':None,
+                           'observacao':None,
+                           
+                           'completo':False,
+                           'itens_holerite':[],}
+        
+        holerite = copy(modelo_holerite)
+        
+        if 'load_file' in form.keys():            
+            if 'txt_file' in form.keys():
+                file = form.get('txt_file','')
+                if file:
+                    texto = file.read()
+                    texto = texto.replace('\r','')
+                    cont = 1
+                    
+                    for linha in texto.split('\n'):
+                        #Checando linhas vazias, se a linha for vazia ou só espaço, vai retornar uma lista vazia e nao entrar no if.
+                        check_linha = [i for i in linha.split(' ') if i != '']
+                        #import pdb;pdb.set_trace()
+                        #Pulando linhas vazias
+                        if check_linha != []:
+                             
+                             #Buscando Registro Funcionário
+                            if linha[0:2] == '03':
+                                holerite['empresa'] = linha[2:42]
+                                holerite['cnpj_empresa'] = linha[42:61]
+                                holerite['matricula'] = linha[61:72]
+                                holerite['nome'] = linha[72:112]
+                                holerite['data_admissao'] = linha[112:122]
+                                holerite['cargo'] = linha[122:147]
+                                holerite['setor'] = linha[147:172]
+                                holerite['carteira_trabalho'] = linha[172:188]
+                                holerite['secao'] = linha[188:193]
+                                holerite['dep_ir'] = linha[193:195]
+                                holerite['dep_sf'] = linha[195:197]
+                                holerite['cpf'] = linha[197:211]
+                                holerite['indentidade'] = linha[211:231]
+                                holerite['pis'] = linha[231:245]
+                            
+                                holerite['observacao'] = holerite_observacao
+                                holerite['completo'] = True
+                            
+                            #Buscando Registro de Totais
+                            elif linha[0:2] == '02':    
+                                holerite['competencia'] = linha[2:8]
+                                holerite['cod_pagamento'] = linha[8:10]
+                                holerite['banco_pag'] = linha[10:35]
+                                holerite['agencia'] = linha[35:50]
+                                holerite['conta_corrente'] = linha[50:65]
+                                
+                                holerite['salario_base'] = linha[65:75]
+                                holerite['base_fgts'] = linha[75:85]
+                                holerite['fgts_mes'] = linha[85:95]
+                                
+                                holerite['base_Inss'] = None
+                                
+                                holerite['base_irrf'] = linha[95:105]
+                                holerite['salario_contribuicao'] = linha[105:115]
+                                holerite['total_proventos'] = linha[115:125]
+                                holerite['total_desconto'] = linha[125:135]
+                                holerite['valor_liquido'] = linha[135:145]
+                                   
+                            #Buscando Registro das Verbas
+                            elif linha[0:2] == '01':    
+
+                                itens_holerite = {'codigo':None,
+                                                  'descricao':None,
+                                                  'valor':None,
+                                                  'status':None,
+                                                  'referencial':None,}
+                                    
+                                itens = copy(itens_holerite)
+                                
+                                itens['codigo'] = linha[2:5]
+                                itens['descricao'] = linha[5:35]
+                                itens['valor'] = linha[35:45]
+                                itens['status'] = linha[45:46]
+                                itens['referencial'] = linha[46:56]
+
+                                #holerite['itens_holerite_check'] = True
+                                    
+                                holerite['itens_holerite'].append(itens)
+                                  
+                            #Buscando Registro Cabeçalho
+                            elif linha[0:2] == '00':                                          
+                                holerite_observacao = linha[2:102]
+                               
+                            if holerite['completo'] == True:
+                                holerites.append(holerite)
+                                holerite = copy(modelo_holerite)
+                                holerite['itens_holerite'] = []
+                                
+                            
+                    if holerites:
+                        for holerite in holerites:
+                            itens = copy(holerite['itens_holerite'])
+                            convertido = self.converte_dadosByDB(holerite)
+                            id = ModelsFuncHolerite02().set_FuncHolerite(**convertido)
+                            
+                            for item in itens:
+                                item['vin_myvindula_holerite02_id'] = id
+                                desc_convertido = self.converte_dadosByDB(item)
+                                ModelsFuncHoleriteDescricao02().set_FuncHoleriteDescricao(**desc_convertido)
+                    
+        else:
+            return None
+   
+       
    
 class MyVindulaImportFirstView(grok.View,UtilMyvindula):
     grok.context(INavigationRoot)

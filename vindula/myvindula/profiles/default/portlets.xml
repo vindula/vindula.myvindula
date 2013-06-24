@@ -3,24 +3,25 @@
 <portlets
     xmlns:i18n="http://xml.zope.org/namespaces/i18n"
     i18n:domain="plone">
-    	
+
 	<portlet
 		addview="vindula.myvindula.PortletRamaisVindula"
 		title="Portlet busca de pessoas"
 		description="Portlet busca de pessoas"
-	    />		
-	
+	    />
+
 	<portlet
 		addview="vindula.myvindula.PortletAniversariosVindula"
 		title="Portlet Aniversarios Vindula"
-		description="Portlet Aniversarios Vindula"
+		description="Portlet Aniversarios Vindula \n
+					*As alterações feitas nesse portlet podem demora ate 1 hora para serem exibidas"
 	    />
-		
+
 	<portlet
 		addview="vindula.myvindula.PortletAniversariosVindulaReload"
 		title="Portlet Aniversarios Vindula - Reloading"
 		description="Portlet Aniversarios Vindula - Reloading"
-	    />				
-		
+	    />
+
 
 </portlets>

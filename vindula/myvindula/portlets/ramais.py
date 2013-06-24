@@ -3,7 +3,7 @@
 """ Produto:                 """
 
 from zope.interface import implements
-from zope.formlib import form 
+from zope.formlib import form
 from zope import schema
 
 from plone.portlets.interfaces import IPortletDataProvider
@@ -18,7 +18,7 @@ from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 from vindula.myvindula.tools.utils import UtilMyvindula
 
 class IPortletRamais(IPortletDataProvider):
-      
+
     """A portlet
 
     It inherits from IPortletDataProvider because for this portlet, the
@@ -29,23 +29,23 @@ class IPortletRamais(IPortletDataProvider):
     title_portlet = schema.TextLine(title=unicode("Título", 'utf-8'),
                                   description=unicode("Título que aparecerá no cabeçalho do portlet.", 'utf-8'),
                                   required=True)
-    
+
     quantidade_portlet = schema.Int(title=unicode("Quantidade de Itens", 'utf-8'),
                                   description=unicode("Quantidade limite de item mostrado no portlet.", 'utf-8'),
                                   required=True)
-    
+
     filtro_user = schema.Text(title=unicode("Bancos para busca de pessoas", 'utf-8'),
                               description=unicode("Adicione os campos que serão possiveis realizar a busca dos usuários como Nome, Empresa, Matricula e outros. \
                                                    Adicione um campo por linha, no formato [Label] | [Campo].", 'utf-8'),
                               default=u'[Nome] | [name]\n[Ramal] | [phone_number]',
                               required=True)
-    
-    
+
+
     filtro_departamento = schema.TextLine(title=unicode("Dados do campo departamento", 'utf-8'),
                                   description=unicode("Adicione qual dado do banco de dados será usado para filtro dos usuários,\
                                                       (Valor Padrão: 'departamentos')", 'utf-8'),
                                   default=unicode('departamentos','utf-8'),
-                                  required=True) 
+                                  required=True)
 
     show_picture = schema.Bool(title=unicode("Exibir foto", 'utf-8'),
                                description=unicode("Selecione para mostrar a foto dos aniversarientes no portlet.", 'utf-8'),
@@ -56,18 +56,18 @@ class IPortletRamais(IPortletDataProvider):
                                description=unicode("Selecione para mostrar o portlet para usuários anônimos que acessarem o portal.", 'utf-8'),
                                default=True,
                                )
-   
+
     principal_user = schema.TextLine(title=unicode("Destaque do usuário", 'utf-8'),
                                      description=unicode("Adicione o campo com a informação principal do usuário como 'name' para Nome ou 'nickname' para\
                                                           Apelido, entre outros.", 'utf-8'),
                                      default = u'name',
                                      required=True)
-    
+
     details_user = schema.Text(title=unicode("Detalhes do ramais", 'utf-8'),
                                   description=unicode("Adicione detalhes sobre os usuários como Empresa, Matricula e outros. \
                                                        Adicione um campo por linha, no formato [Label] | [Campo].", 'utf-8'),
                                   required=False)
-    
+
     details_text = schema.Text(title=unicode("Texto do portlet", 'utf-8'),
                                   description=unicode("Adicione o texto que será mostrado no final da busca de ramais.", 'utf-8'),
                                   required=False)
@@ -101,7 +101,7 @@ class Assignment(base.Assignment):
         "manage portlets" screen.
         """
         return "Portlet Busca de Pessoas"
-    
+
 class Renderer(base.Renderer, UtilMyvindula):
     """Portlet renderer.
 
@@ -109,17 +109,17 @@ class Renderer(base.Renderer, UtilMyvindula):
     rendered, and the implicit variable 'view' will refer to an instance
     of this class. Other methods can be added and referenced in the template.
     """
-    render = ViewPageTemplateFile('portlet_ramais.pt')            
-    
+    render = ViewPageTemplateFile('portlet_ramais.pt')
+
     def get_title(self):
         return self.data.title_portlet
-    
+
     def show_picture(self):
         return self.data.show_picture
-    
+
     def show_anonymous(self):
         return self.data.show_anonymous
-    
+
     @property
     def available(self):
         membership = self.context.portal_membership
@@ -127,31 +127,31 @@ class Renderer(base.Renderer, UtilMyvindula):
             if self.show_anonymous():
                 return True
             else:
-                return False 
+                return False
         else:
-            return True 
-    
-    
+            return True
+
+
     def filtro_departamento(self):
         return self.data.filtro_departamento
-    
+
     def get_details_text(self):
         return self.data.details_text
-    
+
     def get_principal_campo(self, obj):
         campo = self.data.principal_user
         if campo:
             try: return obj.get(campo)
-            except: return obj.get('name') 
+            except: return obj.get('name')
         else:
             try: return obj.get('name')
-            except: return ''    
-    
+            except: return ''
+
     def get_camposFilter(self):
         L = []
-        if self.data.filtro_user: 
+        if self.data.filtro_user:
             lines = self.data.filtro_user.splitlines()
-            
+
             for line in lines:
                 D = {}
                 line = line.replace('[', '').replace(']', '').split(' | ')
@@ -163,12 +163,12 @@ class Renderer(base.Renderer, UtilMyvindula):
                     pass
 
         return L
-    
+
     def get_details_user(self, user):
-        if self.data.details_user: 
+        if self.data.details_user:
             lines = self.data.details_user.splitlines()
             L = []
-            
+
             for line in lines:
                 D = {}
                 line = line.replace('[', '').replace(']', '').split(' | ')
@@ -181,41 +181,41 @@ class Renderer(base.Renderer, UtilMyvindula):
             return L
 
         return None
-    
+
     def get_uid_struct_org(self,ctx):
         if ctx.portal_type != 'Plone Site' and ctx.portal_type != 'OrganizationalStructure':
             return self.get_uid_struct_org(ctx.aq_inner.aq_parent)
-        elif ctx.portal_type == 'OrganizationalStructure': 
+        elif ctx.portal_type == 'OrganizationalStructure':
             return ctx.UID()
         else:
             return None
-    
+
     def list_filtro(self):
         campo = self.data.filtro_departamento
         result = ModelsFuncDetails().get_allFuncDetails()
         if result:
             classe = 'ModelsFuncDetails.'+str(campo)
             return result.group_by(eval(classe)).order_by()
-    
+
     def list_departamentos(self):
         return  ModelsDepartment().get_department()
-    
+
     def get_quantidade_portlet(self):
         return self.data.quantidade_portlet
 
     def get_department(self, user):
         try:
-            user_id = unicode(user, 'utf-8')    
+            user_id = unicode(user, 'utf-8')
         except:
             user_id = user
-        
-        return ModelsDepartment().get_departmentByUsername(user_id)      
+
+        return ModelsDepartment().get_departmentByUsername(user_id)
 
     def getBusca(self):
         form = self.request.form
         campos = self.get_camposFilter()
         campo_departamento = self.filtro_departamento()
-        
+
         form_values = []
         for item in campos:
             D = {}
@@ -226,7 +226,7 @@ class Renderer(base.Renderer, UtilMyvindula):
             else:
                 D[name] = value
             form_values.append(D)
-        
+
         #title = form.get('title','').strip()
         #ramal = form.get('ramal','').strip()
         departamento = form.get('departamento','')
@@ -241,31 +241,31 @@ class Renderer(base.Renderer, UtilMyvindula):
         else:
             if type(departamento) != unicode:
                 departamento = unicode(departamento, 'utf-8')
-        
+
         return form_values, departamento
-            
+
 #    @view.memoize
     def busca_usuarios(self):
         form = self.request.form
         result = None
         filtro_busca = self.context.restrictedTraverse('@@myvindula-conf-userpanel').check_filtro_busca_user()
-        
+
         if 'SearchSubmit' in form.keys():
 
             form_values, departamento = self.getBusca()
-            
+
             check_form = [i for i in form_values if i.values() != [u'']]
             if departamento or check_form:
                 #import pdb;pdb.set_trace()
 #                if type(title) != unicode:
 #                    title = unicode(title, 'utf-8')
-#                
+#
 #                if type(departamento) != unicode:
 #                    departamento = unicode(departamento, 'utf-8')
-#                    
+#
 #                if type(ramal) != unicode:
 #                    ramal = unicode(ramal, 'utf-8')
-                
+
                 self.form_dados = form_values
                 result = ModelsDadosFuncdetails().get_FuncBusca(departamento,form_values,filtro_busca)
                 result = self.rs_to_list(result)
@@ -287,18 +287,18 @@ class Renderer(base.Renderer, UtilMyvindula):
 #                            result = data
 #                        else:
 #                            result = None
-        
+
 
 
         return result
-    
-    
+
+
     def getEnd(self,i):
         if i:
             return 'info_boxTipo2'
         else:
             return 'info_boxTipo2 borderDif'
-        
+
 #    def getPhoto(self,photo):
 #        if photo is not None and not ' ' in photo:
 #            url_foto = BaseFunc().get_imageVindulaUser(photo)
@@ -309,23 +309,23 @@ class Renderer(base.Renderer, UtilMyvindula):
 #                return self.context.absolute_url()+'/defaultUser.png'
 #        else:
 #            return self.context.absolute_url()+'/defaultUser.png'
-        
+
     def check_filter(self):
 
         form = self.request.form
         campos = self.get_camposFilter()
         campo_departamento = self.filtro_departamento()
-        
+
         if 'SearchSubmit' in form.keys():
             form_values, departamento = self.getBusca()
-            
+
             check_form = [i for i in form_values if i.values() != [u'']]
             if departamento or check_form:
                 return 'Não há resultados.'
             else:
                 return 'Nenhum campo foi preenchido, por favor preencha algum campo e efetue a busca novamente.'
-                
-        
+
+
 class AddForm(base.AddForm):
     """Portlet add form.
 
@@ -333,13 +333,13 @@ class AddForm(base.AddForm):
     zope.formlib which fields to display. The create() method actually
     constructs the assignment that is being added.
     """
-    
+
     form_fields = form.Fields(IPortletRamais)
-    
+
     def create(self, data):
        return Assignment(**data)
-   
-   
+
+
 class EditForm(base.EditForm):
     """Portlet edit form.
 
