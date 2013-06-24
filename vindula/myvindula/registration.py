@@ -126,6 +126,8 @@ class SchemaFunc(BaseFunc):
 
                 if 'vin_myvindula_department' in form_keys or 'departaments_old' in form_keys:
                     L = []
+                    ModelsDepartment().del_department(user_id)
+
                     portalGroup = getSite().portal_groups
                     portalCatalog = getSite().portal_catalog
 
