@@ -72,10 +72,7 @@ class ModelsConfgMyvindula(Storm, BaseStoreMyvindula):
 
     def get_configurationAll(self):
         data = self.store.find(ModelsConfgMyvindula).order_by(ModelsConfgMyvindula.order_position)
-        if data.count() > 0:
-            return data
-        else:
-            return []
+        return data
 
     def check_fields(self,campo):
         data = self.store.find(ModelsConfgMyvindula, ModelsConfgMyvindula.name==campo)

@@ -25,7 +25,7 @@ class FuncDetails(object):
         self.fields = ModelsConfgMyvindula().get_configurationAll()
         if  self.fields.count() > 0:
             user_data = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstance(self.username)
-
+                
             for field in self.fields:
                 value = user_data.get(field.name)
                 setattr(self, field.name,value)

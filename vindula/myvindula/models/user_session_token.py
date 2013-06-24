@@ -1,28 +1,23 @@
 # coding: utf-8
 
-
+import pytz
 #Imports regarding the connection of the database 'strom'
 from storm.locals import *
 from storm.expr import Desc, Select
 
 
-from vindula.myvindula.models.base import BaseStore
+from vindula.myvindula.models.base import BaseStoreMyvindula
 from vindula.myvindula.tools.utils import UtilMyvindula
 
 from hashlib import md5
 from datetime import datetime
 
-class UserSessionToken(Storm, BaseStore):
+class UserSessionToken(Storm, BaseStoreMyvindula):
     __storm_table__ = 'vinapp_myvindula_usersessiontoken'
 
-    id = Int(primary=True)
-    username = Unicode()
-    token = Unicode()
-    ip_client = Unicode()
-    hash = Unicode()
-    date_created = DateTime()
-    date_modified = DateTime()
-    date_excluded = DateTime()
+    username = Unicode(default=u'')
+    token = Unicode(default=u'')
+    ip_client = Unicode(default=u'')
 
 
     def set_new_token(self,session, user,ip):
@@ -32,7 +27,7 @@ class UserSessionToken(Storm, BaseStore):
         token = md5(username+session.token+session.id).hexdigest()
         str_data = datetime.now().strftime('%Y-%m-%d|%H:%M:%S')
         hash = md5('UserSessionToken'+username+str_data).hexdigest()
-
+        
         session.set('user_token', token)
 
         D={}
@@ -40,7 +35,7 @@ class UserSessionToken(Storm, BaseStore):
         D['token'] = tool.Convert_utf8(token)
         D['hash'] = tool.Convert_utf8(hash)
         D['ip_client'] = tool.Convert_utf8(ip)
-        D['date_created'] = datetime.now()
+        D['date_created'] = datetime.now(pytz.utc)
 
         usersession = UserSessionToken(**D)
         self.store.add(usersession)
