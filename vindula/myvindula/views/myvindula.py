@@ -339,6 +339,9 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
                 elif campo.type == 'img':
                     site = self.context.portal_url.getPortalObject()
                     valor = "<img height='150px' src='%s/user-image?field=%s&instance_id=%s' />"%(site.absolute_url(),campo.fields,instanceUser.id)
+                    
+                elif campo.label == 'Data de Nascimento':
+                	valor = self.getDadoUser_byField(instanceUser, campo.fields)[:5]
 
                 D['data']  = valor
             except:
