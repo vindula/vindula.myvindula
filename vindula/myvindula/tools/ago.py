@@ -19,9 +19,8 @@ def human(dt, precision=2, past_tense='{} atrás', future_tense=' {}'):
     """Accept a datetime or timedelta, return a human readable delta string"""
     delta = dt
     if type(dt) is not type(timedelta()):
-        #TODO:Configurar timezone
         try:delta = datetime.now() - dt
-        except:delta = datetime.now(pytz.timezone('America/Sao_Paulo')) - dt
+        except:delta = datetime.now(pytz.utc) - dt
 
 
     the_tense = past_tense

@@ -48,5 +48,6 @@ class BaseStoreMyvindula(BaseStore):
 
     @property
     def get_date_created(self):
-        date = self.date_created - timedelta(hours=3)
+        #date = self.date_created - timedelta(hours=3)
+        date = self.date_created
         return date
