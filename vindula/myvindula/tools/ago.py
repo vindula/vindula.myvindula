@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import pytz
 from datetime import datetime
 from datetime import timedelta
 
@@ -18,7 +19,9 @@ def human(dt, precision=2, past_tense='{} atrás', future_tense=' {}'):
     """Accept a datetime or timedelta, return a human readable delta string"""
     delta = dt
     if type(dt) is not type(timedelta()):
-        delta = datetime.now() - dt
+        try:delta = datetime.now() - dt
+        except:delta = datetime.now(pytz.utc) - dt
+
 
     the_tense = past_tense
     if delta < timedelta(0):
