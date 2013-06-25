@@ -20,6 +20,7 @@ from zope.app.component.hooks import getSite
 import hashlib, urllib, base64, pickle
 from datetime import date, datetime
 
+import pytz
 import logging
 logger = logging.getLogger('vindula.myvindula')
 
@@ -414,7 +415,16 @@ class UtilMyvindula(object):
 
         return self.context.portal_url() + '/vindula-api/myvindula/user-picture/'+field+'/'+username+'/'+str(ativa_gravatar)
 
-
+    def now():
+        #TODO: COLOCAR ESSA CONFIGURACAO NUM LUGAR MELHOR
+        #MYSQL=1
+        #POSTGRES=2
+        DB = 1
+        if DB == 1:
+            return datetime.now()
+        elif DB == 2:
+            return datetime.now(pytz.utc)
+            
 
     # def loadGravatarImage(self, email,username):
     #     # Imagem Padrão o usuario
