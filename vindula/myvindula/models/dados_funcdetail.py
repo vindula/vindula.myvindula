@@ -1,6 +1,6 @@
 # coding: utf-8
 
-import pytz
+
 #Imports regarding the connection of the database 'strom'
 from storm.locals import *
 from storm.expr import Desc, Select
@@ -20,9 +20,9 @@ class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
     __storm_table__ = 'vinapp_myvindula_userschemadata'
 
     #Campos de edição
-    username = Unicode(default=u'')
-    field_id = Int(default=0)
-    value = Unicode(default=u'')
+    username = Unicode()
+    field_id = Int()
+    value = Unicode()
 
     #vin_myvindula_confgfuncdetails_fields = Unicode()
     #vin_myvindula_instance_id = Int()
@@ -47,7 +47,7 @@ class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
 
             value = tool.Convert_utf8(data[field])
 
-            str_data = datetime.now(pytz.utc).strftime('%Y-%m-%d|%H:%M:%S')
+            str_data = datetime.now().strftime('%Y-%m-%d|%H:%M:%S')
 
             hash = md5('ModelsDadosFuncdetails'+str(username)+str(field_id)+str_data).hexdigest()
 
@@ -55,8 +55,8 @@ class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
                                                      'field_id':field_id,
                                                      'value':value,
                                                      'hash' : unicode(hash),
-                                                     'date_created':datetime.now(pytz.utc),
-                                                     'date_modified':datetime.now(pytz.utc)})
+                                                     'date_created':datetime.now(),
+                                                     'date_modified':datetime.now()})
 
             tool.setLogger('info',"User data stored: %s - %s - %s" % (username,
                                                                       field,
