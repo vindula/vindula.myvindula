@@ -6,24 +6,18 @@ from storm.locals import *
 from storm.expr import Desc, Select
 
 
-from vindula.myvindula.models.base import BaseStore
+from vindula.myvindula.models.base import BaseStoreMyvindula
 from vindula.myvindula.tools.utils import UtilMyvindula
 
 from hashlib import md5
 from datetime import datetime
 
-class UserSessionToken(Storm, BaseStore):
+class UserSessionToken(Storm, BaseStoreMyvindula):
     __storm_table__ = 'vinapp_myvindula_usersessiontoken'
 
-    id = Int(primary=True)
     username = Unicode()
     token = Unicode()
     ip_client = Unicode()
-    hash = Unicode()
-    date_created = DateTime()
-    date_modified = DateTime()
-    date_excluded = DateTime()
-
 
     def set_new_token(self,session, user,ip):
         tool = UtilMyvindula()
