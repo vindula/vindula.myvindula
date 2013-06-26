@@ -13,7 +13,10 @@ class NotificationsView(grok.View, UtilMyvindula):
     grok.name('myvindula-notifications')
 
     def get_notificacao(self, username):
-        return ModelsMyvindulaNotificacao().get_myvindula_notificacao(username=username)
+        result = ModelsMyvindulaNotificacao().get_myvindula_notificacao(username=username)
+        if result.count():
+            result = self.rs_to_list(result)
+        return result
 
     def update(self):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();

@@ -13,27 +13,21 @@
 
 	<body>
 	    <div metal:fill-slot="content">
-	    	<div metal:define-macro="page-view">
-
+	    	<div class="clear" metal:define-macro="page-view">
 				<tal:def define="member context/@@plone_portal_state/member;">
-
 					<script type="text/javascript"  tal:attributes="src string:${context/portal_url|nothing}/vindula-api/static/js/vindula_myvindula.js"></script>
-
 					<script type="text/javascript"
 							tal:content="python: '''
 										$j(document).ready(function(){
 											$j('#myvindula').myvindula(null, {username : '%s', dominio: '%s', user_token: '%s'});
 										});
-										'''%(member.getUserName(),context.portal_url(),session.get('user_token'))" ></script>
+										'''%(member.getUserName(),context.portal_url(),session.get('user_token'))" >
+                    </script>
 
-
-					<input id="user-igual" type="hidden" value="True">
+					<input id="user-igual" type="hidden" value="True" />
 					<!-- metal:use use-macro="context/@@myvindulapanel/macros/page"/-->
-
-			    	<div id="myvindula">
-
+			    	<div class="large-12 columns" id="myvindula">
 						<div class="vd_myvindula_edit" tal:attributes="data_username member/getUserName;"></div>
-
 					</div>
 				</tal:def>
 			</div>

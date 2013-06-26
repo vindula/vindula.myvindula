@@ -8,51 +8,51 @@
     </head>
     <body>
         <div metal:fill-slot="content" >
-
             <metal:use use-macro="context/@@myvindulapanel/macros/page"/>
-
-            <div id="content" metal:define-macro="page-view">
-
-                <div class="userpage geral_lista_comentarios"
-                     tal:define="member python:context.portal_membership.getAuthenticatedMember();
-                                 view_myvindula python:context.restrictedTraverse('@@myvindula');
-                                 isAnonymous context/portal_membership/isAnonymousUser|python:True;
-                                 username python:member.getUserName() or None;">
-
-                    <h2 class="h2title">Suas notificações!</h2>
-
-                    <tal:rep repeat="notificacao python:view_myvindula.get_notificacoes(username)">
-
-
-                        <div tal:define="user_actor python:view_myvindula.get_prefs_user(notificacao.actor);
-                                         obj_action python:view_myvindula.lookupObject(notificacao.content.uid);">
-
-
-                          <a href="#" tal:attributes="href obj_action/absolute_url|nothing">
-                              <div class="clear">
-                                  <div class="circle-mark">
-                                  </div>
-                                  <img class="left" width="50" height="50"
-                                       tal:attributes="src string:${here/portal_url}/vindula-api/myvindula/user-picture/photograph/${notificacao/actor}/True">
-
-                                  <div class="left info-updates">
-                                      <div>
-                                          <strong tal:content="user_actor/name|notificacao/acto|string: "></strong>
-                                          <span tal:content="python:view_myvindula.action_social.get(notificacao.action,'')"></span>
-                                          <span tal:content="obj_action/Title|string: "></span>
-
-                                          <span tal:content="python:view_myvindula.getTimeAgo(notificacao.get_date_created,'')"></span>
+            <metal:macro define-macro="page-view">
+                <div class="clear">
+                    <div class="columns large-12" 
+                         tal:define="member python:context.portal_membership.getAuthenticatedMember();
+                                     view_myvindula nocall:context/@@myvindula;
+                                     isAnonymous context/portal_membership/isAnonymousUser|python:True;
+                                     username python:member.getUserName() or None;
+                                     
+                                     notificacoes python:view_myvindula.get_notificacoes(username);
+    
+                                     Batch python:modules['Products.CMFPlone'].Batch;
+                                     b_size python:20;
+                                     b_start python:0;
+                                     b_start request/b_start | b_start;
+    
+                                     batch python:Batch(notificacoes, b_size, int(b_start));">
+                        <tal:rep repeat="notificacao batch">
+                            <div class="notify" 
+                                 tal:define="user_actor python:view_myvindula.get_prefs_user(notificacao.actor);
+                                             obj_action python:view_myvindula.lookupObject(notificacao.content.uid);">
+                              <a href="#" tal:attributes="href obj_action/absolute_url|nothing">
+                                  <div class="clear">
+                                      <img class="left" width="50" height="50"
+                                           tal:attributes="src string:${here/portal_url}/vindula-api/myvindula/user-picture/photograph/${notificacao/actor}/True">
+    
+                                      <div class="left info-updates">
+                                          <div>
+                                              <strong tal:content="user_actor/name|notificacao/acto|string: "></strong>
+                                              <span tal:content="python:view_myvindula.action_social.get(notificacao.action,'')"></span>
+                                              <span tal:content="obj_action/Title|string: "></span>
+    
+                                              <span tal:content="python:view_myvindula.getTimeAgo(notificacao.get_date_created,'')"></span>
+                                          </div>
                                       </div>
                                   </div>
-                              </div>
-                          </a>
-
-
-                        </div>
-                    </tal:rep>
-
+                              </a>
+                            </div>
+                        </tal:rep>
+                        <div class="navigation-users">
+                            <div metal:use-macro="here/batch_macros/macros/navigation" />
+                        </div>           
+                    </div>
                 </div>
-            </div>
+            </metal:macro>
         </div>
     </body>
 </html>

@@ -7,63 +7,65 @@
         </metal:block>
     </head>
     <body metal:fill-slot="content">
-        <meta:macro metal:define-macro="page-view" >
+        <metal:macro define-macro="page-view" >
+            
+            <div class="clear">
+                <div class="columns large-12" 
+                     tal:define="view nocall:context/@@myvindula_my_contents;
+                                 conteudos view/get_conteudos|python:[];
 
-            <div tal:define="view nocall:context/@@myvindula_my_contents;
-                             conteudos view/get_conteudos|python:[];
+                                 normalizeString nocall: context/plone_utils/normalizeString;
+                                 member python:context.portal_membership.getAuthenticatedMember();
 
-                             normalizeString nocall: context/plone_utils/normalizeString;
-                             member python:context.portal_membership.getAuthenticatedMember();
+                                 Batch python:modules['Products.CMFPlone'].Batch;
+                                 b_size python:20;
+                                 b_start python:0;
+                                 b_start request/b_start | b_start;
 
-                             Batch python:modules['Products.CMFPlone'].Batch;
-                             b_size python:20;
-                             b_start python:0;
-                             b_start request/b_start | b_start;
+                                 batch python:Batch(conteudos, b_size, int(b_start));">
 
-                             batch python:Batch(conteudos, b_size, int(b_start));">
-
-                <table>
-                    <tr>
-                        <th>Titulo</th>
-                        <th>Descrição</th>
-                        <th>Modificado</th>
-                        <th>Estado</th>
-                    </tr>
-
-                    <tal:rep repeat="obj batch">
-                        <tr tal:on-error="nothing"
-                            tal:define="item obj/getObject|nothing;
-                                        item_type item/portal_type;
-                                        item_type_class python:'contenttype-' + normalizeString(item_type);
-                                        item_wf_state item/review_state|python: context.portal_workflow.getInfoFor(item, 'review_state', '');
-                                        item_wf_state_class python:'state-' + normalizeString(item_wf_state);">
-                            <td>
-                                <span class="summary" tal:define="item_icon python:plone_view.getIcon(obj);">
-                                    <img tal:replace="structure item_icon/html_tag" />
-                                    <a href="#" class="contenttype-folder state-published url"
-                                       tal:attributes="href item/absolute_url|nothing;
-                                                       class string:$item_type_class $item_wf_state_class url"
-                                       tal:content="item/title|item/id|nothing">Item Title</a>
-                                </span>
-                            </td>
-                            <td class="description" tal:content="item/description|string: ">
-                                description
-                            </td>
-                            <td tal:content="python: item.bobobase_modification_time().strftime('%d/%m/%Y %H:%M')"></td>
-
-                            <td tal:content="python: view.get_title_WF(item_wf_state, item)"></td>
-
+                    <table width="100%">
+                        <tr>
+                            <th>Titulo</th>
+                            <th>Descrição</th>
+                            <th>Modificado</th>
+                            <th>Estado</th>
                         </tr>
-                    </tal:rep>
-                </table>
-
-                <div class="navigation-users">
-                    <div metal:use-macro="here/batch_macros/macros/navigation" />
+    
+                        <tal:rep repeat="obj batch">
+                            <tr tal:on-error="nothing"
+                                tal:define="item obj/getObject|nothing;
+                                            item_type item/portal_type;
+                                            item_type_class python:'contenttype-' + normalizeString(item_type);
+                                            item_wf_state item/review_state|python: context.portal_workflow.getInfoFor(item, 'review_state', '');
+                                            item_wf_state_class python:'state-' + normalizeString(item_wf_state);">
+                                <td>
+                                    <span class="summary" tal:define="item_icon python:plone_view.getIcon(obj);">
+                                        <img tal:replace="structure item_icon/html_tag" />
+                                        <a href="#" class="contenttype-folder state-published url"
+                                           tal:attributes="href item/absolute_url|nothing;
+                                                           class string:$item_type_class $item_wf_state_class url"
+                                           tal:content="item/title|item/id|nothing">Item Title</a>
+                                    </span>
+                                </td>
+                                <td class="description" tal:content="item/description|string: ">
+                                    description
+                                </td>
+                                <td tal:content="python: item.bobobase_modification_time().strftime('%d/%m/%Y %H:%M')"></td>
+    
+                                <td tal:content="python: view.get_title_WF(item_wf_state, item)"></td>
+    
+                            </tr>
+                        </tal:rep>
+                    </table>
+    
+                    <div class="navigation-users">
+                        <div metal:use-macro="here/batch_macros/macros/navigation" />
+                    </div>
+    
                 </div>
-
             </div>
-
-        </meta:macro>
+        </metal:macro>
     </body>
 </html>
 
