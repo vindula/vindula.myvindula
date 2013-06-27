@@ -133,7 +133,8 @@
     
                                                     <div>
                                                         <ul class="no-bullet">
-                                                            <li tal:define="unidadeprincial user_profile/get_unidadeprincipal">
+                                                            <li tal:define="unidadeprincial user_profile/get_unidadeprincipal"
+                                                                tal:condition="unidadeprincial">
                                                                 <strong>Unidade:</strong>
                                                                 <a tal:attributes="href unidadeprincial/absolute_url|nothing"
                                                                    tal:content="unidadeprincial/getSiglaOrTitle|string: ">ASCON</a>
@@ -149,22 +150,20 @@
                                                     </div>
                                                 </div>
         
-                                                <div class="columns large-6 shadow-line">
+                                                <div class="columns large-6 shadow-line"
+                                                     tal:define="departamentos user_profile/get_department|nothing"
+                                                     tal:condition="departamentos">
                                                     <h5>
                                                         PARTICIPANDO
                                                         <hr/>
                                                     </h5>
                                                     <div class="content_itens">
-                                                        <tal:cond condition="python: view.get_ConfugCampos('vin_myvindula_department')">
-                                                            <tal:def define="departamentos user_profile/get_department|python:[]">
-                                                                <p tal:repeat="departamento departamentos">
-                                                                    <img width="16" height="16" alt="" tal:attributes="src departamento/obj/getImageIcone|nothing;
-                                                                                                                       alt departamento/title|string: " />
-                                                                    <a tal:attributes="href departamento/url|nothing"
-                                                                       tal:content="departamento/title|nothing">Lorem ipsum dolor sit amet </a>
-                                                                </p>
-                                                            </tal:def>
-                                                        </tal:cond>
+                                                            <p tal:repeat="departamento departamentos">
+                                                                <img width="16" height="16" alt="" tal:attributes="src departamento/obj/getImageIcone|nothing;
+                                                                                                                   alt departamento/title|string: " />
+                                                                <a tal:attributes="href departamento/url|nothing"
+                                                                   tal:content="departamento/title|nothing">Lorem ipsum dolor sit amet </a>
+                                                            </p>
                                                     </div>
     
                                                     <div>
@@ -178,20 +177,18 @@
                                             
                                             <div class="clear">
                                                 <div class="columns large-6">
-                                                    <div id="tile-list-bullet">
-        
+                                                    <div id="tile-list-bullet"
+                                                         tal:condition="activities">
                                                         <h5>
                                                             ATIVIDADES
                                                             <hr/>
                                                         </h5>
         
-                                                        <ul class="square" tal:define="atividades python: activities or '[]' ">
-                                                            <tal:rep repeat="item python: eval(atividades)">
+                                                        <ul class="square">
+                                                            <tal:rep repeat="item python:eval(activities)">
                                                                 <li><span tal:content="item">Lorem ipsum dolor sit amet</span></li>
                                                             </tal:rep>
-        
                                                         </ul>
-        
                                                     </div>
                                                 </div>
                                             </div>

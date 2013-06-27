@@ -65,7 +65,11 @@ class FuncDetails(object):
             return OU
         
     def get_sigla_unidadeprincipal(self):
-        return self.get_unidadeprincipal().getSiglaOrTitle()
+        structure = self.get_unidadeprincipal()
+        sigla = ''
+        if structure: 
+            sigla = structure.getSiglaOrTitle()
+        return sigla
 
     def get_department(self):
         OUs_uid = eval(self.get('vin_myvindula_department') or '[]')
