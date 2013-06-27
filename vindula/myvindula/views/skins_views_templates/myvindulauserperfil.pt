@@ -135,8 +135,8 @@
                                                         <ul class="no-bullet">
                                                             <li tal:define="unidadeprincial user_profile/get_unidadeprincipal">
                                                                 <strong>Unidade:</strong>
-                                                                <a tal:attributes="href unidadeprincial/url|nothing"
-                                                                   tal:content="unidadeprincial/title|string: ">ASCON</a>
+                                                                <a tal:attributes="href unidadeprincial/absolute_url|nothing"
+                                                                   tal:content="unidadeprincial/getSiglaOrTitle|string: ">ASCON</a>
                                                             </li>
     
                                                             <tal:rep repeat="field user_profile/fields">
