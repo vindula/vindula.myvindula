@@ -52,7 +52,6 @@ class FuncDetails(object):
                                      self.get('cell_phone',''))
 
     def get_unidadeprincipal(self):
-
         try:
             list_ou = eval(self.get('unidadeprincipal', '[" "]'))
         except SyntaxError:
@@ -63,11 +62,14 @@ class FuncDetails(object):
 
         OU = UtilMyvindula().lookupObject(list_ou[0])
         if OU:
-            return {'title':OU.getSiglaunidade() or OU.Title(),
-                    'url': OU.absolute_url(),
-                    'obj': OU}
-        else:
-            return {}
+            return OU
+        
+    def get_sigla_unidadeprincipal(self):
+        structure = self.get_unidadeprincipal()
+        sigla = ''
+        if structure: 
+            sigla = structure.getSiglaOrTitle()
+        return sigla
 
     def get_department(self):
         OUs_uid = eval(self.get('vin_myvindula_department') or '[]')
