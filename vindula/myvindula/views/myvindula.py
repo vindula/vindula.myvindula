@@ -92,8 +92,9 @@ class MyVindulaView(grok.View, UtilMyvindula):
     def get_notificacoes(self,username):
         result = ModelsMyvindulaNotificacao().get_myvindula_notificacao(username=username)
         if result.count():
-            result = self.rs_to_list(result)
-        return result
+            return self.rs_to_list(result)
+        else:
+            return []
 
     def name_user_top(self,full_name):
         limit = 12
