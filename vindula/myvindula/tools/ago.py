@@ -20,7 +20,7 @@ def human(dt, precision=2, past_tense='{} atrás', future_tense=' {}'):
     delta = dt
     if type(dt) is not type(timedelta()):
         try:delta = datetime.now() - dt
-        except:delta = datetime.now(pytz.utc) - dt
+        except:delta = datetime.now(pytz.timezone('America/Sao_Paulo')) - dt
 
 
     the_tense = past_tense
