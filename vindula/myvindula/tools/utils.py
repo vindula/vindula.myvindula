@@ -120,7 +120,7 @@ class UtilMyvindula(object):
         # passar m=1 caso queira a sigla em maiuscula
         structure = self.get_prefs_user(usuario).get_unidadeprincipal()
         sigla = ''
-        if sigla:
+        if structure:
             sigla = structure.getSiglaOrTitle()
 
         # sigla = sigla.replace('<p>','').replace('</p>','')
