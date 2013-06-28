@@ -70,7 +70,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="columns large-9">
+                                                    <div class="columns large-9 manager">
                                                         <div>
                                                             <h5>Apresentação</h5>
                                                             <span tal:content="user_profile/about|string: ">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
