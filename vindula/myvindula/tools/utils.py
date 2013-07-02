@@ -114,20 +114,20 @@ class UtilMyvindula(object):
         return UtilMyvindula().rtool.lookupObject(uid)
 
 
-    def getUnidadePrincipalSigla(self, usuario, m=0):
+    # def getUnidadePrincipalSigla(self, usuario, m=0):
 
-        # TODO: Corrigir esse metodo. Esta retornando informacao valida, mas com sintaxe ruim.
-        # passar m=1 caso queira a sigla em maiuscula
-        structure = self.get_prefs_user(usuario).get_unidadeprincipal()
-        sigla = ''
-        if structure:
-            sigla = structure.getSiglaOrTitle()
+    #     # TODO: Corrigir esse metodo. Esta retornando informacao valida, mas com sintaxe ruim.
+    #     # passar m=1 caso queira a sigla em maiuscula
+    #     structure = self.get_prefs_user(usuario).get_unidadeprincipal()
+    #     sigla = ''
+    #     if structure:
+    #         sigla = structure.getSiglaOrTitle()
 
-        # sigla = sigla.replace('<p>','').replace('</p>','')
-        if m == 1:
-            return str(sigla).upper()
-        else:
-            return sigla
+    #     # sigla = sigla.replace('<p>','').replace('</p>','')
+    #     if m == 1:
+    #         return str(sigla).upper()
+    #     else:
+    #         return sigla
 
 
     def to_utf8(self, value):
@@ -427,7 +427,7 @@ class UtilMyvindula(object):
             return datetime.now()
         elif DB == 2:
             return datetime.now(pytz.utc)
-            
+
 
     # def loadGravatarImage(self, email,username):
     #     # Imagem Padrão o usuario

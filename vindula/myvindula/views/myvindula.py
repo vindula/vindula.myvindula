@@ -105,6 +105,7 @@ class MyVindulaView(grok.View, UtilMyvindula):
 
         return str
 
+
     def checkHomeFolder(self):
         """ Check if exist homeFolder """
         homefolder = self.context.portal_membership.getHomeFolder()
@@ -324,6 +325,12 @@ class MyVindulaPrefsView(grok.View, BaseFunc):
     #     configuracao= ModelsConfgMyvindula().getConfig_edit(campo)
     #     return configuracao
 
+    def check_edit_manager(self,username):
+        check_permission =  self.context.restrictedTraverse('vindula-object-user').checkPermission(username)
+        if 'rh' in check_permission.get('groups') or check_permission.get('has_manager'):
+            return True
+        return False
+
     def update(self):
         # disable Plone's editable border
         self.request.set('disable_border', True)
@@ -352,6 +359,12 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
     def get_ConfugCampos(self, campo):
         configuracao= ModelsConfgMyvindula().getConfig_views(campo)
         return configuracao
+
+    def check_edit_manager(self,username):
+        check_permission =  self.context.restrictedTraverse('vindula-object-user').checkPermission(username)
+        if 'rh' in check_permission.get('groups') or check_permission.get('has_manager'):
+            return True
+        return False
 
     # def get_department(self, user):
     #     return 'TODO mudar'

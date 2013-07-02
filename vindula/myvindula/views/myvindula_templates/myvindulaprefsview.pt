@@ -14,7 +14,13 @@
 	<body>
 	    <div metal:fill-slot="content">
 	    	<div class="clear" metal:define-macro="page-view">
-				<tal:def define="member context/@@plone_portal_state/member;">
+				<tal:def define="member context/@@plone_portal_state/member;
+	                             user_login member/getUserName;
+	                             user_request request/user|user_login;
+
+
+
+					">
 					<script type="text/javascript"  tal:attributes="src string:${context/portal_url|nothing}/vindula-api/static/js/vindula_myvindula.js"></script>
 					<script type="text/javascript"
 							tal:content="python: '''
@@ -26,9 +32,19 @@
 
 					<input id="user-igual" type="hidden" value="True" />
 					<!-- metal:use use-macro="context/@@myvindulapanel/macros/page"/-->
-			    	<div class="large-12 columns" id="myvindula">
+
+
+			    	<div class="large-12 columns" id="myvindula" tal:condition="python: user_login == user_request" >
 						<div class="vd_myvindula_edit" tal:attributes="data_username member/getUserName;"></div>
 					</div>
+
+					<div class="large-12 columns" id="myvindula" tal:condition="python: user_login != user_request and view.check_edit_manager(user_login)" >
+						<div class="vd_myvindula_edit" tal:attributes="data_username member/getUserName;
+																	   data_edit_user user_request"></div>
+					</div>
+
+
+
 				</tal:def>
 			</div>
 	    </div>
