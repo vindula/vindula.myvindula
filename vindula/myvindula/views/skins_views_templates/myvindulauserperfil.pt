@@ -24,7 +24,7 @@
 
 				<div id="myModal" class="reveal-modal large" >
 				 	 <div class="vd_user_profile_picture" data_field="photograph" tal:attributes="data_token session/user_token;
-																								 data_username username ">
+																								  data_username username ">
 
 					  <a class="close-reveal-modal">×</a>
 					 </div>
@@ -127,7 +127,7 @@
                                             <div class="clear">
                                                 <div class="columns large-6 shadow-line">
                                                     <h5>
-                                                        INFORMAÇÕES
+                                                        Informações
                                                         <hr/>
                                                     </h5>
 
@@ -154,7 +154,7 @@
                                                      tal:define="departamentos user_profile/get_department|nothing"
                                                      tal:condition="departamentos">
                                                     <h5>
-                                                        PARTICIPANDO
+                                                        Participando
                                                         <hr/>
                                                     </h5>
                                                     <div class="content_itens">
@@ -180,7 +180,7 @@
                                                     <div id="tile-list-bullet"
                                                          tal:condition="activities">
                                                         <h5>
-                                                            ATIVIDADES
+                                                            Atividades
                                                             <hr/>
                                                         </h5>
 
@@ -231,6 +231,7 @@
                         </div>
                     </div>
                     <div class="columns large-3">
+                        <div class="vd_user_timeline row" tal:attributes="data_username username" />
 
                     </div>
                 </div>
