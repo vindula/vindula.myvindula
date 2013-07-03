@@ -92,7 +92,7 @@ class FuncDetails(object):
         data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails)
         if filter:
 
-            data = data.find(ModelsDadosFuncdetails.value.like('%'+filter+'%',case_insensitive=True))
+            data = data.find(ModelsDadosFuncdetails.value.like('%'+filter+'%',case_sensitive=True))
 
         if data.count() > 0:
             for item in data:
