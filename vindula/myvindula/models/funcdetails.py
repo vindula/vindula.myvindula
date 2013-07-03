@@ -63,11 +63,11 @@ class FuncDetails(object):
         OU = UtilMyvindula().lookupObject(list_ou[0])
         if OU:
             return OU
-        
+
     def get_sigla_unidadeprincipal(self):
         structure = self.get_unidadeprincipal()
         sigla = ''
-        if structure: 
+        if structure:
             sigla = structure.getSiglaOrTitle()
         return sigla
 
@@ -91,7 +91,8 @@ class FuncDetails(object):
         L_retorno = []
         data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails)
         if filter:
-            data = data.find(ModelsDadosFuncdetails.value.like('%'+filter+'%'))
+
+            data = data.find(ModelsDadosFuncdetails.value.like('%'+filter+'%',case_insensitive=True))
 
         if data.count() > 0:
             for item in data:
