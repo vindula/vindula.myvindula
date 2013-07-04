@@ -113,7 +113,10 @@ class MyVindulaSetTokem(grok.View, UtilMyvindula):
         
         
     def getOwner(self):
-        return self.context.getOwner().getUserName()
+        try:
+            return self.context.getOwner().getUserName()
+        except:
+            return ''
     
     
     def gethistory(self):
