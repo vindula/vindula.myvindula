@@ -54,7 +54,7 @@ class FuncDetails(object):
     def get_unidadeprincipal(self):
         try:
             list_ou = eval(self.get('unidadeprincipal', '[" "]'))
-        except SyntaxError:
+        except SyntaxError, NameError:
             try:
                 valor = '["%s"]' % self.get('unidadeprincipal')
                 list_ou =  eval(valor)
