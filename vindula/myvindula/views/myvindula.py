@@ -404,7 +404,7 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
         result = []
 
         if departaments:
-            departaments = [i.UID() for i in departaments]
+            departaments = [i.get('obj').UID() for i in departaments if i.get('obj', None)]
             projects = catalog({'path': {'query': '/'.join(p_object.getPhysicalPath()), 'depth': 99},
                                 'portal_type': ['OrganizationalStructure'],
                                 'tipounidade': ['projeto', 'Projeto']})
