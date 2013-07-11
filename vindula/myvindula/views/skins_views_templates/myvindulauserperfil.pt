@@ -168,11 +168,12 @@
                                                         </h5>
 
                                                         <ul class="square">
-                                                            <tal:cond condition="activities"
-                                                                      define="activities python:eval(activities);">
-                                                                <tal:rep repeat="item python:activities[:5]">
-                                                                    <li><span tal:content="item">Lorem ipsum dolor sit amet</span></li>
-                                                                </tal:rep>
+                                                            <tal:cond condition="activities">
+                                                                <tal:def define="activities python:eval(activities);">
+                                                                    <li tal:repeat="item python:activities[:5]">
+                                                                        <span tal:content="item">Lorem ipsum dolor sit amet</span>
+                                                                    </li>
+                                                                </tal:def>
                                                             </tal:cond> 
                                                             <tal:cond condition="not: activities">
                                                                 <span>Não possui nenhuma atividade.</span>

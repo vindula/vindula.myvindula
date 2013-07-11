@@ -26,7 +26,7 @@
                                          departamentos user/get_department|nothing;">
                             
                             <tal:cond tal:condition="departamentos">
-                                <div class="clear" tal:repeat="departamento departamentos">
+                                <div class="clear block-unit" tal:repeat="departamento departamentos">
                                     <img class="left" 
                                          tal:attributes="src departamento/obj/getImageIcone|nothing;
                                                           alt departamento/title|string: "/>
