@@ -348,7 +348,7 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
     grok.require('zope2.View')
     grok.name('myvindulalistuser')
 
-    black_list = ['vin_myvindula_department','photograph','about','unidadeprincipal','atividades' ]
+    black_list = ['name','vin_myvindula_department','photograph','about','unidadeprincipal','atividades' ]
 
     # # Este metodo esta repetido. Ele existe tambem em utils.py. Refatorar
     # def getUnidadeUID(self, uid):
@@ -396,7 +396,23 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
             lista.append(L)
 
         return lista
+    
+    def get_projects(self, user):
+        p_object = self.context.portal_url.getPortalObject()
+        member =  self.context.restrictedTraverse('@@plone_portal_state').member()
+        departaments = user.get_department()
+        result = []
 
+        if departaments:
+            departaments = [i.UID() for i in departaments]
+            projects = catalog({'path': {'query': '/'.join(p_object.getPhysicalPath()), 'depth': 99},
+                                'portal_type': ['OrganizationalStructure'],
+                                'tipounidade': ['projeto', 'Projeto']})
+            for project in projects:
+                if project.UID in departaments:
+                    result.append(project.getObject())
+
+        return result
 
     # def geraDadosAreas(self,area,instanceUser):
     #     campos = ModelsConfgMyvindula().getConfig_byArea(self.Convert_utf8(area))

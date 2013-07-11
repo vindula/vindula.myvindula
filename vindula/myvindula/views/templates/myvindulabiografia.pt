@@ -1,0 +1,46 @@
+<html metal:use-macro="here/main_template/macros/master">
+    <head>
+        <metal:block fill-slot="top_slot">
+            <tal:dummy tal:define="dummy python:request.set('disable_border',1);
+                                   disable_column_one python:request.set('disable_plone.leftcolumn',1);
+                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+        </metal:block>
+    </head>
+    <body>
+        <div metal:fill-slot="content">
+    		<div id="content">
+                <div metal:define-macro="page-view" class="clear"
+                     tal:define="member python:context.portal_membership.getAuthenticatedMember();
+                                 isAnonymous context/portal_membership/isAnonymousUser|python:True;
+                                 user python:member.getUserName() or None;">
+
+                    <div class="columns large-12">
+                        <h5>Biografia</h5>
+                    </div>
+                    <tal:def define="view_myvindula python:context.restrictedTraverse('@@myvindulalistuser');
+                                     user view_myvindula/load_list;">
+                        <div class="columns large-3">
+                            <div id="photo">
+                                <tal:cond condition="python: view_myvindula.get_ConfugCampos('photograph')">
+                                    <!-- Dados para utilizacao da macro -->
+                                    <tal:def define="size_img string:150px;
+                                                     item user_profile;">
+                                        <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>
+                                    </tal:def>
+                                </tal:cond>
+                                <tal:cond condition="python:not view_myvindula.get_ConfugCampos('photograph')">
+                                    <div style="width: 150px;height: 150px;"></div>
+                                </tal:cond>
+                            </div>
+                        </div>
+                        
+                        <div class="columns large-9">
+                            <span tal:content="user/about|string: ">
+                            </span>
+                        </div>
+                    </tal:def>
+                </div>
+    		</div>
+        </div>
+    </body>
+</html>

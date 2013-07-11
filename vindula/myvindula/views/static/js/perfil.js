@@ -5,12 +5,10 @@ function getURLParameter(name) {
 }
 
 $j(document).ready(function(){
-
-
 	var session = getURLParameter('session');
+    
 	if(session){
 		$j('#'+session).addClass('active');
 	};
-
-
+    
 });

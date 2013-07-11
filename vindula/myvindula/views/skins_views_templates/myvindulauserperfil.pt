@@ -19,13 +19,13 @@
                                user_request request/user|username;
                                user_login member/getUserName;
 
-                               followers python: view.get_follow(username);
-                               activities user_profile/atividades|nothing;">
+                               followers python:view.get_follow(username);
+                               activities python:user_profile.get('atividades')[:5] or None;
+                               projects python:view.get_projects(user_profile)[:5] or None;">
 
 				<div id="myModal" class="reveal-modal large" >
 				 	 <div class="vd_user_profile_picture" data_field="photograph" tal:attributes="data_token session/user_token;
 																								  data_username username ">
-
 					  <a class="close-reveal-modal">×</a>
 					 </div>
 				</div>
@@ -47,8 +47,8 @@
                                         <div class="content bloco-perfil" data-section-content>
                                             <div id="tile-org-info">
                                                 <div class="clear">
-                                                    <div class="columns large-3">
-                                                        <div id="photo">
+                                                    <div id="photo" class="columns large-3">
+                                                        <div>
                                                             <tal:cond condition="python: view.get_ConfugCampos('photograph')">
                                                                 <!-- Dados para utilização da macro -->
                                                                 <tal:def define="size_img string:150px;
@@ -62,7 +62,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="columns large-9">
+                                                    <div class="social-follow">
                                                         <div class="vd-social-left rigth" tal:define="UID username;
                                                                                                       TYPES string:UserObject;"
                                                                                           tal:condition="python: user_login != user_request">
@@ -81,7 +81,7 @@
 
                                                         <div class="container-manager">
                                                             <div>
-                                                                <h4>Status</h4>
+                                                                <h6>Status</h6>
                                                             </div>
                                                             <div>
                                                                 <span>
@@ -98,27 +98,31 @@
                                                         <span tal:content="python: '('+ str(followers.count()) + ')' ">(41)</span>
                                                     </div>
 
-                                                    <div class="columns large-12">
+                                                    <div class="columns large-12 manager">
                                                         <div tal:condition="not: followers/count" class="label-team">
                                                             <strong> Não possui nenhum assinante</strong>
                                                         </div>
-                                                        <div tal:condition="followers/count" class="orbit-container">
-                                                            <ul data-orbit="bullets:false, " class="orbit-slides-container">
-                                                                <tal:rep repeat="bloco_follow python: view.format_follow(followers)">
-                                                                    <li>
-                                                                        <ul class="small-block-grid-9 large-block-grid-9 members-team">
-                                                                             <li tal:repeat="follower bloco_follow">
-                                                                                <!-- Dados para utilização da macro -->
-                                                                                <tal:def define="size_img string:30px;
-                                                                                                 item python: view.get_prefs_user(follower.username);
-                                                                                                 username follower/username|string: ;">
-                                                                                    <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>
-                                                                                </tal:def>
-                                                                             </li>
-                                                                         </ul>
-                                                                    </li>
-                                                                </tal:rep>
-                                                            </ul>
+                                                        <div class="row">
+                                                            <div tal:condition="followers/count" class="orbit-container">
+                                                                <ul data-orbit
+                                                                    data-options="bullets:false;" 
+                                                                    class="orbit-slides-container">
+                                                                    <tal:rep repeat="bloco_follow python: view.format_follow(followers)">
+                                                                        <li>
+                                                                            <ul class="small-block-grid-9 large-block-grid-9 members-team">
+                                                                                 <li tal:repeat="follower bloco_follow">
+                                                                                    <!-- Dados para utilização da macro -->
+                                                                                    <tal:def define="size_img string:30px;
+                                                                                                     item python: view.get_prefs_user(follower.username);
+                                                                                                     username follower/username|string: ;">
+                                                                                        <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>
+                                                                                    </tal:def>
+                                                                                 </li>
+                                                                             </ul>
+                                                                        </li>
+                                                                    </tal:rep>
+                                                                </ul>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -142,52 +146,92 @@
 
                                                             <tal:rep repeat="field user_profile/fields">
                                                                 <li tal:condition="python: not field.name in view.black_list">
-                                                                    <strong tal:content="field/label|string: "></strong>
-                                                                    <span tal:content="python:user_profile.get(field.name)"></span>
+                                                                    <strong tal:content="string:${field/label}: "></strong>
+                                                                    <span tal:content="structure python:user_profile.get(field.name)"></span>
                                                                 </li>
                                                             </tal:rep>
                                                         </ul>
                                                     </div>
                                                 </div>
-
-                                                <div class="columns large-6 shadow-line"
-                                                     tal:define="departamentos user_profile/get_department|nothing"
-                                                     tal:condition="departamentos">
-                                                    <h5>
-                                                        Participando
-                                                        <hr/>
-                                                    </h5>
-                                                    <div class="content_itens">
-                                                            <p tal:repeat="departamento departamentos">
-                                                                <img width="16" height="16" alt="" tal:attributes="src departamento/obj/getImageIcone|nothing;
-                                                                                                                   alt departamento/title|string: " />
-                                                                <a tal:attributes="href departamento/url|nothing"
-                                                                   tal:content="departamento/title|nothing">Lorem ipsum dolor sit amet </a>
-                                                            </p>
-                                                    </div>
-
-                                                    <!-- div>
-                                                        <a href="#" class="more-icon">
-                                                            <h1 class="subheader vindula-icon-plus-sign left"></h1>
-                                                            <span class="left">Ver todos</span>
-                                                        </a>
-                                                    </div -->
-                                                </div>
-                                            </div>
-
-                                            <div class="clear">
-                                                <div class="columns large-6">
-                                                    <div id="tile-list-bullet"
-                                                         tal:condition="activities">
+                                                
+                                                <div class="columns large-6 shadow-line">
+                                                    <div class="tile-list-bullet">
                                                         <h5>
                                                             Atividades
                                                             <hr/>
                                                         </h5>
 
                                                         <ul class="square">
-                                                            <tal:rep repeat="item python:eval(activities)">
-                                                                <li><span tal:content="item">Lorem ipsum dolor sit amet</span></li>
-                                                            </tal:rep>
+                                                            <tal:cond condition="activities">
+                                                                <tal:rep repeat="item python:eval(activities)">
+                                                                    <li><span tal:content="item">Lorem ipsum dolor sit amet</span></li>
+                                                                </tal:rep>
+                                                            </tal:cond> 
+                                                            <tal:cond condition="not: activities">
+                                                                <span>Não possui nenhuma atividade.</span>
+                                                            </tal:cond>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="clear">
+                                                <div class="columns large-6 shadow-line"
+                                                     tal:define="departamentos user_profile/get_department|nothing">
+                                                    <h5>
+                                                        Participando
+                                                        <hr/>
+                                                    </h5>
+                                                    <div class="content_itens">
+                                                        <tal:cond tal:condition="departamentos">
+                                                            <p tal:repeat="departamento departamentos">
+                                                                <img width="16" height="16" alt="" tal:attributes="src departamento/obj/getImageIcone|nothing;
+                                                                                                                   alt departamento/title|string: " />
+                                                                <a tal:attributes="href departamento/url|nothing"
+                                                                   tal:content="departamento/title|nothing">Lorem ipsum dolor sit amet </a>
+                                                            </p>
+                                                            <div class="icon-moreaccess clear">
+                                                                <a href="#" class="more">
+                                                                    <h1 class="left subheader vindula-icon-plus-sign"></h1>
+                                                                    Ver todos
+                                                                </a>
+                                                            </div>
+                                                        </tal:cond>
+                                                        
+                                                        <tal:cond tal:condition="not: departamentos">
+                                                            <p>
+                                                                Não participa de nenhuma Unidade Organizacional.
+                                                            </p>
+                                                        </tal:cond>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="columns large-6 shadow-line">
+                                                    <div class="tile-list-bullet ">
+                                                        <h5>
+                                                            Projetos
+                                                            <hr/>
+                                                        </h5>
+
+                                                        <ul class="square">
+                                                            <tal:cond condition="projects">
+                                                                <tal:rep repeat="project projects">
+                                                                    <li>
+                                                                        <a tal:attributes="href project/absolute_url|nothing;
+                                                                                           alt project/getSiglaOrTitle|string: "
+                                                                           tal:content="project/getSiglaOrTitle|string: ">ASCON</a>
+                                                                    </li>
+                                                                </tal:rep>
+                                                                <div class="icon-moreaccess clear">
+                                                                    <a href="#" class="more">
+                                                                        <h1 class="left subheader vindula-icon-plus-sign"></h1>
+                                                                        Ver todos
+                                                                    </a>
+                                                                </div>
+                                                            </tal:cond>
+                                                            <tal:cond condition="not:projects">
+                                                                <span>Não possui nenhum projeto.</span>
+                                                            </tal:cond>
                                                         </ul>
                                                     </div>
                                                 </div>
@@ -202,11 +246,39 @@
                                             <metal:use use-macro="context/myvindulaprefs/macros/page-view" />
                                         </div>
                                     </section>
-
+                                    
                                     <section tal:condition="python: user_login == user_request" id="my_content">
                                         <p class="title" data-section-title><a href="#panel3">Meus Conteúdos</a></p>
                                         <div class="content" data-section-content>
                                             <metal:use use-macro="context/myvindula_my_contents/macros/page-view" />
+                                        </div>
+                                    </section>
+                                    
+                                    <section id="projetos">
+                                        <p class="title" data-section-title><a href="#panel3">Projetos</a></p>
+                                        <div class="content" data-section-content>
+                                            <metal:use use-macro="context/myvindulaprojects/macros/page-view" />
+                                        </div>
+                                    </section>
+                                    
+                                    <section id="participando">
+                                        <p class="title" data-section-title><a href="#panel3">Participando</a></p>
+                                        <div class="content" data-section-content>
+                                            <metal:use use-macro="context/myvindulauoparticipacao/macros/page-view" />
+                                        </div>
+                                    </section>
+
+                                    <!--section id="social">
+                                        <p class="title" data-section-title><a href="#panel3">Social</a></p>
+                                        <div class="content" data-section-content>
+                                            <metal:use use-macro="context/myvindula_social/macros/page-view" />
+                                        </div>
+                                    </section-->
+                                    
+                                    <section id="biografia">
+                                        <p class="title" data-section-title><a href="#panel3">Biografia</a></p>
+                                        <div class="content" data-section-content>
+                                            <metal:use use-macro="context/myvindulabiografia/macros/page-view" />
                                         </div>
                                     </section>
 
@@ -222,12 +294,8 @@
                                             <metal:use use-macro="context/myvindula-notifications/macros/page-view" />
                                         </div>
                                     </section>
-
                                 </div>
                             </div>
-
-
-
                         </div>
                     </div>
                     <div class="columns large-3">
