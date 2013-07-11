@@ -398,6 +398,7 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
         return lista
     
     def get_projects(self, user):
+        p_catalog = getToolByName(self.context, 'portal_catalog')
         p_object = self.context.portal_url.getPortalObject()
         member =  self.context.restrictedTraverse('@@plone_portal_state').member()
         departaments = user.get_department()
@@ -405,7 +406,7 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
 
         if departaments:
             departaments = [i.get('obj').UID() for i in departaments if i.get('obj', None)]
-            projects = catalog({'path': {'query': '/'.join(p_object.getPhysicalPath()), 'depth': 99},
+            projects = p_catalog({'path': {'query': '/'.join(p_object.getPhysicalPath()), 'depth': 99},
                                 'portal_type': ['OrganizationalStructure'],
                                 'tipounidade': ['projeto', 'Projeto']})
             for project in projects:
