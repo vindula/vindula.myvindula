@@ -348,7 +348,7 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
     grok.require('zope2.View')
     grok.name('myvindulalistuser')
 
-    black_list = ['name','vin_myvindula_department','photograph','about','unidadeprincipal','atividades' ]
+    black_list = ['name','vin_myvindula_department','photograph','about','unidadeprincipal','atividades','biografia']
 
     # # Este metodo esta repetido. Ele existe tambem em utils.py. Refatorar
     # def getUnidadeUID(self, uid):
