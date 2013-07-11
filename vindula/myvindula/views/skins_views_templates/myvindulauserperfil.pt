@@ -21,7 +21,7 @@
                              user_login member/getUserName;
 
                              followers python:view.get_follow(username);
-                             activities python:user_profile.get('atividades')[:5] or None;
+                             activities user_profile/atividades|nothing;
                              projects python:view.get_projects(user_profile)[:5] or None;">
 
 				<div id="myModal" class="reveal-modal large" >
@@ -168,8 +168,9 @@
                                                         </h5>
 
                                                         <ul class="square">
-                                                            <tal:cond condition="activities">
-                                                                <tal:rep repeat="item python:eval(activities)">
+                                                            <tal:cond condition="activities"
+                                                                      define="activities python:eval(activities);">
+                                                                <tal:rep repeat="item python:activities[:5]">
                                                                     <li><span tal:content="item">Lorem ipsum dolor sit amet</span></li>
                                                                 </tal:rep>
                                                             </tal:cond> 
