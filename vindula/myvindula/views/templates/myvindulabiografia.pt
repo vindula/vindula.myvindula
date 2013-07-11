@@ -16,13 +16,14 @@
 
                     <div class="columns large-12">
                         <h5>Biografia</h5>
+                        <hr/>
                     </div>
+                    
                     <tal:def define="view_myvindula python:context.restrictedTraverse('@@myvindulalistuser');
                                      user view_myvindula/load_list;">
                         <div class="columns large-3">
                             <div id="photo">
                                 <tal:cond condition="python: view_myvindula.get_ConfugCampos('photograph')">
-                                    <!-- Dados para utilizacao da macro -->
                                     <tal:def define="size_img string:150px;
                                                      item user_profile;">
                                         <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>
@@ -35,7 +36,7 @@
                         </div>
                         
                         <div class="columns large-9">
-                            <span tal:content="user/about|string: ">
+                            <span tal:content="user/biografia|string: ">
                             </span>
                         </div>
                     </tal:def>

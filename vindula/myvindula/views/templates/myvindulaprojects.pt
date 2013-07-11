@@ -7,30 +7,41 @@
         </metal:block>
     </head>
     <body>
-        <div metal:fill-slot="content">
+        <metal:content fill-slot="content">
     		<div id="content" >
-                <div metal:define-macro="page-view" class="clear"
+                <div metal:define-macro="page-view" class="clear tile-list-bullet"
                      tal:define="member python:context.portal_membership.getAuthenticatedMember();
                                  isAnonymous context/portal_membership/isAnonymousUser|python:True;
                                  user python:member.getUserName() or None;">
                     
                     <div class="columns large-12">
                         <h5>Projetos</h5>
+                        <hr/>
                     </div>
                     
-                    <tal:def define="view_myvindula python:context.restrictedTraverse('@@myvindulalistuser');
-                                     user view_myvindula/load_list;
-                                     projects python:view_myvindula.get_projects(user);">
-                        <ul class="inline-list">
-                            <li tal:repeat="project projects">
-                                <a href project/absolute_url|nothing;
-                                   alt project/getSiglaOrTitle|string: "
-                                   tal:content="project/getSiglaOrTitle|string: ">ASCON</a>
-                            </li>
-                        </ul>
-    				</tal:def>
+                    <div class="columns large-12">
+                        <tal:def define="view_myvindula python:context.restrictedTraverse('@@myvindulalistuser');
+                                         user view_myvindula/load_list;
+                                         projects python:view_myvindula.get_projects(user);">
+                                             
+                            <ul class="square">
+                                <tal:cond condition="projects">
+                                    <tal:rep repeat="project projects">
+                                        <li>
+                                            <a tal:attributes="href project/absolute_url|nothing;
+                                                               alt project/getSiglaOrTitle|string: "
+                                               tal:content="project/getSiglaOrTitle|string: ">ASCON</a>
+                                        </li>
+                                    </tal:rep>
+                                </tal:cond>
+                                <tal:cond condition="not:projects">
+                                    <span>Não possui nenhum projeto.</span>
+                                </tal:cond>
+                            </ul>
+        				</tal:def>
+                    </div>
                 </div>
     		</div>
-        </div>
+        </metal:content>
     </body>
 </html>

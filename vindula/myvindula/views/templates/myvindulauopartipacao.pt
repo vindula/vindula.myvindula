@@ -3,34 +3,49 @@
         <metal:block fill-slot="top_slot">
             <tal:dummy tal:define="dummy python:request.set('disable_border',1);
                                    disable_column_one python:request.set('disable_plone.leftcolumn',1);
-                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);">
+            </tal:dummy>
         </metal:block>
     </head>
+    
     <body>
-        <div metal:fill-slot="content">
-    		<div id="content" >
-                <div metal:define-macro="page-view" class="clear"
+        <metal:content fill-slot="content">
+            <div id="content" >
+                <div metal:define-macro="page-view" class="clear" id="tile-participando"
                      tal:define="member python:context.portal_membership.getAuthenticatedMember();
                                  isAnonymous context/portal_membership/isAnonymousUser|python:True;
                                  user python:member.getUserName() or None;">
-                    
                     <div class="columns large-12">
                         <h5>Participando</h5>
+                        <hr/>
                     </div>
                     
-                    <tal:def define="view_myvindula python:context.restrictedTraverse('@@myvindulalistuser');
-                                     user view_myvindula/load_list;
-                                     departamentos user/get_department|nothing;">
-                        <p tal:repeat="departamento departamentos">
-                            <img width="16" height="16" alt="" tal:attributes="src departamento/obj/getImageIcone|nothing;
-                                                                               alt departamento/title|string: " />
-                            <a tal:attributes="href departamento/url|nothing"
-                               tal:content="departamento/title|nothing">Lorem ipsum dolor sit amet </a>
-                        </p>
-    				</tal:def>
-                    
+                    <div class="columns large-12 content_itens">
+                        <tal:def define="view_myvindula python:context.restrictedTraverse('@@myvindulalistuser');
+                                         user view_myvindula/load_list;
+                                         departamentos user/get_department|nothing;">
+                            
+                            <tal:cond tal:condition="departamentos">
+                                <div class="clear" tal:repeat="departamento departamentos">
+                                    <img class="left" 
+                                         tal:attributes="src departamento/obj/getImageIcone|nothing;
+                                                          alt departamento/title|string: "/>
+                                    <div class="title-org">
+                                        <a tal:attributes="href departamento/url|nothing"
+                                           tal:content="departamento/title|nothing">Lorem ipsum dolor sit amet </a>
+                                    </div>
+                                </div>
+                            </tal:cond>
+                            
+                            <tal:cond tal:condition="not: departamentos">
+                                <p>
+                                    Não participa de nenhuma Unidade Organizacional.
+                                </p>
+                            </tal:cond>
+                        </tal:def>
+                    </div>
                 </div>
-    		</div>
-        </div>
+            </div>
+        </metal:content>
     </body>
 </html>
