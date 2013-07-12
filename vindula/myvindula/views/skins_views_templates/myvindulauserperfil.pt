@@ -9,19 +9,20 @@
 	<body metal:fill-slot="content">
 		<meta:macro metal:define-macro="page-view">
 
-	    	<div   tal:define="view python: context.restrictedTraverse('@@myvindulalistuser');
-	    	                   isAnonymous context/portal_membership/isAnonymousUser|python:True;
-                               member context/@@plone_portal_state/member;
+	    	<div id="myvindula-profile"   
+                 tal:define="view python: context.restrictedTraverse('@@myvindulalistuser');
+	    	                 isAnonymous context/portal_membership/isAnonymousUser|python:True;
+                             member context/@@plone_portal_state/member;
 
-							   user_profile view/load_list | python:{};
-                               session request/SESSION|python:{};
-                               username user_profile/username|nothing;
-                               user_request request/user|username;
-                               user_login member/getUserName;
+							 user_profile view/load_list | python:{};
+                             session request/SESSION|python:{};
+                             username user_profile/username|nothing;
+                             user_request request/user|username;
+                             user_login member/getUserName;
 
-                               followers python:view.get_follow(username);
-                               activities python:user_profile.get('atividades')[:5] or None;
-                               projects python:view.get_projects(user_profile)[:5] or None;">
+                             followers python:view.get_follow(username);
+                             activities user_profile/atividades|nothing;
+                             projects python:view.get_projects(user_profile)[:5] or None;">
 
 				<div id="myModal" class="reveal-modal large" >
 				 	 <div class="vd_user_profile_picture" data_field="photograph" tal:attributes="data_token session/user_token;
@@ -29,7 +30,20 @@
 					  <a class="close-reveal-modal">×</a>
 					 </div>
 				</div>
-
+                
+                <div class="social-follow">
+                    <div class="vd-social-left right" tal:define="UID username;
+                                                                  TYPES string:UserObject;"
+                                                      tal:condition="python: user_login != user_request">
+                        <div metal:use-macro="context/macro-follow-content/macros/view" />
+                    </div>
+                    
+                    <div class="vd-social-left right" tal:define="UID username;
+                                                                  TYPES string:UserObject;"
+                                                      tal:condition="python: user_login != user_request">
+                        <div metal:use-macro="context/macro-message-content/macros/view" />
+                    </div>
+                </div>
                 <h5>
                     <tal:cond condition="python:view.get_ConfugCampos('name')">
                        <tal:cont content="user_profile/name|nothing" />
@@ -59,14 +73,6 @@
                                                             <tal:cond condition="python:not view.get_ConfugCampos('photograph')">
                                                                 <div style="width: 150px;height: 150px;"></div>
                                                             </tal:cond>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="social-follow">
-                                                        <div class="vd-social-left rigth" tal:define="UID username;
-                                                                                                      TYPES string:UserObject;"
-                                                                                          tal:condition="python: user_login != user_request">
-                                                            <div metal:use-macro="context/macro-follow-content/macros/view" />
                                                         </div>
                                                     </div>
 
@@ -163,9 +169,11 @@
 
                                                         <ul class="square">
                                                             <tal:cond condition="activities">
-                                                                <tal:rep repeat="item python:eval(activities)">
-                                                                    <li><span tal:content="item">Lorem ipsum dolor sit amet</span></li>
-                                                                </tal:rep>
+                                                                <tal:def define="activities python:eval(activities);">
+                                                                    <li tal:repeat="item python:activities[:5]">
+                                                                        <span tal:content="item">Lorem ipsum dolor sit amet</span>
+                                                                    </li>
+                                                                </tal:def>
                                                             </tal:cond> 
                                                             <tal:cond condition="not: activities">
                                                                 <span>Não possui nenhuma atividade.</span>
@@ -177,6 +185,7 @@
 
                                             <div class="clear">
                                                 <div class="columns large-6 shadow-line"
+                                                     id="tile-participando"
                                                      tal:define="departamentos user_profile/get_department|nothing">
                                                     <h5>
                                                         Participando
@@ -184,12 +193,16 @@
                                                     </h5>
                                                     <div class="content_itens">
                                                         <tal:cond tal:condition="departamentos">
-                                                            <p tal:repeat="departamento departamentos">
-                                                                <img width="16" height="16" alt="" tal:attributes="src departamento/obj/getImageIcone|nothing;
-                                                                                                                   alt departamento/title|string: " />
-                                                                <a tal:attributes="href departamento/url|nothing"
-                                                                   tal:content="departamento/title|nothing">Lorem ipsum dolor sit amet </a>
-                                                            </p>
+                                                            <div class="clear block-unit" tal:repeat="departamento departamentos">
+                                                                <img class="left" 
+                                                                     tal:attributes="src departamento/obj/getImageIcone|nothing;
+                                                                                      alt departamento/title|string: "/>
+                                                                <div class="title-org">
+                                                                    <a tal:attributes="href departamento/url|nothing"
+                                                                       tal:content="departamento/title|nothing">Lorem ipsum dolor sit amet </a>
+                                                                </div>
+                                                            </div>
+                                                            
                                                             <div class="icon-moreaccess clear">
                                                                 <a href="#" class="more">
                                                                     <h1 class="left subheader vindula-icon-plus-sign"></h1>
@@ -283,13 +296,13 @@
                                     </section>
 
                                     <section tal:condition="python: user_login == user_request" id="messages">
-                                        <p class="title" data-section-title><a href="#panel3">Minhas Mensagens</a></p>
+                                        <p class="title" data-section-title><a href="#panel3">Mensagens</a></p>
                                         <div class="content" data-section-content>
                                             <metal:use use-macro="context/myvindulalistrecados/macros/page-view" />
                                         </div>
                                     </section>
                                     <section tal:condition="python: user_login == user_request" id="notification">
-                                        <p class="title" data-section-title><a href="#panel4">Minhas Notificações</a></p>
+                                        <p class="title" data-section-title><a href="#panel4">Notificações</a></p>
                                         <div class="content" data-section-content>
                                             <metal:use use-macro="context/myvindula-notifications/macros/page-view" />
                                         </div>
