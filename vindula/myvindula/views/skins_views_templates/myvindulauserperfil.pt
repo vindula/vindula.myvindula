@@ -313,7 +313,6 @@
                     </div>
                     <div class="columns large-3">
                         <div class="vd_user_timeline row" tal:attributes="data_username username" />
-
                     </div>
                 </div>
 	        </div>

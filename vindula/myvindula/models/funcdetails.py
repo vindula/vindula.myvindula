@@ -112,14 +112,18 @@ class FuncDetails(object):
             b_size = None
         
         if filter:
-            data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.value.like('%'+filter+'%',case_sensitive=False))
+            data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, 
+                                                       ModelsDadosFuncdetails.deleted==False,
+                                                       ModelsDadosFuncdetails.value.like('%'+filter+'%',case_sensitive=False))
             if data.count() > 0:
                 for item in data:
                     if not item.username in L_username:
                         L_username.append(item.username)
         else:
             #Pegando os usuarios com distinct
-            select = Select(ModelsDadosFuncdetails.username,distinct=True)
+            select = Select(ModelsDadosFuncdetails.username,
+                            ModelsDadosFuncdetails.deleted==False,
+                            distinct=True)
             data = ModelsDadosFuncdetails().store.execute(select)
             for item in data:
                 L_username.append(item[0])
