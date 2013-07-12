@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
+from storm.locals import Select
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 
 from vindula.myvindula.tools.utils import UtilMyvindula
 from datetime import datetime, date
+from vindula.myvindula.cache import get_redis_connection
 
 def por_name(item):
     return item.get('name','')
@@ -22,14 +24,20 @@ class FuncDetails(object):
     def __init__(self, username, *args, **kwargs):
         self.username = username
 
-        self.fields = ModelsConfgMyvindula().get_configurationAll()
-        if  self.fields.count() > 0:
-            user_data = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstance(self.username)
+        redis_conn = get_redis_connection()
+        key = 'vindula:user-profile:%s' % username
+        if redis_conn.hmget(key,'username')[0] != None:
+            for field in redis_conn.hkeys(key):
+                setattr(self,field,redis_conn.hmget(key,field)[0])
+            del(redis_conn)
+        else:
+            self.fields = ModelsConfgMyvindula().get_configurationAll()
+            if  self.fields.count() > 0:
+                user_data = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstance(self.username)
 
-            for field in self.fields:
-                value = user_data.get(field.name)
-                setattr(self, field.name,value)
-
+                for field in self.fields:
+                    value = user_data.get(field.name)
+                    setattr(self, field.name,value)
 
     def get(self,attribute,default=''):
         valor = getattr(self, attribute, default)
@@ -38,13 +46,11 @@ class FuncDetails(object):
 
         return  default
 
-
     def getImageIcone(self):
         return '/vindula-api/myvindula/user-picture/photograph/%s/True' %(self.username)
 
     def getUrlPerfil(self):
         return '/myvindulalistuser?user=%s' %(self.username)
-
 
     def getContato(self):
         return '%s<br />%s<br />%s'%(self.get('email',''),
@@ -54,7 +60,7 @@ class FuncDetails(object):
     def get_unidadeprincipal(self):
         try:
             list_ou = eval(self.get('unidadeprincipal', '[" "]'))
-        except SyntaxError, NameError:
+        except:
             try:
                 valor = '["%s"]' % self.get('unidadeprincipal')
                 list_ou =  eval(valor)
@@ -83,26 +89,45 @@ class FuncDetails(object):
 
         return result
 
-
     @staticmethod
-    def get_AllFuncDetails(filter=None):
-        #TODO: Melhorar, colocar o distinct do storm
+    def get_AllFuncFakeList(filter=None):
         L_username = []
-        L_retorno = []
         data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails)
         if filter:
-
             data = data.find(ModelsDadosFuncdetails.value.like('%'+filter+'%',case_sensitive=False))
+        return range(data.count())
 
-        if data.count() > 0:
+    @staticmethod
+    def get_AllFuncDetails(filter=None,b_size=None,b_start=None):
+        #Nao usar o b_size, b_start
+        #TODO: Consertar a forma que esta sendo ordenada a lista
+        #TODO: Melhorar, ainda nao está bom, tempo melhorado de 11 para 2 sec
+        L_username = []
+        L_retorno = []
+        if b_size != None and b_start != None:
+            b_start = int(b_start)
+            b_size = b_start + int(b_size)
+        else:
+            b_start = None
+            b_size = None
+        
+        if filter:
+            data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.value.like('%'+filter+'%',case_sensitive=False))
+            if data.count() > 0:
+                for item in data:
+                    if not item.username in L_username:
+                        L_username.append(item.username)
+        else:
+            #Pegando os usuarios com distinct
+            select = Select(ModelsDadosFuncdetails.username,distinct=True)
+            data = ModelsDadosFuncdetails().store.execute(select)
             for item in data:
-                if not item.username in L_username:
-                    L_username.append(item.username)
-                    L_retorno.append(FuncDetails(item.username))
+                L_username.append(item[0])
+
+        for user in L_username[b_start:b_size]:
+            L_retorno.append(FuncDetails(user))
 
         return sorted(L_retorno, key=por_name)
-
-
 
     @staticmethod
     def get_FuncBirthdays(date_start, date_end ):
