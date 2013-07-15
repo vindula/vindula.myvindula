@@ -57,7 +57,7 @@
                             <div class="columns large-12 container-perfil">
                                 <div class="container-tiles-section section-user-profile section-container auto" data-section>
                                     <section>
-                                        <p class="title" data-section-title><a href="#panel1">Apresentação</a></p>
+                                        <p class="title" data-section-title><a href="#panel1">Info</a></p>
                                         <div class="content bloco-perfil" data-section-content>
                                             <div id="tile-org-info">
                                                 <div class="clear">
@@ -281,12 +281,12 @@
                                         </div>
                                     </section>
 
-                                    <!--section id="social">
+                                    <section tal:condition="python: user_login == user_request" id="social">
                                         <p class="title" data-section-title><a href="#panel3">Social</a></p>
                                         <div class="content" data-section-content>
-                                            <metal:use use-macro="context/myvindula_social/macros/page-view" />
+                                            <metal:use use-macro="context/myvindulasocial/macros/page-view" />
                                         </div>
-                                    </section-->
+                                    </section>
                                     
                                     <section id="biografia">
                                         <p class="title" data-section-title><a href="#panel3">Biografia</a></p>
@@ -312,7 +312,7 @@
                         </div>
                     </div>
                     <div class="columns large-3">
-                        <div class="vd_user_timeline row" tal:attributes="data_username username" />
+                        <div class="vd_micro_timeline row" tal:attributes="data_username username" />
                     </div>
                 </div>
 	        </div>
