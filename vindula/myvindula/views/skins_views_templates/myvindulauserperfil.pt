@@ -143,11 +143,11 @@
 
                                                     <div>
                                                         <ul class="no-bullet">
-                                                            <li tal:define="unidadeprincial user_profile/get_unidadeprincipal"
+                                                            <li tal:define="unidadeprincial nocall:user_profile/get_unidadeprincipal;"
                                                                 tal:condition="unidadeprincial">
                                                                 <strong>Unidade:</strong>
-                                                                <a tal:attributes="href unidadeprincial/absolute_url|nothing"
-                                                                   tal:content="unidadeprincial/getSiglaOrTitle|string: ">ASCON</a>
+                                                                <a tal:attributes="href python:unidadeprincial().absolute_url() or None"
+                                                                   tal:content="python:unidadeprincial().getSiglaOrTitle() or ''">ASCON</a>
                                                             </li>
 
                                                             <tal:rep repeat="field user_profile/fields">
