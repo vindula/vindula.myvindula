@@ -236,7 +236,7 @@
                                                                     </li>
                                                                 </tal:rep>
                                                                 <div class="icon-moreaccess clear">
-                                                                    <a href="#" class="more">
+                                                                    <a href="#" class="more" id="projetos">
                                                                         <h1 class="left subheader vindula-icon-plus-sign"></h1>
                                                                         Ver todos
                                                                     </a>
