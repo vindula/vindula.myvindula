@@ -57,6 +57,12 @@ class IPortletRamais(IPortletDataProvider):
                                default=True,
                                )
 
+    active_vindula_contato_geral = schema.Bool(title=unicode("Altera o comportamento do portlet para buscar os contatos do portal", 'utf-8'),
+                               description=unicode("Selecione para buscar os contados presente no portal.", 'utf-8'),
+                               default=False,
+                               )
+
+
     principal_user = schema.TextLine(title=unicode("Destaque do usuário", 'utf-8'),
                                      description=unicode("Adicione o campo com a informação principal do usuário como 'name' para Nome ou 'nickname' para\
                                                           Apelido, entre outros.", 'utf-8'),
@@ -84,7 +90,7 @@ class Assignment(base.Assignment):
 
     # TODO: Add keyword parameters for configurable parameters here
     def __init__(self, title_portlet=u'', quantidade_portlet=u'', filtro_departamento=u'',filtro_user=u'',\
-                 show_picture=u'', details_user=u'',details_text=u'',principal_user='',show_anonymous=u''):
+                 show_picture=u'', details_user=u'',details_text=u'',principal_user='',show_anonymous=u'',active_vindula_contato_geral=False):
        self.title_portlet = title_portlet
        self.quantidade_portlet = quantidade_portlet
        self.filtro_departamento = filtro_departamento
@@ -94,6 +100,7 @@ class Assignment(base.Assignment):
        self.details_user = details_user
        self.details_text = details_text
        self.principal_user = principal_user
+       self.active_vindula_contato_geral = active_vindula_contato_geral
 
     @property
     def title(self):
@@ -138,6 +145,25 @@ class Renderer(base.Renderer, UtilMyvindula):
     def get_details_text(self):
         return self.data.details_text
 
+
+    def get_url_mais(self, form_dados):
+        view = self.data
+        context = self.context
+        request = self.request
+
+        return '%s/myvindulalistall?campos=%s&departamento=%s&filtro=%s&SearchSubmit=""' %(context.portal_url(),
+                                                                                           form_dados,
+                                                                                           request.get('departamento',''),
+                                                                                           (view.filtro_departamento or 'departamentos'))
+
+    def get_url_mais_contatos(self, form_dados):
+        context = self.context
+
+        return '%s/myvindulalistcontatos?campos=%s&SearchSubmit=' %(context.portal_url(),
+                                                                   form_dados)
+
+            
+
     def get_principal_campo(self, obj):
         campo = self.data.principal_user
         if campo:
@@ -174,7 +200,14 @@ class Renderer(base.Renderer, UtilMyvindula):
                 line = line.replace('[', '').replace(']', '').split(' | ')
                 try:
                     D['label'] = line[0]
-                    D['content'] = user.get(line[1])
+                    
+                    content = user.get(line[1])
+
+                    if not content and len(line) == 3:
+                        content = user.get(line[2])
+
+                    D['content'] = content
+
                     L.append(D)
                 except:
                     pass
@@ -253,40 +286,70 @@ class Renderer(base.Renderer, UtilMyvindula):
         if 'SearchSubmit' in form.keys():
 
             form_values, departamento = self.getBusca()
-
+            self.form_dados = form_values
             check_form = [i for i in form_values if i.values() != [u'']]
-            if departamento or check_form:
-                #import pdb;pdb.set_trace()
-#                if type(title) != unicode:
-#                    title = unicode(title, 'utf-8')
-#
-#                if type(departamento) != unicode:
-#                    departamento = unicode(departamento, 'utf-8')
-#
-#                if type(ramal) != unicode:
-#                    ramal = unicode(ramal, 'utf-8')
 
-                self.form_dados = form_values
-                result = ModelsDadosFuncdetails().get_FuncBusca(departamento,form_values,filtro_busca)
-                result = self.rs_to_list(result)
-#                if result:
-#                    for item in form_values:
-#                        if item.values():
-#                            busca = "result.find("+item.keys()[0] + ".like( '%' + '%'.join('"+item.values()[0]+"'.split(' ')) + '%'))"
-#                            result = eval(busca)
-#                    if departamento != '0' and self.data.filtro_departamento != 'departamentos':
-#                        busca = "result.find("+self.data.filtro_departamento + "=u'" + departamento+"')"
-#                        data = eval(busca)
-#                        if data.count() != 0:
-#                            result = data
-#                        else:
-#                            result = None
-#                    elif self.data.filtro_departamento == 'departamentos':
-#                        data = ModelsFuncDetails().get_FuncBusca(title,departamento,ramal,filtro_busca)
-#                        if data:
-#                            result = data
-#                        else:
-#                            result = None
+            active_vindula_contato = form.get('active_vindula_contato', False)
+
+            if active_vindula_contato:
+                context = self.context
+                path = context.portal_url.getPortalObject()
+                
+                query = {'portal_type': ('VindulaContato',),
+                         'path': {'query':'/'.join(path.getPhysicalPath()),'depth':99},
+                         'sort_on':'sortable_title', 'sort_order':'ascending'}
+
+                SearchableText = []
+                for item in check_form:
+
+                    if item.has_key('name'):
+                        query['Title'] = item['name']+'*'
+
+                    else:
+                        SearchableText.append(item.values()[0]+'*')
+    
+                if len(SearchableText):
+                    query['SearchableText'] = SearchableText
+
+                busca = self.portal_catalog(**query)
+
+                result = [i.getObject() for i in busca]
+
+            else:
+                if departamento or check_form:
+                    #import pdb;pdb.set_trace()
+    #                if type(title) != unicode:
+    #                    title = unicode(title, 'utf-8')
+    #
+    #                if type(departamento) != unicode:
+    #                    departamento = unicode(departamento, 'utf-8')
+    #
+    #                if type(ramal) != unicode:
+    #                    ramal = unicode(ramal, 'utf-8')
+
+                    
+                    result = ModelsDadosFuncdetails().get_FuncBusca(departamento,form_values,filtro_busca)
+                    result = self.rs_to_list(result)
+    #                if result:
+    #                    for item in form_values:
+    #                        if item.values():
+    #                            busca = "result.find("+item.keys()[0] + ".like( '%' + '%'.join('"+item.values()[0]+"'.split(' ')) + '%'))"
+    #                            result = eval(busca)
+    #                    if departamento != '0' and self.data.filtro_departamento != 'departamentos':
+    #                        busca = "result.find("+self.data.filtro_departamento + "=u'" + departamento+"')"
+    #                        data = eval(busca)
+    #                        if data.count() != 0:
+    #                            result = data
+    #                        else:
+    #                            result = None
+    #                    elif self.data.filtro_departamento == 'departamentos':
+    #                        data = ModelsFuncDetails().get_FuncBusca(title,departamento,ramal,filtro_busca)
+    #                        if data:
+    #                            result = data
+    #                        else:
+    #                            result = None
+
+
 
 
 

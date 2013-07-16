@@ -1,4 +1,5 @@
-<dl class="portlet" tal:define="view view/data">
+<dl class="portlet" tal:define="view view/data;
+								view_contato request/active_vindula_contato|python:False">
     <dt class="portletHeader">
         <span class="portletTopLeft"></span>
 		<span class="tile" tal:content="view/get_title">Portlet Title</span>
@@ -67,6 +68,15 @@
 						</select>
 					</tal:cond>
 				</tal:def>
+
+				<tal:cond condition="view/active_vindula_contato_geral">
+
+					<input type="checkbox" name="active_vindula_contato:Boolean" value="True" class="context"
+						tal:attributes="checked python: view_contato and 'checked' or ''" />
+					Habilitar mecanismo de busca de contatos
+				
+				</tal:cond>
+
 				<div class="aling-right"> 
 					<input type="submit" name="SearchSubmit" value="Buscar" class="context" i18n:attributes="value"/>
 				</div>
@@ -85,10 +95,11 @@
 						     					 
                                     <!-- Dados para utilização da macro -->                                  
                                     <tal:def define="size_img string:50px;
+                                    				 view_contato view_contato;
                                                      principal_name python: view.get_principal_campo(item);
                                                      details python: view.get_details_user(item) or [];">
                                         <div metal:use-macro="context/myvindula-imageprofiles-macro/macros/userprofiles" />       
-                                    </tal:def>    							
+                                    </tal:def>    			
 
 						 	</div>
 						 	<div class="visualClear"></div>
@@ -96,7 +107,12 @@
 					</div>
 			    	<div class="titulo_info_boxTipo2 aling-right">
 				        <h4 tal:condition="python:len(results)>int(quant)">
-				        	<a tal:attributes="href  string:$${here/portal_url}/myvindulalistall?campos=$${view/form_dados}&departamento=$${request/departamento|nothing}&filtro=$${view/filtro_departamento|python:'departamentos'}&SearchSubmit=''">Mais...</a>
+				        	
+				        	<a tal:condition="not: view_contato"
+				        	   tal:attributes="href python: view.get_url_mais(view.form_dados)">Mais...</a>
+
+				        	<a tal:condition="view_contato"
+				        	   tal:attributes="href python: view.get_url_mais_contatos(view.form_dados)">Mais...</a>
 
 				        </h4>
 				    </div>
