@@ -112,6 +112,10 @@ class FuncDetails(object):
             b_size = None
         
         if filter:
+            #Ajustando filtro para o caso de busca
+            #por mais de uma palavra Ex: '%palavra1%palavra2%'
+            filter = filter.split(' ')
+            filter = '%'.join(filter)
             data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, 
                                                        ModelsDadosFuncdetails.deleted==False,
                                                        ModelsDadosFuncdetails.value.like('%'+filter+'%',case_sensitive=False))
