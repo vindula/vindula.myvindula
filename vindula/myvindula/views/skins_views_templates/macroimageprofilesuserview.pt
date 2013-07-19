@@ -10,7 +10,9 @@
             
             <metal:macro define-macro="userimage">
                 <div class="portlet-user-image"
-                     tal:define="view_profiles python: context.restrictedTraverse('@@myvindula-imageprofiles-macro');">
+                     tal:define="view_profiles python: context.restrictedTraverse('@@myvindula-imageprofiles-macro');
+                                 view_manage view_manage|python: False;
+                                 view_contato view_contato|python: False;">
                     
                     <tal:cond condition="python: not view_manage and not view_contato">
                         <a tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${user_profiles}">

@@ -57,7 +57,7 @@
 							<option value="0" >Todos ...</option>	
 							<tal:rep repeat="item view/list_filtro">
 								<option tal:define="id_request request/departamento | python:'';
-									 				itemDep python:item.__getattribute__(filtro)"
+									 				itemDep python:item"
 										tal:condition="itemDep"
 										tal:attributes="value itemDep|nothing;
 										selected python: str(id_request)==str(itemDep)"

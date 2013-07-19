@@ -13,9 +13,12 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.CMFCore.utils import getToolByName
 
 from vindula.myvindula.user import BaseFunc
-from vindula.myvindula.models.department import ModelsDepartment #, ModelsFuncDetails
+from vindula.myvindula.models.department import ModelsDepartment
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
+from vindula.myvindula.models.instance_funcdetail import  ModelsInstanceFuncdetails
 from vindula.myvindula.tools.utils import UtilMyvindula
+
+from vindula.myvindula.cache import Cache
 
 class IPortletRamais(IPortletDataProvider):
 
@@ -225,10 +228,25 @@ class Renderer(base.Renderer, UtilMyvindula):
 
     def list_filtro(self):
         campo = self.data.filtro_departamento
-        result = ModelsFuncDetails().get_allFuncDetails()
-        if result:
-            classe = 'ModelsFuncDetails.'+str(campo)
-            return result.group_by(eval(classe)).order_by()
+        
+        ch = Cache()
+        L = ch.get('PortletRamais_list_filtro')
+
+        if not L:
+            result = ModelsInstanceFuncdetails().get_AllFuncDetails()
+            L = []
+            if result:
+                for i in result:
+                    if not i.get(campo,'') in L :
+                        L.append(i.get(campo))
+        
+                L.sorted()
+
+            ch.set('PortletRamais_list_filtro',L)
+        
+        return L 
+
+
 
     def list_departamentos(self):
         return  ModelsDepartment().get_department()
