@@ -57,7 +57,7 @@
                             <div class="columns large-12 container-perfil">
                                 <div class="container-tiles-section section-user-profile section-container auto" data-section>
                                     <section>
-                                        <p class="title" data-section-title><a href="#panel1">Apresentação</a></p>
+                                        <p class="title" data-section-title><a href="#panel1">Info</a></p>
                                         <div class="content bloco-perfil" data-section-content>
                                             <div id="tile-org-info">
                                                 <div class="clear">
@@ -143,11 +143,11 @@
 
                                                     <div>
                                                         <ul class="no-bullet">
-                                                            <li tal:define="unidadeprincial user_profile/get_unidadeprincipal"
+                                                            <li tal:define="unidadeprincial nocall:user_profile/get_unidadeprincipal;"
                                                                 tal:condition="unidadeprincial">
                                                                 <strong>Unidade:</strong>
-                                                                <a tal:attributes="href unidadeprincial/absolute_url|nothing"
-                                                                   tal:content="unidadeprincial/getSiglaOrTitle|string: ">ASCON</a>
+                                                                <a tal:attributes="href python:unidadeprincial().absolute_url() or None"
+                                                                   tal:content="python:unidadeprincial().getSiglaOrTitle() or ''">ASCON</a>
                                                             </li>
 
                                                             <tal:rep repeat="field user_profile/fields">
@@ -236,7 +236,7 @@
                                                                     </li>
                                                                 </tal:rep>
                                                                 <div class="icon-moreaccess clear">
-                                                                    <a href="#" class="more">
+                                                                    <a href="#" class="more" id="projetos">
                                                                         <h1 class="left subheader vindula-icon-plus-sign"></h1>
                                                                         Ver todos
                                                                     </a>
@@ -281,12 +281,12 @@
                                         </div>
                                     </section>
 
-                                    <!--section id="social">
+                                    <section tal:condition="python: user_login == user_request" id="social">
                                         <p class="title" data-section-title><a href="#panel3">Social</a></p>
                                         <div class="content" data-section-content>
-                                            <metal:use use-macro="context/myvindula_social/macros/page-view" />
+                                            <metal:use use-macro="context/myvindulasocial/macros/page-view" />
                                         </div>
-                                    </section-->
+                                    </section>
                                     
                                     <section id="biografia">
                                         <p class="title" data-section-title><a href="#panel3">Biografia</a></p>
@@ -312,7 +312,7 @@
                         </div>
                     </div>
                     <div class="columns large-3">
-                        <div class="vd_user_timeline row" tal:attributes="data_username username" />
+                        <div class="vd_micro_timeline row" tal:attributes="data_username username" />
                     </div>
                 </div>
 	        </div>

@@ -11,4 +11,15 @@ $j(document).ready(function(){
 		$j('#'+session).addClass('active');
 	};
     
+    $j('.section-user-profile .icon-moreaccess a.more').click(function(ev){
+        var section = this.id || false;
+        
+        if(section){
+            $(this).parents('section.active').removeClass('active');
+            $('section#'+section).addClass('active');
+        }
+        
+        return false;
+    })
+    
 });

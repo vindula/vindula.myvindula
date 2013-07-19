@@ -1,0 +1,29 @@
+<html metal:use-macro="here/main_template/macros/master">
+    <head>
+        <metal:block fill-slot="top_slot">
+            <tal:dummy tal:define="dummy python:request.set('disable_border',1);
+                                   disable_column_one python:request.set('disable_plone.leftcolumn',1);
+                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+        </metal:block>
+    </head>
+    <body>
+        <metal:content fill-slot="content">
+    		<div id="content" >
+                <div metal:define-macro="page-view" class="clear"
+                     tal:define="member python:context.portal_membership.getAuthenticatedMember();
+                                 isAnonymous context/portal_membership/isAnonymousUser|python:True;
+                                 user python:member.getUserName() or None;">
+                    
+                    <div class="columns large-12">
+                        <h5>Social</h5>
+                        <hr/>
+                    </div>
+                    
+                    <div class="columns large-12">
+                        <div class="vd_personal_timeline row" tal:attributes="data_username user" />
+                    </div>
+                </div>
+    		</div>
+        </metal:content>
+    </body>
+</html>

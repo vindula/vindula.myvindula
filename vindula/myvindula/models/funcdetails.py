@@ -5,6 +5,7 @@ from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 
 from vindula.myvindula.tools.utils import UtilMyvindula
+from plone.app.uuid.utils import uuidToObject
 from datetime import datetime, date
 from vindula.myvindula.cache import get_redis_connection
 
@@ -65,8 +66,10 @@ class FuncDetails(object):
                 valor = '["%s"]' % self.get('unidadeprincipal')
                 list_ou =  eval(valor)
             except: list_ou = ['']
-
-        OU = UtilMyvindula().lookupObject(list_ou[0])
+        
+        OU = uuidToObject(list_ou[0])
+#        OU = UtilMyvindula().lookupObject(list_ou[0])
+        
         if OU:
             return OU
 
