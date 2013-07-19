@@ -240,7 +240,7 @@ class Renderer(base.Renderer, UtilMyvindula):
                     if not i.get(campo,'') in L :
                         L.append(i.get(campo))
         
-                L.sorted()
+                L.sort()
 
             ch.set('PortletRamais_list_filtro',L)
         
