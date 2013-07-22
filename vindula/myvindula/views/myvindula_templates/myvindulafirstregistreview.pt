@@ -24,7 +24,7 @@
 				<div class="import-user" tal:define="data view/load_list|nothing;
 													 userView python:context.restrictedTraverse('@@myvindulalistuser')">
                     
-					<h1 tal:content="string:${view/get_saldacao|nothing} colaborador da ${data/short_name|python:''}" />
+					<h1 tal:content="string:${view/get_saldacao|nothing} colaborador da ${data/short_name|nothing}" />
 					
 					<h3 class="contentCenter" >Verificamos que este &eacute o seu primeiro acesso e para que a Intranet funcione corretamente,
 						precisamos que voc&ecirc; atualize seus dados pessoais.</h3>
@@ -33,16 +33,16 @@
 						<h2>Campos obrigatórios, por favor, acesse o seu perfil e informe:</h2>
 						<ul>
 							<li tal:condition="python: view.checkCampoVazio('name')"
-								tal:content="python: userView.get_label_filed('name')">Nome</li>
+								>Nome</li>
 								
 							<li tal:condition="python: view.checkCampoVazio('date_birth')"
-							   tal:content="python: userView.get_label_filed('date_birth')">Data de Aniversário</li>
+							   >Data de Aniversário</li>
 							
 							<li tal:condition="python: view.checkCampoVazio('phone_number')"
-							   tal:content="python: userView.get_label_filed('phone_number')">Número de Telefone</li>
+							   >Número de Telefone</li>
 							
 							<li tal:condition="python: view.checkCampoVazio('email')"
-							   tal:content="python: userView.get_label_filed('email')">E-mail</li>	
+							   >E-mail</li>	
 						</ul>
 												
 					</div>

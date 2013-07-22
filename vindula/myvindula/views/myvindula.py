@@ -604,10 +604,10 @@ class MyVindulaFirstRegistreView(grok.View, UtilMyvindula):
           data = self.get_prefs_user(member.getAuthenticatedMember().getUserName())
           if data:
               if campo == 'name':
-                  if data.__getattribute__('name') == member.getAuthenticatedMember().getUserName():
+                  if data.get('name') == member.getAuthenticatedMember().getUserName():
                       return True
 
-              elif data.__getattribute__(campo):
+              elif data.get(campo):
                   # Campo Não Esta vazio
                   return False
 

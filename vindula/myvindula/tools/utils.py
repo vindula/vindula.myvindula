@@ -346,6 +346,10 @@ class UtilMyvindula(object):
             site =self.context
         url = site.absolute_url() + local
         request = site.REQUEST
+        
+        if request.other.get('came_from') in (getSite().portal_url()+'/', '', None):
+            request.other["came_from"]=url
+        
         request.response.redirect(url, lock=True)
 
 

@@ -16,16 +16,15 @@ from vindula.myvindula.registration import SchemaFunc
 def userupdate(event):
     """ Handler for User Login in Site """
     tools = UtilMyvindula()
-   
+    
     user_login = tools.membership.getAuthenticatedMember()
-    enable = tools.site.restrictedTraverse('@@myvindula-conf-userpanel').check_alert_first_access()
+    enable_first_access = tools.site.restrictedTraverse('@@myvindula-conf-userpanel').check_alert_first_access()
     enable_chat = tools.site.restrictedTraverse('vindula-chat-config').enableConf()
     
     user_id = tools.Convert_utf8(user_login.getUserName())      
-        
     user_instance = ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id)
-        
-    if enable and not user_instance:
+
+    if enable_first_access and not user_instance:
         id_instance = ModelsInstanceFuncdetails().set_InstanceFuncdetails(user_id)
         dados = {}
         
@@ -59,9 +58,9 @@ def userupdate(event):
         
     else:
         user_data =  tools.get_prefs_user(user_id)
-        
+
         if ((not user_data.get('name')) or (not user_data.get('date_birth')) or\
-            (not user_data.get('phone_number')) or (not user_data.get('email'))) and enable:
+            (not user_data.get('phone_number')) or (not user_data.get('email'))) and enable_first_access:
             
             tools.setLogger('info',"Dados Incompletos no myvindula")
             
