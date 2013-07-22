@@ -9,6 +9,8 @@ from plone.app.uuid.utils import uuidToObject
 from datetime import datetime, date
 from vindula.myvindula.cache import get_redis_connection
 
+from storm.expr import Or
+
 def por_name(item):
     return item.get('name','')
 
@@ -139,6 +141,45 @@ class FuncDetails(object):
             L_retorno.append(FuncDetails(user))
 
         return sorted(L_retorno, key=por_name)
+    
+    @staticmethod
+    def get_FuncDetailsByField(fields={}):
+        L_username = []
+        L_retorno = []
+        expressions = []
+        campos = []
+        data = []
+
+        for item in fields.items():
+            field, value = item[0], item[1]
+            if value:
+                expressions += [ModelsDadosFuncdetails.value.like(unicode(value, 'utf-8'),case_sensitive=False)]
+                campos += [unicode(field, 'utf-8')]
+            
+        if campos and expressions:
+            data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, 
+                                                       ModelsConfgMyvindula.name.is_in(campos), 
+                                                       ModelsDadosFuncdetails.field_id==ModelsConfgMyvindula.id,
+                                                       ModelsDadosFuncdetails.deleted==False,
+                                                       Or(*expressions),)
+        if data and data.count() > 0:
+            for item in data:
+                if not item.username in L_username:
+                    L_username.append(item.username)
+        else:
+            #Pegando os usuarios com distinct
+            select = Select(ModelsDadosFuncdetails.username,
+                            ModelsDadosFuncdetails.deleted==False,
+                            distinct=True)
+            
+            data = ModelsDadosFuncdetails().store.execute(select)
+            for item in data:
+                L_username.append(item[0])
+        
+        for user in L_username:
+            L_retorno.append(FuncDetails(user))
+
+        return sorted(L_retorno, key=por_name)
 
     @staticmethod
     def get_FuncBirthdays(date_start, date_end ):
@@ -148,7 +189,6 @@ class FuncDetails(object):
 
         for item in data:
             if item.value:
-
                 try:
                     data_usuario = date(date.today().year,
                                         int(datetime.strptime(item.value, "%d/%m/%Y").month),

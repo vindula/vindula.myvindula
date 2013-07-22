@@ -104,9 +104,18 @@ class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
             return D
         else:
             return {}
-
-
-
+        
+    @staticmethod
+    def get_DadosFuncdetails_byFieldName(field_name):
+        result = []
+        if isinstance(field_name, str):
+            field_name = unicode(field_name)
+        data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, ModelsConfgMyvindula.name==field_name,
+                                                                           ModelsDadosFuncdetails.field_id==ModelsConfgMyvindula.id)
+        if data.count() > 0:
+            result = [i for i in data]
+        return result
+    
 
     # def get_DadosFuncdetails_byInstanceAndField(self,username,field_id):
     #     data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.username==username,
