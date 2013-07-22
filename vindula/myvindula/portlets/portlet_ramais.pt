@@ -54,7 +54,7 @@
 		            </tal:cond>
 		            <tal:cond condition="python: filtro!='departamentos'">
 		            	<select size="1" id="departamento" name="departamento" style="width:100%;">
-							<option value="0" >Todos ...</option>	
+							<option value="" >Todos ...</option>	
 							<tal:rep repeat="item view/list_filtro">
 								<option tal:define="id_request request/departamento | python:'';
 									 				itemDep python:item"
