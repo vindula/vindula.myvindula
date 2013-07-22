@@ -155,7 +155,7 @@ class FuncDetails(object):
             if value:
                 if isinstance(value, list):
                     for val in value:
-                        expressions += [ModelsDadosFuncdetails.value.like(unicode(val, 'utf-8'),case_sensitive=False)]]
+                        expressions += [ModelsDadosFuncdetails.value.like(unicode(val, 'utf-8'),case_sensitive=False)]
                 else:
                     expressions += [ModelsDadosFuncdetails.value.like(unicode(value, 'utf-8'),case_sensitive=False)]
                 campos += [unicode(field, 'utf-8')]
