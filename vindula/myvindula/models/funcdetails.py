@@ -9,7 +9,7 @@ from plone.app.uuid.utils import uuidToObject
 from datetime import datetime, date
 from vindula.myvindula.cache import get_redis_connection
 
-from storm.expr import Or
+from storm.expr import Or, And
 
 def por_name(item):
     return item.get('name','')
@@ -146,30 +146,74 @@ class FuncDetails(object):
     def get_FuncDetailsByField(fields={}):
         L_username = []
         L_retorno = []
+        
         expressions = []
+        expression_name = []
         campos = []
+        
         data = []
-
+        data_username = []
+        
+        username_term = ''
+        
         for item in fields.items():
             field, value = item[0], item[1]
             if value:
-                if isinstance(value, list):
-                    for val in value:
-                        expressions += [ModelsDadosFuncdetails.value.like(unicode(val, 'utf-8'),case_sensitive=False)]
+                if field == 'name':
+                    value = unicode(value, 'utf-8')
+                    username_term = value
+                    expression_name += [ModelsDadosFuncdetails.value.like(value,case_sensitive=False)]
+                    expression_name += [ModelsDadosFuncdetails.username.like(value,case_sensitive=False)]
                 else:
-                    expressions += [ModelsDadosFuncdetails.value.like(unicode(value, 'utf-8'),case_sensitive=False)]
-                campos += [unicode(field, 'utf-8')]
-            
+                    if isinstance(value, list):
+                        for val in value:
+                            expressions += [ModelsDadosFuncdetails.value.like(unicode(val, 'utf-8'),case_sensitive=False)]
+                    else:
+                        expressions += [ModelsDadosFuncdetails.value.like(unicode(value, 'utf-8'),case_sensitive=False)]
+                    campos += [unicode(field, 'utf-8')]
+        
         if campos and expressions:
-            data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, 
+            data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails,
                                                        ModelsConfgMyvindula.name.is_in(campos), 
                                                        ModelsDadosFuncdetails.field_id==ModelsConfgMyvindula.id,
                                                        ModelsDadosFuncdetails.deleted==False,
                                                        Or(*expressions),)
-        if data and data.count() > 0:
+
+        
+        
+        
+        if expression_name:
+            data_username = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails,
+                                                       ModelsConfgMyvindula.name==u'name',
+                                                       ModelsDadosFuncdetails.field_id==ModelsConfgMyvindula.id,
+                                                       ModelsDadosFuncdetails.deleted==False,
+                                                       Or(*expression_name),)
+            
+        if (data and data.count() > 0) or (data_username and data_username.count() > 0):
+            L_username_aux = []
+            L_username_aux2 = []
+            
             for item in data:
                 if not item.username in L_username:
-                    L_username.append(item.username)
+                    L_username_aux.append(item.username)
+                    
+            for item in data_username:
+                if not item.username in L_username:
+                    L_username_aux2.append(item.username)
+                    
+            #verifica se a busca foi feita tanto por nome quando pelos outros filtros
+            if expressions and expression_name:
+                if L_username_aux and L_username_aux2:
+                    for i in L_username_aux:
+                        if i not in L_username:
+                            L_username.append(i)
+            #verifica se a busca foi feita apenas por filtro
+            elif expressions:
+                L_username = L_username_aux
+            #verifica se a busca foi feita apenas por nome e username
+            else:
+                L_username = L_username_aux2
+                
         else:
             #Pegando os usuarios com distinct
             select = Select(ModelsDadosFuncdetails.username,
