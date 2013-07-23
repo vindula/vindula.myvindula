@@ -205,7 +205,7 @@ class FuncDetails(object):
             if expressions and expression_name:
                 if L_username_aux and L_username_aux2:
                     for i in L_username_aux:
-                        if i not in L_username:
+                        if (i in L_username_aux2) and (i not in L_username):
                             L_username.append(i)
             #verifica se a busca foi feita apenas por filtro
             elif expressions:
