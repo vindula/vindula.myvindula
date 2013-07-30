@@ -157,6 +157,9 @@ class MyVindulaView(grok.View, UtilMyvindula):
 
         else:
             self.request.response.redirect(self.context.absolute_url() + '/login')
+            
+    def convertResultSetToList(self, result_set):
+        return [i for i in result_set]
 
 #Views de renderização das imagem do howareu ---------------------------------------------------
 class VindulahowareuImage(grok.View, UtilMyvindula):

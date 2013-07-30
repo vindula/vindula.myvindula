@@ -25,7 +25,7 @@
                                  batch python:Batch(conteudos, b_size, int(b_start));
                                  
                                  ativa_estilo_tabela python:False;">
-
+                    
                     <table tal:attributes="class python:ativa_estilo_tabela and 'listing blue-head' or ''" width="100%">
                         <tal:cont tal:content="structure python:ativa_estilo_tabela and '<thead>' or ''"></tal:cont>
                             <tr>
@@ -71,7 +71,6 @@
                     <div class="navigation-users">
                         <div metal:use-macro="here/batch_macros/macros/navigation" />
                     </div>
-    
                 </div>
             </div>
         </metal:macro>
