@@ -2,7 +2,7 @@
     <tal:def define="view_document python:context.restrictedTraverse('@@macro-myvindula-documentByLine');
                      user_comment python: view_document.get_prefs_user(item.username);">
         <tal:cond condition="user_comment">
-            <div class="commentImage" style="height:40px;width:40px;">
+            <div class="commentImage" style="height:50px;width:50px;">
                 <img src="defaultUser.png"
                      alt="" border="0"
                      height="30"
