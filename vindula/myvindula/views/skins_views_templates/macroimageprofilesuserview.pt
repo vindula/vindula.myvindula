@@ -19,6 +19,7 @@
                 <div class="portlet-user-image"
                      tal:define="to_url python:'%s/%s' % (context.portal_url(), (user_login == user_request) and ('vindula-api/myvindula/user-profile-picture/'+session.get('user_token')+'/photograph/'+username) or ('myvindulalistuser?user='+username))">
                     <a tal:attributes="href to_url;"
+                       class="profile-link"
                        tal:condition="python:user_login == user_request"
                        data-reveal-id="myModal"> 
                         <img src="defaultUser.png" border="0"
@@ -28,6 +29,7 @@
                                              width size_img|nothing"/>
                     </a>
                     <a tal:attributes="href to_url;"
+                       class="profile-link"
                        tal:condition="python:user_login != user_request">
                         <img src="defaultUser.png" border="0"
                              tal:attributes="src python:view_profiles.getURLFotoUser(username);
@@ -50,7 +52,7 @@
         <div class="portlet-user-info" tal:define="show_picture view/show_picture|python:True"
              tal:attributes="class python: not show_picture and 'portlet-user-info-larg' or 'portlet-user-info'">
             <h4 tal:condition="not: view_manage|python:False">
-                <a tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${username}"
+                <a class="profile-link" tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${username}"
                    tal:content="principal_name|python:''">Nome Funcionario</a>
             </h4>
             <h4 tal:condition="view_manage|python:False">

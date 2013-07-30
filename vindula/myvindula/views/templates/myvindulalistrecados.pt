@@ -15,12 +15,14 @@
     		<div id="content" >
 
                 <div metal:define-macro="page-view"
-                     class="userpage geral_lista_comentarios"
+                     class="userpage geral_lista_comentarios clear"
                      tal:define="member python:context.portal_membership.getAuthenticatedMember();
                                  isAnonymous context/portal_membership/isAnonymousUser|python:True;
                                  user python:member.getUserName() or None;" >
-
-                    <h2 class="h2title">Mensagens que deixaram para você!</h2>
+                    <div class="columns large-12">
+                        <h5>Mensagens que deixaram para você</h5>
+                        <hr/>
+                    </div>
 
                     <tal:def define="view_myvindula python:context.restrictedTraverse('@@myvindula');
                                      items python:view_myvindula.get_recados(user);">

@@ -302,7 +302,7 @@
                                         </div>
                                     </section>
                                     <section tal:condition="python: user_login == user_request" id="notification">
-                                        <p class="title" data-section-title><a href="#panel4">Notificações</a></p>
+                                        <p class="title" data-section-title><a href="#panel4">Notifica&ccedil;&otilde;es</a></p>
                                         <div class="content" data-section-content>
                                             <metal:use use-macro="context/myvindula-notifications/macros/page-view" />
                                         </div>

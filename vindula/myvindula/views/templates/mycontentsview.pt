@@ -22,41 +22,50 @@
                                  b_start python:0;
                                  b_start request/b_start | b_start;
 
-                                 batch python:Batch(conteudos, b_size, int(b_start));">
+                                 batch python:Batch(conteudos, b_size, int(b_start));
+                                 
+                                 ativa_estilo_tabela python:False;">
 
-                    <table width="100%">
-                        <tr>
-                            <th>Titulo</th>
-                            <th>Descrição</th>
-                            <th>Modificado</th>
-                            <th>Estado</th>
-                        </tr>
-    
-                        <tal:rep repeat="obj batch">
-                            <tr tal:on-error="nothing"
-                                tal:define="item obj/getObject|nothing;
-                                            item_type item/portal_type;
-                                            item_type_class python:'contenttype-' + normalizeString(item_type);
-                                            item_wf_state item/review_state|python: context.portal_workflow.getInfoFor(item, 'review_state', '');
-                                            item_wf_state_class python:'state-' + normalizeString(item_wf_state);">
-                                <td>
-                                    <span class="summary" tal:define="item_icon python:plone_view.getIcon(obj);">
-                                        <img tal:replace="structure item_icon/html_tag" />
-                                        <a href="#" class="contenttype-folder state-published url"
-                                           tal:attributes="href item/absolute_url|nothing;
-                                                           class string:$item_type_class $item_wf_state_class url"
-                                           tal:content="item/title|item/id|nothing">Item Title</a>
-                                    </span>
-                                </td>
-                                <td class="description" tal:content="item/description|string: ">
-                                    description
-                                </td>
-                                <td tal:content="python: item.bobobase_modification_time().strftime('%d/%m/%Y %H:%M')"></td>
-    
-                                <td tal:content="python: view.get_title_WF(item_wf_state, item)"></td>
-    
+                    <table tal:attributes="class python:ativa_estilo_tabela and 'listing blue-head' or ''" width="100%">
+                        <tal:cont tal:content="structure python:ativa_estilo_tabela and '<thead>' or ''"></tal:cont>
+                            <tr>
+                                <th></th>
+                                <th>Titulo</th>
+                                <th>Descrição</th>
+                                <th>Modificado</th>
+                                <th>Estado</th>
                             </tr>
-                        </tal:rep>
+                         <tal:cont tal:content="structure python:ativa_estilo_tabela and '</thead>' or ''"></tal:cont>
+                        
+                        <tbody>
+                            <tal:rep repeat="obj batch">
+                                <tr tal:on-error="nothing"
+                                    tal:define="item obj/getObject|nothing;
+                                                item_type item/portal_type;
+                                                item_type_class python:'contenttype-' + normalizeString(item_type);
+                                                item_wf_state item/review_state|python: context.portal_workflow.getInfoFor(item, 'review_state', '');
+                                                item_wf_state_class python:'state-' + normalizeString(item_wf_state);">
+                                    <td tal:define="item_icon python:plone_view.getIcon(obj);">
+                                        <img tal:replace="structure item_icon/html_tag" />
+                                    </td>
+                                    <td>
+                                        <span class="summary">
+                                            <a href="#" class="contenttype-folder state-published url"
+                                               tal:attributes="href item/absolute_url|nothing;
+                                                               class string:$item_type_class $item_wf_state_class url"
+                                               tal:content="item/title|item/id|nothing">Item Title</a>
+                                        </span>
+                                    </td>
+                                    <td class="description" tal:content="item/description|string: ">
+                                        description
+                                    </td>
+                                    <td tal:content="python: item.bobobase_modification_time().strftime('%d/%m/%Y %H:%M')"></td>
+        
+                                    <td tal:content="python: view.get_title_WF(item_wf_state, item)"></td>
+        
+                                </tr>
+                            </tal:rep>
+                        </tbody>
                     </table>
     
                     <div class="navigation-users">

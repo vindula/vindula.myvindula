@@ -11,6 +11,11 @@
             <metal:use use-macro="context/@@myvindulapanel/macros/page"/>
             <metal:macro define-macro="page-view">
                 <div class="clear">
+                    <div class="columns large-12">
+                        <h5>Notifica&ccedil;&otilde;es</h5>
+                        <hr/>
+                    </div>
+                    
                     <div class="columns large-12" 
                          tal:define="member python:context.portal_membership.getAuthenticatedMember();
                                      view_myvindula nocall:context/@@myvindula;

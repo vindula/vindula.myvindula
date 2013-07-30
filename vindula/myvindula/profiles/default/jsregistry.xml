@@ -3,9 +3,9 @@
     <javascript cacheable="False" compression="None" cookable="False"
        enabled="True" expression="" id="++resource++vindula.myvindula.views/js/ajax_comments-curtir.js" inline="False"/>
        
-       
     <javascript cacheable="False" compression="None" cookable="False"
        enabled="True" expression="" id="++resource++vindula.myvindula.views/js/comments.js" inline="False"/>
-    
-    
+       
+    <javascript cacheable="False" compression="None" cookable="False"
+       enabled="True" expression="" id="++resource++vindula.myvindula.views/js/myvindula_modal.js" inline="False"/>
 </object>
