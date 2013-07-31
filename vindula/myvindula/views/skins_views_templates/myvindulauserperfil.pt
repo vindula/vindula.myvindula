@@ -79,9 +79,9 @@
                                                     <div class="columns large-9 manager">
                                                         <div>
                                                             <h5>Apresentação</h5>
-                                                            <span tal:content="user_profile/about|string: ">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                                            Nam ut imperdiet urna. Nullam a lacus velit, id sollicitudin nisi.
-                                                            Curabitur at justo eget nulla pellentesque vestibulum.
+                                                            <span class="structure_markdown" 
+                                                                  tal:content="structure user_profile/about|string: ">
+                                                                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                                                             </span>
                                                         </div>
 
