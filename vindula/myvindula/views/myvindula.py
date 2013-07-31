@@ -54,6 +54,7 @@ from PIL import Image
 from vindula.myvindula.cache import Cache
 
 from vindula.controlpanel.handlers import userLogged
+import os
 
 logger = logging.getLogger('vindula.myvindula')
 
@@ -221,6 +222,10 @@ class MyVindulaPanelView(grok.View,UtilMyvindula):
     def _checkPermission(self, permission, context):
         mt = getToolByName(context, 'portal_membership')
         return mt.checkPermission(permission, context)
+
+    def checkEveron(self,variavel):
+        environ = os.environ
+        return environ.get(variavel,False)
 
 
     def getPersonalInfoLink(self):

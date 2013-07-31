@@ -111,6 +111,21 @@
 			                       Minhas Reservas
 			                    </a>
 			            </li>
+			            <tal:cond condition="python: context.restrictedTraverse('@@myvindulapanel').checkEveron('enable_agenda')">
+			            
+							<li id="contentview-user_data-personal-my-agenda"
+				                    tal:define="link context/@@myvindulapanel/getPersonalPrefsLink;
+				                                selected python:view_name=='minha-agenda';"
+				                    tal:condition="link|nothing"
+				                    tal:attributes="class python:selected and 'selected' or 'plain'">
+				                    <a href=""
+				                       tal:attributes="href string:${context/portal_url}/minha-agenda"
+				                       i18n:translate="">
+				                       Minhas Agenda
+				                    </a>
+				            </li>
+						</tal:cond>
+
 		            </ul>
 			        <div class="contentActions">&nbsp;</div>
 		        </div>
