@@ -121,7 +121,7 @@
 				                    <a href=""
 				                       tal:attributes="href string:${context/portal_url}/minha-agenda"
 				                       i18n:translate="">
-				                       Minhas Agenda
+				                       Minha Agenda
 				                    </a>
 				            </li>
 						</tal:cond>
