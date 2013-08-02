@@ -11,7 +11,9 @@
                                      title user_comment/name|nothing;" />
             </div>
             <div class="documentByLine name-user">
-                <h4><a class="profile-link" href="" tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${item/username|nothing}">
+                <h4><a class="profile-link" href="" 
+                       tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${item/username|nothing};
+                                       data-username item/username|nothing;">
                         <span tal:replace="user_comment/name|item/username" /> |
                         <span tal:condition="item/date_creation|nothing"
                               tal:replace="python:item.date_creation.strftime('%d/%m/%Y  %H:%M')" />
