@@ -9,6 +9,14 @@ from vindula.myvindula.models.photo_user import ModelsPhotoUser
 
 from vindula.myvindula.models.base import BaseStore
 
+# Import para envio de E-mail
+import smtplib
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
+from email.MIMEBase import MIMEBase
+from email.MIMEImage import MIMEImage
+from email import Encoders
+from vindula.myvindula.tools.layoutemail import LayoutEmail
 
 
 from Products.CMFCore.utils import getToolByName
@@ -408,3 +416,70 @@ class UtilMyvindula(object):
         gravatar_url += urllib.urlencode({'d':default,'s':str(size)})
         
         return gravatar_url       
+
+
+    def envia_email(self,ctx, msg, assunto, mail_para, arquivos=[],to_email=None):
+        """
+        Parte do codigo retirado de:
+            - http://dev.plone.org/collective/browser/ATContentTypes/branches/release-1_0-branch/lib/imagetransform.py?rev=10162
+            - http://www.thescripts.com/forum/thread22918.html
+            - http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/473810
+        """
+
+        portal = getSite()
+
+        # Cria a mensagem raiz, configurando os campos necessarios para envio da mensagem.
+        mensagem = MIMEMultipart('related')
+        mensagem['Subject'] = assunto
+
+        #Pega os remetentes do email pelas configurações do zope @@mail-controlpanel
+        if to_email:
+            mensagem['From'] = '%s <%s>' % (to_email,to_email)
+        else:
+            mensagem['From'] = '%s <%s>' % (portal.getProperty('email_from_name'),
+                                            portal.getProperty('email_from_address'))
+
+        mensagem['To'] = mail_para
+        mensagem.preamble = 'This is a multi-part message in MIME format.'
+
+
+        email_layout_obj = LayoutEmail(msg=msg, ctx=ctx)        
+        mensagem.attach(MIMEText(email_layout_obj.layout(), 'html', 'utf-8'))
+        
+        # Atacha os arquivos
+        for f in arquivos:
+            if type(f) == dict:
+                parte = MIMEBase('application', 'octet-stream')
+                parte.set_payload(f.get('data',f))
+                Encoders.encode_base64(parte)
+                parte.add_header('Content-Disposition', 'attachment; filename="%s"' % f.get('filename','image.jpeg'))
+
+                mensagem.attach(parte)
+
+        mail_de = mensagem['From']
+
+        #Pegando SmtpHost Padrão do Plone
+        smtp_host   = portal.MailHost.smtp_host
+        smtp_port   = portal.MailHost.smtp_port
+        smtp_userid = portal.MailHost.smtp_uid
+        smtp_pass   = portal.MailHost.smtp_pwd
+        server_all  = '%s:%s'%(smtp_host,smtp_port)
+
+        smtp = smtplib.SMTP()
+        try:
+            smtp.connect(server_all)
+            #Caso o Usuario e Senha estejam preenchdos faz o login
+            if smtp_userid and smtp_pass:
+                try:
+                    smtp.ehlo()
+                    smtp.starttls()
+                    smtp.login(smtp_userid, smtp_pass)
+                except:
+                    smtp.login(smtp_userid, smtp_pass)
+
+            smtp.sendmail(mail_de, mail_para, mensagem.as_string())
+            smtp.quit()
+        except:
+            return False
+
+        return True
