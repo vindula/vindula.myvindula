@@ -7,7 +7,13 @@ function  createElement(name) {
 $j(document).ready(function(){
     
     $('a.profile-link').hover(function (ev) {
-        var $el = $j(this);
+        var $el = $j(this),
+            JQ_height = $el.height() || 0,
+            JS_height = this.height || 0;
+        
+        
+        var height = Math.max(JQ_height, JS_height);
+        
         var t = setTimeout(function() {
             if($el.find('.profile-modal').length){
                 $el.find('.profile-modal').show();
@@ -22,6 +28,7 @@ $j(document).ready(function(){
                     data: {username: username},
                     success: function(data){
                         $dom = $j(data);
+                        $dom.css('top', height+10);
                         $dom.find('.social-info').vindula(null, {user_token: window.token});
                         $el.append($dom);
                     },
