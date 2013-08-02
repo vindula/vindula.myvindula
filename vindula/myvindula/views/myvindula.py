@@ -76,10 +76,6 @@ class MyVindulaView(grok.View, UtilMyvindula):
         D['username'] = user
         return ModelsMyvindulaHowareu().get_myvindula_howareu(**D)
 
-    # def get_department(self,username=u''):
-    #     # return ModelsDepartment().get_departmentByUsername(username)
-    #     return 'TODO mudar'
-
     def count_recados_new(self, username):
         return ModelsMyvindulaRecados().cont_recados_new(username)
 
