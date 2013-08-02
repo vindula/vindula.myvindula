@@ -7,6 +7,7 @@ function  createElement(name) {
 $j(document).ready(function(){
     
     $('a.profile-link').hover(function (ev) {
+        clearTimeout($(this).data('timeout_out'));
         var $el = $j(this),
             JQ_height = $el.height() || 0,
             JS_height = this.height || 0;
@@ -14,7 +15,7 @@ $j(document).ready(function(){
         
         var height = Math.max(JQ_height, JS_height);
         
-        var t = setTimeout(function() {
+        var t_in = setTimeout(function() {
             if($el.find('.profile-modal').length){
                 $el.find('.profile-modal').show();
             }else{
@@ -39,14 +40,18 @@ $j(document).ready(function(){
             }
         }, 1000);
         
-        $(this).data('timeout', t);
+        $(this).data('timeout_in', t_in);
     },function (ev) {
-        clearTimeout($(this).data('timeout'));
-        var $el = $j(this);
+        clearTimeout($(this).data('timeout_in'));
         
-        if ($el.find('.profile-modal').length) {
-            $el.find('.profile-modal').hide();
-        }
+        var $el = $j(this);
+        var t_out = setTimeout(function() {
+            if ($el.find('.profile-modal').length) {
+                $el.find('.profile-modal').hide();
+            }
+        }, 500);
+        
+        $(this).data('timeout_out', t_out);
     });
     
  });
