@@ -6,8 +6,8 @@ function  createElement(name) {
 
 $j(document).ready(function(){
     
-    $('a.profile-link').hover(function (ev) {
-        clearTimeout($(this).data('timeout_out'));
+    $j('a.profile-link').hover(function (ev) {
+        clearTimeout($j(this).data('timeout_out'));
         var $el = $j(this),
             JQ_height = $el.height() || 0,
             JS_height = this.height || 0;
@@ -40,9 +40,9 @@ $j(document).ready(function(){
             }
         }, 1000);
         
-        $(this).data('timeout_in', t_in);
+        $j(this).data('timeout_in', t_in);
     },function (ev) {
-        clearTimeout($(this).data('timeout_in'));
+        clearTimeout($j(this).data('timeout_in'));
         
         var $el = $j(this);
         var t_out = setTimeout(function() {
@@ -51,7 +51,7 @@ $j(document).ready(function(){
             }
         }, 500);
         
-        $(this).data('timeout_out', t_out);
+        $j(this).data('timeout_out', t_out);
     });
     
  });
