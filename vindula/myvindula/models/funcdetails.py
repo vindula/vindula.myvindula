@@ -7,7 +7,7 @@ from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 from vindula.myvindula.tools.utils import UtilMyvindula
 from plone.app.uuid.utils import uuidToObject
 from datetime import datetime, date
-from vindula.myvindula.cache import get_redis_connection
+from vindula.myvindula.cache import *
 
 from storm.expr import Or, And
 
@@ -103,45 +103,61 @@ class FuncDetails(object):
         return range(data.count())
 
     @staticmethod
-    def get_AllFuncDetails(filter=None,b_size=None,b_start=None):
+    def get_AllFuncUsernameList(filter=None,b_size=None,b_start=None,sorted_by=por_name):
         #Nao usar o b_size, b_start
         #TODO: Consertar a forma que esta sendo ordenada a lista
         #TODO: Melhorar, ainda nao está bom, tempo melhorado de 11 para 2 sec
-        L_username = []
-        L_retorno = []
-        if b_size != None and b_start != None:
-            b_start = int(b_start)
-            b_size = b_start + int(b_size)
-        else:
-            b_start = None
-            b_size = None
-        
-        if filter:
-            #Ajustando filtro para o caso de busca
-            #por mais de uma palavra Ex: '%palavra1%palavra2%'
-            filter = filter.split(' ')
-            filter = '%'.join(filter)
-            data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, 
-                                                       ModelsDadosFuncdetails.deleted==False,
-                                                       ModelsDadosFuncdetails.value.like('%'+filter+'%',case_sensitive=False))
-            if data.count() > 0:
+        key = generate_cache_key(domain='FuncDetails:get_AllFuncUsernameList',filter=filter,b_size=b_size,b_start=b_start,sorted_by=str(sorted_by))
+        L_username = get_redis_cache(key)
+        if not L_username:
+            L_username = []
+            L_retorno = []
+            if b_size != None and b_start != None:
+                b_start = int(b_start)
+                b_size = b_start + int(b_size)
+            else:
+                b_start = None
+                b_size = None
+            
+            if filter:
+                #Ajustando filtro para o caso de busca
+                #por mais de uma palavra Ex: '%palavra1%palavra2%'
+                filter = filter.split(' ')
+                filter = '%'.join(filter)
+                data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, 
+                                                           ModelsDadosFuncdetails.deleted==False,
+                                                           ModelsDadosFuncdetails.value.like('%'+filter+'%',case_sensitive=False))
+                if data.count() > 0:
+                    for item in data:
+                        if not item.username in L_username:
+                            L_username.append(item.username)
+            else:
+                #Pegando os usuarios com distinct
+                select = Select(ModelsDadosFuncdetails.username,
+                                ModelsDadosFuncdetails.deleted==False,
+                                distinct=True)
+                data = ModelsDadosFuncdetails().store.execute(select)
                 for item in data:
-                    if not item.username in L_username:
-                        L_username.append(item.username)
-        else:
-            #Pegando os usuarios com distinct
-            select = Select(ModelsDadosFuncdetails.username,
-                            ModelsDadosFuncdetails.deleted==False,
-                            distinct=True)
-            data = ModelsDadosFuncdetails().store.execute(select)
-            for item in data:
-                L_username.append(item[0])
+                    L_username.append(item[0])
 
+            
+            for user in L_username[b_start:b_size]:
+                L_retorno.append(FuncDetails(user))
+            
+            L_username  = [i.username for i in sorted(L_retorno, key=sorted_by)]
+            set_redis_cache(key,'FuncDetails:get_AllFuncUsernameList:keys',L_username,600)
+        
+        return L_username
+
+    @staticmethod
+    def get_AllFuncDetails(filter=None,b_size=None,b_start=None):
+        L_retorno = []
+        L_username = FuncDetails.get_AllFuncUsernameList(filter=filter,b_size=b_size,b_start=b_start)
         for user in L_username[b_start:b_size]:
             L_retorno.append(FuncDetails(user))
 
-        return sorted(L_retorno, key=por_name)
-    
+        return L_retorno
+
     @staticmethod
     def get_FuncDetailsByField(fields={}):
         L_username = []
@@ -223,11 +239,17 @@ class FuncDetails(object):
             data = ModelsDadosFuncdetails().store.execute(select)
             for item in data:
                 L_username.append(item[0])
-        
-        for user in L_username:
-            L_retorno.append(FuncDetails(user))
 
-        return sorted(L_retorno, key=por_name)
+        key = generate_cache_key('FuncDetails:get_FuncDetailsByField::',str(L_retorno))
+        sorted_user_list = get_redis_cache(key)
+        if not sorted_user_list:
+            for user in L_username:
+                L_retorno.append(FuncDetails(user))
+            
+            sorted_user_list = sorted(L_retorno, key=por_name)
+            set_redis_cache(key,'FuncDetails:get_FuncDetailsByField:keys',sorted_user_list,600)
+
+        return sorted_user_list
 
     @staticmethod
     def get_FuncBirthdays(date_start, date_end ):
