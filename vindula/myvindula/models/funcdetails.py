@@ -31,7 +31,7 @@ class FuncDetails(object):
         key = 'vindula:user-profile:%s' % username
         if redis_conn.hmget(key,'username')[0] != None:
             for field in redis_conn.hkeys(key):
-                setattr(self,field,redis_conn.hmget(key,field)[0])
+                setattr(self,field,redis_conn.hmge.t(key,field)[0])
             del(redis_conn)
         else:
             self.fields = ModelsConfgMyvindula().get_configurationAll()
@@ -145,7 +145,7 @@ class FuncDetails(object):
                 L_retorno.append(FuncDetails(user))
             
             L_username  = [i.username for i in sorted(L_retorno, key=sorted_by)]
-            set_redis_cache(key,'FuncDetails:get_AllFuncUsernameList:keys',L_username,600)
+            set_redis_cache(key,'FuncDetails:get_AllFuncUsernameList:keys',L_username,1800)
         
         return L_username
 

@@ -37,6 +37,7 @@ def get_redis_cache(key):
 
 def generate_cache_key(domain,**kwargs):
 	key = hashlib.md5(':'.join([kwargs[i] for i in kwargs.keys() if kwargs[i]!=None])).hexdigest()
-	print 'Cached Key:','%s::%s' % (domain,key)
-	return '%s::%s' % (domain,key)
+	key = '%s::%s' % (domain,key)
+	print 'Cached Key:', key
+	return key
 
