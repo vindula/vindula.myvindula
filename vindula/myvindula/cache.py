@@ -24,6 +24,7 @@ def set_redis_cache(key,key_set,value,expire=600):
 	pipe.setex(key, expire, value)
 	pipe.sadd(key_set, key)
 	pipe.execute()
+	print 'Cache key stored: ',key
 
 def get_redis_cache(key):
 	data = get_redis_connection().get(key)

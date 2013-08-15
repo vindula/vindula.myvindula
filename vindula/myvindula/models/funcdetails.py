@@ -240,14 +240,18 @@ class FuncDetails(object):
             for item in data:
                 L_username.append(item[0])
 
-        key = generate_cache_key('FuncDetails:get_FuncDetailsByField::',str(L_retorno))
+        key = generate_cache_key('FuncDetails:get_FuncDetailsByField',L_retorno=str(L_username),fields=str(fields))
         sorted_user_list = get_redis_cache(key)
         if not sorted_user_list:
             for user in L_username:
                 L_retorno.append(FuncDetails(user))
             
             sorted_user_list = sorted(L_retorno, key=por_name)
-            set_redis_cache(key,'FuncDetails:get_FuncDetailsByField:keys',sorted_user_list,600)
+            try:
+                set_redis_cache(key,'FuncDetails:get_FuncDetailsByField:keys',sorted_user_list,600)
+            except:
+                sorted_user_list = [i.username for i in L_retorno]
+                set_redis_cache(key,'FuncDetails:get_FuncDetailsByField:keys',sorted_user_list,600)
 
         return sorted_user_list
 

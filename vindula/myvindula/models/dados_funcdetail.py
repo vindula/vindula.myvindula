@@ -86,6 +86,9 @@ class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
 
 
     def get_DadosFuncdetails_byInstance(self,id_instance):
+        if not isinstance(id_instance,unicode):
+            id_instance = unicode(id_instance.username)
+
         tools = UtilMyvindula()
         data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.username==id_instance)
 
