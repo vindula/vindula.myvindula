@@ -42,6 +42,10 @@ class FuncDetails(object):
                     value = user_data.get(field.name)
                     setattr(self, field.name,value)
 
+        #TODO: Verificar pq isso esta acontecendo
+        if not isinstance(self.username,unicode) and not isinstance(self.username,str):
+            self.username = self.username.username
+
     def get(self,attribute,default=''):
         valor = getattr(self, attribute, default)
         if valor:
