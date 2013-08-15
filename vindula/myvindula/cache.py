@@ -24,14 +24,16 @@ def set_redis_cache(key,key_set,value,expire=600):
 	pipe.setex(key, expire, value)
 	pipe.sadd(key_set, key)
 	pipe.execute()
-	print 'Cache key stored: ',key
+	print 'Cache key MISS: ',key
 
 def get_redis_cache(key):
-	data = get_redis_connection().get(key)
+	data = get_redis_connection().get(key)	
 	if data:
 		try:
+			print 'Cache key HIT: ',key
 			return json.loads(data)
 		except:
+			print 'Cache key HIT: ',key
 			return pickle.loads(data)
 	else: 
 		return None
@@ -39,6 +41,5 @@ def get_redis_cache(key):
 def generate_cache_key(domain,**kwargs):
 	key = hashlib.md5(':'.join([kwargs[i] for i in kwargs.keys() if kwargs[i]!=None])).hexdigest()
 	key = '%s::%s' % (domain,key)
-	print 'Cached Key:', key
 	return key
 
