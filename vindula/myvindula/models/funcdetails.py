@@ -261,29 +261,40 @@ class FuncDetails(object):
 
     @staticmethod
     def get_FuncBirthdays(date_start, date_end ):
-        L = []
-        data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, ModelsConfgMyvindula.name==u'date_birth',
-                                                                           ModelsDadosFuncdetails.field_id==ModelsConfgMyvindula.id)
+        key = generate_cache_key('FuncDetails:get_FuncBirthdays',date_start=str(date_start),date_end=str(date_end))
+        L = get_redis_cache(key)
+        if not L:  
+            L = []
+            data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, ModelsConfgMyvindula.name==u'date_birth',
+                                                                               ModelsDadosFuncdetails.field_id==ModelsConfgMyvindula.id)
 
-        for item in data:
-            if item.value:
-                try:
-                    data_usuario = date(date.today().year,
-                                        int(datetime.strptime(item.value, "%d/%m/%Y").month),
-                                        int(datetime.strptime(item.value, "%d/%m/%Y").day))
+            for item in data:
+                if item.value:
+                    try:
+                        data_usuario = date(date.today().year,
+                                            int(datetime.strptime(item.value, "%d/%m/%Y").month),
+                                            int(datetime.strptime(item.value, "%d/%m/%Y").day))
 
-                    if data_usuario >= date_start and\
-                       data_usuario <= date_end:
-                        L.append(item)
+                        if data_usuario >= date_start and\
+                           data_usuario <= date_end:
+                            L.append(item)
 
-                except ValueError:
-                    pass
+                    except ValueError:
+                        pass
 
-        L = sorted(L, key=lambda row: datetime.strptime(row.value, "%d/%m/%Y").day)
-        L = sorted(L, key=lambda row: datetime.strptime(row.value, "%d/%m/%Y").month)
+            L = sorted(L, key=lambda row: datetime.strptime(row.value, "%d/%m/%Y").day)
+            L = sorted(L, key=lambda row: datetime.strptime(row.value, "%d/%m/%Y").month)
 
-        if L:
-            result = [FuncDetails(i.username) for i in L]
-            return result
-        else:
-            return []
+            if L:
+                sorted_user_list = []
+                for user in L:
+                    UO = FuncDetails(user.username).get_unidadeprincipal()
+                    if UO:
+                        UO = UO.UID()
+                    else:UO = ''
+                    sorted_user_list.append({'username':user.username,'UO':UO})
+                set_redis_cache(key,'FuncDetails:get_FuncBirthdays:keys',sorted_user_list,7200)                
+                return L
+            else:
+                return []
+        return L
