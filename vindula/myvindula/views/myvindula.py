@@ -23,31 +23,32 @@ from datetime import date, datetime, timedelta
 from DateTime.DateTime import DateTime
 import calendar, logging, base64, pickle
 
-from vindula.myvindula.user import BaseFunc, ModelsFuncDetails
+from vindula.myvindula.user import BaseFunc
 
 
 
 from vindula.myvindula.registration import SchemaFunc, SchemaConfgMyvindula
 
 from vindula.controlpanel.browser.models import ModelsCompanyInformation
-from vindula.chat.utils.models import ModelsUserOpenFire
+# from vindula.chat.utils.models import ModelsUserOpenFire
 
 from vindula.myvindula.tools.utils import UtilMyvindula
-from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
+
 
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
-from vindula.myvindula.models.department import ModelsDepartment
+# from vindula.myvindula.models.department import ModelsDepartment
 from vindula.myvindula.models.howareu import ModelsMyvindulaHowareu
 from vindula.myvindula.models.comments import ModelsMyvindulaComments
 from vindula.myvindula.models.like import ModelsMyvindulaLike
 
 from vindula.myvindula.models.recados import ModelsMyvindulaRecados
+from vindula.myvindula.models.notification import ModelsMyvindulaNotificacao
 
 from vindula.myvindula.models.holerite import ModelsFuncHolerite
 from vindula.myvindula.models.descricao_holerite import ModelsFuncHoleriteDescricao
 
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
-from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
+from vindula.myvindula.models.follow import ModelsFollow
 
 import pickle, StringIO
 from PIL import Image
@@ -67,14 +68,46 @@ class MyVindulaView(grok.View, UtilMyvindula):
     grok.require('zope2.View')
     grok.name('myvindula')
 
+    action_social = {'Like': ' curtiu ',
+                     'Comment': ' comentou ',
+                     'Share' : ' compartilhou ',
+                     'Follow' : ' seguiu ',
+                     'History' : ' atualizou ',}
 
     def get_howareu(self, user):
         D={}
         D['username'] = user
         return ModelsMyvindulaHowareu().get_myvindula_howareu(**D)
 
-    def get_department(self):
-        return ModelsDepartment().get_department()
+    # def get_department(self,username=u''):
+    #     # return ModelsDepartment().get_departmentByUsername(username)
+    #     return 'TODO mudar'
+
+    def count_recados_new(self, username):
+        return ModelsMyvindulaRecados().cont_recados_new(username)
+
+    def get_recados(self,username):
+        return ModelsMyvindulaRecados().get_myvindula_recados(receiver=username,destination=username)
+
+    def count_notificacao_new(self, username):
+        return ModelsMyvindulaNotificacao().cont_notificacao_new(username)
+
+    def get_notificacoes(self,username):
+        result = ModelsMyvindulaNotificacao().get_myvindula_notificacao(username=username)
+        if result.count():
+            return self.rs_to_list(result)
+        else:
+            return []
+
+    def name_user_top(self,full_name):
+        limit = 12
+        str = full_name
+
+        while str > limit and len(str.split(' ')) > 1:
+            str = ' '.join(str.split(' ')[:-1])
+
+        return str
+
 
     def checkHomeFolder(self):
         """ Check if exist homeFolder """
@@ -145,6 +178,7 @@ class VindulahowareuImage(grok.View, UtilMyvindula):
             id = form.get('id','0')
             if id != 'None':
                 campo_image = ModelsMyvindulaHowareu().get_myvindula_howareu_By_Id(id)
+
                 valor = campo_image.upload_image_small
 
                 if not valor:
@@ -274,29 +308,36 @@ class MyVindulaPrefsView(grok.View, BaseFunc):
     label = _(u"Personal Information")
     description = _(u"Change your available information below.")
 
-    def load_form(self):
-        form = self.request.form
-        membership = self.context.portal_membership
-        user_login = membership.getAuthenticatedMember().getUserName()
-        permissao = self.checa_login()
 
-        user = form.get('user', form.get('userid', False))
+    # def load_form(self):
+    #     form = self.request.form
+    #     membership = self.context.portal_membership
+    #     user_login = membership.getAuthenticatedMember().getUserName()
+    #     permissao = self.checa_login()
 
-        if user and not'newuser' in form.keys() and permissao:
-            try:
-                user_cod = self.Convert_utf8(self.decodeUser(user))
-            except:
-                user_cod = self.Convert_utf8(user)
-            return SchemaFunc().registration_processes(self, user_cod, True)
-        elif 'newuser' in form.keys() and self.checa_login():
-            return SchemaFunc().registration_processes(self, '', True)
-        else:
-            return SchemaFunc().registration_processes(self, user_login, False)
+    #     user = form.get('user', form.get('userid', False))
+
+    #     if user and not'newuser' in form.keys() and permissao:
+    #         try:
+    #             user_cod = self.Convert_utf8(self.decodeUser(user))
+    #         except:
+    #             user_cod = self.Convert_utf8(user)
+    #         return SchemaFunc().registration_processes(self, user_cod, True)
+    #     elif 'newuser' in form.keys() and self.checa_login():
+    #         return SchemaFunc().registration_processes(self, '', True)
+    #     else:
+    #         return SchemaFunc().registration_processes(self, user_login, False)
 
 
-    def get_ConfugCampos(self, campo):
-        configuracao= ModelsConfgMyvindula().getConfig_edit(campo)
-        return configuracao
+    # def get_ConfugCampos(self, campo):
+    #     configuracao= ModelsConfgMyvindula().getConfig_edit(campo)
+    #     return configuracao
+
+    def check_edit_manager(self,username):
+        check_permission =  self.context.restrictedTraverse('vindula-object-user').checkPermission(username)
+        if 'rh' in check_permission.get('groups') or check_permission.get('has_manager'):
+            return True
+        return False
 
     def update(self):
         # disable Plone's editable border
@@ -307,118 +348,169 @@ class MyVindulaPrefsView(grok.View, BaseFunc):
             self.request.response.redirect(self.context.absolute_url() + '/login')
 
 
+
+
+
 class MyVindulaListUser(grok.View, UtilMyvindula):
     grok.context(Interface)
     grok.require('zope2.View')
     grok.name('myvindulalistuser')
 
+    black_list = ['name','vin_myvindula_department','photograph','about','unidadeprincipal','atividades','biografia']
+
+    # # Este metodo esta repetido. Ele existe tambem em utils.py. Refatorar
+    # def getUnidadeUID(self, uid):
+    #     rtool = getToolByName(self, 'reference_catalog')
+    #     return rtool.lookupObject(uid)
+
     def get_ConfugCampos(self, campo):
         configuracao= ModelsConfgMyvindula().getConfig_views(campo)
         return configuracao
 
-    def get_department(self, user):
-        return ModelsDepartment().get_departmentByUsername(self.Convert_utf8(user))
+    def check_edit_manager(self,username):
+        check_permission =  self.context.restrictedTraverse('vindula-object-user').checkPermission(username)
+        if 'rh' in check_permission.get('groups') or check_permission.get('has_manager'):
+            return True
+        return False
+
+    # def get_department(self, user):
+    #     return 'TODO mudar'
+    #     # return ModelsDepartment().get_departmentByUsername(self.Convert_utf8(user))
+
 
     def load_list(self):
         member =  self.context.restrictedTraverse('@@plone_portal_state').member().getUserName();
         user = self.Convert_utf8(self.request.form.get('user',str(member)))
-        #return ModelsFuncDetails().get_FuncDetails(unicode(user, 'utf-8'))
-        return ModelsInstanceFuncdetails().get_InstanceFuncdetails(user)
+
+        return self.get_prefs_user(user)
+
+    def get_follow(self,username):
+        return ModelsFollow.get_followers(self.Convert_utf8(username))
+
+    def format_follow(self, obj_list):
+        lista = []
+        L = None
+        for count, obj in enumerate(obj_list):
+            if count == 0 or count % 9 == 0:
+                L = []
+
+            L.append(obj)
+
+            if (count + 1) % 9 == 0:
+                lista.append(L)
+                L = None
+
+        if L:
+            lista.append(L)
+
+        return lista
+    
+    def get_projects(self, user):
+        p_catalog = getToolByName(self.context, 'portal_catalog')
+        p_object = self.context.portal_url.getPortalObject()
+        member =  self.context.restrictedTraverse('@@plone_portal_state').member()
+        departaments = user.get_department()
+        result = []
+
+        if departaments:
+            departaments = [i.get('obj').UID() for i in departaments if i.get('obj', None)]
+            projects = p_catalog({'path': {'query': '/'.join(p_object.getPhysicalPath()), 'depth': 99},
+                                  'portal_type': ['OrganizationalStructure'],
+                                  'tipounidade': ['projeto', 'Projeto']})
+            for project in projects:
+                if project.UID in departaments:
+                    result.append(project.getObject())
+
+        return result
+
+    # def geraDadosAreas(self,area,instanceUser):
+    #     campos = ModelsConfgMyvindula().getConfig_byArea(self.Convert_utf8(area))
+    #     L = []
+    #     for campo in campos:
+    #         D = {}
+    #         D['label'] = campo.label
+    #         try:
+    #             valor = instanceUser.get(campo.name)
+    #             if type(valor) == list:
+    #                 valor_list = ''
+    #                 for i in valor:
+    #                     if i :valor_list += (i + ' / ')
+
+    #                 valor = "<span>"+valor_list+"</span>"
+
+    #             elif campo.type == 'img':
+    #                 site = self.context.portal_url.getPortalObject()
+    #                 valor = "<img height='150px' src='%s/user-image?field=%s&instance_id=%s' />"%(site.absolute_url(),campo.fields,instanceUser.id)
+
+    #             D['data']  = valor
+    #         except:
+    #             D['data'] = ''
+
+    #         L.append(D)
+
+    #     return L
+
+    # def getAreasDinamicas(self):
+    #     areas = [{'id':'contact',
+    #               'title':'Contato',
+    #               'url_image': self.static()+'/images/user_contact.png'},
+    #               {'id':'corporate',
+    #                'title':'Corporativo',
+    #                'url_image': self.static()+'/images/user_business.png'},
+    #               {'id':'other',
+    #                'title':'Outras Informações',
+    #                'url_image': self.static()+'/images/user_others.png'}
+    #              ]
+
+    #     site = self.context.portal_url.getPortalObject()
+    #     pw = site.portal_workflow
+    #     if 'control-panel-objects' in  site.keys():
+    #         control = site['control-panel-objects']
+    #         if 'fieldset-myvindula' in control.keys():
+    #             folder_Areas = control['fieldset-myvindula']
+    #             for item in folder_Areas.objectValues():
+
+    #                 if pw.getInfoFor(item,'review_state') == 'published':
+    #                     D={}
+    #                     D['id'] = item.getId()
+    #                     D['title'] = item.Title()
+    #                     if item.getLogo():
+    #                         D['url_image'] = item.getLogo().absolute_url()
+    #                     else:
+    #                         D['url_image'] = ''
+
+    #                     areas.append(D)
+
+    #             return areas
+    #         else:
+    #             return areas
+    #     else:
+    #         return areas
 
 
-    def geraDadosAreas(self,area,instanceUser):
-        campos = ModelsConfgMyvindula().getConfig_byArea(self.Convert_utf8(area))
-        L = []
-        for campo in campos:
-            D = {}
-            D['label'] = campo.label
-            try:
-                valor = self.getDadoUser_byField(instanceUser, campo.fields)
-                if type(valor) == list:
-                    valor_list = ''
-                    for i in valor:
-                        if i :valor_list += (i + ' / ')
+    # def get_campos(self):
+    #     fields = ModelsConfgMyvindula().get_configurationAll()
+    #     conf = {}
+    #     for campos in fields:
+    #         item = campos.fields
+    #         dado = ModelsConfgMyvindula().getConfig_edit(item)
+    #         conf[item] = dado
 
-                    valor = "<span>"+valor_list+"</span>"
-
-                elif campo.type == 'img':
-                    site = self.context.portal_url.getPortalObject()
-                    valor = "<img height='150px' src='%s/user-image?field=%s&instance_id=%s' />"%(site.absolute_url(),campo.fields,instanceUser.id)
-                    
-                elif campo.fields == 'date_birth':
-                    valor = self.getDadoUser_byField(instanceUser, campo.fields)[:5]
-
-                D['data']  = valor
-            except:
-                D['data'] = ''
-
-            L.append(D)
-
-        return L
-
-    def getAreasDinamicas(self):
-        areas = [{'id':'contact',
-                  'title':'Contato',
-                  'url_image': self.static()+'/images/user_contact.png'},
-                  {'id':'corporate',
-                   'title':'Corporativo',
-                   'url_image': self.static()+'/images/user_business.png'},
-                  {'id':'other',
-                   'title':'Outras Informações',
-                   'url_image': self.static()+'/images/user_others.png'}
-                 ]
-
-        site = self.context.portal_url.getPortalObject()
-        pw = site.portal_workflow
-        if 'control-panel-objects' in  site.keys():
-            control = site['control-panel-objects']
-            if 'fieldset-myvindula' in control.keys():
-                folder_Areas = control['fieldset-myvindula']
-                for item in folder_Areas.objectValues():
-
-                    if pw.getInfoFor(item,'review_state') == 'published':
-                        D={}
-                        D['id'] = item.getId()
-                        D['title'] = item.Title()
-                        if item.getLogo():
-                            D['url_image'] = item.getLogo().absolute_url()
-                        else:
-                            D['url_image'] = ''
-
-                        areas.append(D)
-
-                return areas
-            else:
-                return areas
-        else:
-            return areas
+    #     return conf
 
 
-    def get_campos(self):
-        fields = ModelsConfgMyvindula().get_configurationAll()
-        conf = {}
-        for campos in fields:
-            item = campos.fields
-            dado = ModelsConfgMyvindula().getConfig_edit(item)
-            conf[item] = dado
-
-        return conf
+    # def get_howareu(self, user):
+    #     member =  self.context.restrictedTraverse('@@plone_portal_state').member().getUserName();
+    #     user = self.request.form.get('user',str(member))
+    #     D={}
+    #     D['username'] = user
+    #     return ModelsMyvindulaHowareu().get_myvindula_howareu(**D)
 
 
-    def get_howareu(self, user):
-        member =  self.context.restrictedTraverse('@@plone_portal_state').member().getUserName();
-        user = self.request.form.get('user',str(member))
-        D={}
-        D['username'] = user
-        return ModelsMyvindulaHowareu().get_myvindula_howareu(**D)
-
-
-    def get_recados(self, user):
-        D={}
-        D['destination'] = user
-        return ModelsMyvindulaRecados().get_myvindula_recados(**D)
-
-
+    # def get_recados(self, user):
+    #     D={}
+    #     D['destination'] = user
+    #     return ModelsMyvindulaRecados().get_myvindula_recados(**D)
 
     def update(self):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
@@ -447,31 +539,6 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
         else:
             self.request.response.redirect(self.context.absolute_url() + '/login')
 
-
-class MyVindulaListRecados(grok.View,UtilMyvindula):
-    grok.context(ISiteRoot)
-    grok.require('zope2.View')
-    grok.name('myvindulalistrecados')
-
-    def get_recados(self, user):
-        D={}
-        D['destination'] = user
-        return ModelsMyvindulaRecados().get_myvindula_recados(**D)
-
-    def update(self):
-        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
-
-        if not open_for_anonymousUser:
-            form = self.request.form
-            excluir = form.get('form.excluir', False)
-
-            if excluir:
-                id_recado = int(form.get('id_recado','0'))
-                ModelsMyvindulaRecados().del_myvindula_recados(id_recado)
-                IStatusMessage(self.request).addStatusMessage(_(u'Registro removido com sucesso.'),"info")
-
-        else:
-            self.request.response.redirect(self.context.absolute_url() + '/login')
 
 class MyVindulalistAll(grok.View, UtilMyvindula):
     grok.context(Interface)
@@ -612,7 +679,7 @@ class MyVindulaFirstRegistreView(grok.View, UtilMyvindula):
                   if data.get('name') == member.getAuthenticatedMember().getUserName():
                       return True
 
-              elif data.get(campo):
+              elif data.__getattribute__(campo):
                   # Campo Não Esta vazio
                   return False
 
@@ -625,13 +692,13 @@ class MyVindulaFirstRegistreView(grok.View, UtilMyvindula):
 
     def checkUserXMPP(self):
         member = getSite().portal_membership
-        try: user = self.to_utf8(member.getAuthenticatedMember().getUserName())
-        except: user =  member.getAuthenticatedMember().getUserName()
-        data = ModelsUserOpenFire().get_UserOpenFire_by_username(user)
-        if data:
-            return True
-        else:
-            return False
+        # try: user = self.to_utf8(member.getAuthenticatedMember().getUserName())
+        # except: user =  member.getAuthenticatedMember().getUserName()
+        # data = ModelsUserOpenFire().get_UserOpenFire_by_username(user)
+        # if data:
+        #     return True
+        # else:
+        return False
 
 
     def get_saldacao(self):
@@ -671,7 +738,8 @@ class MyVindulaListBirthdays(grok.View,UtilMyvindula):
         except:
             user_id = user
 
-        return ModelsDepartment().get_departmentByUsername(user)
+        return 'TODO mudar'
+        # return ModelsDepartment().get_departmentByUsername(user)
 
     def get_campos_list_user(self):
         if 'control-panel-objects' in  getSite().keys():
@@ -736,18 +804,15 @@ class MyVindulaListBirthdays(grok.View,UtilMyvindula):
         filtro = form.get('filtro',1)
         if filtro == 'prox':
 
-            results = ch.get('MyVindulaListBirthdays_birthdaysToday_prox')
-            if not results:
-                results = self.get_birthdaysToday(filtro)
-                ch.set('MyVindulaListBirthdays_birthdaysToday_prox',results)
-
+            results = self.get_birthdaysToday(filtro)
         else:
-            results = ch.get('MyVindulaListBirthdays_birthdaysToday_'+str(filtro))
-            if not results:
-                results = self.get_birthdaysToday(int(filtro))
-                ch.set('MyVindulaListBirthdays_birthdaysToday_'+str(filtro),results)
+            results = self.get_birthdaysToday(int(filtro))
 
-        return results
+        if results:
+            return results
+        else:
+            return []
+
 
     def update(self):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
@@ -920,15 +985,15 @@ class MyVindulaFindHoleriteView(grok.View, UtilMyvindula):
         if result: 
             return result
         else:
-            return [] 
-    
+            return []
+
     def load_list(self):
         form = self.request.form
         session = self.context.REQUEST.SESSION
         if 'cpf' in session.keys() and 'id' in form.keys():
             try:cpf = unicode(session.get('cpf', ''),'utf-8')
             except:cpf = session.get('cpf', '')
-            
+
             id = int(form.get('id','0'))
             if self.select_modelo() == '01':
                 result = ModelsFuncHoleriteDescricao().get_FuncHolerites_byCPFAndID(cpf, id)
@@ -937,7 +1002,6 @@ class MyVindulaFindHoleriteView(grok.View, UtilMyvindula):
                 result = ModelsFuncHoleriteDescricao02().get_FuncHolerites_byCPFAndID(cpf, id)
             
             return result
-
 
 class MyVindulaHoleriteView(grok.View, UtilMyvindula):
     grok.context(ISiteRoot)

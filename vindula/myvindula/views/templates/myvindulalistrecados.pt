@@ -4,41 +4,47 @@
             <tal:dummy tal:define="dummy python:request.set('disable_border',1);
                                    disable_column_one python:request.set('disable_plone.leftcolumn',1);
                                    disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
-        </metal:block>        
+        </metal:block>
     </head>
     <body>
-        <div metal:fill-slot="content" tal:define="member python:context.portal_membership.getAuthenticatedMember();
-    											   isAnonymous context/portal_membership/isAnonymousUser|python:True;
-    											   user_login python:member.getUserName() or None;
-    											   
-    											   check_recados context/@@myvindula-conf-userpanel/check_recados;"
-    											   
+
+        <div metal:fill-slot="content" tal:define="check_recados context/@@myvindula-conf-userpanel/check_recados;"
     								   tal:condition="check_recados">
-    											   
+
     		<metal:use use-macro="context/@@myvindulapanel/macros/page"/>
-    		<div id="content">
-    			<div id="scraps" class="userpage geral_lista_comentarios">
-    				<h2 class="h2title">Recados que deixaram para você!</h2>
-        			<tal:def define="items python:view.get_recados(user_login);">
+
+    		<div id="content" >
+
+                <div metal:define-macro="page-view"
+                     class="userpage geral_lista_comentarios"
+                     tal:define="member python:context.portal_membership.getAuthenticatedMember();
+                                 isAnonymous context/portal_membership/isAnonymousUser|python:True;
+                                 user python:member.getUserName() or None;" >
+
+                    <h2 class="h2title">Mensagens que deixaram para você!</h2>
+
+                    <tal:def define="view_myvindula python:context.restrictedTraverse('@@myvindula');
+                                     items python:view_myvindula.get_recados(user);">
+
     					<div class="userpage geral_lista_comentarios" tal:condition="items">
     						<tal:rep tal:repeat="item items">
-    							<div class="comment item_lista" > 
-    								
-    								<div metal:use-macro="context/macro-myvindula-documentByLine/macros/page"> </div>
-    								
-    								<div id="like" tal:condition="not: isAnonymous">
+    							<div class="comment item_lista" >
+
+  								    <div metal:use-macro="context/macro-myvindula-documentByLine/macros/page"> </div>
+
+    								<!--div id="like" tal:condition="not: isAnonymous">
     									<div tal:attributes="id item/id|nothing">
     										<input type="hidden" name="isPlone:boolean" id="isPlone" value="False" />
     										<input type="hidden" name="type" id="type" value="ModelsMyvindulaRecados" />
     									</div>
     									<div metal:use-macro="context/myvindula-like-macro/macros/like" />
-    								</div>
+    								</div-->
     				                <div class="comment-body">
     				                    <p tal:replace="structure item/text|nothing" />
     						  		</div>
-    						  		
-    						  		
-    								<!-- Responde / Excluir recados -->
+
+
+    								<!-- Responde / Excluir recados
     								<div id="comments" class="bt_comentar" tal:condition="not: isAnonymous" >
     									<a>
     										<input type="button" tal:attributes="onClick string: location.href='${context/portal_url}/myvindulalistuser?user=${item/username}&scraps=true'"
@@ -46,27 +52,25 @@
     									</a>
     									<form action="#" method="post" enctype="multipart/form-data" style="float:right"
                                               tal:attributes="action string:${context/absolute_url}/myvindulalistrecados">
-                                            
+
                                             <input type="hidden" name="form.excluir:boolean" value="True" />
                                             <input type="hidden" name="id_recado" id="id_recado" tal:attributes="value item/id|nothing" />
-                                            <input type="submit" name="excluir" id="excluir" value="Excluir"
-                                                   onclick="return confirmExcluirRecados();" 
-                                                                 class="bt_comments" tal:attributes="id item/id|nothing" />    
+
+                                            <--input type="submit" name="excluir" id="excluir" value="Excluir"
+                                                   onclick="return confirmExcluirRecados();"
+                                                                 class="bt_comments" tal:attributes="id item/id|nothing" /--
                                         </form>
     								</div>
-    								
-    								<!--Macros de repitição dos comentarios --> 
-                                    <tal:def define="comment_type string:ModelsMyvindulaRecados">        
-                                        <!--div metal:use-macro="context/macro-input-recados/macros/input" /-->
-                                        <div metal:use-macro="context/myvindula-comments-macro/macros/comments" />
-                                    </tal:def>
-    								
+                                    -->
+                                    <br/>
     							</div>
-    						</tal:rep>	
+
+    						</tal:rep>
     					</div>
     				</tal:def>
     			</div>
     		</div>
-        </div>    
+
+        </div>
     </body>
 </html>

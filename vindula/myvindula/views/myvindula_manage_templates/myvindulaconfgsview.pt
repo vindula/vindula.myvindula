@@ -5,101 +5,38 @@
          lang="en"
          metal:use-macro="context/prefs_main_template/macros/master"
          i18n:domain="plone">
-   
-   <head>
 
-  </head>  
+  <head>
+  </head>
   <body>
-  <metal:main fill-slot="prefs_configlet_content">
-        <script type="text/javascript" tal:attributes="src string:${view/static}/js/ajax_ordem_campos.js"></script>
-        <style type="text/css">
-            .BlackList, .BlackList td{ background-color: #FFD3D3 !important;
-            }
-            .img{
-                text-align: center;
-            }
-        </style>
-        
-      
-        <div metal:use-macro="context/global_statusmessage/macros/portal_message">
-         Status message
+    <metal:main fill-slot="prefs_configlet_content" tal:define="member context/@@plone_portal_state/member;">
+
+      <script type="text/javascript"  tal:attributes="src string:${context/portal_url|nothing}/vindula-api/static/js/vindula_myvindula.js"></script>
+
+      <script type="text/javascript"
+              tal:content="python: '''
+                 $j(document).ready(function(){
+                    $j('#myvindula').myvindula(null, {username : '%s', dominio: '%s', user_token: '%s'});
+                  });
+                 '''%(member.getUserName(),context.portal_url(),session.get('user_token'))" ></script>
+
+        <div id="myvindula">
+
+          <div class="vd_manage_profile" tal:attributes="data_username member/getUserName;"></div>
+
         </div>
 
-		<div id="content" tal:define="data view/load_form | python:[];">
-	        
-	        <h1>Campos do Perfil de usu&aacute;rio</h1>
-			
-			<div>    	
-    			    <fieldset>
-                        <legend>Novo Campo</legend>
-                        <p>
-                            <a tal:attributes="href string:${context/portal_url}/edit_myvindulaconfgs">
-                                Cadastrar novo campo</a>
-                        </p>
-    			    </fieldset>
-   			    
-		            <fieldset>
-		            	<legend>Campos Para o Perfil do Usuário</legend>
-                            
-                        <table id="listing-table" class="listing">
-                            <tr>
-                                <th></th>
-                                <th>Nome Técnico</th>
-                                <th>Habilitado para edição</th>
-                                <th>Habilitado para visão</th>
-                                <th>Titulo</th>
-                                <th>Tipo</th>
-                                <th>Área de Visualização</th>
-                            </tr>
-                            <tbody class="sortable" >
-                                <tal:rep repeat="item data">
-                                    <tr tal:define="field item/fields|nothing"
-                                        tal:attributes="id string:${field};
-                                                        class python: (field in view.BlackList) and 'BlackList' or '' ">
-                                        <td class="draggable draggingHook" style="cursor: ns-resize;">⣿</td>
-                                        <td>
-                                            <a title="Editar campos" alt="Editar campos"
-                                                tal:attributes="href string:${context/absolute_url}/edit_myvindulaconfgs?fields=${item/fields}"
-                                                tal:content="item/fields|nothing">fields</a>
-                                        </td>
-                                        <td class="img"><img tal:attributes="src string:${view/static}/images/field-${item/ativo_edit|nothing}.png" /> </td>
-                                        <td class="img"><img tal:attributes="src string:${view/static}/images/field-${item/ativo_view|nothing}.png" /></td>
-                                        <td tal:content="item/label|nothing"> Titulo </td>    
-                                        <td tal:content="item/type|nothing">text</td>
-                                        <td tal:define="area_de_view item/area_de_view|nothing;
-                                                        area python: (field in view.BlackList) and 'Bloqueado' or area_de_view"
-                                            tal:content="area">Área de Visualização</td>
-                                        
-                                        <!--td class="draggable" align="center">
-                                            <a title="Mover item para cima" 
-                                               tal:condition="not:repeat/item/start"
-                                               tal:attributes="href string:${context/absolute_url|nothing}/edit_myvindulaconfgs?position=up&fields=${item/fields}">▲</a>
-                                        </td>
-                                        <td class="draggable" align="center">
-                                            <a title="Mover item para baixo"
-                                               tal:condition="not:repeat/item/end" 
-                                               tal:attributes="href string:${context/absolute_url|nothing}/edit_myvindulaconfgs?position=down&fields=${item/fields}">▼</a>
-                                        </td-->
-                                    </tr>
-                                </tal:rep>
-                            </tbody>
-                        </table>
-						
+  			<div class="visualClear"></div>
+  			<!-- Botões de ação -->
+  	   	<fieldset>
+              <br />
+  			  <div style="float:left; width:100%">
+  				    <input style="width:100px" class="button-erp" type="button" value="Voltar" name="form.voltar"
+  				           onclick="window.location.href = 'http://'+ window.location.host + '/vindula-control-panel';"  >
+  					</div>
+  		  </fieldset>
 
-					</fieldset>
-					<div class="visualClear"></div>
-					<!-- Botões de ação -->	
-				   	<fieldset>
-			            <br />		
-						<div style="float:left; width:100%">
-							<input style="width:100px" class="button-erp" type="button" value="Voltar" name="form.voltar"
-							       onclick="window.location.href = 'http://'+ window.location.host + '/vindula-control-panel';"  >
-							
-						</div>
-					</fieldset>
 
-			</div>
-		</div>
-  </metal:main>
+    </metal:main>
   </body>
 </html>

@@ -1,0 +1,47 @@
+<html metal:use-macro="here/main_template/macros/master">
+    <head>
+        <metal:block fill-slot="top_slot">
+            <tal:dummy tal:define="dummy python:request.set('disable_border',1);
+                                   disable_column_one python:request.set('disable_plone.leftcolumn',1);
+                                   disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+        </metal:block>
+    </head>
+    <body>
+        <metal:content fill-slot="content">
+    		<div id="content" >
+                <div metal:define-macro="page-view" class="clear tile-list-bullet"
+                     tal:define="member python:context.portal_membership.getAuthenticatedMember();
+                                 isAnonymous context/portal_membership/isAnonymousUser|python:True;
+                                 user python:member.getUserName() or None;">
+                    
+                    <div class="columns large-12">
+                        <h5>Projetos</h5>
+                        <hr/>
+                    </div>
+                    
+                    <div class="columns large-12">
+                        <tal:def define="view_myvindula python:context.restrictedTraverse('@@myvindulalistuser');
+                                         user view_myvindula/load_list;
+                                         projects python:view_myvindula.get_projects(user);">
+                                             
+                            <ul class="square">
+                                <tal:cond condition="projects">
+                                    <tal:rep repeat="project projects">
+                                        <li>
+                                            <a tal:attributes="href project/absolute_url|nothing;
+                                                               alt project/getSiglaOrTitle|string: "
+                                               tal:content="project/getSiglaOrTitle|string: ">ASCON</a>
+                                        </li>
+                                    </tal:rep>
+                                </tal:cond>
+                                <tal:cond condition="not:projects">
+                                    <span>Não possui nenhum projeto.</span>
+                                </tal:cond>
+                            </ul>
+        				</tal:def>
+                    </div>
+                </div>
+    		</div>
+        </metal:content>
+    </body>
+</html>

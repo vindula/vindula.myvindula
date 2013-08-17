@@ -1,147 +1,52 @@
 <html metal:use-macro="here/main_template/macros/master">
 	<head>
 		<metal:js fill-slot="javascript_head_slot">
-			<script type="text/javascript" tal:attributes="src string:${view/static}/js/comments.js"></script>
-    		<script type="text/javascript" src="" tal:attributes="src string:${view/static}/js/popup.js"></script>
-    		<script type="text/javascript" tal:attributes="src string:${view/static}/js/mascara.js"></script>
-    		
-    		<script type="text/javascript"
-                    tal:attributes="src string:${view/static}/cropper/js/jquery.Jcrop.js"></script>
-                                                
-            <script type="text/javascript" charset="utf-8"
-                    tal:attributes="src string:${view/static}/js/crop_image_user.js" ></script>
+
 
 		</metal:js>
 		<metal:block fill-slot="top_slot">
              <tal:dummy tal:define="dummy python:request.set('disable_border',1);
                        disable_column_one python:request.set('disable_plone.leftcolumn',1);
                        disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
-		</metal:block>		
+		</metal:block>
 	</head>
-	
+
 	<body>
-	    <div metal:fill-slot="content" tal:define="form_data view/load_form | python:{};
-			                                       errors form_data/errors | python:{};
-										           form_values form_data/data | python:{};
-										           departamentos form_data/departametos|python:{};
-										           
-										           check_editfunc context/@@myvindula-conf-userpanel/check_editfunc;
-										  
-												   username form_data/username|python:{};
-												   config_myvindula form_data/config_myvindula|python:{};
-												   manage form_data/manage|python:False;"
-										  
-									   tal:condition="check_editfunc">
-			
-			<tal:cond condition="not:manage">
-	    		<metal:use use-macro="context/@@myvindulapanel/macros/page"/>
-			</tal:cond>
-			<metal:config-user define-macro="config-user">
-				<div metal:use-macro="context/global_statusmessage/macros/portal_message">
-                 Status message
-                </div> 
-			    <div id="content" >
-					<tal:cont condition="manage">
-						<h1>Edite as informações pessoais do usu&aacute;rio <span tal:content="form_data/name|nothing"></span></h1>	
-					</tal:cont>
-			        
-			        <tal:cont condition="not:manage">
-						<h1>Edite suas informações pessoais</h1>	
-					</tal:cont>
-					
-					<div id="interna" >  
-				        <form name="myvindulaprefs" id="myvindulaprefs" enctype="multipart/form-data" 
-							  class="enableAutoFocus" action="myvindulaprefs" method="POST">
-				            
-							<fieldset>
-				            	<legend>Informações Pessoais</legend>
-								
-								<!-- ID da user --> 
-								<input id="user" type="hidden" value="" name="user" tal:condition="manage" tal:attributes="value request/user|request/userid|nothing">
-			                      
-								<!-- Select Departamento  -->
-								<div class="field" tal:attributes="class python: view.field_class(errors, 'vin_myvindula_department')"
-												   tal:condition="python: view.get_ConfugCampos('vin_myvindula_department') or manage" >
-									<label for="vin_myvindula_department">Departamentos</label>
-				                    <!--span class="fieldRequired" title="Obrigatório">(Obrigatório)</span-->	
-				                    <div class="formHelp">Selecione o departamento do funcionário.</div>
-									<div tal:content="errors/vin_myvindula_department|nothing"></div>
-				                    <tal:cond condition="departamentos">
-				                    	<div class="boxSelecao" name="vin_myvindula_department"
-											 tal:define="id_request request/vin_myvindula_department | python: [ i.UID for i in form_values.get('vin_myvindula_department',[])] or []">
-				                    		<tal:repeat repeat="departamento departamentos">
-										           	<input value="" type="checkbox" name="vin_myvindula_department"
-															tal:attributes="value departamento/UID | nothing;
-																			checked python: str(departamento.UID) in id_request"/>
-																			<label tal:content="departamento/Title | nothing"></label><br/>
-											</tal:repeat>
-											
-											<tal:repeat repeat="departamento departamentos">
-												<tal:cond tal:condition="python: str(departamento.UID) in id_request">
-													<input type="hidden" name="departaments_old:list"
-														   tal:attributes="value departamento/UID | nothing;"/>
-												</tal:cond>
-											</tal:repeat>
-											
-				                    	</div>
-				                    </tal:cond>
-									<tal:cond condition="not: departamentos">
-										<span>N&atilde;o h&aacute; departamentos cadastrados no portal, informe o administrador do site </span>
-									</tal:cond>
-																
-								</div>
-								<tal:cont condition="python: not view.get_ConfugCampos('vin_myvindula_department') and not manage">
-									<tal:cont condition="python: form_values.get('vin_myvindula_department',None)">
-										<tal:rep repeat="value request/vin_myvindula_department | python: [ i.UID for i in form_values.get('vin_myvindula_department',[])] or []">
-											<input id="vin_myvindula_department" type="hidden" value="" name="vin_myvindula_department" tal:attributes="value value">									
-										</tal:rep>
-									</tal:cont>
-								</tal:cont>
-								
-								
-								<!--div class="field" tal:attributes="class python: view.field_class(errors, 'username')"
-												   tal:condition="python: manage or 'newuser' in request.keys()">
-									<label for="username">Username</label>
-				                    <span class="fieldRequired" title="Obrigatório">(Obrigatório)</span>	
-				                    <div class="formHelp">Digite o username do usuário.</div>
-									<div tal:content="errors/username|nothing"></div>
-									
-									<input id="username-old" type="hidden" value="" name="username-old"  
-									       tal:attributes="value request/username-old | username | request/userid | nothing">
-				                    
-				                    <input id="username" type="text" value="" name="username"  
-				                           tal:attributes="value request/username | username | request/userid | nothing">
-									
-								</div-->
-									
-								<input id="username" type="hidden" value="" name="username" tal:attributes="value request/username| username | request/userid | nothing">
-															
-								<tal:def define="html python:view.geraCampos(form_data)">
-									<tal:rep repeat="x html">
-										<div tal:content="structure x"/>
-									</tal:rep>
-								</tal:def>
-							
-							</fieldset>
-							<!-- Botões de ação -->	
-						   	<fieldset>
-						   		<br/>
-								<div style="float:left; width:100%">
-									<input style="width:100px" class="button-erp" type="submit" value="Voltar" name="form.voltar" >
-									
-									<input style="width:100px;" class="button-erp" type="submit" value="Salvar" name="form.submited"
-											tal:condition="python: not manage or 'newuser' in request.keys()">
-									
-									<tal:cond condition="python: manage and not 'newuser' in request.keys()">
-										<input style="width:100px;" class="button-erp" type="submit" value="Salvar" name="form.submited"
-												onclick="return confirmAlterarUserName();">
-									</tal:cond>
-								</div>
-							</fieldset>
-						</form>
+	    <div metal:fill-slot="content">
+	    	<div class="clear" metal:define-macro="page-view">
+				<tal:def define="member context/@@plone_portal_state/member;
+	                             user_login member/getUserName;
+	                             user_request request/user|user_login;
+
+
+
+					">
+					<script type="text/javascript"  tal:attributes="src string:${context/portal_url|nothing}/vindula-api/static/js/vindula_myvindula.js"></script>
+					<script type="text/javascript"
+							tal:content="python: '''
+										$j(document).ready(function(){
+											$j('#myvindula').myvindula(null, {username : '%s', dominio: '%s', user_token: '%s'});
+										});
+										'''%(member.getUserName(),context.portal_url(),session.get('user_token'))" >
+                    </script>
+
+					<input id="user-igual" type="hidden" value="True" />
+					<!-- metal:use use-macro="context/@@myvindulapanel/macros/page"/-->
+
+
+			    	<div class="large-12 columns" id="myvindula" tal:condition="python: user_login == user_request" >
+						<div class="vd_myvindula_edit" tal:attributes="data_username member/getUserName;"></div>
 					</div>
-			    </div>
-			</metal:config-user>  
-	    </div> 
+
+					<div class="large-12 columns" id="myvindula" tal:condition="python: user_login != user_request and view.check_edit_manager(user_login)" >
+						<div class="vd_myvindula_edit" tal:attributes="data_username member/getUserName;
+																	   data_edit_user user_request"></div>
+					</div>
+
+
+
+				</tal:def>
+			</div>
+	    </div>
 	</body>
 </html>

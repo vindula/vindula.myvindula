@@ -1,213 +1,259 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 
+from storm.locals import Select
+from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
+from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 
-#Imports regarding the connection of the database 'strom'
-from storm.locals import *
-from storm.expr import Desc, Select
+from vindula.myvindula.tools.utils import UtilMyvindula
+from plone.app.uuid.utils import uuidToObject
+from datetime import datetime, date
+from vindula.myvindula.cache import get_redis_connection
 
+from storm.expr import Or, And
 
-from vindula.myvindula.models.base import BaseStore
+def por_name(item):
+    return item.get('name','')
 
-class ModelsFuncDetails(Storm, BaseStore):    
-    __storm_table__ = 'vin_myvindula_funcdetails'
-    
-    id = Int(primary=True)
-    name = Unicode()
-    phone_number = Unicode()
-    cell_phone = Unicode()
-    email = Unicode()
-    employee_id = Unicode()
-    username = Unicode()
-    date_birth = Date()
-    registration = Unicode()
-    enterprise = Unicode()
-    position = Unicode()
-    admission_date = Date()
-    cost_center = Unicode()
-    organisational_unit = Unicode()
-    reports_to = Unicode()
-    location = Unicode() 
-    postal_address = Unicode()
-    special_roles = Unicode()
-    photograph = Unicode()
-    nickname = Unicode()
-    pronunciation_name = Unicode()
-    committess = Unicode()
-    projects = Unicode()
-    personal_information = Unicode()
-    #skills_expertise = Unicode()
-    profit_centre = Unicode()
-    #languages = Unicode()
-    availability = Unicode()
-    papers_published = Unicode()
-    teaching_research =Unicode()
-    delegations = Unicode()
-    resume = Unicode()
-    blogs = Unicode()
-    customised_message = Unicode()
-    #vin_myvindula_department_id = Int()
-    
-    departamento = Reference(username, "ModelsDepartment.vin_myvindula_funcdetails_id")
-    
-#    def set_FuncDetails(self, **kwargs):
-#        # adicionando...
-#        funcDetails = ModelsFuncDetails(**kwargs)
-#        self.store.add(funcDetails)
-#        self.store.flush()        
+class FuncDetails(object):
+    '''
+        Objeto dos dados do usuario
+    '''
+    username = None
+    fields = []
+
+    def __unicode__(self,):
+        return 'Objeto do Usuario - %s' % (self.username)
+
+    def __init__(self, username, *args, **kwargs):
+        self.username = username
+
+        redis_conn = get_redis_connection()
+        key = 'vindula:user-profile:%s' % username
+        if redis_conn.hmget(key,'username')[0] != None:
+            for field in redis_conn.hkeys(key):
+                setattr(self,field,redis_conn.hmget(key,field)[0])
+            del(redis_conn)
+        else:
+            self.fields = ModelsConfgMyvindula().get_configurationAll()
+            if  self.fields.count() > 0:
+                user_data = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstance(self.username)
+
+                for field in self.fields:
+                    value = user_data.get(field.name)
+                    setattr(self, field.name,value)
+
+    def get(self,attribute,default=''):
+        valor = getattr(self, attribute, default)
+        if valor:
+            return valor
+
+        return  default
+
+    def getImageIcone(self):
+        return '/vindula-api/myvindula/user-picture/photograph/%s/True' %(self.username)
+
+    def getUrlPerfil(self):
+        return '/myvindulalistuser?user=%s' %(self.username)
+
+    def getContato(self):
+        return '%s<br />%s<br />%s'%(self.get('email',''),
+                                     self.get('phone_number',''),
+                                     self.get('cell_phone',''))
+
+    def get_unidadeprincipal(self):
+        try:
+            list_ou = eval(self.get('unidadeprincipal', '[" "]'))
+        except:
+            try:
+                valor = '["%s"]' % self.get('unidadeprincipal')
+                list_ou =  eval(valor)
+            except: list_ou = ['']
         
-#    def del_FuncDetails(self, username):
-#        result = self.get_FuncDetails(username)
-#        if result:
-#            self.store.remove(result)
-#            self.store.flush()
-#            
-#            return result.photograph 
-    
-    def get_allFuncDetails_migracao(self, ordem='nome'):
-        if ordem == 'admicao':
-            data = self.store.find(ModelsFuncDetails, ModelsFuncDetails.username!=u'admin').order_by(Desc(ModelsFuncDetails.admission_date))
+        OU = uuidToObject(list_ou[0])
+#        OU = UtilMyvindula().lookupObject(list_ou[0])
         
-        elif ordem == 'nome':
-            data = self.store.find(ModelsFuncDetails, ModelsFuncDetails.username!=u'admin').order_by(ModelsFuncDetails.name)
+        if OU:
+            return OU
+
+    def get_sigla_unidadeprincipal(self):
+        structure = self.get_unidadeprincipal()
+        sigla = ''
+        if structure:
+            sigla = structure.getSiglaOrTitle()
+        return sigla
+
+    def get_department(self):
+        OUs_uid = eval(self.get('vin_myvindula_department') or '[]')
+        result = []
+        for OU_uid in OUs_uid:
+            OU = UtilMyvindula().lookupObject(OU_uid)
+            if OU:
+                result.append({'title': OU.getSiglaunidade() or OU.Title(),
+                                'url' : OU.absolute_url(),
+                                'obj': OU })
+
+        return result
+
+    @staticmethod
+    def get_AllFuncFakeList(filter=None):
+        L_username = []
+        data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails)
+        if filter:
+            data = data.find(ModelsDadosFuncdetails.value.like('%'+filter+'%',case_sensitive=False))
+        return range(data.count())
+
+    @staticmethod
+    def get_AllFuncDetails(filter=None,b_size=None,b_start=None):
+        #Nao usar o b_size, b_start
+        #TODO: Consertar a forma que esta sendo ordenada a lista
+        #TODO: Melhorar, ainda nao está bom, tempo melhorado de 11 para 2 sec
+        L_username = []
+        L_retorno = []
+        if b_size != None and b_start != None:
+            b_start = int(b_start)
+            b_size = b_start + int(b_size)
+        else:
+            b_start = None
+            b_size = None
+        
+        if filter:
+            #Ajustando filtro para o caso de busca
+            #por mais de uma palavra Ex: '%palavra1%palavra2%'
+            filter = filter.split(' ')
+            filter = '%'.join(filter)
+            data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, 
+                                                       ModelsDadosFuncdetails.deleted==False,
+                                                       ModelsDadosFuncdetails.value.like('%'+filter+'%',case_sensitive=False))
+            if data.count() > 0:
+                for item in data:
+                    if not item.username in L_username:
+                        L_username.append(item.username)
+        else:
+            #Pegando os usuarios com distinct
+            select = Select(ModelsDadosFuncdetails.username,
+                            ModelsDadosFuncdetails.deleted==False,
+                            distinct=True)
+            data = ModelsDadosFuncdetails().store.execute(select)
+            for item in data:
+                L_username.append(item[0])
+
+        for user in L_username[b_start:b_size]:
+            L_retorno.append(FuncDetails(user))
+
+        return sorted(L_retorno, key=por_name)
+    
+    @staticmethod
+    def get_FuncDetailsByField(fields={}):
+        L_username = []
+        L_retorno = []
+        
+        expressions = []
+        expression_name = []
+        campos = []
+        
+        data = []
+        data_username = []
+        
+        username_term = ''
+        
+        for item in fields.items():
+            field, value = item[0], item[1]
+            if value:
+                if field == 'name':
+                    value = unicode(value, 'utf-8')
+                    username_term = value
+                    expression_name += [ModelsDadosFuncdetails.value.like(value,case_sensitive=False)]
+                    expression_name += [ModelsDadosFuncdetails.username.like(value,case_sensitive=False)]
+                else:
+                    if isinstance(value, list):
+                        for val in value:
+                            expressions += [ModelsDadosFuncdetails.value.like(unicode(val, 'utf-8'),case_sensitive=False)]
+                    else:
+                        expressions += [ModelsDadosFuncdetails.value.like(unicode(value, 'utf-8'),case_sensitive=False)]
+                    campos += [unicode(field, 'utf-8')]
+        
+        if campos and expressions:
+            data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails,
+                                                       ModelsConfgMyvindula.name.is_in(campos), 
+                                                       ModelsDadosFuncdetails.field_id==ModelsConfgMyvindula.id,
+                                                       ModelsDadosFuncdetails.deleted==False,
+                                                       Or(*expressions),)
+
+        
+        
+        
+        if expression_name:
+            data_username = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails,
+                                                       ModelsConfgMyvindula.name==u'name',
+                                                       ModelsDadosFuncdetails.field_id==ModelsConfgMyvindula.id,
+                                                       ModelsDadosFuncdetails.deleted==False,
+                                                       Or(*expression_name),)
             
-        if data.count() == 0:
-            return None
+        if (data and data.count() > 0) or (data_username and data_username.count() > 0):
+            L_username_aux = []
+            L_username_aux2 = []
+            
+            for item in data:
+                if not item.username in L_username:
+                    L_username_aux.append(item.username)
+                    
+            for item in data_username:
+                if not item.username in L_username:
+                    L_username_aux2.append(item.username)
+                    
+            #verifica se a busca foi feita tanto por nome quando pelos outros filtros
+            if expressions and expression_name:
+                if L_username_aux and L_username_aux2:
+                    for i in L_username_aux:
+                        if (i in L_username_aux2) and (i not in L_username):
+                            L_username.append(i)
+            #verifica se a busca foi feita apenas por filtro
+            elif expressions:
+                L_username = L_username_aux
+            #verifica se a busca foi feita apenas por nome e username
+            else:
+                L_username = L_username_aux2
+                
         else:
-            return data
+            #Pegando os usuarios com distinct
+            select = Select(ModelsDadosFuncdetails.username,
+                            ModelsDadosFuncdetails.deleted==False,
+                            distinct=True)
+            
+            data = ModelsDadosFuncdetails().store.execute(select)
+            for item in data:
+                L_username.append(item[0])
+        
+        for user in L_username:
+            L_retorno.append(FuncDetails(user))
 
-    
-    def get_FuncDetails_old(self, user):
-        data = self.store.find(ModelsFuncDetails, ModelsFuncDetails.username==user).one()
-        if data:
-            return data
+        return sorted(L_retorno, key=por_name)
+
+    @staticmethod
+    def get_FuncBirthdays(date_start, date_end ):
+        L = []
+        data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, ModelsConfgMyvindula.name==u'date_birth',
+                                                                           ModelsDadosFuncdetails.field_id==ModelsConfgMyvindula.id)
+
+        for item in data:
+            if item.value:
+                try:
+                    data_usuario = date(date.today().year,
+                                        int(datetime.strptime(item.value, "%d/%m/%Y").month),
+                                        int(datetime.strptime(item.value, "%d/%m/%Y").day))
+
+                    if data_usuario >= date_start and\
+                       data_usuario <= date_end:
+                        L.append(item)
+
+                except ValueError:
+                    pass
+
+        L = sorted(L, key=lambda row: datetime.strptime(row.value, "%d/%m/%Y").day)
+        L = sorted(L, key=lambda row: datetime.strptime(row.value, "%d/%m/%Y").month)
+
+        if L:
+            result = [FuncDetails(i.username) for i in L]
+            return result
         else:
-            return None
-        
-        
-#    def get_FuncDetails_by_dinamicFind(self, field, text):
-#        busca = "self.store.find(ModelsFuncDetails, ModelsFuncDetails."+field+".like( '%' + '%'.join(text.split(' ')) + '%' ))"
-#        data = eval(busca)
-#        if data.count() > 0:
-#            return data
-#        else:
-#            return None        
-#        
-#        
-#    def get_FuncDetails_by_DepartamentName(self, text):
-#        urltool = getSite().portal_url
-#        caminho = urltool.getPortalPath()
-#        ctool = getSite().portal_catalog
-#        data = ctool(portal_type='OrganizationalStructure', 
-#                      review_state='published',
-#                      Title=text, path=caminho)   
-#        
-#        if len(data) >= 1:
-#            uid = []
-#            for item in data:
-#                obj = item.getObject()
-#                uid.append(unicode(obj.UID(),'utf-8'))
-#            
-#            origin = [ModelsFuncDetails, Join(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==ModelsFuncDetails.username)]
-#            result  = self.store.using(*origin).find(ModelsFuncDetails, ModelsDepartment.uid_plone.is_in(uid))
-#                
-#            if result.count() > 0:
-#                return result
-#            else:
-#                return None
-#
-#
-#        
-#    def get_FuncBusca(self,name='',department_id=u'0',phone='',filtro=False):
-#        if department_id == u'0' and name == '' and phone == '':
-#            data = self.store.find(ModelsFuncDetails).order_by(ModelsFuncDetails.name)
-#         
-#        elif department_id != u'0':
-#            origin = [ModelsFuncDetails, Join(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==ModelsFuncDetails.username)]
-#            data = self.store.using(*origin).find(ModelsFuncDetails,  ModelsFuncDetails.name.like( '%' + '%'.join(name.split(' ')) + '%' ),
-#                                                                      ModelsFuncDetails.phone_number.like("%" + phone + "%"),                                                                      
-#                                                                      ModelsDepartment.uid_plone==department_id).order_by(ModelsFuncDetails.name)
-#        
-#        elif department_id == u'0' and name != '':
-#            data = self.store.find(ModelsFuncDetails, ModelsFuncDetails.name.like( '%' + '%'.join(name.split(' ')) + '%' )).order_by(ModelsFuncDetails.name)
-#
-#        else:
-#            data = self.store.find(ModelsFuncDetails, ModelsFuncDetails.name.like( '%' + '%'.join(name.split(' ')) + '%' ),
-#                                                      ModelsFuncDetails.phone_number.like("%" + phone + "%")).order_by(ModelsFuncDetails.name)
-#                                                      
-#        if filtro:
-#            data = data.find(ModelsFuncDetails.phone_number != None)
-#        
-#        if data.count() == 0:
-#            return None
-#        else:
-#            return data
-#        
-#        
-#    def get_FuncBusca_dinamic(self,department_id='',form_campos=[],filtro=False):
-#        origin = [ModelsFuncDetails, Join(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==ModelsFuncDetails.username)]
-#        busca = "self.store.using(*origin).find(ModelsFuncDetails,"
-#        for item in form_campos:
-#            if item.values()[0]:
-#                busca += "ModelsFuncDetails."+item.keys()[0]+".like( '%' + '%'.join(u'"+item.values()[0]+"'.split(' ')) + '%' ),"
-#        
-#        if department_id:
-#            busca += "ModelsDepartment.uid_plone==department_id,"
-#            
-#        busca += ").order_by(ModelsFuncDetails.name)"
-#        data = eval(busca)
-#        
-##        
-##        if department_id == u'0' and name == '' and phone == '':
-##            data = self.store.find(ModelsFuncDetails).order_by(ModelsFuncDetails.name)
-##         
-##        elif department_id != u'0':
-##            origin = [ModelsFuncDetails, Join(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==ModelsFuncDetails.username)]
-##            data = self.store.using(*origin).find(ModelsFuncDetails,  ModelsFuncDetails.name.like( '%' + '%'.join(name.split(' ')) + '%' ),
-##                                                                      ModelsFuncDetails.phone_number.like("%" + phone + "%"),                                                                      
-##                                                                      ModelsDepartment.uid_plone==department_id).order_by(ModelsFuncDetails.name)
-##        
-##        elif department_id == u'0' and name != '':
-##            data = self.store.find(ModelsFuncDetails, ModelsFuncDetails.name.like( '%' + '%'.join(name.split(' ')) + '%' )).order_by(ModelsFuncDetails.name)
-##
-##        else:
-##            data = self.store.find(ModelsFuncDetails, ModelsFuncDetails.name.like( '%' + '%'.join(name.split(' ')) + '%' ),
-##                                                      ModelsFuncDetails.phone_number.like("%" + phone + "%")).order_by(ModelsFuncDetails.name)
-#                                                      
-#        if filtro:
-#            data = data.find(ModelsFuncDetails.phone_number != None)
-#        
-#        if data.count() == 0:
-#            return None
-#        else:
-#            return data.group_by(ModelsFuncDetails.username)        
-           
-
-#    
-#    def get_FuncBirthdays(self, date_start, date_end, filtro=''):
-#        if filtro == 'random':
-#            data = self.store.execute('SELECT * FROM vin_myvindula_funcdetails WHERE DATE_FORMAT(date_birth, "%m-%d") BETWEEN DATE_FORMAT("'+date_start+'", "%m-%d") AND DATE_FORMAT("'+date_end+'", "%m-%d") ORDER BY RAND();')
-#
-#        elif filtro == 'proximo':
-#            data = self.store.execute("SELECT * FROM vin_myvindula_funcdetails WHERE concat_ws('-',year(now()),month(date_birth),day(date_birth)) >= DATE(NOW()) ORDER BY MONTH(date_birth) ASC , DAY(date_birth) ASC;")
-#        
-#        else:
-#            data = self.store.execute('SELECT * FROM vin_myvindula_funcdetails WHERE DATE_FORMAT(date_birth, "%m-%d") BETWEEN DATE_FORMAT("'+date_start+'", "%m-%d") AND DATE_FORMAT("'+date_end+'", "%m-%d") ORDER BY MONTH(date_birth) ASC, DAY(date_birth) ASC;')
-#
-#        if data.rowcount != 0:
-#            result=[]
-#            for obj in data.get_all():
-#                D={}
-#                i = 0
-#                columns = self.store.execute('SHOW COLUMNS FROM vin_myvindula_funcdetails;')
-#                for column in columns.get_all():
-#                    if str(column[0]) == 'date_birth':
-#                        D[str(column[0])] = obj[i].strftime('%d/%m')
-#                    else:
-#                        D[str(column[0])] = obj[i]
-#                    i+=1
-#            
-#                result.append(D)       
-#            
-#            return result
-#        else:
-#            return None
+            return []

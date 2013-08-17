@@ -40,6 +40,7 @@ class ModelsMyvindulaHowareu(Storm, BaseStore):
         self.store.commit()
         self.store.flush()
 
+
     def get_myvindula_howareu(self,**kwargs):
         if kwargs.get('username',None):
             user = kwargs.get('username','')

@@ -16,7 +16,7 @@ from Products.CMFCore.utils import getToolByName
 
 from vindula.myvindula.user import BaseFunc
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
-from vindula.myvindula.models.department import ModelsDepartment
+# from vindula.myvindula.models.department import ModelsDepartment
 
 
 from datetime import date
@@ -26,6 +26,7 @@ from DateTime.DateTime import DateTime
 import calendar
 
 from vindula.myvindula.cache import Cache
+
 
 class TypesSearch():
     """ Cria SimpleVocabulary """
@@ -207,7 +208,8 @@ class Renderer(base.Renderer):
         try:user_id = unicode(user, 'utf-8')
         except:user_id = user
 
-        return ModelsDepartment().get_departmentByUsername(user)
+        return 'TODO MUDAR'
+        # return ModelsDepartment().get_departmentByUsername(user)
 
 
     def get_birthdaysToday(self, type_filter):
@@ -247,6 +249,7 @@ class Renderer(base.Renderer):
     def birthdaysToday(self):
         type_filter = self.data.type_search
         #quant = self.data.quantidade_portlet
+
         ch = Cache()
         results = ch.get('PortletAviversarinates_birthdaysToday')
 
@@ -255,7 +258,6 @@ class Renderer(base.Renderer):
             ch.set('PortletAviversarinates_birthdaysToday',results)
 
         return results
-
 
     def getEnd(self,i):
         if i:

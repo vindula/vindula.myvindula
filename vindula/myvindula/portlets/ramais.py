@@ -13,7 +13,8 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.CMFCore.utils import getToolByName
 
 from vindula.myvindula.user import BaseFunc
-from vindula.myvindula.models.department import ModelsDepartment
+# from vindula.myvindula.models.department import ModelsDepartment #, ModelsFuncDetails
+
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 from vindula.myvindula.models.instance_funcdetail import  ModelsInstanceFuncdetails
 from vindula.myvindula.tools.utils import UtilMyvindula
@@ -60,10 +61,12 @@ class IPortletRamais(IPortletDataProvider):
                                default=True,
                                )
 
+
     active_vindula_contato_geral = schema.Bool(title=unicode("Altera o comportamento do portlet para buscar os contatos do portal", 'utf-8'),
                                description=unicode("Selecione para buscar os contados presente no portal.", 'utf-8'),
                                default=False,
                                )
+
 
 
     principal_user = schema.TextLine(title=unicode("Destaque do usuário", 'utf-8'),
@@ -165,7 +168,6 @@ class Renderer(base.Renderer, UtilMyvindula):
         return '%s/myvindulalistcontatos?campos=%s&SearchSubmit=' %(context.portal_url(),
                                                                    form_dados)
 
-            
 
     def get_principal_campo(self, obj):
         campo = self.data.principal_user
@@ -226,30 +228,18 @@ class Renderer(base.Renderer, UtilMyvindula):
         else:
             return None
 
-    def list_filtro(self):
-        campo = self.data.filtro_departamento
-        
-        ch = Cache()
-        L = ch.get('PortletRamais_list_filtro')
 
-        if not L:
-            result = ModelsInstanceFuncdetails().get_AllFuncDetails()
-            L = []
-            if result:
-                for i in result:
-                    if not i.get(campo,'') in L :
-                        L.append(i.get(campo))
-        
-                L.sort()
-
-            ch.set('PortletRamais_list_filtro',L)
-        
-        return L 
-
-
+    # def list_filtro(self):
+    #     campo = self.data.filtro_departamento
+    #     result = ModelsFuncDetails().get_allFuncDetails()
+    #     if result:
+    #         classe = 'ModelsFuncDetails.'+str(campo)
+    #         return result.group_by(eval(classe)).order_by()
 
     def list_departamentos(self):
-        return  ModelsDepartment().get_department()
+        # return  ModelsDepartment().get_department()
+        return []
+
 
     def get_quantidade_portlet(self):
         return self.data.quantidade_portlet
@@ -259,8 +249,9 @@ class Renderer(base.Renderer, UtilMyvindula):
             user_id = unicode(user, 'utf-8')
         except:
             user_id = user
+        return 'TODO mudar'
+        # return ModelsDepartment().get_departmentByUsername(user_id)
 
-        return ModelsDepartment().get_departmentByUsername(user_id)
 
     def getBusca(self):
         form = self.request.form
@@ -366,10 +357,6 @@ class Renderer(base.Renderer, UtilMyvindula):
     #                            result = data
     #                        else:
     #                            result = None
-
-
-
-
 
         return result
 
