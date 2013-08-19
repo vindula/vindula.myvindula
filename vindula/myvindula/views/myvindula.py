@@ -52,7 +52,6 @@ from vindula.myvindula.models.follow import ModelsFollow
 
 import pickle, StringIO
 from PIL import Image
-from vindula.myvindula.cache import Cache
 
 from vindula.controlpanel.handlers import userLogged
 import os
@@ -799,7 +798,7 @@ class MyVindulaListBirthdays(grok.View,UtilMyvindula):
 
     def load_list(self):
         form = self.request.form
-        ch = Cache()
+#        ch = Cache()
         filtro = form.get('filtro',1)
         if filtro == 'prox':
 

@@ -25,8 +25,6 @@ from storm.expr import Desc
 from DateTime.DateTime import DateTime
 import calendar
 
-from vindula.myvindula.cache import Cache
-
 
 class TypesSearch():
     """ Cria SimpleVocabulary """
@@ -250,12 +248,12 @@ class Renderer(base.Renderer):
         type_filter = self.data.type_search
         #quant = self.data.quantidade_portlet
 
-        ch = Cache()
-        results = ch.get('PortletAviversarinates_birthdaysToday')
+#        ch = Cache()
+#        results = ch.get('PortletAviversarinates_birthdaysToday')
 
-        if not results:
-            results = self.get_birthdaysToday(type_filter)
-            ch.set('PortletAviversarinates_birthdaysToday',results)
+#        if not results:
+        results = self.get_birthdaysToday(type_filter)
+        ch.set('PortletAviversarinates_birthdaysToday',results)
 
         return results
 

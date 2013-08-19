@@ -19,7 +19,6 @@ from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 from vindula.myvindula.models.instance_funcdetail import  ModelsInstanceFuncdetails
 from vindula.myvindula.tools.utils import UtilMyvindula
 
-from vindula.myvindula.cache import Cache
 
 class IPortletRamais(IPortletDataProvider):
 
