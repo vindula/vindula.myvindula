@@ -79,10 +79,6 @@ class MyVindulaView(grok.View, UtilMyvindula):
         D['username'] = user
         return ModelsMyvindulaHowareu().get_myvindula_howareu(**D)
 
-    # def get_department(self,username=u''):
-    #     # return ModelsDepartment().get_departmentByUsername(username)
-    #     return 'TODO mudar'
-
     def count_recados_new(self, username):
         return ModelsMyvindulaRecados().cont_recados_new(username)
 
@@ -160,6 +156,9 @@ class MyVindulaView(grok.View, UtilMyvindula):
 
         else:
             self.request.response.redirect(self.context.absolute_url() + '/login')
+            
+    def convertResultSetToList(self, result_set):
+        return [i for i in result_set]
 
 #Views de renderização das imagem do howareu ---------------------------------------------------
 class VindulahowareuImage(grok.View, UtilMyvindula):

@@ -10,28 +10,44 @@
 
         <div metal:fill-slot="content" tal:define="check_recados context/@@myvindula-conf-userpanel/check_recados;"
     								   tal:condition="check_recados">
-
     		<metal:use use-macro="context/@@myvindulapanel/macros/page"/>
 
     		<div id="content" >
-
-                <div metal:define-macro="page-view"
-                     class="userpage geral_lista_comentarios"
+                <div id="messages" metal:define-macro="page-view"
+                     class="userpage geral_lista_comentarios clear list_file"
                      tal:define="member python:context.portal_membership.getAuthenticatedMember();
                                  isAnonymous context/portal_membership/isAnonymousUser|python:True;
-                                 user python:member.getUserName() or None;" >
+                                 user python:member.getUserName() or None;
+                                 
+                                 view_myvindula nocall:context/@@myvindula;
+                                 items python:view_myvindula.get_recados(user);
+                                 items python:view_myvindula.convertResultSetToList(items);
+                                 
+                                 Batch python:modules['Products.CMFPlone'].Batch;
+                                 b_size request/b_size|string:10;
+                                 b_start python:0;
+                                 b_start request/b_start | b_start;
 
-                    <h2 class="h2title">Mensagens que deixaram para você!</h2>
+                                 batch python:Batch(items, int(b_size), int(b_start));">
+                                     
+                    <div class="columns large-12">
+                        <h5>Mensagens que deixaram para você</h5>
+                        <hr/>
+                    </div>
 
-                    <tal:def define="view_myvindula python:context.restrictedTraverse('@@myvindula');
-                                     items python:view_myvindula.get_recados(user);">
-
-    					<div class="userpage geral_lista_comentarios" tal:condition="items">
-    						<tal:rep tal:repeat="item items">
+					<div class="columns large-12 userpage geral_lista_comentarios" 
+                         tal:condition="items">
+                        
+                        <div class="container">
+                            
+                            <input type="hidden" id="b_size" tal:attributes="value b_size" />
+                            <input type="hidden" id="b_start" tal:attributes="value b_start" />
+                            <input type="hidden" id="absolute_url" tal:attributes="value string:${context/portal_url}/myvindulalistrecados" >
+    						
+                            <tal:rep tal:repeat="item batch">
     							<div class="comment item_lista" >
-
-  								    <div metal:use-macro="context/macro-myvindula-documentByLine/macros/page"> </div>
-
+    							    <div metal:use-macro="context/macro-myvindula-documentByLine/macros/page"> </div>
+    
     								<!--div id="like" tal:condition="not: isAnonymous">
     									<div tal:attributes="id item/id|nothing">
     										<input type="hidden" name="isPlone:boolean" id="isPlone" value="False" />
@@ -39,11 +55,11 @@
     									</div>
     									<div metal:use-macro="context/myvindula-like-macro/macros/like" />
     								</div-->
+                                    
     				                <div class="comment-body">
     				                    <p tal:replace="structure item/text|nothing" />
     						  		</div>
-
-
+    
     								<!-- Responde / Excluir recados
     								<div id="comments" class="bt_comentar" tal:condition="not: isAnonymous" >
     									<a>
@@ -52,10 +68,10 @@
     									</a>
     									<form action="#" method="post" enctype="multipart/form-data" style="float:right"
                                               tal:attributes="action string:${context/absolute_url}/myvindulalistrecados">
-
+    
                                             <input type="hidden" name="form.excluir:boolean" value="True" />
                                             <input type="hidden" name="id_recado" id="id_recado" tal:attributes="value item/id|nothing" />
-
+    
                                             <--input type="submit" name="excluir" id="excluir" value="Excluir"
                                                    onclick="return confirmExcluirRecados();"
                                                                  class="bt_comments" tal:attributes="id item/id|nothing" /--
@@ -64,13 +80,35 @@
                                     -->
                                     <br/>
     							</div>
-
     						</tal:rep>
-    					</div>
-    				</tal:def>
+                            
+                            <br/>
+                            
+                            <div id="paginacao">
+                                <div id="size-nav" class="left">
+                                    <p>
+                                        <span tal:content="python:'Total: ('+str(len(items))+')'">Total (XX)</span>
+                                        |
+                                        <span tal:define="css python:'font-weight:bolder;;'">Itens por página:
+                                            <a class="c-pointer" id="itenspage" href="#"
+                                               tal:attributes="style python:b_size == '10' and css or '' ">10</a>,
+                                            <a class="c-pointer" id="itenspage" href="#"
+                                               tal:attributes="style python:b_size == '20' and css or '' ">20</a>,
+                                            <a class="c-pointer" id="itenspage" href="#"
+                                               tal:attributes="style python:b_size == '30' and css or '' ">30</a>,
+                                            <a class="c-pointer" id="itenspage" href="#"
+                                               tal:attributes="style python:b_size == '40' and css or '' ">40</a>
+                                        </span>
+                                    </p>
+                                </div>
+                                <div id="pag-nav" class="right">
+                                    <metal:block metal:use-macro="context/boll_batch/macros/navigation" />
+                                </div>
+                            </div>
+                        </div>
+					</div>
     			</div>
     		</div>
-
         </div>
     </body>
 </html>

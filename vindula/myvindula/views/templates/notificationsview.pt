@@ -10,8 +10,17 @@
         <div metal:fill-slot="content" >
             <metal:use use-macro="context/@@myvindulapanel/macros/page"/>
             <metal:macro define-macro="page-view">
+                
+                <script type="text/javascript" src=""
+                        tal:attributes="src string:${context/absolute_url|nothing}/++resource++vindula.content/js/ajax_list_file.js"></script>
+                        
                 <div class="clear">
-                    <div class="columns large-12" 
+                    <div class="columns large-12">
+                        <h5>Notifica&ccedil;&otilde;es</h5>
+                        <hr/>
+                    </div>
+                    
+                    <div id="notifications" class="columns large-12 list_file" 
                          tal:define="member python:context.portal_membership.getAuthenticatedMember();
                                      view_myvindula nocall:context/@@myvindula;
                                      isAnonymous context/portal_membership/isAnonymousUser|python:True;
@@ -20,36 +29,65 @@
                                      notificacoes python:view_myvindula.get_notificacoes(username);
     
                                      Batch python:modules['Products.CMFPlone'].Batch;
-                                     b_size python:20;
+                                     b_size request/b_size|string:10;
                                      b_start python:0;
                                      b_start request/b_start | b_start;
     
-                                     batch python:Batch(notificacoes, b_size, int(b_start));">
-                        <tal:rep repeat="notificacao batch">
-                            <div class="notify" 
-                                 tal:define="user_actor python:view_myvindula.get_prefs_user(notificacao.actor);
-                                             obj_action python:view_myvindula.lookupObject(notificacao.content.uid);">
-                              <a href="#" tal:attributes="href obj_action/absolute_url|nothing">
-                                  <div class="clear">
-                                      <img class="left" width="50" height="50"
-                                           tal:attributes="src string:${here/portal_url}/vindula-api/myvindula/user-picture/photograph/${notificacao/actor}/True">
-    
-                                      <div class="left info-updates">
-                                          <div>
-                                              <strong tal:content="user_actor/name|notificacao/acto|string: "></strong>
-                                              <span tal:content="python:view_myvindula.action_social.get(notificacao.action,'')"></span>
-                                              <span tal:content="obj_action/Title|string: "></span>
-    
-                                              <span tal:content="python:view_myvindula.getTimeAgo(notificacao.get_date_created,'')"></span>
+                                     batch python:Batch(notificacoes, int(b_size), int(b_start));">
+                        
+                        <div class="container"> 
+                            <input type="hidden" id="b_size" tal:attributes="value b_size" />
+                            <input type="hidden" id="b_start" tal:attributes="value b_start" />
+                            <input type="hidden" id="absolute_url" tal:attributes="value string:${context/portal_url}/myvindula-notifications" >
+                            
+                            <tal:rep repeat="notificacao batch">
+                                <div class="notify" 
+                                     tal:define="user_actor python:view_myvindula.get_prefs_user(notificacao.actor);
+                                                 obj_action python:view_myvindula.lookupObject(notificacao.content.uid);">
+                                  <a href="#" tal:attributes="href obj_action/absolute_url|nothing">
+                                      <div class="clear">
+                                          <img class="left" width="50" height="50"
+                                               tal:attributes="src string:${here/portal_url}/vindula-api/myvindula/user-picture/photograph/${notificacao/actor}/True">
+        
+                                          <div class="left info-updates">
+                                              <div>
+                                                  <strong tal:content="user_actor/name|notificacao/acto|string: "></strong>
+                                                  <span tal:content="python:view_myvindula.action_social.get(notificacao.action,'')"></span>
+                                                  <span tal:content="obj_action/Title|string: "></span>
+        
+                                                  <span tal:content="python:view_myvindula.getTimeAgo(notificacao.get_date_created,'')"></span>
+                                              </div>
                                           </div>
                                       </div>
-                                  </div>
-                              </a>
+                                  </a>
+                                </div>
+                            </tal:rep>
+                            <!--div class="navigation-users">
+                                <div metal:use-macro="here/batch_macros/macros/navigation" />
+                            </div-->
+                                
+                            <div id="paginacao">
+                                <div id="size-nav" class="left">
+                                    <p>
+                                        <span tal:content="python:'Total: ('+str(len(notificacoes))+')'">Total (XX)</span>
+                                        |
+                                        <span tal:define="css python:'font-weight:bolder;;'">Itens por página:
+                                            <a class="c-pointer" id="itenspage" href="#"
+                                               tal:attributes="style python:b_size == '10' and css or '' ">10</a>,
+                                            <a class="c-pointer" id="itenspage" href="#"
+                                               tal:attributes="style python:b_size == '20' and css or '' ">20</a>,
+                                            <a class="c-pointer" id="itenspage" href="#"
+                                               tal:attributes="style python:b_size == '30' and css or '' ">30</a>,
+                                            <a class="c-pointer" id="itenspage" href="#"
+                                               tal:attributes="style python:b_size == '40' and css or '' ">40</a>
+                                        </span>
+                                    </p>
+                                </div>
+                                <div id="pag-nav" class="right">
+                                    <metal:block metal:use-macro="context/boll_batch/macros/navigation" />
+                                </div>
                             </div>
-                        </tal:rep>
-                        <div class="navigation-users">
-                            <div metal:use-macro="here/batch_macros/macros/navigation" />
-                        </div>           
+                        </div>  
                     </div>
                 </div>
             </metal:macro>

@@ -20,7 +20,9 @@
           <tal:i18n i18n:translate="label_by_author">
           by
           <a href="#"
-             tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/myvindulalistuser?user=${creator_id}"
+             class="profile-link"
+             tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/myvindulalistuser?user=${creator_id};
+                             data-username creator_id;"
              tal:content="view/authorname"
              tal:omit-tag="python:view.author() is None"
              i18n:name="author">Roland Barthes</a>
