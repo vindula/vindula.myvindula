@@ -265,8 +265,11 @@ class FuncDetails(object):
         L = get_redis_cache(key)
         if not L:  
             L = []
-            data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, ModelsConfgMyvindula.name==u'date_birth',
-                                                                               ModelsDadosFuncdetails.field_id==ModelsConfgMyvindula.id)
+            data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, 
+                                                       ModelsConfgMyvindula.name==u'date_birth',
+                                                       ModelsDadosFuncdetails.field_id==ModelsConfgMyvindula.id,
+                                                       ModelsDadosFuncdetails.value != u'',
+                                                       ModelsDadosFuncdetails.deleted==False,)
 
             for item in data:
                 if item.value:
@@ -287,14 +290,18 @@ class FuncDetails(object):
 
             if L:
                 sorted_user_list = []
+                result = []
                 for user in L:
-                    UO = FuncDetails(user.username).get_unidadeprincipal()
-                    if UO:
-                        UO = UO.UID()
-                    else:UO = ''
-                    sorted_user_list.append({'username':user.username,'UO':UO})
+                    profile = FuncDetails(user.username)
+                    if not profile.get('hide_birthday'):
+                        UO = profile.get_unidadeprincipal()
+                        if UO:
+                            UO = UO.UID()
+                        else:UO = ''
+                        sorted_user_list.append({'username':user.username,'UO':UO})
+                        result.append(profile)
                 set_redis_cache(key,'FuncDetails:get_FuncBirthdays:keys',sorted_user_list,7200)                
-                return L
+                return result
             else:
                 return []
         return L
