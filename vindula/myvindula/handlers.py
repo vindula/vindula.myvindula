@@ -48,7 +48,7 @@ def userupdate(event):
         # if enable_chat and not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
         #     CreateUserXMPP(user_id)
 
-        tools.setRedirectPage('/myvindula-first-registre')
+#        tools.setRedirectPage('/myvindula-first-registre')
 
 
     # if enable_chat and not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
@@ -64,7 +64,7 @@ def userupdate(event):
 
             tools.setLogger('info',"Dados Incompletos no myvindula")
 
-            tools.setRedirectPage('/myvindula-first-registre')
+#            tools.setRedirectPage('/myvindula-first-registre')
 
 
 # def onDeleteUser(event):
