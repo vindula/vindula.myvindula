@@ -56,12 +56,12 @@
                                         <td>
                                             <span class="summary">
                                                 <a href="#" class="contenttype-folder state-published url"
-                                                   tal:attributes="href item/absolute_url|nothing;
+                                                   tal:attributes="href python:(item.portal_type == 'File') and item.absolute_url()+'/file_view' or item.absolute_url();
                                                                    class string:$item_type_class $item_wf_state_class url"
                                                    tal:content="item/title|item/id|nothing">Item Title</a>
                                             </span>
                                         </td>
-                                        <td class="description" tal:content="item/description|string: ">
+                                        <td class="description" tal:content="item/Description|string: ">
                                             description
                                         </td>
                                         <td tal:content="python: item.bobobase_modification_time().strftime('%d/%m/%Y %H:%M')"></td>
