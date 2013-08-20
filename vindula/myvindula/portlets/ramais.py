@@ -16,7 +16,6 @@ from vindula.myvindula.user import BaseFunc
 # from vindula.myvindula.models.department import ModelsDepartment #, ModelsFuncDetails
 
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
-from vindula.myvindula.models.instance_funcdetail import  ModelsInstanceFuncdetails
 from vindula.myvindula.tools.utils import UtilMyvindula
 
 
