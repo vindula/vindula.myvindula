@@ -1,5 +1,7 @@
 <metal:macro define-macro="page-view"
              tal:define="view_modal nocall:context/@@modal-profile;
+                         user_logged context/portal_membership/getAuthenticatedMember;
+                         user_logged user_logged/getUserName|nothing;
                          username request/username|nothing;">
     
     <tal:cond condition="username">
@@ -16,16 +18,20 @@
                     <div class="info-box left">
                         <h6 tal:content="python:user_profile.get('name')"></h6>
                         <span tal:content="python:user_profile.get('cargo')"></span>
-                        <span tal:content="user_profile/get_sigla_unidadeprincipal"></span>
+                        <tal:cond condition="user_profile/get_unidadeprincipal|nothing">
+                            <a tal:define="structure user_profile/get_unidadeprincipal;"
+                               tal:content="structure/getSiglaOrTitle"
+                               tal:attributes="href structure/absolute_url;
+                                               alt structure/getSiglaOrTitle;"></a>
+                        </tal:cond>
+                        
                         <div class="contato">
                             <div class="block" tal:condition="python:user_profile.get('phone_number') or user_profile.get('cell_phone')">
-                                <strong>Telefone:</strong>
                                 <span tal:content="python:user_profile.get('phone_number')"></span>
                                 <span tal:condition="python:user_profile.get('phone_number') and user_profile.get('cell_phone')">|</span>
                                 <span tal:content="python:user_profile.get('cell_phone')"></span>
                             </div>
                             <div class="block" tal:condition="python:user_profile.get('email')">
-                                <strong>Email:</strong>
                                 <span tal:content="python:user_profile.get('email')"></span>
                             </div>
                             <div class="block" tal:condition="python:user_profile.get('localizacao')">
@@ -40,7 +46,7 @@
                 </div>
             </div>
             
-            <div class="social-info">
+            <div tal:condition="python:username != user_logged" class="social-info">
                 <div class="social-follow clear">
                     <div class="vd-social-left left" tal:define="UID username;
                                                                   TYPES string:UserObject;">
