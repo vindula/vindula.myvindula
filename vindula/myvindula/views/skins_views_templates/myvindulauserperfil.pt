@@ -205,7 +205,7 @@
                                                             </div>
                                                             
                                                             <div class="icon-moreaccess clear">
-                                                                <a href="#" class="more">
+                                                                <a href="#" class="more" id="participando">
                                                                     <h1 class="left subheader vindula-icon-plus-sign"></h1>
                                                                     Ver todos
                                                                 </a>
