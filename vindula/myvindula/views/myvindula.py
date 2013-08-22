@@ -70,7 +70,7 @@ class MyVindulaView(grok.View, UtilMyvindula):
     action_social = {'Like': ' curtiu ',
                      'Comment': ' comentou ',
                      'Share' : ' compartilhou ',
-                     'Follow' : ' seguiu ',
+                     'Follow' : ' assinou ',
                      'History' : ' atualizou ',}
 
     def get_howareu(self, user):
