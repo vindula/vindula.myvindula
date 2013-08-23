@@ -4,7 +4,7 @@ function  createElement(name) {
     return $(document.createElement(name));
 }
 
-$j(document).ready(function(){
+function defineLinkModal() {
     
     $j('a.profile-link').hover(function (ev) {
         clearTimeout($j(this).data('timeout_out'));
@@ -54,4 +54,8 @@ $j(document).ready(function(){
         $j(this).data('timeout_out', t_out);
     });
     
- });
+}
+
+$j(document).ready(function(){
+    defineLinkModal();
+});
