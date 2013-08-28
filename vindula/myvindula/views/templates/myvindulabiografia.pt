@@ -36,7 +36,9 @@
                         </div>
                         
                         <div class="columns large-9">
-                            <span tal:content="user/biografia|string: ">
+                            <span class="structure_markdown" 
+                                  tal:content="structure user/biografia|string: ">
+                                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                             </span>
                         </div>
                     </tal:def>
