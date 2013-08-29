@@ -53,7 +53,8 @@
             <h4 tal:condition="not: view_manage|python:False">
                 <a class="profile-link" 
                    tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${username};
-                                   data-username username;"
+                                   data-type string:UserObject;
+                                   data-value username;"
                    tal:content="principal_name|python:''">Nome Funcionario</a>
             </h4>
             <h4 tal:condition="view_manage|python:False">

@@ -6,7 +6,7 @@ function  createElement(name) {
 
 function defineLinkModal() {
     
-    $j('a.profile-link').hover(function (ev) {
+    $j('a.profile-link, a.structure-link').hover(function (ev) {
         clearTimeout($j(this).data('timeout_out'));
         var $el = $j(this),
             JQ_height = $el.height() || 0,
@@ -16,26 +16,32 @@ function defineLinkModal() {
         var height = Math.max(JQ_height, JS_height);
         
         var t_in = setTimeout(function() {
-            if($el.find('.profile-modal').length){
-                $el.find('.profile-modal').show();
+            if($el.find('.vindula-modal').length){
+                $el.find('.vindula-modal').show();
             }else{
-                var username = $el.attr('data-username'),
+                var content_value = $el.attr('data-value'),
                     base_url = $j('base').attr('href'),
+                    type_of_modal = $el.attr('data-type');
+                
+                if (type_of_modal == 'UserObject'){
                     modal_url = base_url+'/modal-profile';
+                }else{
+                    modal_url = base_url+'/modal-structure';
+                }
     
                 $j.ajax({
                     type: "POST",
                     url: modal_url,
-                    data: {username: username},
+                    data: {content_value: content_value},
                     success: function(data){
                         $dom = $j(data);
                         $dom.css('top', height+10);
                         $dom.find('.social-info').vindula(null, {user_token: window.token});
                         $el.append($dom);
-                    },
-                    error: function(error){
-                        console.error(error);
                     }
+//                    error: function(error){
+//                        console.error(error);
+//                    }
                 })
             }
         }, 1000);
@@ -46,8 +52,8 @@ function defineLinkModal() {
         
         var $el = $j(this);
         var t_out = setTimeout(function() {
-            if ($el.find('.profile-modal').length) {
-                $el.find('.profile-modal').hide();
+            if ($el.find('.vindula-modal').length) {
+                $el.find('.vindula-modal').hide();
             }
         }, 500);
         

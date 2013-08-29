@@ -28,8 +28,11 @@
                                 <tal:cond condition="projects">
                                     <tal:rep repeat="project projects">
                                         <li>
-                                            <a tal:attributes="href project/absolute_url|nothing;
-                                                               alt project/getSiglaOrTitle|string: "
+                                            <a class="structure-link"
+                                               tal:attributes="href project/absolute_url|nothing;
+                                                               alt project/getSiglaOrTitle|nothing;
+                                                               data-type string:Structure;
+                                                               data-value project/UID|nothing;"
                                                tal:content="project/getSiglaOrTitle|string: ">ASCON</a>
                                         </li>
                                     </tal:rep>

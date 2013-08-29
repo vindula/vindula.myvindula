@@ -2,10 +2,10 @@
              tal:define="view_modal nocall:context/@@modal-profile;
                          user_logged context/portal_membership/getAuthenticatedMember;
                          user_logged user_logged/getUserName|nothing;
-                         username request/username|nothing;">
+                         username request/content_value|nothing;">
     
     <tal:cond condition="username">
-        <div class="profile-modal"
+        <div class="vindula-modal"
              tal:define="user_profile python:view_modal.getDataFunc(username);">
             <div class="seta-box">
                 <img tal:attributes="src string:${context/portal_url}/++resource++vindula.tile/images/seta-box.png">

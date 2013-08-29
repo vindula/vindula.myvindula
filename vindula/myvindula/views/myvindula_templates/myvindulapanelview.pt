@@ -29,7 +29,8 @@
 		                    tal:attributes="class python:selected and 'selected' or 'plain'">
 		                    <a href="" class="profile-link"
 		                       tal:attributes="href string:${context/portal_url}/@@myvindulalistuser?user=${member};
-                                               data-username member;"
+                                               data-type string:UserObject;
+                                               data-value member;"
 		                       i18n:translate="">
 		                        Perfil
 		                    </a>

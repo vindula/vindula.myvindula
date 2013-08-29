@@ -30,7 +30,8 @@
 								<td class="field" tal:on-error="nothing">
 									<a class="profile-link" 
                                        tal:attributes="href string:${here/portal_url}/myvindulalistuser?user=${item/username};
-                                                       data-username item/username;"
+                                                       data-type string:UserObject;
+                                                       data-value item/username;"
 									   tal:content="python: item.get('name','') or ''">Name</a>			
 								</td>
 								<tal:rep repeat="campo python: list_campos[1:]" tal:on-error="nothing">

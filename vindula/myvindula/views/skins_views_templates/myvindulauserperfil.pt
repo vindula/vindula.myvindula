@@ -147,7 +147,10 @@
                                                             <li tal:define="unidadeprincial nocall:user_profile/get_unidadeprincipal;"
                                                                 tal:condition="unidadeprincial">
                                                                 <strong>Unidade:</strong>
-                                                                <a tal:attributes="href python:unidadeprincial().absolute_url() or None"
+                                                                <a class="structure-link"
+                                                                   tal:attributes="href python:unidadeprincial().absolute_url() or None;
+                                                                                   data-type string:Structure;
+                                                                                   data-value python:unidadeprincial().UID() or None;" 
                                                                    tal:content="python:unidadeprincial().getSiglaOrTitle() or ''">ASCON</a>
                                                             </li>
 
@@ -195,12 +198,20 @@
                                                     <div class="content_itens">
                                                         <tal:cond tal:condition="departamentos">
                                                             <div class="clear block-unit" tal:repeat="departamento departamentos">
-                                                                <img class="left" 
-                                                                     tal:attributes="src departamento/obj/getImageIcone|nothing;
-                                                                                      alt departamento/title|string: "/>
+                                                                <div class="image-container">
+                                                                    <img class="left"
+                                                                         tal:attributes="src departamento/obj/getImageIcone|nothing;
+                                                                                         alt departamento/title|string: "/>
+                                                                </div>
                                                                 <div class="title-org">
-                                                                    <a tal:attributes="href departamento/url|nothing"
-                                                                       tal:content="departamento/title|nothing">Lorem ipsum dolor sit amet </a>
+                                                                    <a class="structure-link"
+                                                                       tal:attributes="href departamento/url|nothing;
+                                                                                       alt departamento/title|nothing;
+                                                                                       data-type string:Structure;
+                                                                                       data-value departamento/obj/UID|nothing;"
+                                                                       tal:content="departamento/title|nothing">
+                                                                           ASCON
+                                                                    </a>
                                                                 </div>
                                                             </div>
                                                             
@@ -231,8 +242,11 @@
                                                             <tal:cond condition="projects">
                                                                 <tal:rep repeat="project projects">
                                                                     <li>
-                                                                        <a tal:attributes="href project/absolute_url|nothing;
-                                                                                           alt project/getSiglaOrTitle|string: "
+                                                                        <a class="structure-link"
+                                                                           tal:attributes="href project/absolute_url|nothing;
+                                                                                           alt project/getSiglaOrTitle|string: ;
+                                                                                           data-type string:Structure;
+                                                                                           data-value project/UID|nothing;"
                                                                            tal:content="project/getSiglaOrTitle|string: ">ASCON</a>
                                                                     </li>
                                                                 </tal:rep>

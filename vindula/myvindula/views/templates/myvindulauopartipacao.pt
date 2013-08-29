@@ -27,12 +27,20 @@
                             
                             <tal:cond tal:condition="departamentos">
                                 <div class="clear block-unit" tal:repeat="departamento departamentos">
-                                    <img class="left" 
-                                         tal:attributes="src departamento/obj/getImageIcone|nothing;
-                                                          alt departamento/title|string: "/>
+                                    <div class="image-container">
+                                        <img class="left"
+                                             tal:attributes="src departamento/obj/getImageIcone|nothing;
+                                                             alt departamento/title|string: "/>
+                                    </div>
                                     <div class="title-org">
-                                        <a tal:attributes="href departamento/url|nothing"
-                                           tal:content="departamento/title|nothing">Lorem ipsum dolor sit amet </a>
+                                        <a class="structure-link"
+                                           tal:attributes="href departamento/url|nothing;
+                                                           alt departamento/title|nothing;
+                                                           data-type string:Structure;
+                                                           data-value departamento/obj/UID|nothing;"
+                                           tal:content="departamento/title|nothing">
+                                               ASCON
+                                        </a>
                                     </div>
                                 </div>
                             </tal:cond>
