@@ -83,7 +83,7 @@ class MyVindulaView(grok.View, UtilMyvindula):
 
     def get_recados(self,username):
         return ModelsMyvindulaRecados().get_myvindula_recados(receiver=username,destination=username)
-
+    
     def count_notificacao_new(self, username):
         return ModelsMyvindulaNotificacao().cont_notificacao_new(username)
 
@@ -102,7 +102,11 @@ class MyVindulaView(grok.View, UtilMyvindula):
             str = ' '.join(str.split(' ')[:-1])
 
         return str
-
+    
+    def getOnlySubjectMessag(self,text):
+        if (text.find('<br />') != -1):
+            return text[:text.find('<br />')]
+        return text
 
     def checkHomeFolder(self):
         """ Check if exist homeFolder """
