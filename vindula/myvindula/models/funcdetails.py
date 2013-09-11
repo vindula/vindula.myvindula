@@ -293,7 +293,7 @@ class FuncDetails(object):
                 result = []
                 for user in L:
                     profile = FuncDetails(user.username)
-                    if not profile.get('hide_birthday'):
+                    if not profile.get('hide_birthday') or profile.get('hide_birthday') == 'off':
                         UO = profile.get_unidadeprincipal()
                         if UO:
                             UO = UO.UID()
