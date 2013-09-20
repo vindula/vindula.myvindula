@@ -1,10 +1,13 @@
 # coding: utf-8
 
 from five import grok
+
+from Acquisition import aq_inner
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from Products.CMFCore.interfaces import ISiteRoot
 
-from zope.component import getUtility
+from zope.component import adapts, getAdapter, getMultiAdapter, getUtility
+from Products.CMFCore.utils import getToolByName
 from plone.i18n.normalizer.interfaces import IIDNormalizer
 
 from zope.app.component.hooks import getSite
@@ -16,6 +19,7 @@ from datetime import date, datetime
 from random import randint
 import logging, base64
 from copy import copy
+from itertools import chain
 
 from vindula.myvindula.validation import valida_form,valida_form_dinamic
 from vindula.myvindula.user import BaseFunc
@@ -25,6 +29,7 @@ from vindula.myvindula.registration import SchemaFunc, SchemaConfgMyvindula, Imp
 from vindula.myvindula.tools.utils import UtilMyvindula
 # from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
+from vindula.myvindula.models.funcdetails import FuncDetails
 
 
 #Import Necessario spara a migração dos dados
@@ -205,17 +210,11 @@ class MyVindulaDeParaUser(grok.View, UtilMyvindula):
     grok.context(INavigationRoot)
     grok.require('cmf.ManagePortal')
     grok.name('myvindula-compare-user')
+    
+    ignoreContext = True
 
-
-    def update(self):
-        db_user = ModelsInstanceFuncdetails().get_AllFuncDetails()
-        plone_user = self.context.acl_users.getUserIds()
-
-        self.user = []
-        for user in db_user:
-            if not user.get('username') in plone_user and\
-                user.get('username') != 'admin':
-                self.user.append(user)
+    label = _(u"Usuários orfaos do vindula")
+    description = _(u"Excluir usuarios que foram excluidos do plone ou do AD/LDAP.")
 
 class MyVindulaRemoveUser(grok.View, UtilMyvindula):
     grok.context(INavigationRoot)
@@ -228,19 +227,21 @@ class MyVindulaRemoveUser(grok.View, UtilMyvindula):
     def update(self):
         form = self.request.form
         success_url = self.context.absolute_url() + '/myvindula-compare-user'
-
-        if 'user' in form.keys():
-            username = self.Convert_utf8(form.get('user',''))
-
-            is_user_vindula = ModelsInstanceFuncdetails().get_InstanceFuncdetails(username)
-            try:
-                if is_user_vindula:
-                    ModelsInstanceFuncdetails().del_InstanceDadosFuncdetails(username)
-                    self.setStatusMessage("info","Usuário excluído com sucesso.")
-            except:
-                self.setStatusMessage("error","Erro ao excluir usuário do Vindula.")
-                self.setRedirectPage('/@@usergroup-userprefs')
-
+        if 'users' in form.keys():
+            users = form.get('users','')
+            if isinstance(users, str):
+                users = [users]
+            for user in users:
+                username = self.Convert_utf8(user)
+    
+#                is_user_vindula = ModelsInstanceFuncdetails().get_InstanceFuncdetails(username)
+                is_user_vindula = FuncDetails(username)
+                try:
+                    if is_user_vindula:
+                        is_user_vindula.remove_data_user()
+                        self.setStatusMessage("info","Usuário excluído com sucesso.")
+                except:
+                    self.setStatusMessage("error","Erro ao excluir usuário do Vindula.")
 
         self.request.response.redirect(success_url)
 

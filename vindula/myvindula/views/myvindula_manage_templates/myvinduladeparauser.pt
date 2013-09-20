@@ -1,52 +1,28 @@
-<html>
-    <body metal:use-macro="here/prefs_main_template/macros/master">
-        <div metal:fill-slot="prefs_configlet_content">
-        	<div id="content">
-        		<div metal:use-macro="context/global_statusmessage/macros/portal_message">
-                 Status message
-                </div>
-        		<script type="text/javascript">
-        			function removeUser(){
-						if (confirm('Tem certeza que deseja remover este usuário?')){
-							return true
-						}else{
-							return false
-						};
-					};
-					
-        		</script>
-				
-				
-				<h1>Usuários orfãos no Vindula</h1>
-				
-				<h2>Utilize essa opção para excluir o perfil de um usuário que está no Vindula, porém, seu usuário foi excluído do Ldap/Vindula.</h2><br />
-				<h3>Caso tenha dúvida, consulte o suporte do Vindula</h3><br />
-		    	
-				<h3>Usuários Orfãos</h3>
-				<table class="listing">
-					<tr>
-						<th>Nome</th>
-						<th>Username</th>
-						<th>E-mail</th>
-						<th>Excluir</th>
-					</tr>
-		            <tal:rep repeat="item view/user">
-		            	<tr>
-		            		<td tal:content="item/name|nothing"></td>
-							<td tal:content="item/username|nothing"></td>
-							<td tal:content="item/email|nothing"></td>
-							<td align="center">
-		                        <a title="Remover item"
-								   onClick="return removeUser();" 
-		                           tal:attributes="href string:${context/absolute_url|nothing}/myvindula-remove-user?user=${item/username|nothing}" >
-		                           	
-								  <img tal:attributes="src string:${view/static}/images/field-False.png" title="Remover item" alt="Remover item" />
-								</a>
-		                    </td>
-		            	</tr>
-		            </tal:rep>				
-				</table>
-			</div>	
-		</div>
-	</body>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+         xmlns:tal="http://xml.zope.org/namespaces/tal"
+         xmlns:metal="http://xml.zope.org/namespaces/metal"
+         xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+         lang="en"
+         metal:use-macro="context/prefs_main_template/macros/master"
+         i18n:domain="plone">
+             
+<head>
+</head>
+<body>
+    <metal:main fill-slot="prefs_configlet_content">
+        <script type="text/javascript"  tal:attributes="src string:${context/portal_url|nothing}/vindula-api/static/js/vindula_myvindula.js"></script>
+
+        <script type="text/javascript"
+            tal:content="python:'''
+                                $j(document).ready(function(){
+                                    $j('#myvindula').myvindula(null, {dominio: '%s', user_token: '%s'});
+                                });
+                                ''' % (context.portal_url(),session.get('user_token'))" >
+        </script>
+
+        <div id="myvindula">
+            <div class="vd_users_orphans"></div>
+        </div>
+	</metal:main>
+</body>
 </html>
