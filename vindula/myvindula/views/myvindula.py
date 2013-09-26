@@ -931,10 +931,10 @@ class MyVindulaFindHoleriteView(grok.View, UtilMyvindula):
             
             id = int(form.get('id','0'))
             if self.select_modelo() == '01':
-                result = ModelsFuncHoleriteDescricao().get_FuncHolerites_byCPFAndID(cpf, id)
+                result = ModelsFuncHolerite().get_FuncHolerites_byCPFAndID(cpf, id)
         
             elif self.select_modelo() == '02':
-                result = ModelsFuncHoleriteDescricao02().get_FuncHolerites_byCPFAndID(cpf, id)
+                result = ModelsFuncHolerite02().get_FuncHolerites_byCPFAndID(cpf, id)
             
             return result
 
