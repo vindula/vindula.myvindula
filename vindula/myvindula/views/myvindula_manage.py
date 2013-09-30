@@ -42,6 +42,8 @@ from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 
 from vindula.myvindula.models.holerites2 import ModelsFuncHolerite02, ModelsFuncHoleriteDescricao02
 
+from vindula.myvindula.models.photo_user import ModelsPhotoUser
+
 logger = logging.getLogger('vindula.myvindula')
 
 
@@ -914,17 +916,32 @@ class MyVindulaExportUsersView(grok.View,UtilMyvindula):
 
             for user in users:
                 for campo in campos_vin:
-                    valor = user.get(campo,'')
-                    
-                    if type(valor) == list:
-                        valor_list = ''
-                        for i in valor:
-                            if i :valor_list += (i + ' / ') 
+                    if campo == 'photograph':
+                        username = user.get('username','')
+                        instance_id = ModelsInstanceFuncdetails().get_InstanceFuncdetails(username)
+
+                        campo_image_instance = ModelsPhotoUser().get_ModelsPhotoUser_byFieldAndInstance(campo,instance_id.id)
+
+                        if campo_image_instance:
+                            text += '%s;' %('True')
+                        else:
+                            text += '%s;' %('False')
+
+                    else:
+                        valor = user.get(campo,'')
                         
-                        valor = valor_list
-                        
-                    text += '%s;' % (str(valor).replace('\n', '').replace('\r', '').replace(';', ''))
+                        if type(valor) == list:
+                            valor_list = ''
+                            for i in valor:
+                                if i :valor_list += (i + ' / ') 
+                            
+                            valor = valor_list
+                            
+                        text += '%s;' % (str(valor).replace('\n', '').replace('\r', '').replace(';', ''))
+
                 text += '\n'
+
+
                  
             self.request.response.write(str(text))
         
