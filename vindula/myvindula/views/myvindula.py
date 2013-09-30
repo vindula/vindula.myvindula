@@ -33,7 +33,6 @@ from vindula.controlpanel.browser.models import ModelsCompanyInformation
 from vindula.chat.utils.models import ModelsUserOpenFire
 
 from vindula.myvindula.tools.utils import UtilMyvindula
-from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
 
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 from vindula.myvindula.models.department import ModelsDepartment
