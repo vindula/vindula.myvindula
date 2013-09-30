@@ -924,8 +924,24 @@ class MyVindulaExportUsersView(grok.View,UtilMyvindula):
 
                         if campo_image_instance:
                             text += '%s;' %('True')
+
                         else:
-                            text += '%s;' %('False')
+                            try:
+                                campo_image_username = ModelsPhotoUser().get_ModelsPhotoUser_byUsername(username,campo)    
+
+                                if campo_image_username:
+                                    text += '%s;' %('True')
+                                else:
+                                    text += '%s;' %('False')
+                            except:
+                                text += '%s;' %('False')
+
+                    if campo == 'vin_myvindula_department':
+                        valor = user.get(campo,'')
+                        try:
+                            text += '%s;' %(valor[1])
+                        except:
+                            text += ';' 
 
                     else:
                         valor = user.get(campo,'')
@@ -940,8 +956,6 @@ class MyVindulaExportUsersView(grok.View,UtilMyvindula):
                         text += '%s;' % (str(valor).replace('\n', '').replace('\r', '').replace(';', ''))
 
                 text += '\n'
-
-
                  
             self.request.response.write(str(text))
         
@@ -1006,7 +1020,7 @@ class MyVindulaManageSchemaLdapView(grok.View,UtilMyvindula):
                         connector.acl_users.manage_deleteLDAPSchemaItems(ldap_names=[ldap_names])
 
             IStatusMessage(self.request).addStatusMessage(_(u'O mapeamento foi realizado com sucesso.'),"info") 
-            self.request.response.redirect(self.context.absolute_url() + '/myvindula-manager-schemaldap')
+            self.request.response.redirect(self.context.absolute_url() + '/myvindula-list-schemaldap')
 
 
         if connector:
