@@ -72,9 +72,12 @@ class SyncLdalMyvindula(object):
 			connector  = self._get_connector(search_user.get('pluginid',''))
 			if connector:
 				user_dn = search_user.get('dn','')
-				details_user = connector.acl_users.getUserDetails(encoded_dn=user_dn, format='dictionary')
+				acl_user = connector.acl_users
+				if hasattr(acl_user, 'getUserDetails'):
+					details_user = acl_user.getUserDetails(encoded_dn=user_dn, format='dictionary')
+					self._manager_details(connector,details_user)
 
-				self._manager_details(connector,details_user)
+				
 
 
 	def _manager_details(self, connetor, dados_user):

@@ -950,6 +950,14 @@ class MyVindulaManageSchemaLdapView(grok.View,UtilMyvindula):
     grok.require('cmf.ManagePortal')
     grok.name('myvindula-manager-schemaldap')
 
+    block_fields = ['name','vin_myvindula_department','photograph']
+    schema_map_ldap = {}
+
+    def tuple2dict(self, schema_tupla):
+        D = {}
+        for key, value in schema_tupla:
+            D[value] = key
+        return D
 
     def update(self):
         acl_users = getToolByName(self.context, 'acl_users')
@@ -957,23 +965,33 @@ class MyVindulaManageSchemaLdapView(grok.View,UtilMyvindula):
 
         id_connectors = self.request.form.get('id','')
         try:
-            connetor = acl_users[id_connectors]
-        
-
-            self.schema_map_ldap = connetor.acl_users.getMappedUserAttrs()
-
-            print self.schema_map_ldap
-
-# manage_addLDAPSchemaItem
-
-# ldap_name
-# friendly_name
-# public_name
-
-
-
+            connector = acl_users[id_connectors]
         except:
-            False
+            connector = False
 
 
+        form = self.request.form
+        if form.get('submitted', False) and connector:
+            
+            for field in form.keys():
+                if 'my_' in field:
 
+                    valor = form.get(field.replace('my_', 'ad_'),'')
+                    campo_myvindula =  field.replace('my_', '')
+
+                    if valor:
+                        connector.acl_users.manage_addLDAPSchemaItem(ldap_name=valor,
+                                                                     friendly_name=campo_myvindula,
+                                                                     public_name=campo_myvindula,)
+
+                    else:
+                        ldap_names = form.get(field.replace('my_', 'del_ad_'),'')
+                        connector.acl_users.manage_deleteLDAPSchemaItems(ldap_names=[ldap_names])
+
+            IStatusMessage(self.request).addStatusMessage(_(u'O mapeamento foi realizado com sucesso.'),"info") 
+            self.request.response.redirect(self.context.absolute_url() + '/myvindula-manager-schemaldap')
+
+
+        if connector:
+            self.schema_map_ldap = self.tuple2dict(connector.acl_users.getMappedUserAttrs())
+             

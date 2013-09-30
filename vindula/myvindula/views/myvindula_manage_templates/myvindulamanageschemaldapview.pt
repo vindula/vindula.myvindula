@@ -21,14 +21,20 @@
 						<th>Campo do Servidor</th>
 					</tr>
 					<tal:rep repeat="item view/fields_myvindula|python:[]">
-						<tr>
+						<tr tal:condition="python: not item.fields in view.block_fields"
+							tal:define="field_name item/fields">
 							<td tal:content="item/label">Titulo</td>
 							<td>
 								==
-								<input type="hidden" name="myvindula" tal:attributes="value item/fields">
+								<input type="hidden" name="myvindula" tal:attributes="name string:my_${field_name};
+																					  value field_name">
 							</td>
-							<td > 
-								<input type="text" name="schema_ad" tal:attributes="value string: ssss ">						    
+							<td tal:define="value_ad python:view.schema_map_ldap.get(field_name)">  
+								<input type="text" name="schema_ad" tal:attributes="name string:ad_${field_name};
+																					value value_ad">
+
+								<input type="hidden" name="schema_ad" tal:attributes="name string:del_ad_${field_name};
+																					  value value_ad">																					
 							</td>
 						</tr>
 					</tal:rep> 
@@ -39,6 +45,7 @@
 	            <fieldset>
 	                <legend>Ações</legend>      
 	                <div>
+	                	<input type="hidden" value="True" name="submitted">
 					    <input class="context bt_comments" type="button" value="Voltar" name="form.voltar" onclick="location.href='/myvindula-list-schemaldap'">
 	                    <input class="context bt_comments" type="submit" value="Salvar" name="form.submited">    
 	                </div>
