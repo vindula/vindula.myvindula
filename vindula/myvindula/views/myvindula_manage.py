@@ -4,6 +4,7 @@ from five import grok
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from Products.CMFCore.interfaces import ISiteRoot
 
+from Products.CMFCore.utils import getToolByName
 from zope.component import getUtility
 from plone.i18n.normalizer.interfaces import IIDNormalizer
 
@@ -930,3 +931,49 @@ class MyVindulaExportUsersView(grok.View,UtilMyvindula):
         
         
         
+class MyVindulaSchemaLdapView(grok.View,UtilMyvindula):
+    grok.context(INavigationRoot)
+    grok.require('cmf.ManagePortal')
+    grok.name('myvindula-list-schemaldap')
+
+
+    def update(self):
+        acl_users = getToolByName(self.context, 'acl_users')
+        itens = [item for item in acl_users.objectValues()\
+                       if item.meta_type == 'Plone Active Directory plugin' or\
+                          item.meta_type == 'Plone LDAP plugin']
+
+        self.connectors = itens
+
+class MyVindulaManageSchemaLdapView(grok.View,UtilMyvindula):
+    grok.context(INavigationRoot)
+    grok.require('cmf.ManagePortal')
+    grok.name('myvindula-manager-schemaldap')
+
+
+    def update(self):
+        acl_users = getToolByName(self.context, 'acl_users')
+        self.fields_myvindula = ModelsConfgMyvindula().get_configurationAll() 
+
+        id_connectors = self.request.form.get('id','')
+        try:
+            connetor = acl_users[id_connectors]
+        
+
+            self.schema_map_ldap = connetor.acl_users.getMappedUserAttrs()
+
+            print self.schema_map_ldap
+
+# manage_addLDAPSchemaItem
+
+# ldap_name
+# friendly_name
+# public_name
+
+
+
+        except:
+            False
+
+
+
