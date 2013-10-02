@@ -5,8 +5,9 @@ from plone.app.layout.navigation.interfaces import INavigationRoot
 from Products.CMFCore.interfaces import ISiteRoot
 
 from Products.CMFCore.utils import getToolByName
-from zope.component import getUtility
+from zope.component import getUtility, getMultiAdapter
 from plone.i18n.normalizer.interfaces import IIDNormalizer
+from Acquisition import aq_inner
 
 from zope.app.component.hooks import getSite
 
@@ -43,6 +44,8 @@ from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 from vindula.myvindula.models.holerites2 import ModelsFuncHolerite02, ModelsFuncHoleriteDescricao02
 
 from vindula.myvindula.models.photo_user import ModelsPhotoUser
+
+from vindula.myvindula.tools.ldap2myvindula import SyncLdalMyvindula
 
 logger = logging.getLogger('vindula.myvindula')
 
@@ -212,11 +215,14 @@ class MyVindulaDeParaUser(grok.View, UtilMyvindula):
     
     def update(self):
         db_user = ModelsInstanceFuncdetails().get_AllFuncDetails()
-        plone_user = self.context.acl_users.getUserIds()
-        
+        # plone_user = self.context.acl_users.getUserIds()
+        searchView = getMultiAdapter((aq_inner(self.context), self.request), name='pas_search')
+        plone_user = searchView.searchUsers()
+        plone_ad_user = [i.get('login') for i in plone_user]
+
         self.user = []
         for user in db_user:
-            if not user.get('username') in plone_user and\
+            if not user.get('username') in plone_ad_user and\
                 user.get('username') != 'admin':
                 self.user.append(user)   
 
@@ -900,6 +906,7 @@ class MyVindulaExportUsersView(grok.View,UtilMyvindula):
             fields_orig = ModelsConfgMyvindula().get_configurationAll()  #ModelsFuncDetails()._storm_columns.values()
 
             campos_vin = []
+            campos_vin_id = []
             text = ''
             
             if fields_orig:
@@ -908,7 +915,9 @@ class MyVindulaExportUsersView(grok.View,UtilMyvindula):
                 
                 for field in fields_orig:
                     campos_vin.append(field.fields)
-                    text += field.fields + ';'
+
+                    text += field.label + ';'
+                    # text += field.fields + ';'
             
                 text = text[:-1] + '\n'
             
@@ -1025,4 +1034,20 @@ class MyVindulaManageSchemaLdapView(grok.View,UtilMyvindula):
 
         if connector:
             self.schema_map_ldap = self.tuple2dict(connector.acl_users.getMappedUserAttrs())
-             
+
+
+class MyVindulaAutoSyncLdapView(grok.View,UtilMyvindula):
+    grok.context(INavigationRoot)
+    grok.require('zope2.View')
+    grok.name('myvindula-autosync')             
+
+
+    def render(self):
+        return "-- Sincronização concluida --"
+
+
+    def update(self):
+        sync_obj = SyncLdalMyvindula(self.context, self.request)
+        sync_obj.sync_all_user()
+        self.setLogger('info',"Sincronização Concluida")
+        
