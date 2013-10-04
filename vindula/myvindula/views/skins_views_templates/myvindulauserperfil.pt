@@ -12,6 +12,8 @@
 
 	    	<div id="myvindula-profile"   
                  tal:define="view python: context.restrictedTraverse('@@myvindulalistuser');
+                             panelView python: context.restrictedTraverse('@@myvindula-conf-userpanel');
+                             
 	    	                 isAnonymous context/portal_membership/isAnonymousUser|python:True;
                              member context/@@plone_portal_state/member;
 
@@ -262,6 +264,23 @@
                                                             </tal:cond>
                                                         </ul>
                                                     </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="clear" tal:define="can_edit python:view.check_edit_manager(user_login)"
+                                                 tal:condition="panelView/check_joboffer|nothing">
+                                                <div tal:attributes="class python: 'columns large-%s shadow-line' % (can_edit and '6' or '12')"
+                                                     id="tile-manager-joboffer">
+                                                     <h5>Recrutamento interno<hr></h5>
+                                                     
+                                                     <div class="vd_show_my_joboffers"></div>
+                                                </div>
+                                                
+                                                <div class="columns large-6 shadow-line"
+                                                     id="tile-joboffer" tal:condition="can_edit">
+                                                     <h5>Gestão do Recrutamento Interno<hr></h5>
+                                                     
+                                                     <div class="vd_manager_joboffer"></div>
                                                 </div>
                                             </div>
                                         </div>

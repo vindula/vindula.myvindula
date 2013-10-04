@@ -371,7 +371,7 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
 
     def check_edit_manager(self,username):
         check_permission =  self.context.restrictedTraverse('vindula-object-user').checkPermission(username)
-        if 'rh' in check_permission.get('groups') or check_permission.get('has_manager'):
+        if 'rh_' in str(check_permission.get('groups')) or check_permission.get('has_manager'):
             return True
         return False
 
