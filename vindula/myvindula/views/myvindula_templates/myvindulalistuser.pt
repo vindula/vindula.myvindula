@@ -3,13 +3,14 @@
 
 		<metal:js fill-slot="javascript_head_slot">
 			<script type="text/javascript"  tal:attributes="src string:${context/portal_url|nothing}/vindula-api/static/js/vindula_myvindula.js"></script>
-            <script type="text/javascript"  tal:attributes="src string:${context/portal_url|nothing}/vindula-api/static/js/vindula_rh.js"></script>
 			<script type="text/javascript"
 					tal:define="member context/@@plone_portal_state/member;"
 					tal:content="python: '''
-								$j(document).ready(function(){ $j('#myModal').myvindula(null, {username : '%(user)s', dominio: '%(dominio)s', user_token: '%(token)s'}); 
-                                                               $j('body').rh(null, {username : '%(user)s', dominio: '%(dominio)s', user_token: '%(token)s'});});
-								'''%{'user': member.getUserName(), 'dominio': context.portal_url(), 'token': session.get('user_token')}" ></script>
+								$j(document).ready(function(){ 
+                                    $j('#myModal').myvindula(null, {username : '%(user)s', dominio: '%(dominio)s', user_token: '%(token)s'});
+                                });
+								'''%{'user': member.getUserName(), 'dominio': context.portal_url(), 'token': session.get('user_token')}" >
+            </script>
 
 
             <script type="text/javascript" tal:attributes="src string:${view/static}/js/perfil.js"></script>
