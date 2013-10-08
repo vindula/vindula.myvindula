@@ -271,7 +271,7 @@
                                                  tal:condition="panelView/check_joboffer|nothing">
                                                 <div tal:attributes="class python: 'columns large-%s shadow-line' % (can_edit and '6' or '12')"
                                                      id="tile-manager-joboffer">
-                                                     <h5>Recrutamento interno<hr></h5>
+                                                     <h5>Recrutamento Interno<hr></h5>
                                                      
                                                      <div class="vd_show_my_joboffers"></div>
                                                 </div>
