@@ -267,20 +267,12 @@
                                                 </div>
                                             </div>
                                             
-                                            <div class="clear" tal:define="can_edit python:view.check_edit_manager(user_login)"
-                                                 tal:condition="panelView/check_joboffer|nothing">
-                                                <div tal:attributes="class python: 'columns large-%s shadow-line' % (can_edit and '6' or '12')"
+                                            <div class="clear" tal:condition="panelView/check_joboffer|nothing">
+                                                <div class="class columns large-12"
                                                      id="tile-manager-joboffer">
                                                      <h5>Recrutamento Interno<hr></h5>
                                                      
                                                      <div class="vd_show_my_joboffers"></div>
-                                                </div>
-                                                
-                                                <div class="columns large-6 shadow-line"
-                                                     id="tile-joboffer" tal:condition="can_edit">
-                                                     <h5>Gestão do Recrutamento Interno<hr></h5>
-                                                     
-                                                     <div class="vd_manager_joboffer"></div>
                                                 </div>
                                             </div>
                                         </div>
