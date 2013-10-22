@@ -29,4 +29,11 @@ class ModelsFollow(Storm, BaseStoreMyvindula):
 
         data = ModelsFollow().store.find(ModelsFollow, ModelsFollow.content_id==content_obj_id, ModelsFollow.deleted==False)
         return data
+    
+    
+    @staticmethod
+    def get_followings(content):
+        data = ModelsFollow().store.find(ModelsFollow, ModelsFollow.username==content, ModelsFollow.deleted==False)
+        
+        return data
 

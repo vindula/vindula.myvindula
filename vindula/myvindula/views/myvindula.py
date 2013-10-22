@@ -30,6 +30,7 @@ from vindula.myvindula.user import BaseFunc
 from vindula.myvindula.registration import SchemaFunc, SchemaConfgMyvindula
 
 from vindula.controlpanel.browser.models import ModelsCompanyInformation
+from vindula.content.models.content import ModelsContent
 # from vindula.chat.utils.models import ModelsUserOpenFire
 
 from vindula.myvindula.tools.utils import UtilMyvindula
@@ -386,8 +387,24 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
 
         return self.get_prefs_user(user)
 
-    def get_follow(self,username):
-        return ModelsFollow.get_followers(self.Convert_utf8(username))
+    def get_follow(self,username, followers=True):
+        if followers:
+            return ModelsFollow.get_followers(self.Convert_utf8(username))
+        else:
+            data =  ModelsFollow.get_followings(self.Convert_utf8(username))
+            items = []
+            if data:
+                for item in data:
+                    content = self.get_content_by_id(item.content_id)
+                    if content.type == 'UserObject':
+                        items.append(content)
+            return items
+        
+        
+    def get_content_by_id(self,content_id):
+        content_obj = ModelsContent().getContent_by_id(content_id)
+        if content_obj:
+            return content_obj
 
     def format_follow(self, obj_list):
         lista = []

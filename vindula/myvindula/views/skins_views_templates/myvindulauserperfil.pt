@@ -23,7 +23,8 @@
                              user_request request/user|username;
                              user_login member/getUserName;
 
-                             followers python:view.get_follow(username);
+                             followers python:view.get_follow(username, followers=True);
+
                              activities user_profile/atividades|nothing;
                              projects python:view.get_projects(user_profile)[:5] or None;">
 
@@ -101,22 +102,26 @@
                                                             </div>
                                                         </div>
                                                     </div>
-
+                                                    
                                                     <div class="columns large-12 label-team">
-                                                        <strong><a href="">Assinantes</a></strong>
-                                                        <span tal:content="python: '('+ str(followers.count()) + ')' ">(41)</span>
+                                                        <div class="label-content">
+                                                            <strong><a href="">Assinantes</a></strong>
+                                                            <span tal:content="python: '('+ str(followers.count()) + ')' ">(41)</span>
+                                                        </div>
                                                     </div>
-
+                                                    
                                                     <div class="columns large-12 manager">
                                                         <div tal:condition="not: followers/count" class="label-team">
                                                             <strong> Não possui nenhum assinante</strong>
                                                         </div>
                                                         <div class="row">
-                                                            <div tal:condition="followers/count" class="orbit-container">
+                                                            <div tal:condition="followers/count" class="orbit-container"
+                                                                 tal:define="blocks python: view.format_follow(followers) or [];
+                                                                             bullets_false python:'bullets:false;;timer_speed:0;;navigation_arrows:%s' % ((blocks and (len(blocks) > 1)) and 'true' or 'false');">
                                                                 <ul data-orbit
-                                                                    data-options="bullets:false;" 
+                                                                    tal:attributes="data-options bullets_false;"
                                                                     class="orbit-slides-container">
-                                                                    <tal:rep repeat="bloco_follow python: view.format_follow(followers)">
+                                                                    <tal:rep repeat="bloco_follow blocks">
                                                                         <li>
                                                                             <ul class="small-block-grid-9 large-block-grid-9 members-team">
                                                                                  <li tal:repeat="follower bloco_follow">
@@ -134,6 +139,47 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    
+                                                    <tal:cond tal:condition="python: user_login == user_request">
+                                                        <tal:def define="followings python:view.get_follow(username, followers=False);">
+                                                            <div class="columns large-12 label-team">
+                                                                <div class="label-content">
+                                                                    <strong><a href="">Quem eu assino</a></strong>
+                                                                    <span tal:content="python: '('+ str(len(followings)) + ')' ">(41)</span>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="columns large-12 manager">
+                                                                <div tal:condition="not: followings" class="label-team">
+                                                                    <strong> Não possui nenhum assinante</strong>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div tal:condition="followings" class="orbit-container"
+                                                                         tal:define="blocks python: view.format_follow(followings) or [];
+                                                                                     bullets_false python:'bullets:false;;timer_speed:0;;navigation_arrows:%s' % ((blocks and (len(blocks) > 1)) and 'true' or 'false');">
+                                                                        <ul data-orbit
+                                                                            tal:attributes="data-options bullets_false;"
+                                                                            class="orbit-slides-container">
+                                                                            <tal:rep repeat="bloco_follow blocks">
+                                                                                <li>
+                                                                                    <ul class="small-block-grid-9 large-block-grid-9 members-team">
+                                                                                         <li tal:repeat="following bloco_follow">
+                                                                                            <!-- Dados para utilização da macro -->
+                                                                                            <tal:def define="size_img string:30px;
+                                                                                                             item python: view.get_prefs_user(following.username);
+                                                                                                             username following/username|string: ;">
+                                                                                                <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>
+                                                                                            </tal:def>
+                                                                                         </li>
+                                                                                     </ul>
+                                                                                </li>
+                                                                            </tal:rep>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </tal:def>
+                                                    </tal:cond>
                                                 </div>
                                             </div>
 
