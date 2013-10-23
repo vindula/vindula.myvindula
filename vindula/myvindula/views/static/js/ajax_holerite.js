@@ -19,8 +19,8 @@ $j(document).ready(function(){
 			});
 		}
 	});
-	
-	$j('#cpf_validate').keypress(function(){
-		Mascara(this,Cpf);
-	});
+    
+    $j('#cpf_validate').keypress(function(){
+        Mascara(this,Cpf);
+    });
 });

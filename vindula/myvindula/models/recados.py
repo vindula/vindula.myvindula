@@ -21,7 +21,9 @@ class ModelsMyvindulaRecados(Storm, BaseStoreMyvindula):
     receiver = Unicode()
     text = Unicode()
     viewed = Bool()
+    deleted = Bool()
     notified = Bool()
+    hash = Unicode()
 
     # date_created = DateTime()
 
@@ -67,7 +69,8 @@ class ModelsMyvindulaRecados(Storm, BaseStoreMyvindula):
             user = unicode(user, 'utf-8')
 
         data = self.store.find(ModelsMyvindulaRecados,
-                               ModelsMyvindulaRecados.receiver==user).order_by(Desc(ModelsMyvindulaRecados.date_created))
+                               ModelsMyvindulaRecados.receiver==user,
+                               ModelsMyvindulaRecados.deleted==False).order_by(Desc(ModelsMyvindulaRecados.date_created))
         return data
 
     def del_myvindula_recados(self, id):
