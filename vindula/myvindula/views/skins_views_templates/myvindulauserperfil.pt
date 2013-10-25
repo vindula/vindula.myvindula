@@ -22,7 +22,10 @@
                              username user_profile/username|nothing;
                              user_request request/user|username;
                              user_login member/getUserName;
-
+                             
+                             profile_layout view/getProfileLayout;
+                             simple_layout python:'simple' in profile_layout and True or False;
+                             
                              followers python:view.get_follow(username, followers=True);
 
                              activities user_profile/atividades|nothing;
@@ -183,7 +186,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="clear">
+                                            <div class="clear" tal:condition="not: simple_layout">
                                                 <div class="columns large-6 shadow-line">
                                                     <h5>
                                                         Informações
@@ -235,7 +238,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="clear">
+                                            <div class="clear" tal:condition="not: simple_layout">
                                                 <div class="columns large-6 shadow-line"
                                                      id="tile-participando"
                                                      tal:define="departamentos user_profile/get_department|nothing">
@@ -339,14 +342,14 @@
                                         </div>
                                     </section>
                                     
-                                    <section id="projetos">
+                                    <section id="projetos" tal:condition="not: simple_layout">
                                         <p class="title" data-section-title><a href="#panel3">Projetos</a></p>
                                         <div class="content" data-section-content>
                                             <metal:use use-macro="context/myvindulaprojects/macros/page-view" />
                                         </div>
                                     </section>
                                     
-                                    <section id="participando">
+                                    <section id="participando" tal:condition="not: simple_layout">
                                         <p class="title" data-section-title><a href="#panel3">Participando</a></p>
                                         <div class="content" data-section-content>
                                             <metal:use use-macro="context/myvindulauoparticipacao/macros/page-view" />
@@ -373,7 +376,7 @@
                                             <metal:use use-macro="context/myvindulalistrecados/macros/page-view" />
                                         </div>
                                     </section>
-                                    <section tal:condition="python: user_login == user_request" id="notification">
+                                    <section tal:condition="python: user_login == user_request and not simple_layout" id="notification">
                                         <p class="title" data-section-title><a href="#panel4">Notifica&ccedil;&otilde;es</a></p>
                                         <div class="content" data-section-content>
                                             <metal:use use-macro="context/myvindula-notifications/macros/page-view" />
@@ -385,6 +388,38 @@
                         </div>
                     </div>
                     <div class="columns large-3">
+                        
+                        <div tal:condition="simple_layout" class="user-contact-box">
+                            <h5>
+                                Contato
+                                <hr/>
+                            </h5>
+        
+                            <div>
+                                <ul class="no-bullet">
+                                    <li tal:define="unidadeprincial nocall:user_profile/get_unidadeprincipal;"
+                                        tal:condition="unidadeprincial">
+                                        <strong>Unidade:</strong>
+                                        <a class="structure-link"
+                                           tal:attributes="href python:unidadeprincial().absolute_url() or None;
+                                                           data-type string:Structure;
+                                                           data-value python:unidadeprincial().UID() or None;" 
+                                           tal:content="python:unidadeprincial().getSiglaOrTitle() or ''">ASCON</a>
+                                    </li>
+                                    
+                                    <li tal:condition="python:user_profile.get('ramal')">
+                                        <strong>Ramal:</strong>
+                                        <span tal:content="python:user_profile.get('ramal')"></span>
+                                    </li>
+                                    
+                                    <li tal:condition="python:user_profile.get('email')">
+                                        <strong>Email:</strong>
+                                        <span tal:content="python:user_profile.get('email')"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
                         <div class="vd_micro_timeline row" tal:attributes="data_username username" />
                     </div>
                 </div>

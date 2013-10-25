@@ -361,11 +361,6 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
 
     black_list = ['name','vin_myvindula_department','photograph','about','unidadeprincipal','atividades','biografia']
 
-    # # Este metodo esta repetido. Ele existe tambem em utils.py. Refatorar
-    # def getUnidadeUID(self, uid):
-    #     rtool = getToolByName(self, 'reference_catalog')
-    #     return rtool.lookupObject(uid)
-
     def get_ConfugCampos(self, campo):
         configuracao= ModelsConfgMyvindula().getConfig_views(campo)
         return configuracao
@@ -375,11 +370,6 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
         if 'rh_' in str(check_permission.get('groups')) or check_permission.get('has_manager'):
             return True
         return False
-
-    # def get_department(self, user):
-    #     return 'TODO mudar'
-    #     # return ModelsDepartment().get_departmentByUsername(self.Convert_utf8(user))
-
 
     def load_list(self):
         member =  self.context.restrictedTraverse('@@plone_portal_state').member().getUserName();
@@ -441,6 +431,16 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
                     result.append(project.getObject())
 
         return result
+    
+    def getProfileLayout(self):
+        portal = self.context.portal_url.getPortalObject()
+        cpanel_objects = portal.get('control-panel-objects')
+        if cpanel_objects:
+            v_categories = cpanel_objects.get('vindula_categories')
+            if v_categories:
+                return v_categories.profile_layout
+        
+        
 
     # def geraDadosAreas(self,area,instanceUser):
     #     campos = ModelsConfgMyvindula().getConfig_byArea(self.Convert_utf8(area))
