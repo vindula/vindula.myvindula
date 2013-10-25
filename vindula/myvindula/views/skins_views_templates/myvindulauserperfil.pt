@@ -170,8 +170,7 @@
                                                                                             <!-- Dados para utilização da macro -->
                                                                                             <tal:def define="size_img string:30px;
                                                                                                              item python: view.get_prefs_user(following.username);
-                                                                                                             username following/username|string: ;"
-                                                                                                     condition="python: username != user_request">
+                                                                                                             username following/username|string: ;">
                                                                                                 <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>
                                                                                             </tal:def>
                                                                                          </li>
