@@ -119,7 +119,7 @@
                                                         </div>
                                                         <div class="row">
                                                             <div tal:condition="followers" class="follow-cycle-container"
-                                                                 tal:define="blocks python:view.format_follow(followers, 1) or [];">
+                                                                 tal:define="blocks python:view.format_follow(followers) or [];">
                                                                 <ul class="no-bullet">
                                                                     <tal:rep repeat="bloco_follow blocks">
                                                                         <li tal:attributes="class python:'cycle-block %s' % ((repeat['bloco_follow'].start) and 'active' or '');
@@ -183,7 +183,7 @@
                                                                 </div>
                                                                 <div class="row">
                                                                     <div tal:condition="followings" class="follow-cycle-container"
-                                                                         tal:define="blocks python:view.format_follow(followings, 1) or [];">
+                                                                         tal:define="blocks python:view.format_follow(followings) or [];">
                                                                         <ul class="no-bullet">
                                                                             <tal:rep repeat="bloco_follow blocks">
                                                                                 <li tal:attributes="class python:'cycle-block %s' % ((repeat['bloco_follow'].start) and 'active' or '');
