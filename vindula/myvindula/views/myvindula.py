@@ -90,6 +90,16 @@ class MyVindulaView(grok.View, UtilMyvindula):
                                         request=self.request)
         return conf
 
+    def user_nickname_name(self):
+        membership = self.context.portal_membership
+        user_login = membership.getAuthenticatedMember()
+        prefs_user = self.get_prefs_user(user_login.getUserName())
+
+        username = user_login.getUserName()
+        nickname = prefs_user.get('nickname')
+        name = prefs_user.get('name')
+        
+        return nickname or name or username
 
     def update(self):
         """ Receive itself from request and do some actions """
