@@ -390,22 +390,21 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
                         items.append(content)
             return items
         
-        
     def get_content_by_id(self,content_id):
         content_obj = ModelsContent().getContent_by_id(content_id)
         if content_obj:
             return content_obj
 
-    def format_follow(self, obj_list):
+    def format_follow(self, obj_list, qtd=9):
         lista = []
         L = None
         for count, obj in enumerate(obj_list):
-            if count == 0 or count % 9 == 0:
+            if count == 0 or count % qtd == 0:
                 L = []
 
             L.append(obj)
 
-            if (count + 1) % 9 == 0:
+            if (count + 1) % qtd == 0:
                 lista.append(L)
                 L = None
 

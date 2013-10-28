@@ -3,6 +3,7 @@
 
 		<metal:js fill-slot="javascript_head_slot">
 			<script type="text/javascript"  tal:attributes="src string:${context/portal_url|nothing}/vindula-api/static/js/vindula_myvindula.js"></script>
+            <script type="text/javascript"  tal:attributes="src string:${context/portal_url|nothing}/++resource++vindula.myvindula.views/js/follow-cycle.js"></script>
 			<script type="text/javascript"
 					tal:define="member context/@@plone_portal_state/member;"
 					tal:content="python: '''

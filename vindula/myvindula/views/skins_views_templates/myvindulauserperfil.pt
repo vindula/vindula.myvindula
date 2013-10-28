@@ -118,14 +118,12 @@
                                                             <strong> Não possui nenhum assinante</strong>
                                                         </div>
                                                         <div class="row">
-                                                            <div tal:condition="followers/count" class="orbit-container"
-                                                                 tal:define="blocks python: view.format_follow(followers) or [];
-                                                                             bullets_false python:'bullets:false;;timer_speed:0;;navigation_arrows:%s' % ((blocks and (len(blocks) > 1)) and 'true' or 'false');">
-                                                                <ul data-orbit
-                                                                    tal:attributes="data-options bullets_false;"
-                                                                    class="orbit-slides-container">
+                                                            <div tal:condition="followers" class="follow-cycle-container"
+                                                                 tal:define="blocks python:view.format_follow(followers, 1) or [];">
+                                                                <ul class="no-bullet">
                                                                     <tal:rep repeat="bloco_follow blocks">
-                                                                        <li>
+                                                                        <li tal:attributes="class python:'cycle-block %s' % ((repeat['bloco_follow'].start) and 'active' or '');
+                                                                                            style python:(repeat['bloco_follow'].start) and 'display:block;;' or ''">
                                                                             <ul class="small-block-grid-9 large-block-grid-9 members-team">
                                                                                  <li tal:repeat="follower bloco_follow">
                                                                                     <!-- Dados para utilização da macro -->
@@ -138,8 +136,35 @@
                                                                              </ul>
                                                                         </li>
                                                                     </tal:rep>
+                                                                    <a href="#" class="orbit-prev cycle-prev disabled">Prev <span></span></a>
+                                                                    <a href="#" tal:attributes="class python:'orbit-next cycle-next %s' % ((len(blocks) <= 1) and 'disabled' or '')">
+                                                                        Next <span></span>
+                                                                    </a>
                                                                 </ul>
                                                             </div>
+                                                                    
+                                                            <!--div tal:condition="followers/count" class="orbit-container"
+                                                                 tal:define="blocks python: view.format_follow(followers) or [];
+                                                                             bullets_false python:'bullets:false;;timer_speed:0;;navigation_arrows:%s' % ((blocks and (len(blocks) > 1)) and 'true' or 'false');">
+                                                                <ul data-orbit
+                                                                    tal:attributes="data-options bullets_false;"
+                                                                    class="orbit-slides-container">
+                                                                    <tal:rep repeat="bloco_follow blocks">
+                                                                        <li>
+                                                                            <ul class="small-block-grid-9 large-block-grid-9 members-team">
+                                                                                 <li tal:repeat="follower bloco_follow">
+                                                                                    <!-- Dados para utilização da macro -->
+                                                                                    <!--tal:def define="size_img string:30px;
+                                                                                                     item python: view.get_prefs_user(follower.username);
+                                                                                                     username follower/username|string: ;">
+                                                                                        <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>
+                                                                                    </tal:def>
+                                                                                 </li>
+                                                                             </ul>
+                                                                        </li>
+                                                                    </tal:rep>
+                                                                </ul>
+                                                            </div-->
                                                         </div>
                                                     </div>
                                                     
@@ -157,14 +182,12 @@
                                                                     <strong> Não possui nenhum assinante</strong>
                                                                 </div>
                                                                 <div class="row">
-                                                                    <div tal:condition="followings" class="orbit-container"
-                                                                         tal:define="blocks python: view.format_follow(followings) or [];
-                                                                                     bullets_false python:'bullets:false;;timer_speed:0;;navigation_arrows:%s' % ((blocks and (len(blocks) > 1)) and 'true' or 'false');">
-                                                                        <ul data-orbit
-                                                                            tal:attributes="data-options bullets_false;"
-                                                                            class="orbit-slides-container">
+                                                                    <div tal:condition="followings" class="follow-cycle-container"
+                                                                         tal:define="blocks python:view.format_follow(followings, 1) or [];">
+                                                                        <ul class="no-bullet">
                                                                             <tal:rep repeat="bloco_follow blocks">
-                                                                                <li>
+                                                                                <li tal:attributes="class python:'cycle-block %s' % ((repeat['bloco_follow'].start) and 'active' or '');
+                                                                                                    style python:(repeat['bloco_follow'].start) and 'display:block;;' or ''">
                                                                                     <ul class="small-block-grid-9 large-block-grid-9 members-team">
                                                                                          <li tal:repeat="following bloco_follow">
                                                                                             <!-- Dados para utilização da macro -->
@@ -177,8 +200,35 @@
                                                                                      </ul>
                                                                                 </li>
                                                                             </tal:rep>
+                                                                            <a href="#" class="orbit-prev cycle-prev disabled">Prev <span></span></a>
+                                                                            <a href="#" tal:attributes="class python:'orbit-next cycle-next %s' % ((len(blocks) <= 1) and 'disabled' or '')">
+                                                                                Next <span></span>
+                                                                            </a>
                                                                         </ul>
                                                                     </div>
+                                                                    
+                                                                    <!--div tal:condition="followings" class="orbit-container"
+                                                                         tal:define="blocks python: view.format_follow(followings,1) or [];
+                                                                                     bullets_false python:'bullets:false;;timer_speed:0;;navigation_arrows:%s' % ((blocks and (len(blocks) > 1)) and 'true' or 'false');">
+                                                                        <ul data-orbit
+                                                                            tal:attributes="data-options bullets_false;"
+                                                                            class="orbit-slides-container">
+                                                                            <tal:rep repeat="bloco_follow blocks">
+                                                                                <li>
+                                                                                    <ul class="small-block-grid-9 large-block-grid-9 members-team">
+                                                                                         <li tal:repeat="following bloco_follow">
+                                                                                            <!-- Dados para utilização da macro -->
+                                                                                            <!--tal:def define="size_img string:30px;
+                                                                                                             item python: view.get_prefs_user(following.username);
+                                                                                                             username following/username|string: ;">
+                                                                                                <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>
+                                                                                            </tal:def>
+                                                                                         </li>
+                                                                                     </ul>
+                                                                                </li>
+                                                                            </tal:rep>
+                                                                        </ul>
+                                                                    </div-->
                                                                 </div>
                                                             </div>
                                                         </tal:def>
