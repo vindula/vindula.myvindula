@@ -1115,18 +1115,19 @@ class MyVindulaPrintHoleriteView(grok.View, UtilMyvindula):
         prefs_user = self.get_prefs_user(user_login.getUserName())
 
         if prefs_user and 'id' in form.keys():
-   	    cpf = prefs_user.get('cpf') or prefs_user.get('teaching_research') or ''
+            cpf = prefs_user.get('cpf') or prefs_user.get('teaching_research') or ''
 
             try:cpf = unicode(cpf, 'utf-8')
             except:pass
 
             id = int(form.get('id','0'))
+            
 
             if self.select_modelo() == '01':
                 return ModelsFuncHolerite().get_FuncHolerites_byCPFAndID(cpf, id)      
             elif self.select_modelo() == '02':
-		cpf = cpf.replace('.','').replace('-','')
-		return ModelsFuncHolerite02().get_FuncHolerites_byCPFAndID(cpf, id)
+                cpf = cpf.replace('.','').replace('-','')
+                return ModelsFuncHolerite02().get_FuncHolerites_byCPFAndID(cpf, id)
 
     def update(self):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
