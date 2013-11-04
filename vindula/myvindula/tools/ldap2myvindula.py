@@ -18,7 +18,7 @@ def Convert_utf8(valor):
         return unicode(valor,'utf-8')
     except UnicodeDecodeError:
         # return valor.decode("utf-8", "ignore")
-        return valor.decode('iso-8859-2').encode('utf8')
+        return valor.decode('iso-8859-2').decode('utf8')
     except:
         if type(valor) == unicode:
             return valor
