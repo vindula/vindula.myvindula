@@ -53,7 +53,9 @@ from PIL import Image
 from vindula.myvindula.cache import Cache
 
 from vindula.controlpanel.handlers import userLogged
+
 import os
+
 
 logger = logging.getLogger('vindula.myvindula')
 
@@ -355,7 +357,11 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
                     valor = "<img height='150px' src='%s/user-image?field=%s&instance_id=%s' />"%(site.absolute_url(),campo.fields,instanceUser.id)
                     
                 elif campo.fields == 'date_birth':
-                    valor = self.getDadoUser_byField(instanceUser, campo.fields)[:5]
+                    panel = self.context.restrictedTraverse('@@myvindula-conf-userpanel')
+                    if panel.check_ativa_yearBirth():
+                        valor = self.getDadoUser_byField(instanceUser, campo.fields)[:5]
+                    else:
+                        valor = self.getDadoUser_byField(instanceUser, campo.fields)
 
                 D['data']  = valor
             except:
@@ -743,6 +749,7 @@ class MyVindulaListBirthdays(grok.View,UtilMyvindula):
         form = self.request.form
         ch = Cache()
         filtro = form.get('filtro',1)
+        panel = self.context.restrictedTraverse('@@myvindula-conf-userpanel')
         if filtro == 'prox':
 
             results = ch.get('MyVindulaListBirthdays_birthdaysToday_prox')
@@ -762,6 +769,16 @@ class MyVindulaListBirthdays(grok.View,UtilMyvindula):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
         if open_for_anonymousUser:
             self.request.response.redirect(self.context.absolute_url() + '/login')
+
+    def get_dado_item(self, dados, field_name):
+        panel = self.context.restrictedTraverse('@@myvindula-conf-userpanel')
+        if panel.check_ativa_yearBirth() and\
+            field_name == 'date_birth':
+            return dados.get('date_birth','')[:5]
+
+        else:
+            return dados.get(field_name, '')
+                    
 
 
 class MyVindulaLike(grok.View,UtilMyvindula):
