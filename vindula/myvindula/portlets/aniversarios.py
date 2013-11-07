@@ -183,11 +183,12 @@ class Renderer(base.Renderer):
             L = []
             for line in lines:
                 D = {}
-                line = line.replace('[', '').replace(']', '').split(' | ')
+                line = line.replace('[', '').replace(']', '').split(' | ') 
                 try:
                     D['label'] = line[0]
                     if line[1] == 'date_birth':
                         dado = user.get(line[1])
+
                         if panel.check_ativa_yearBirth():
                             D['content'] = dado[:5]
                         else:

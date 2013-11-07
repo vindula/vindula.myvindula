@@ -769,7 +769,8 @@ class MyVindulaListBirthdays(grok.View,UtilMyvindula):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
         if open_for_anonymousUser:
             self.request.response.redirect(self.context.absolute_url() + '/login')
-
+   
+   
     def get_dado_item(self, dados, field_name):
         panel = self.context.restrictedTraverse('@@myvindula-conf-userpanel')
         if panel.check_ativa_yearBirth() and\
