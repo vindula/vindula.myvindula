@@ -6,7 +6,7 @@ $j(document).ready(function(){
         if (confirm('Realmente deseja remover a mensagem?')) {
             var $super_this = $j(this),
                 hash = $super_this.attr('data-hash'),
-                url = this.href + '/' + window.token;
+                url = this.href + '/' + window.token + '/';
                 
             if(hash.length) {
                 $j.ajax({   
