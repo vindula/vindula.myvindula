@@ -438,7 +438,7 @@ class ImportUser(BaseFunc):
         return D
 
     def importUser(self,ctx,form,user={}):
-        db_user = ModelsInstanceFuncdetails().get_AllFuncDetails() #ModelsFuncDetails().get_allFuncDetails()
+        # db_user = ModelsInstanceFuncdetails().get_AllFuncDetails() #ModelsFuncDetails().get_allFuncDetails()
         plone_user = ctx.context.acl_users.getUserIds()
         #db_user = ModelsFuncDetails().get_allFuncDetails()
         #plone_user = ctx.context.acl_users.getUserIds()
