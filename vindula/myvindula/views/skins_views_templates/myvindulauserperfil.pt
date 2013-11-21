@@ -117,8 +117,9 @@
                                                         <div tal:condition="not: followers/count" class="label-team">
                                                             <strong> Não possui nenhum assinante</strong>
                                                         </div>
-                                                        <div class="row">
-                                                            <div tal:condition="followers" class="follow-cycle-container"
+                                                        
+                                                        <div class="row" tal:condition="followers/count">
+                                                            <div class="follow-cycle-container"
                                                                  tal:define="blocks python:view.format_follow(followers) or [];">
                                                                 <ul class="no-bullet">
                                                                     <tal:rep repeat="bloco_follow blocks">
@@ -181,8 +182,8 @@
                                                                 <div tal:condition="not: followings" class="label-team">
                                                                     <strong> Não possui nenhum assinante</strong>
                                                                 </div>
-                                                                <div class="row">
-                                                                    <div tal:condition="followings" class="follow-cycle-container"
+                                                                <div class="row" tal:condition="followings">
+                                                                    <div class="follow-cycle-container"
                                                                          tal:define="blocks python:view.format_follow(followings) or [];">
                                                                         <ul class="no-bullet">
                                                                             <tal:rep repeat="bloco_follow blocks">
