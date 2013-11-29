@@ -97,6 +97,19 @@ class FuncDetails(object):
                                 'obj': OU })
 
         return result
+    
+    def is_deleted(self):
+        username = self.username
+        if username and isinstance(username, str):
+            username = self.username.decode('utf-8')
+            
+        data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, 
+                                                   ModelsDadosFuncdetails.deleted==True,
+                                                   ModelsDadosFuncdetails.username==self.username.decode('utf-8'))
+        if data.count() > 0:
+            return True
+        else:
+            return False
 
     @staticmethod
     def get_AllFuncFakeList(filter=None):
