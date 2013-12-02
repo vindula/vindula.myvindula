@@ -32,8 +32,8 @@
                              projects python:view.get_projects(user_profile)[:5] or None;">
 
 				<div id="myModal" class="reveal-modal large" >
-				 	 <div class="vd_user_profile_picture" data_field="photograph" tal:attributes="data_token session/user_token;
-																								  data_username username ">
+				 	 <div class="vd_user_profile_picture" data_field="photograph" tal:attributes="data_token session/user_token|nothing;
+																								                                        data_username username ">
 					  <a class="close-reveal-modal">×</a>
 					 </div>
 				</div>
