@@ -23,6 +23,7 @@ class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
     username = Unicode()
     field_id = Int()
     value = Unicode()
+    blocked = Bool()
 
     #vin_myvindula_confgfuncdetails_fields = Unicode()
     #vin_myvindula_instance_id = Int()
@@ -56,7 +57,9 @@ class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
                                                      'value':value,
                                                      'hash' : unicode(hash),
                                                      'date_created':datetime.now(),
-                                                     'date_modified':datetime.now()})
+                                                     'date_created':datetime.now(),
+                                                     'date_modified':datetime.now(),
+                                                     'blocked':False})
 
             tool.setLogger('info',"User data stored: %s - %s - %s" % (username,
                                                                       field,
