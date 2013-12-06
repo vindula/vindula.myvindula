@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/prefs_main_template/macros/master">
+    <head>
+        
+    </head>
+    <body>
+        <div metal:fill-slot="prefs_configlet_main">
+				
+			<h1>Gerenciar Shema da conexão: <tal:rep replace="request/form/id|string: ">AD/LDAP</tal:rep></h1>
+
+			<br />
+			<form action="" method="post" name="manager_schemaldap">
+				<table id="listing-table" class="listing">
+					<tr>
+						<th>Campos do Perfil do usuario</th>
+						<th> == </th>
+						<th>Campo do Servidor</th>
+					</tr>
+					<tal:rep repeat="item view/fields_myvindula|python:[]">
+						<tr tal:condition="python: not item.fields in view.block_fields"
+							tal:define="field_name item/fields">
+							<td tal:content="item/label">Titulo</td>
+							<td>
+								==
+								<input type="hidden" name="myvindula" tal:attributes="name string:my_${field_name};
+																					  value field_name">
+							</td>
+							<td tal:define="value_ad python:view.schema_map_ldap.get(field_name)">  
+								<input type="text" name="schema_ad" tal:attributes="name string:ad_${field_name};
+																					value value_ad">
+
+								<input type="hidden" name="schema_ad" tal:attributes="name string:del_ad_${field_name};
+																					  value value_ad">																					
+							</td>
+						</tr>
+					</tal:rep> 
+				</table>
+
+				
+				<!-- Botões de ação --> 
+	            <fieldset>
+	                <legend>Ações</legend>      
+	                <div>
+	                	<input type="hidden" value="True" name="submitted">
+					    <input class="context bt_comments" type="button" value="Voltar" name="form.voltar" onclick="location.href='/myvindula-list-schemaldap'">
+	                    <input class="context bt_comments" type="submit" value="Salvar" name="form.submited">    
+	                </div>
+	            </fieldset>		
+
+			</form>
+	        
+        </div>
+    </body>
+</html>

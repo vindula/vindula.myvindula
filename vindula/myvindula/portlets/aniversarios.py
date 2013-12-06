@@ -177,19 +177,22 @@ class Renderer(base.Renderer):
             return 'nos próximos dias'
 
     def get_details_user(self, user):
+        panel = self.context.restrictedTraverse('@@myvindula-conf-userpanel')
         if self.data.details_user:
-
             lines = self.data.details_user.splitlines()
             L = []
             for line in lines:
                 D = {}
-                line = line.replace('[', '').replace(']', '').split(' | ')
+                line = line.replace('[', '').replace(']', '').split(' | ') 
                 try:
                     D['label'] = line[0]
                     if line[1] == 'date_birth':
                         dado = user.get(line[1])
-                        dado = dado.split('/')
-                        D['content'] = '/'.join(dado[:-1])
+
+                        if panel.check_ativa_yearBirth():
+                            D['content'] = dado[:5]
+                        else:
+                            D['content'] = dado
 
                     else:
                         D['content'] = user.get(line[1])

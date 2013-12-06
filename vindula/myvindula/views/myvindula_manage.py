@@ -4,8 +4,10 @@ from five import grok
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from Products.CMFCore.interfaces import ISiteRoot
 
-from zope.component import getUtility
+from Products.CMFCore.utils import getToolByName
+from zope.component import getUtility, getMultiAdapter
 from plone.i18n.normalizer.interfaces import IIDNormalizer
+from Acquisition import aq_inner
 
 from zope.app.component.hooks import getSite
 
@@ -40,6 +42,10 @@ from vindula.myvindula.models.descricao_holerite import ModelsFuncHoleriteDescri
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 
 from vindula.myvindula.models.holerites2 import ModelsFuncHolerite02, ModelsFuncHoleriteDescricao02
+
+from vindula.myvindula.models.photo_user import ModelsPhotoUser
+
+from vindula.myvindula.tools.ldap2myvindula import SyncLdalMyvindula
 
 logger = logging.getLogger('vindula.myvindula')
 
@@ -209,11 +215,14 @@ class MyVindulaDeParaUser(grok.View, UtilMyvindula):
     
     def update(self):
         db_user = ModelsInstanceFuncdetails().get_AllFuncDetails()
-        plone_user = self.context.acl_users.getUserIds()
-        
+        # plone_user = self.context.acl_users.getUserIds()
+        searchView = getMultiAdapter((aq_inner(self.context), self.request), name='pas_search')
+        plone_user = searchView.searchUsers()
+        plone_ad_user = [i.get('login') for i in plone_user]
+
         self.user = []
         for user in db_user:
-            if not user.get('username') in plone_user and\
+            if not user.get('username') in plone_ad_user and\
                 user.get('username') != 'admin':
                 self.user.append(user)   
 
@@ -897,6 +906,7 @@ class MyVindulaExportUsersView(grok.View,UtilMyvindula):
             fields_orig = ModelsConfgMyvindula().get_configurationAll()  #ModelsFuncDetails()._storm_columns.values()
 
             campos_vin = []
+            campos_vin_id = []
             text = ''
             
             if fields_orig:
@@ -905,7 +915,9 @@ class MyVindulaExportUsersView(grok.View,UtilMyvindula):
                 
                 for field in fields_orig:
                     campos_vin.append(field.fields)
-                    text += field.fields + ';'
+
+                    text += field.label + ';'
+                    # text += field.fields + ';'
             
                 text = text[:-1] + '\n'
             
@@ -913,20 +925,129 @@ class MyVindulaExportUsersView(grok.View,UtilMyvindula):
 
             for user in users:
                 for campo in campos_vin:
-                    valor = user.get(campo,'')
-                    
-                    if type(valor) == list:
-                        valor_list = ''
-                        for i in valor:
-                            if i :valor_list += (i + ' / ') 
+                    if campo == 'photograph':
+                        username = user.get('username','')
+                        instance_id = ModelsInstanceFuncdetails().get_InstanceFuncdetails(username)
+
+                        campo_image_instance = ModelsPhotoUser().get_ModelsPhotoUser_byFieldAndInstance(campo,instance_id.id)
+
+                        if campo_image_instance:
+                            text += '%s;' %('True')
+
+                        else:
+                            try:
+                                campo_image_username = ModelsPhotoUser().get_ModelsPhotoUser_byUsername(username,campo)    
+
+                                if campo_image_username:
+                                    text += '%s;' %('True')
+                                else:
+                                    text += '%s;' %('False')
+                            except:
+                                text += '%s;' %('False')
+
+                    if campo == 'vin_myvindula_department':
+                        valor = user.get(campo,'')
+                        try:
+                            text += '%s;' %(valor[1])
+                        except:
+                            text += ';' 
+
+                    else:
+                        valor = user.get(campo,'')
                         
-                        valor = valor_list
-                        
-                    text += '%s;' % (str(valor).replace('\n', '').replace('\r', '').replace(';', ''))
+                        if type(valor) == list:
+                            valor_list = ''
+                            for i in valor:
+                                if i :valor_list += (i + ' / ') 
+                            
+                            valor = valor_list
+                            
+                        text += '%s;' % (str(valor).replace('\n', '').replace('\r', '').replace(';', ''))
+
                 text += '\n'
                  
             self.request.response.write(str(text))
         
         
         
+        
+class MyVindulaSchemaLdapView(grok.View,UtilMyvindula):
+    grok.context(INavigationRoot)
+    grok.require('cmf.ManagePortal')
+    grok.name('myvindula-list-schemaldap')
+
+
+    def update(self):
+        acl_users = getToolByName(self.context, 'acl_users')
+        itens = [item for item in acl_users.objectValues()\
+                       if item.meta_type == 'Plone Active Directory plugin' or\
+                          item.meta_type == 'Plone LDAP plugin']
+
+        self.connectors = itens
+
+class MyVindulaManageSchemaLdapView(grok.View,UtilMyvindula):
+    grok.context(INavigationRoot)
+    grok.require('cmf.ManagePortal')
+    grok.name('myvindula-manager-schemaldap')
+
+    block_fields = ['name','vin_myvindula_department','photograph']
+    schema_map_ldap = {}
+
+    def tuple2dict(self, schema_tupla):
+        D = {}
+        for key, value in schema_tupla:
+            D[value] = key
+        return D
+
+    def update(self):
+        acl_users = getToolByName(self.context, 'acl_users')
+        self.fields_myvindula = ModelsConfgMyvindula().get_configurationAll() 
+
+        id_connectors = self.request.form.get('id','')
+        try:
+            connector = acl_users[id_connectors]
+        except:
+            connector = False
+
+
+        form = self.request.form
+        if form.get('submitted', False) and connector:
+            
+            for field in form.keys():
+                if 'my_' in field:
+
+                    valor = form.get(field.replace('my_', 'ad_'),'')
+                    campo_myvindula =  field.replace('my_', '')
+
+                    if valor:
+                        connector.acl_users.manage_addLDAPSchemaItem(ldap_name=valor,
+                                                                     friendly_name=campo_myvindula,
+                                                                     public_name=campo_myvindula,)
+
+                    else:
+                        ldap_names = form.get(field.replace('my_', 'del_ad_'),'')
+                        connector.acl_users.manage_deleteLDAPSchemaItems(ldap_names=[ldap_names])
+
+            IStatusMessage(self.request).addStatusMessage(_(u'O mapeamento foi realizado com sucesso.'),"info") 
+            self.request.response.redirect(self.context.absolute_url() + '/myvindula-list-schemaldap')
+
+
+        if connector:
+            self.schema_map_ldap = self.tuple2dict(connector.acl_users.getMappedUserAttrs())
+
+
+class MyVindulaAutoSyncLdapView(grok.View,UtilMyvindula):
+    grok.context(INavigationRoot)
+    grok.require('zope2.View')
+    grok.name('myvindula-autosync')             
+
+
+    def render(self):
+        return "-- Sincronização concluida --"
+
+
+    def update(self):
+        sync_obj = SyncLdalMyvindula(self.context, self.request)
+        sync_obj.sync_all_user()
+        self.setLogger('info',"Sincronização Concluida")
         

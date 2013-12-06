@@ -33,7 +33,9 @@
 								</td>
 								<tal:rep repeat="campo python: list_campos[1:]" tal:on-error="nothing">
 									<td class="field">
-				        				<span tal:content="python: item.get(campo.get('content',''),'') or ''" tal:on-error="nothing">Department</span>
+				        				<span  tal:define="name_field campo/content|nothing;"
+				        					   tal:content="python: view.get_dado_item(item,name_field)"
+				        					   tal:on-error="nothing">Department</span>
 									</td>
 								</tal:rep>
 										

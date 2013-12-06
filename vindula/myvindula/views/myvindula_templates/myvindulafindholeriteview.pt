@@ -1,3 +1,4 @@
-<tal:def define="item view/load_list|nothing">	
+<tal:def define="item view/load_list|nothing;
+				 modelo view/select_modelo;">	
 	<metal:holerite metal:use-macro="context/myvindula-holerite/macros/holerite" />
 </tal:def>
