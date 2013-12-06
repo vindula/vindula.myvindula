@@ -18,21 +18,10 @@
                         <h2 class="h2title">Informa&ccedil;&otilde;es do Perfil</h2>
                         <div class="titulo">
                             <h2>
-                                <tal:def define="name_user python:view.getDadoUser_byField(form_data,'name');
-                                                 nickname_user python:view.getDadoUser_byField(form_data,'nickname');
-
-                                                 view_name python:view.get_ConfugCampos('name');
-                                                 view_nickname python:view.get_ConfugCampos('nickname')">
-                                
-                                    <tal:cond condition="view_name">
-                                       <tal:cont content="python: name_user or user or ''" />
-                                    </tal:cond>    
-                                    <tal:cond condition="python: view_nickname and not view_name">
-                                       <tal:cont content="python: nickname_user or user or ''" />
-                                    </tal:cond>
-
-                                </tal:def>
-                               
+                                <tal:cond condition="python: view.get_ConfugCampos('name')">
+                                   <tal:cont tal:define="name python:view.getDadoUser_byField(form_data,'name')" 
+                                             content="name|nothing" />
+                                </tal:cond>
                             </h2>
                         </div>
                     

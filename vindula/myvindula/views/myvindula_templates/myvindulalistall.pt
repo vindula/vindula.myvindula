@@ -22,11 +22,7 @@
 							    	<label>Nome:</label>
 									<input type="text" name="title" size="26" tal:attributes="value python: request.get('title', '')"/>
 									<label>Departamento:</label>
-									<input type="text" name="departamento" size="26" tal:attributes="value python: request.get('departamento', '')"/>
-				
-									<!-- 
-										<input type="text" name="organisational_unit" size="26" tal:attributes="value python: request.get('organisational_unit', '')"/> 
-									-->
+									<input type="text" name="title" size="26" tal:attributes="value python: request.get('title', '')"/>
 								</div>
 								<div style="float:left;"> 
 									<input type="submit" name="SearchSubmit" value="Buscar" class="context" i18n:attributes="value"/>

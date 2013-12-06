@@ -125,20 +125,6 @@
 				                    </a>
 				            </li>
 						</tal:cond>
-						<tal:cond condition="python: context.restrictedTraverse('@@myvindulapanel').checkEveron('enable_comissao')">
-			            
-							<li id="contentview-user_data-personal-my-comissao"
-				                    tal:define="link context/@@myvindulapanel/getPersonalPrefsLink;
-				                                selected python:view_name=='minha-comissao';"
-				                    tal:condition="link|nothing"
-				                    tal:attributes="class python:selected and 'selected' or 'plain'">
-				                    <a href=""
-				                       tal:attributes="href string:${context/portal_url}/minha-comissao"
-				                       i18n:translate="">
-				                       Minha Comissao
-				                    </a>
-				            </li>
-						</tal:cond>
 
 		            </ul>
 			        <div class="contentActions">&nbsp;</div>

@@ -33,6 +33,7 @@ from vindula.controlpanel.browser.models import ModelsCompanyInformation
 from vindula.chat.utils.models import ModelsUserOpenFire
 
 from vindula.myvindula.tools.utils import UtilMyvindula
+from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
 
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 from vindula.myvindula.models.department import ModelsDepartment
@@ -53,9 +54,7 @@ from PIL import Image
 from vindula.myvindula.cache import Cache
 
 from vindula.controlpanel.handlers import userLogged
-
 import os
-
 
 logger = logging.getLogger('vindula.myvindula')
 
@@ -92,16 +91,6 @@ class MyVindulaView(grok.View, UtilMyvindula):
                                         request=self.request)
         return conf
 
-    def user_nickname_name(self):
-        membership = self.context.portal_membership
-        user_login = membership.getAuthenticatedMember()
-        prefs_user = self.get_prefs_user(user_login.getUserName())
-
-        username = user_login.getUserName()
-        nickname = prefs_user.get('nickname')
-        name = prefs_user.get('name')
-        
-        return nickname or name or username
 
     def update(self):
         """ Receive itself from request and do some actions """
@@ -357,11 +346,7 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
                     valor = "<img height='150px' src='%s/user-image?field=%s&instance_id=%s' />"%(site.absolute_url(),campo.fields,instanceUser.id)
                     
                 elif campo.fields == 'date_birth':
-                    panel = self.context.restrictedTraverse('@@myvindula-conf-userpanel')
-                    if panel.check_ativa_yearBirth():
-                        valor = self.getDadoUser_byField(instanceUser, campo.fields)[:5]
-                    else:
-                        valor = self.getDadoUser_byField(instanceUser, campo.fields)
+                    valor = self.getDadoUser_byField(instanceUser, campo.fields)[:5]
 
                 D['data']  = valor
             except:
@@ -749,7 +734,6 @@ class MyVindulaListBirthdays(grok.View,UtilMyvindula):
         form = self.request.form
         ch = Cache()
         filtro = form.get('filtro',1)
-        panel = self.context.restrictedTraverse('@@myvindula-conf-userpanel')
         if filtro == 'prox':
 
             results = ch.get('MyVindulaListBirthdays_birthdaysToday_prox')
@@ -769,17 +753,6 @@ class MyVindulaListBirthdays(grok.View,UtilMyvindula):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
         if open_for_anonymousUser:
             self.request.response.redirect(self.context.absolute_url() + '/login')
-   
-   
-    def get_dado_item(self, dados, field_name):
-        panel = self.context.restrictedTraverse('@@myvindula-conf-userpanel')
-        if panel.check_ativa_yearBirth() and\
-            field_name == 'date_birth':
-            return dados.get('date_birth','')[:5]
-
-        else:
-            return dados.get(field_name, '')
-                    
 
 
 class MyVindulaLike(grok.View,UtilMyvindula):
@@ -958,10 +931,10 @@ class MyVindulaFindHoleriteView(grok.View, UtilMyvindula):
             
             id = int(form.get('id','0'))
             if self.select_modelo() == '01':
-                result = ModelsFuncHolerite().get_FuncHolerites_byCPFAndID(cpf, id)
+                result = ModelsFuncHoleriteDescricao().get_FuncHolerites_byCPFAndID(cpf, id)
         
             elif self.select_modelo() == '02':
-                result = ModelsFuncHolerite02().get_FuncHolerites_byCPFAndID(cpf, id)
+                result = ModelsFuncHoleriteDescricao02().get_FuncHolerites_byCPFAndID(cpf, id)
             
             return result
 
@@ -1133,19 +1106,18 @@ class MyVindulaPrintHoleriteView(grok.View, UtilMyvindula):
         prefs_user = self.get_prefs_user(user_login.getUserName())
 
         if prefs_user and 'id' in form.keys():
-            cpf = prefs_user.get('cpf') or prefs_user.get('teaching_research') or ''
+   	    cpf = prefs_user.get('cpf') or prefs_user.get('teaching_research') or ''
 
             try:cpf = unicode(cpf, 'utf-8')
             except:pass
 
             id = int(form.get('id','0'))
-            
 
             if self.select_modelo() == '01':
                 return ModelsFuncHolerite().get_FuncHolerites_byCPFAndID(cpf, id)      
             elif self.select_modelo() == '02':
-                cpf = cpf.replace('.','').replace('-','')
-                return ModelsFuncHolerite02().get_FuncHolerites_byCPFAndID(cpf, id)
+		cpf = cpf.replace('.','').replace('-','')
+		return ModelsFuncHolerite02().get_FuncHolerites_byCPFAndID(cpf, id)
 
     def update(self):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();

@@ -2,7 +2,6 @@
 
 from vindula.myvindula import MessageFactory as _
 from Products.statusmessages.interfaces import IStatusMessage
-from AccessControl.SecurityManagement import newSecurityManager,getSecurityManager,setSecurityManager
 from datetime import date , datetime
 from vindula.myvindula.validation import valida_form, valida_form_dinamic
 
@@ -131,9 +130,6 @@ class SchemaFunc(BaseFunc):
 
                     portalGroup = getSite().portal_groups
                     portalCatalog = getSite().portal_catalog
-                    portalMember = getSite().portal_membership
-
-                    user_admin = portalMember.getMemberById('admin')
 
                     if form.get('vin_myvindula_department', None):
                         if not type(form.get('vin_myvindula_department', None)) == list:
@@ -141,12 +137,6 @@ class SchemaFunc(BaseFunc):
                         else:
                             L = form.get('vin_myvindula_department', None)
                     deparataments_old = form.get('departaments_old', [])
-
-                    # stash the existing security manager so we can restore it
-                    old_security_manager = getSecurityManager()
-
-                    # create a new context, as the owner of the folder
-                    newSecurityManager(getSite().REQUEST,user_admin)
 
                     #Adiciona o usuario do grupo da estrutura organizacional
                     dep_adicionados = set(L) - set(deparataments_old)
@@ -205,9 +195,6 @@ class SchemaFunc(BaseFunc):
                                 form_data['errors'] = errors
                                 form_data['data'] = data
                                 return form_data
-
-                    # restore the original context
-                    setSecurityManager(old_security_manager)
 
                 for item in data.keys():
                     field = self.Convert_utf8(item)

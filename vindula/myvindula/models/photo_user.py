@@ -49,20 +49,17 @@ class ModelsPhotoUser(Storm, BaseStore):
 # Metodos de Migração temporario
     def get_ModelsPhotoUser_byUsername(self,username,field=u'photograph'):
         from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
-        data = None
-        
-        # if not data:
-        instance_user = ModelsInstanceFuncdetails().get_InstanceFuncdetails(username)
-        if instance_user:
-            data = self.get_ModelsPhotoUser_byFieldAndInstance(field,instance_user.id)
-        
+        data = self.store.find(ModelsPhotoUser, ModelsPhotoUser.username == username).one()
         if not data:
-            data = self.store.find(ModelsPhotoUser, ModelsPhotoUser.username==username).one()
-
+            instance_user = ModelsInstanceFuncdetails().get_InstanceFuncdetails(username)
+            if instance_user:
+                data = self.get_ModelsPhotoUser_byFieldAndInstance(field,instance_user.id)
+        
         if data:
             return data
         else:
             return None
+    
     
     def del_ModelsPhotoUser(self,field, instance):
         result = self.get_ModelsPhotoUser_byFieldAndInstance(field, instance)

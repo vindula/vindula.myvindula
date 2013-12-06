@@ -106,43 +106,31 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
         return L
         
         
-    #Metodos de busca de usuario para o portal    
+#Metodos de busca de usuario para o portal    
     def get_FuncBusca(self,department_id='',form_campos=[],filtro=False):
         from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
         ids_instances = []
         
         if filtro:
-            add_field = True
-            for i in form_campos:
-                if 'phone_number' in i.keys() and i.values()[0]:
-                    add_field = False
-
-            if add_field:
-                form_campos.append({'phone_number':True})
+            form_campos.append({'phone_number':'None'})
+            
         
         origin = [ModelsDadosFuncdetails,
                   Join(ModelsInstanceFuncdetails, ModelsInstanceFuncdetails.id==ModelsDadosFuncdetails.vin_myvindula_instance_id)]
-        
         if department_id:
             origin.append(Join(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==ModelsInstanceFuncdetails.username))
-            data_department = self.store.using(*origin).find(ModelsDadosFuncdetails, ModelsDepartment.uid_plone==department_id)
-            
-            for i in data_department:
-                id_dep = i.vin_myvindula_instance_id
-                if not id_dep in ids_instances:
-                    ids_instances.append(id_dep)
-
+        
         for item in form_campos:
             busca = "self.store.using(*origin).find(ModelsDadosFuncdetails,"
             if item.values()[0]:
                 
-                if item.keys()[0] == 'phone_number' and item.values()[0] == True:
+                if item.keys()[0] == 'phone_number':
                     busca += "ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==u'phone_number',\
-                             ModelsDadosFuncdetails.valor!=u'', "
+                             ModelsDadosFuncdetails.valor, "
                 else:
                     busca += "ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==u'"+item.keys()[0]+"',\
                              ModelsDadosFuncdetails.valor.like( '%' + '%'.join(u'"+item.values()[0]+"'.split(' ')) + '%' ),"
-    
+        
                 if ids_instances:
                     busca += "ModelsDadosFuncdetails.vin_myvindula_instance_id.is_in(ids_instances),"
                     
@@ -151,6 +139,7 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
                 
                 busca += ')'
                 
+                #import pdb;pdb.set_trace()
                 data = eval(busca)
                 
                 #if data.count()>0:
@@ -159,7 +148,8 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
                     id = i.vin_myvindula_instance_id
                     if not id in ids_instances:
                         ids_instances.append(i.vin_myvindula_instance_id)
-              
+        
+        
         
 #            import pdb;pdb.set_trace()
 #            busca = "self.store.using(*origin).find(ModelsDadosFuncdetails,"

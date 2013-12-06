@@ -12,7 +12,6 @@ from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 
 from vindula.myvindula.tools.utils import UtilMyvindula
 from vindula.myvindula.registration import SchemaFunc
-from vindula.myvindula.tools.ldap2myvindula import SyncLdalMyvindula
 
 def userupdate(event):
     """ Handler for User Login in Site """
@@ -20,10 +19,8 @@ def userupdate(event):
     
     user_login = tools.membership.getAuthenticatedMember()
     enable_first_access = tools.site.restrictedTraverse('@@myvindula-conf-userpanel').check_alert_first_access()
-    enable_syncLdap2Myvindula = tools.site.restrictedTraverse('myvindula-conf-userpanel').check_ativa_syncLdap2myvindula
-    
     enable_chat = tools.site.restrictedTraverse('vindula-chat-config').enableConf()
-        
+    
     user_id = tools.Convert_utf8(user_login.getUserName())      
     user_instance = ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id)
 
@@ -70,15 +67,8 @@ def userupdate(event):
             tools.setRedirectPage('/myvindula-first-registre')
 
 
-    #Integração dos dados os usuario do Ldap Para o myvindula
-    if enable_syncLdap2Myvindula:
-        sync_obj = SyncLdalMyvindula(tools.site, tools.site.REQUEST)
-        username = event.object.getUserName()
-        sync_obj.sync_user(username)
-        tools.setLogger('info',"Dados do usuario: %s, foram sincronizados."%(username))
-
-
 def onDeleteUser(event):
     user = event.object
     if user:
-        return SchemaFunc().deleteUser(user)          
+        return SchemaFunc().deleteUser(user)
+            
