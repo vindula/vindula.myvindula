@@ -55,7 +55,7 @@
 						
 						<input type="submit" id='continuar' name="continuar" value="Quero editar meu perfil">
 						
-						<input type="submit" id='voltar' name="voltar" value="N&atilde;o quero editar meu perfil">
+						<input type="submit" id='voltar' name="voltar" value="N&atilde;o, quero editar meu perfil">
 						
 					</form>
 					
