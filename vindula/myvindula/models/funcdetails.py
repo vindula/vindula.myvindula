@@ -120,11 +120,11 @@ class FuncDetails(object):
         return range(data.count())
 
     @staticmethod
-    def get_AllFuncUsernameList(filter=None,b_size=None,b_start=None,sorted_by=por_name):
+    def get_AllFuncUsernameList(filter=None,b_size=None,b_start=None,sorted_by=por_name,reverse=False):
         #Nao usar o b_size, b_start
         #TODO: Consertar a forma que esta sendo ordenada a lista
         #TODO: Melhorar, ainda nao está bom, tempo melhorado de 11 para 2 sec
-        key = generate_cache_key(domain='FuncDetails:get_AllFuncUsernameList',filter=filter,b_size=b_size,b_start=b_start,sorted_by=str(sorted_by))
+        key = generate_cache_key(domain='FuncDetails:get_AllFuncUsernameList',filter=filter,b_size=b_size,b_start=b_start,sorted_by=str(sorted_by),revers=str(reverse))
         L_username = get_redis_cache(key)
         if not L_username:
             L_username = []
@@ -161,7 +161,8 @@ class FuncDetails(object):
             for user in L_username[b_start:b_size]:
                 L_retorno.append(FuncDetails(user))
             
-            L_username  = [i.username for i in sorted(L_retorno, key=sorted_by)]
+            #O reverse é utilizado para quando se trata de um campo de DATA
+            L_username  = [i.username for i in sorted(L_retorno, key=sorted_by, reverse=reverse)]
             set_redis_cache(key,'FuncDetails:get_AllFuncUsernameList:keys',L_username,1800)
         
         return L_username
