@@ -124,7 +124,7 @@ class FuncDetails(object):
         #Nao usar o b_size, b_start
         #TODO: Consertar a forma que esta sendo ordenada a lista
         #TODO: Melhorar, ainda nao está bom, tempo melhorado de 11 para 2 sec
-        key = generate_cache_key(domain='FuncDetails:get_AllFuncUsernameList',filter=filter,b_size=b_size,b_start=b_start,sorted_by=str(sorted_by),revers=str(reverse))
+        key = generate_cache_key(domain='FuncDetails:get_AllFuncUsernameList',filter=filter,b_size=b_size,b_start=b_start,sorted_by=str(sorted_by))
         L_username = get_redis_cache(key)
         if not L_username:
             L_username = []
