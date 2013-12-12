@@ -2,6 +2,7 @@
 
 from vindula.myvindula import MessageFactory as _
 from Products.statusmessages.interfaces import IStatusMessage
+from AccessControl.SecurityManagement import newSecurityManager,getSecurityManager,setSecurityManager
 from datetime import date , datetime
 from vindula.myvindula.validation import valida_form, valida_form_dinamic
 
@@ -130,6 +131,9 @@ class SchemaFunc(BaseFunc):
 
                     portalGroup = getSite().portal_groups
                     portalCatalog = getSite().portal_catalog
+                    portalMember = getSite().portal_membership
+
+                    user_admin = portalMember.getMemberById('admin')
 
                     if form.get('vin_myvindula_department', None):
                         if not type(form.get('vin_myvindula_department', None)) == list:
@@ -137,6 +141,12 @@ class SchemaFunc(BaseFunc):
                         else:
                             L = form.get('vin_myvindula_department', None)
                     deparataments_old = form.get('departaments_old', [])
+
+                    # stash the existing security manager so we can restore it
+                    old_security_manager = getSecurityManager()
+
+                    # create a new context, as the owner of the folder
+                    newSecurityManager(getSite().REQUEST,user_admin)
 
                     #Adiciona o usuario do grupo da estrutura organizacional
                     dep_adicionados = set(L) - set(deparataments_old)
@@ -195,6 +205,9 @@ class SchemaFunc(BaseFunc):
                                 form_data['errors'] = errors
                                 form_data['data'] = data
                                 return form_data
+
+                    # restore the original context
+                    setSecurityManager(old_security_manager)
 
                 for item in data.keys():
                     field = self.Convert_utf8(item)
@@ -262,8 +275,8 @@ class SchemaConfgMyvindula(BaseFunc):
                   'ativo_edit' : {'required': False, 'type':'bool',         'label':'Habilitado para edição',      'decription':'Habilita a edição do campo pelo funcionário',                           'ordem':1},
                   'ativo_view' : {'required': False, 'type':'bool',         'label':'Habilitado para visualização','decription':'Habilita a visualização do campo pelo funcionário',                     'ordem':2},
                   'label'      : {'required': True,  'type':self.to_utf8,   'label':'Título',                      'decription':'Digite o nome de visualização do campo pelo funcionário',               'ordem':3},
-                  'decription' : {'required': False, 'type':'textarea',     'label':'Descrição',                   'decription':'Descrição para o preenchimento do campo',                                'ordem':4},
-                  'required'   : {'required': False, 'type':'bool',         'label':'Campo Obrigatório',           'decription':'Este campo sera de preenchimento obrigátorio',                           'ordem':5},
+                  'decription' : {'required': False, 'type':'textarea',     'label':'Descrição',                   'decription':'Descrição para o preenchimento do campo',                               'ordem':4},
+                  'required'   : {'required': False, 'type':'bool',         'label':'Campo Obrigatório',           'decription':'Este campo sera de preenchimento obrigátorio',                          'ordem':5},
                   'type'       : {'required': True,  'type':'choice',       'label':'Tipo do Campo',               'decription':'Escolha o tipo do campo ',                                              'ordem':6},
                   'list_values': {'required': False, 'type':'textarea',     'label':'Lista de dados para o select','decription':u'Caso o campo seja um select ou list digite os valores para o campo\
                                                                                                                                   <br /> Digite um item por linha',                                      'ordem':7},
@@ -276,7 +289,7 @@ class SchemaConfgMyvindula(BaseFunc):
                                ['img','Campo de Upload de Imagem'], ['list','Campo de Seleção Multipla'],
                                ['choice','Campo de Escolha']],
 
-                       'mascara':[['Telefone','Telefone'],['Data','Data'],['Integer','Números Inteiros'],
+                       'mascara':[['Telefone','Telefone'],['Celular', 'Celular'],['Data','Data'],['Integer','Números Inteiros'],
                                   ['Cpf','CPF'],['Cep','CEP'],['Cnpj','CNPJ']],
 
                        'area_de_view':[['personal','Pessoal'],['contact','Contato'],

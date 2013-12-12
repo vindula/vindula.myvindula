@@ -31,6 +31,17 @@
         }     
         return v
     }
+       /*Função que padroniza telefone celular (11) 12345-6789 [EdgarBruno 10/12/2013]*/
+       function Celular(v){
+        if (v.length<=15){
+            v=v.replace(/\D/g,"")                 
+            v=v.replace(/^(\d\d)(\d)/g,"($1) $2") 
+            v=v.replace(/(\d{5})(\d)/,"$1-$2")
+        } else{
+            v = limitText(v,15)   
+        }     
+        return v
+    }
 			
     /*Função que padroniza DATA*/
     function Data(v){
