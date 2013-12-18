@@ -24,7 +24,7 @@ def userupdate(event):
     user_id = tools.Convert_utf8(user_login.getUserName())      
     user_instance = ModelsInstanceFuncdetails().get_InstanceFuncdetails(user_id)
 
-    if enable_first_access and not user_instance:
+    if not user_instance:
         id_instance = ModelsInstanceFuncdetails().set_InstanceFuncdetails(user_id)
         dados = {}
         
@@ -48,7 +48,8 @@ def userupdate(event):
             CreateUserXMPP(user_id)
         
         tools.setLogger('info',"Usuario criado no myvindula")
-        tools.setRedirectPage('/myvindula-first-registre')
+        if enable_first_access:
+            tools.setRedirectPage('/myvindula-first-registre')
     
     
     if enable_chat and not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
