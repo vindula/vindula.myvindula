@@ -16,7 +16,7 @@
                         <img tal:attributes="src python:'%s/vindula-api/myvindula/user-picture/photograph/%s/True' % (context.portal_url(), username)" width="90px" class="image-modal">
                     </div>
                     <div class="info-box left">
-                        <h6 tal:content="python:user_profile.get('name')"></h6>
+                        <h6 tal:content="python:user_profile.get('nickname', user_profile.get('name', ''))"></h6>
                         <span tal:content="python:user_profile.get('cargo')"></span>
                         <tal:cond condition="user_profile/get_unidadeprincipal|nothing">
                             <a tal:define="structure user_profile/get_unidadeprincipal;"

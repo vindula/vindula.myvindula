@@ -55,6 +55,11 @@
                     <tal:cond condition="python:view.get_ConfugCampos('name')">
                        <tal:cont content="user_profile/name|nothing" />
                     </tal:cond>
+                    <span class="discrete">
+                        <tal:cond condition="python:user_profile.get('nickname', False)">
+                           (<tal:cont content="user_profile/nickname|nothing" />)
+                        </tal:cond>
+                    </span>
                     <hr/>
                 </h5>
 
