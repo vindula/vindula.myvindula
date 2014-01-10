@@ -36,6 +36,7 @@ class UtilMyvindula(object):
         self.catalog = getToolByName(self.site, 'portal_catalog')
         self.portal_url = getToolByName(self.site, 'portal_url')
         self.membership = self.site.portal_membership
+        self.acl_users = getToolByName(self.site, 'acl_users')
         
         self.db = BaseStore()    
             

@@ -112,19 +112,32 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
         ids_instances = []
         
         if filtro:
-            form_campos.append({'phone_number':'None'})
+            add_field = True
+            for i in form_campos:
+                if 'phone_number' in i.keys() and i.values()[0]:
+                    add_field = False
+
+            if add_field:
+                form_campos.append({'phone_number':True})
             
         
         origin = [ModelsDadosFuncdetails,
                   Join(ModelsInstanceFuncdetails, ModelsInstanceFuncdetails.id==ModelsDadosFuncdetails.vin_myvindula_instance_id)]
         if department_id:
             origin.append(Join(ModelsDepartment, ModelsDepartment.vin_myvindula_funcdetails_id==ModelsInstanceFuncdetails.username))
+            data_department = self.store.using(*origin).find(ModelsDadosFuncdetails, ModelsDepartment.uid_plone==department_id)
+            
+            for i in data_department:
+                id_dep = i.vin_myvindula_instance_id
+                if not id_dep in ids_instances:
+                    ids_instances.append(id_dep)
+            
         
         for item in form_campos:
             busca = "self.store.using(*origin).find(ModelsDadosFuncdetails,"
             if item.values()[0]:
                 
-                if item.keys()[0] == 'phone_number':
+                if item.keys()[0] == 'phone_number' and item.values()[0] == True:
                     busca += "ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==u'phone_number',\
                              ModelsDadosFuncdetails.valor, "
                 else:
@@ -139,7 +152,6 @@ class ModelsDadosFuncdetails(Storm, BaseStore):
                 
                 busca += ')'
                 
-                #import pdb;pdb.set_trace()
                 data = eval(busca)
                 
                 #if data.count()>0:

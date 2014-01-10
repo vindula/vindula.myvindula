@@ -33,7 +33,6 @@ from vindula.controlpanel.browser.models import ModelsCompanyInformation
 from vindula.chat.utils.models import ModelsUserOpenFire
 
 from vindula.myvindula.tools.utils import UtilMyvindula
-from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
 
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 from vindula.myvindula.models.department import ModelsDepartment
@@ -83,6 +82,16 @@ class MyVindulaView(grok.View, UtilMyvindula):
             return True
         else:
             return False
+    def user_nickname_name(self):
+        membership = self.context.portal_membership
+        user_login = membership.getAuthenticatedMember()
+        prefs_user = self.get_prefs_user(user_login.getUserName())
+
+        username = user_login.getUserName()
+        nickname = prefs_user.get('nickname')
+        name = prefs_user.get('name')
+        
+        return nickname or name or username
 
     def getConfTyneMCE(self):
         utility = getUtility(ITinyMCE)
@@ -346,7 +355,11 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
                     valor = "<img height='150px' src='%s/user-image?field=%s&instance_id=%s' />"%(site.absolute_url(),campo.fields,instanceUser.id)
                     
                 elif campo.fields == 'date_birth':
-                    valor = self.getDadoUser_byField(instanceUser, campo.fields)[:5]
+                    panel = self.context.restrictedTraverse('@@myvindula-conf-userpanel')
+                    if panel.check_ativa_yearBirth():
+                        valor = self.getDadoUser_byField(instanceUser, campo.fields)[:5]
+                    else:
+                        valor = self.getDadoUser_byField(instanceUser, campo.fields)
 
                 D['data']  = valor
             except:
@@ -734,8 +747,10 @@ class MyVindulaListBirthdays(grok.View,UtilMyvindula):
         form = self.request.form
         ch = Cache()
         filtro = form.get('filtro',1)
-        if filtro == 'prox':
+        panel = self.context.restrictedTraverse('@@myvindula-conf-userpanel')
 
+        if filtro == 'prox':
+ 
             results = ch.get('MyVindulaListBirthdays_birthdaysToday_prox')
             if not results:
                 results = self.get_birthdaysToday(filtro)
@@ -748,6 +763,15 @@ class MyVindulaListBirthdays(grok.View,UtilMyvindula):
                 ch.set('MyVindulaListBirthdays_birthdaysToday_'+str(filtro),results)
 
         return results
+
+    def get_dado_item(self, dados, field_name):
+        panel = self.context.restrictedTraverse('@@myvindula-conf-userpanel')
+        if panel.check_ativa_yearBirth() and\
+            field_name == 'date_birth':
+            return dados.get('date_birth','')[:5]
+
+        else:
+            return dados.get(field_name, '')
 
     def update(self):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
@@ -931,10 +955,10 @@ class MyVindulaFindHoleriteView(grok.View, UtilMyvindula):
             
             id = int(form.get('id','0'))
             if self.select_modelo() == '01':
-                result = ModelsFuncHoleriteDescricao().get_FuncHolerites_byCPFAndID(cpf, id)
+                result = ModelsFuncHolerite().get_FuncHolerites_byCPFAndID(cpf, id)
         
             elif self.select_modelo() == '02':
-                result = ModelsFuncHoleriteDescricao02().get_FuncHolerites_byCPFAndID(cpf, id)
+                result = ModelsFuncHolerite02().get_FuncHolerites_byCPFAndID(cpf, id)
             
             return result
 

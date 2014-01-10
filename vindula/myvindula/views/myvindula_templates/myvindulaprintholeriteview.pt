@@ -81,25 +81,34 @@
 	</head>
 	<body tal:define="item view/load_list|nothing;
 	                  view_controler python:context.restrictedTraverse('myvindula-conf-userpanel');
-                          cnpj python: view.format(item.cnpj_empresa);
                       modelo view_controler/select_modelo_holerite;">
-		
-		<div id="content"  style="width: 665px">
-			
-			<img src="/++resource++vindula.themedefault/images/icons/logo_topo.png"
-				tal:attributes="src string:${context/portal_url|nothing}/company-logo?cnpj=${cnpj|nothing}"
-				height="60px" tal:condition="python:modelo=='01'"
-				 /> 
-			
-			<div id="holerite">
-					<div style="height: 0pt; position: relative; left: 16%; opacity: 0.25" id="logo-holerite"> 
-						<img tal:attributes="src string:${context/portal_url|nothing}/company-logo?cnpj=${cnpj|nothing}" width="450px"/>
-					</div>	
-					
-					<metal:holerite metal:use-macro="context/myvindula-holerite/macros/holerite-print" />
-				
-			</div>
-		</div>
+
+   <tal:cond condition="item">
+      <div id="content"  style="width: 665px"
+         tal:define="cnpj item/cnpj_empresa|nothing">
+        
+        <img src="/++resource++vindula.themedefault/images/icons/logo_topo.png"
+          tal:attributes="src string:${context/portal_url|nothing}/company-logo?cnpj=${cnpj|nothing}"
+          height="60px" tal:condition="python:modelo=='01'"
+           /> 
+        
+        <div id="holerite">
+            <div style="height: 0pt; position: relative; left: 16%; opacity: 0.25" id="logo-holerite"> 
+              <img tal:attributes="src string:${context/portal_url|nothing}/company-logo?cnpj=${cnpj|nothing}" width="450px"/>
+            </div>  
+            
+            <metal:holerite metal:use-macro="context/myvindula-holerite/macros/holerite-print" />
+
+
+     </div>
+      </div>      
+    </tal:cond>
+    <tal:cond condition="not: item">
+
+      <h2>Holerite não encontrado</h2>
+
+    </tal:cond>
+
 		<script type="text/javascript">
 				var img = document.getElementById('logo-holerite');
 				var div = document.getElementById('holerite');
