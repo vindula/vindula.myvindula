@@ -1017,7 +1017,7 @@ class MyVindulaHoleriteView(grok.View, UtilMyvindula):
             user = str(user_login.getUserName())
             prefs_user = self.get_prefs_user(user)
             if prefs_user:
-                cpf = prefs_user.get('cpf','')
+                cpf = prefs_user.get('cpf') or prefs_user.get('teaching_research') or ''
 
         if cpf:
             if self.select_modelo() == '01':
@@ -1124,6 +1124,7 @@ class MyVindulaPrintHoleriteView(grok.View, UtilMyvindula):
 
     def load_list(self):
         form = self.request.form
+        # import pdb;pdb.set_trace()
 
         membership = self.context.portal_membership
         user_login = membership.getAuthenticatedMember()
@@ -1136,12 +1137,13 @@ class MyVindulaPrintHoleriteView(grok.View, UtilMyvindula):
             except:pass
 
             id = int(form.get('id','0'))
+            cpf = cpf.replace('.', '').replace('-', '')
 
             if self.select_modelo() == '01':
                 return ModelsFuncHolerite().get_FuncHolerites_byCPFAndID(cpf, id)      
             elif self.select_modelo() == '02':
-		cpf = cpf.replace('.','').replace('-','')
-		return ModelsFuncHolerite02().get_FuncHolerites_byCPFAndID(cpf, id)
+        		cpf = cpf.replace('.','').replace('-','')
+        		return ModelsFuncHolerite02().get_FuncHolerites_byCPFAndID(cpf, id)
 
     def update(self):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
