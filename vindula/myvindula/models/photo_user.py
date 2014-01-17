@@ -52,11 +52,12 @@ class ModelsPhotoUser(Storm, BaseStore):
         data = None
         
         # if not data:
-        instance_user = ModelsInstanceFuncdetails().get_InstanceFuncdetails(username)
-        if instance_user:
-            data = self.get_ModelsPhotoUser_byFieldAndInstance(field,instance_user.id)
-        if not data:
-            data = self.store.find(ModelsPhotoUser, ModelsPhotoUser.username==username).one()
+        if username:
+            instance_user = ModelsInstanceFuncdetails().get_InstanceFuncdetails(username)
+            if instance_user:
+                data = self.get_ModelsPhotoUser_byFieldAndInstance(field,instance_user.id)
+            if not data:
+                data = self.store.find(ModelsPhotoUser, ModelsPhotoUser.username==username).one()
         
         if data:
             return data
