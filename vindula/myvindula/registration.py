@@ -125,15 +125,21 @@ class SchemaFunc(BaseFunc):
                     user_id = data.get('username')
                     data.pop('username')
 
+                portalMember = getSite().portal_membership
+                user_admin = portalMember.getMemberById('admin')
+
+                #Editar o Email do Propert do usuario padrão do plone
+                user_plone = portalMember.getMemberById(user_id)
+                user_plone.setMemberProperties({'fullname':form.get('name',''),
+                                                'email':form.get('email',''),
+                                               })
+
                 if 'vin_myvindula_department' in form_keys or 'departaments_old' in form_keys:
                     L = []
                     ModelsDepartment().del_department(user_id)
 
                     portalGroup = getSite().portal_groups
                     portalCatalog = getSite().portal_catalog
-                    portalMember = getSite().portal_membership
-
-                    user_admin = portalMember.getMemberById('admin')
 
                     if form.get('vin_myvindula_department', None):
                         if not type(form.get('vin_myvindula_department', None)) == list:
@@ -205,6 +211,7 @@ class SchemaFunc(BaseFunc):
                                 form_data['errors'] = errors
                                 form_data['data'] = data
                                 return form_data
+
 
                     # restore the original context
                     setSecurityManager(old_security_manager)
