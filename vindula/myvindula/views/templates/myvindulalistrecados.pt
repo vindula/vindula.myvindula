@@ -49,46 +49,33 @@
                             <input type="hidden" id="absolute_url" tal:attributes="value string:${context/portal_url}/myvindulalistrecados" >
     						
                             <tal:rep tal:repeat="item batch">
-    							<div class="comment item_lista" 
-                                     tal:attributes="id item/hash;">
+    							<div class="comment item_lista row" 
+                                     tal:attributes="id string:${item/hash}-div;">
                                          
     							    <div metal:use-macro="context/macro-myvindula-documentByLine/macros/page"> </div>
-    
-    								<!--div id="like" tal:condition="not: isAnonymous">
-    									<div tal:attributes="id item/id|nothing">
-    										<input type="hidden" name="isPlone:boolean" id="isPlone" value="False" />
-    										<input type="hidden" name="type" id="type" value="ModelsMyvindulaRecados" />
-    									</div>
-    									<div metal:use-macro="context/myvindula-like-macro/macros/like" />
-    								</div-->
                                     
     				                <div class="comment-body">
     				                    <p tal:replace="structure item/text|nothing" />
     						  		</div>
                                     
+                                    <br />
+                                    <div class="columns large-5">
+                                        <div class="vd-social-left " tal:define="UID item/username;
+                                                                                 TYPES string:UserObject;
+                                                                                 button_responder python:True;
+                                                                                 change_id item/hash">
+                                            <div metal:use-macro="context/macro-message-content/macros/view" />
+                                        </div>
+                                   
+                                    </div>
+                                    
+
                                     <a class="delete-message vindula-icon-cross-2"
                                        tal:attributes="href string: ${context/portal_url}/vindula-api/social/personal/delete_message;
                                                        data-hash item/hash;">
                                     </a>
-    
-    								<!-- Responde / Excluir recados
-    								<div id="comments" class="bt_comentar" tal:condition="not: isAnonymous" >
-    									<a>
-    										<input type="button" tal:attributes="onClick string: location.href='${context/portal_url}/myvindulalistuser?user=${item/username}&scraps=true'"
-        										   class="comments bt_comments" value="Responder" />
-    									</a>
-    									<form action="#" method="post" enctype="multipart/form-data" style="float:right"
-                                              tal:attributes="action string:${context/absolute_url}/myvindulalistrecados">
-    
-                                            <input type="hidden" name="form.excluir:boolean" value="True" />
-                                            <input type="hidden" name="id_recado" id="id_recado" tal:attributes="value item/id|nothing" />
-    
-                                            <--input type="submit" name="excluir" id="excluir" value="Excluir"
-                                                   onclick="return confirmExcluirRecados();"
-                                                                 class="bt_comments" tal:attributes="id item/id|nothing" /--
-                                        </form>
-    								</div>
-                                    -->
+
+                                        
                                     <br/>
     							</div>
     						</tal:rep>
