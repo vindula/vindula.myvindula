@@ -386,7 +386,7 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
             if data:
                 for item in data:
                     content = self.get_content_by_id(item.content_id)
-                    if content.type == 'UserObject' and content.username!=username:
+                    if content.type == 'UserObject':
                         items.append(content)
             return items
         
