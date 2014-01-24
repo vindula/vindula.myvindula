@@ -203,8 +203,8 @@
                                                                                          <li tal:repeat="following bloco_follow">
                                                                                             <!-- Dados para utilização da macro -->
                                                                                             <tal:def define="size_img string:30px;
-                                                                                                             item python: view.get_prefs_user(following.username);
-                                                                                                             username following/username|string: ;">
+                                                                                                             item python: view.get_prefs_user(following.uid);
+                                                                                                             username following/uid|string: ;">
                                                                                                 <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>
                                                                                             </tal:def>
                                                                                          </li>
