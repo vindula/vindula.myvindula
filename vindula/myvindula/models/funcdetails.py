@@ -40,6 +40,13 @@ class FuncDetails(object):
 
                 for field in self.fields:
                     value = user_data.get(field.name)
+
+                    if field.type == 'BooleanField':
+                        if value == 'on':
+                            value = True
+                        else:
+                            value = False
+
                     setattr(self, field.name,value)
 
         #TODO: Verificar pq isso esta acontecendo
