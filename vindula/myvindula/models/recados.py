@@ -65,12 +65,24 @@ class ModelsMyvindulaRecados(Storm, BaseStoreMyvindula):
     def get_myvindula_recados(self,**kwargs):
         #Todo: colocar um limite de itens retornados
         user = kwargs.get('receiver','')
+        list_username = kwargs.get('list_username',[])
+        data_inicial = kwargs.get('data_inicial')
+        data_final = kwargs.get('data_final')
+        
         if type(user) != unicode:
             user = unicode(user, 'utf-8')
 
         data = self.store.find(ModelsMyvindulaRecados,
                                ModelsMyvindulaRecados.receiver==user,
                                ModelsMyvindulaRecados.deleted==False).order_by(Desc(ModelsMyvindulaRecados.date_created))
+
+        if list_username:
+            data = data.find(ModelsMyvindulaRecados.username.is_in(list_username))
+
+        if data_inicial and data_final:
+            data = data.find(ModelsMyvindulaRecados.date_created>=data_inicial,
+                             ModelsMyvindulaRecados.date_created<=data_final)
+
         return data
 
     def del_myvindula_recados(self, id):
