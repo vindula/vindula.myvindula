@@ -7,6 +7,8 @@ from vindula.myvindula.tools.utils import UtilMyvindula
 from vindula.myvindula.models.funcdetails import FuncDetails
 from vindula.myvindula.models.status import ModelsStatus
 from vindula.myvindula.models.notification import ModelsMyvindulaNotificacao
+from vindula.controlpanel.content.vindulaconfigall import VindulaConfiguration
+
 
 grok.templatedir('templates')
 
@@ -26,3 +28,10 @@ class ModalProfileView(grok.View, UtilMyvindula):
         else:
             status = ''
         return status
+    
+    def getActiveCargo(self):
+        vindulaconfiguration = VindulaConfiguration(self.context, self.request)
+        cargo = vindulaconfiguration.check_cargo_modais()
+        return cargo
+        
+        
