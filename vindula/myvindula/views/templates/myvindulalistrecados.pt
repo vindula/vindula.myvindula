@@ -149,7 +149,7 @@
                     <div tal:condition="not: items"
                          class="columns large-12" id="content_recados">
                         
-                        <h3>Você não possue mensagens.</h3>
+                        <h3>Você não possui mensagens.</h3>
 
                     </div>
     			</div>
