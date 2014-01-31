@@ -6,7 +6,7 @@
     <!--store name="myvindula" uri="sqlite:myvindulaDB"/-->
     <store
           name="myvindula"
-          uri="mysql://root:vindula@localhost/myvindulaDB" />  
+          uri="mysql://root:root@localhost/vindula_myvindulaDB" />  
       
       <!--mysql://usuario:senha@servidor/base_de_dados -->
 
