@@ -28,15 +28,13 @@
                         </tal:cond>
                         
                         <div class="contato">
-                            <div class="block" tal:condition="python:user_profile.get('phone_number') or user_profile.get('cell_phone')">
+                            <div class="block" tal:condition="python:user_profile.get('phone_number') or user_profile.get('ramal')"
+                                 tal:define="show_phone python: (user_profile.get('show_phone', False)) and ((user_profile.get('show_phone') == 'on') and True or False) or False">
                                 <span tal:content="python:user_profile.get('ramal')"></span>
-                                <span tal:condition="python:user_profile.get('phone_number', False) and user_profile.get('ramal', False) and user_profile.get('show_phone', False)">|</span>
+                                <span tal:condition="python:user_profile.get('phone_number', False) and user_profile.get('ramal', False) and show_phone">|</span>
                                 
-                                <span tal:condition="python:user_profile.get('show_phone', False)"
+                                <span tal:condition="show_phone"
                                       tal:content="python:user_profile.get('phone_number')"></span>
-
-                                <!--span tal:condition="python:user_profile.get('phone_number') and user_profile.get('cell_phone')">|</span>
-                                <span tal:content="python:user_profile.get('cell_phone')"></span-->
                             </div>
                             <div class="block" tal:condition="python:user_profile.get('email')">
                                 <span tal:content="python:user_profile.get('email')"></span>

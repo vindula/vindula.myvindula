@@ -473,10 +473,12 @@
                                         <span tal:content="python:user_profile.get('ramal')"></span>
                                     </li>
                                     
-                                    <li tal:condition="python:user_profile.get('show_phone', False) and user_profile.get('phone_number', False)">
-                                        <strong>Telefone:</strong>
-                                        <span tal:content="python:user_profile.get('phone_number')"></span>
-                                    </li>
+                                    <tal:def define="show_phone python: (user_profile.get('show_phone', False)) and ((user_profile.get('show_phone') == 'on') and True or False) or False">
+                                        <li tal:condition="python:show_phone and user_profile.get('phone_number', False)">
+                                            <strong>Telefone:</strong>
+                                            <span tal:content="python:user_profile.get('phone_number')"></span>
+                                        </li>
+                                    </tal:def>
                                     
                                     <li tal:condition="python:user_profile.get('email')">
                                         <strong>Email:</strong>
