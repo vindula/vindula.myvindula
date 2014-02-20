@@ -952,16 +952,14 @@ class MyVindulaExportUsersView(grok.View,UtilMyvindula):
 
                     else:
                         valor = user.get(campo,'')
-
+                        valor_list = ''
                         if type(valor) == list:
-                            valor_list = ''
                             for i in valor:
                                 if i :valor_list += (i + ' / ') 
                             
                             valor = valor_list
                             
                         text += '%s;' % (str(valor).replace('\n', '').replace('\r', '').replace(';', ''))
-
 
                         valor = valor_list
                         
