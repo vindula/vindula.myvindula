@@ -7,11 +7,9 @@
 	        meta_type="Filesystem Directory View"
 	        directory="vindula.myvindula:skins/myvindula"/>         
 
-	                
 	<skin-path name="Sunburst Theme">
 		<layer insert-after="custom" 
 		       name="myvindula_templates"/>
 		
 	</skin-path>
-
 </object>

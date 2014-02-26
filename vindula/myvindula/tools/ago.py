@@ -31,7 +31,7 @@ def human(dt, precision=2, past_tense='{} atrás', future_tense=' {}'):
     hlist = []
     count = 0
     fist_s = ' a '
-    units = ( 'ano', 'dia', 'hora', 'minuto', 'segundo', 'microsegundo' )
+    units = ( 'ano', 'dia', 'hora', 'minuto', 'segundo')# REMOVIDO O MICROSEGUNDO 'microsegundo' )
     for unit in units:
         if count >= precision: break # met precision
         if d[ unit ] == 0: continue # skip 0's
