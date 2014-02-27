@@ -56,7 +56,7 @@
                                         <td>
                                             <span class="summary">
                                                 <a href="#" class="contenttype-folder state-published url"
-                                                   tal:attributes="href python:(item.portal_type == 'File') and item.absolute_url()+'/file_view' or item.absolute_url();
+                                                   tal:attributes="href python: item.absolute_url() + '/view';
                                                                    class string:$item_type_class $item_wf_state_class url"
                                                    tal:content="item/title|item/id|nothing">Item Title</a>
                                             </span>

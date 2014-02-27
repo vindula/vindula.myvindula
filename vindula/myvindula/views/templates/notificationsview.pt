@@ -45,7 +45,7 @@
                                      tal:define="user_actor python:view_myvindula.get_prefs_user(notificacao.actor);
                                                  obj_action python:view_myvindula.lookupObject(notificacao.content.uid);">
                                   <a href="#" tal:define="obj_type obj_action/portal_type|nothing;
-                                                          url_view python: obj_type=='File' and '/file_view' or ''"
+                                                          url_view python: 'view'"
                                               tal:attributes="href string:${obj_action/absolute_url|nothing}${url_view}">
                                       <div class="clear">
                                           <img class="left" width="50" height="50"
