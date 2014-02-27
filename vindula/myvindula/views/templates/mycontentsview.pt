@@ -9,6 +9,12 @@
     <body metal:fill-slot="content">
         <metal:macro define-macro="page-view" >
             
+            <tal:cond condition="not:request/list-file-js|nothing">
+                <script type="text/javascript" src=""
+                    tal:attributes="src string:${context/absolute_url|nothing}/++resource++vindula.content/js/ajax_list_file.js"></script>
+                <tal:dummy tal:define="use_js_list python:request.set('list-file-js',1);" />
+            </tal:cond>
+            
             <div class="clear">
                 <div id="my_contents" class="columns large-12 list_file" 
                      tal:define="view nocall:context/@@myvindula_my_contents;

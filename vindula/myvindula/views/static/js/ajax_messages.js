@@ -1,67 +1,67 @@
 $j = jQuery.noConflict();
 
-function executaAjax(ctx, b_start, b_size){
-    var url = $j('base').attr('href') + 'myvindulalistrecados',
-        usernames = ctx.find('.usernames').val(),
-        data_inicial = ctx.find('#datepicker_data_inicial').val(),
-        data_final = ctx.find('#datepicker_data_final').val();
-        params = {};
-
-
-    if (b_start==null) {
-        b_start = parseInt(ctx.find('input#b_start').val());
-        if (isNaN(b_start)) {
-            b_start = parseInt(ctx.children().find('input#b_start').val());
-        }
-    }
-        
-    if (b_size==null) {
-        b_size = parseInt(ctx.find('input#b_size').val());
-        if (isNaN(b_size)) {
-            b_size = parseInt(ctx.children().find('input#b_size').val());
-        }
-    }
-    
-    params['b_size'] = b_size;
-    params['b_start'] = b_start;
-    params['ajax_load'] = 1;
-    
-    if (usernames){
-        params['usernames'] = usernames;
-    }
-    
-    if (data_inicial){
-        params['data_inicial'] = data_inicial;
-    }
-    
-    if (data_final){
-        params['data_final'] = data_final;
-    }
-
-
-    ctx.find('.ajax_loader').show();
-    ctx.find('div.content-pagination').css('opacity', '0.2');
-    ctx.find('.submet_seach').css('opacity', '0.2');
-
-    $j.ajax({
-        url: url,
-        data: params,
-        type: 'POST',
-        success: function(data){
-
-            var result = $j(data).find('#content_recados');
-            $j('#content_recados').html(result.contents());
-            
-            if ($j('#content_recados').find('.social-box').length){
-                $j('#content_recados').find('.social-box').vindula(null, {user_token: window.token});    
-            }
-
-            ctx.find('.ajax_loader').hide();
-            ctx.find('div.content-pagination').css('opacity', '1');
-            ctx.find('.submet_seach').css('opacity', '1');
-        }
-    });
-}
+//function executaAjax(ctx, b_start, b_size){
+//    var url = $j('base').attr('href') + 'myvindulalistrecados',
+//        usernames = ctx.find('.usernames').val(),
+//        data_inicial = ctx.find('#datepicker_data_inicial').val(),
+//        data_final = ctx.find('#datepicker_data_final').val();
+//        params = {};
+//
+//
+//    if (b_start==null) {
+//        b_start = parseInt(ctx.find('input#b_start').val());
+//        if (isNaN(b_start)) {
+//            b_start = parseInt(ctx.children().find('input#b_start').val());
+//        }
+//    }
+//        
+//    if (b_size==null) {
+//        b_size = parseInt(ctx.find('input#b_size').val());
+//        if (isNaN(b_size)) {
+//            b_size = parseInt(ctx.children().find('input#b_size').val());
+//        }
+//    }
+//    
+//    params['b_size'] = b_size;
+//    params['b_start'] = b_start;
+//    params['ajax_load'] = 1;
+//    
+//    if (usernames){
+//        params['usernames'] = usernames;
+//    }
+//    
+//    if (data_inicial){
+//        params['data_inicial'] = data_inicial;
+//    }
+//    
+//    if (data_final){
+//        params['data_final'] = data_final;
+//    }
+//
+//
+//    ctx.find('.ajax_loader').show();
+//    ctx.find('div.content-pagination').css('opacity', '0.2');
+//    ctx.find('.submet_seach').css('opacity', '0.2');
+//
+//    $j.ajax({
+//        url: url,
+//        data: params,
+//        type: 'POST',
+//        success: function(data){
+//
+//            var result = $j(data).find('#content_recados');
+//            $j('#content_recados').html(result.contents());
+//            
+//            if ($j('#content_recados').find('.social-box').length){
+//                $j('#content_recados').find('.social-box').vindula(null, {user_token: window.token});    
+//            }
+//
+//            ctx.find('.ajax_loader').hide();
+//            ctx.find('div.content-pagination').css('opacity', '1');
+//            ctx.find('.submet_seach').css('opacity', '1');
+//        }
+//    });
+//}
 
 
 
@@ -108,12 +108,12 @@ $j(document).ready(function(){
     });
 
 
-    $j('div#cycle-next, div#cycle-prev').live('click',function(){
-        var $conteiner = $j(this).parents('.userpage'),
-            b_start = parseInt($j(this).find('input').val());
-
-        executaAjax($conteiner,b_start,null);
-    });
+//    $j('div#cycle-next, div#cycle-prev').live('click',function(){
+//        var $conteiner = $j(this).parents('.userpage'),
+//            b_start = parseInt($j(this).find('input').val());
+//
+//        executaAjax($conteiner,b_start,null);
+//    });
     
 
     $j('div#size-nav a').live('click',function(event){
