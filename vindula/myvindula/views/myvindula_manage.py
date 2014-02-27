@@ -533,7 +533,6 @@ class MyVindulaImportHoleriteView(grok.View, UtilMyvindula):
                     for linha in texto.split('\n'):
                         #Checando linhas vazias, se a linha for vazia ou só espaço, vai retornar uma lista vazia e nao entrar no if.
                         check_linha = [i for i in linha.split(' ') if i != '']
-                        #import pdb;pdb.set_trace()
                         #Pulando linhas vazias
                         if check_linha != []:
                              

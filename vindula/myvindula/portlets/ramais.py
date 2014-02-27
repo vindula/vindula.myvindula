@@ -324,7 +324,6 @@ class Renderer(base.Renderer, UtilMyvindula):
 
             else:
                 if departamento or check_form:
-                    #import pdb;pdb.set_trace()
     #                if type(title) != unicode:
     #                    title = unicode(title, 'utf-8')
     #

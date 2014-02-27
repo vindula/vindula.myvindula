@@ -218,7 +218,6 @@ class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
 
                 busca += ')'
 
-                #import pdb;pdb.set_trace()
                 data = eval(busca)
 
                 #if data.count()>0:
@@ -230,7 +229,6 @@ class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
 
 
 
-#            import pdb;pdb.set_trace()
 #            busca = "self.store.using(*origin).find(ModelsDadosFuncdetails,"
 #            busca += "ModelsDadosFuncdetails.vin_myvindula_confgfuncdetails_fields==u'phone_number',\
 #                     ModelsDadosFuncdetails.valor != u'',"

@@ -95,7 +95,6 @@ class ModelsFuncHolerite02(Storm, BaseStore):
         return L    
 
     def del_HoleritesLote(self, date,empresa):
-        #import pdb;pdb.set_trace()
         results = self.store.find(ModelsFuncHolerite02, ModelsFuncHolerite02.date_creation>=date,
                                                         ModelsFuncHolerite02.date_creation<=date.replace(second=59),
                                                         ModelsFuncHolerite02.empresa==empresa)

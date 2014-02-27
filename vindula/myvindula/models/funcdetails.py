@@ -133,6 +133,7 @@ class FuncDetails(object):
         #TODO: Melhorar, ainda nao está bom, tempo melhorado de 11 para 2 sec
         key = generate_cache_key(domain='FuncDetails:get_AllFuncUsernameList',filter=filter,b_size=b_size,b_start=b_start,sorted_by=str(sorted_by))
         L_username = get_redis_cache(key)
+
         if not L_username:
             L_username = []
             L_retorno = []
@@ -146,6 +147,7 @@ class FuncDetails(object):
             if filter:
                 #Ajustando filtro para o caso de busca
                 #por mais de uma palavra Ex: '%palavra1%palavra2%'
+                
                 filter = filter.split(' ')
                 filter = '%'.join(filter)
                 data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, 
@@ -199,8 +201,9 @@ class FuncDetails(object):
         
         for item in fields.items():
             field, value = item[0], item[1]
+            
             if value:
-                if field == 'name':
+                if field in ['name', 'nickname']:
                     value = unicode(value, 'utf-8')
                     username_term = value
                     expression_name += [ModelsDadosFuncdetails.value.like(value,case_sensitive=False)]
@@ -220,9 +223,6 @@ class FuncDetails(object):
                                                        ModelsDadosFuncdetails.deleted==False,
                                                        Or(*expressions),)
 
-        
-        
-        
         if expression_name:
             data_username = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails,
                                                        ModelsConfgMyvindula.name==u'name',
