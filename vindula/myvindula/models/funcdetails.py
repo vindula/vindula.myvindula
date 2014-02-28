@@ -225,7 +225,7 @@ class FuncDetails(object):
 
         if expression_name:
             data_username = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails,
-                                                                ModelsConfgMyvindula.name.is_in(['name', 'nickname']),
+                                                                ModelsConfgMyvindula.name.is_in([u'name', u'nickname']),
                                                                 ModelsDadosFuncdetails.field_id==ModelsConfgMyvindula.id,
                                                                 ModelsDadosFuncdetails.deleted==False,
                                                                 Or(*expression_name),)
