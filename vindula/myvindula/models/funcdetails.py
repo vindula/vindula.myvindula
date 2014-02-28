@@ -203,7 +203,7 @@ class FuncDetails(object):
             field, value = item[0], item[1]
             
             if value:
-                if field in ['name', 'nickname']:
+                if field in ['name']:
                     value = unicode(value, 'utf-8')
                     username_term = value
                     expression_name += [ModelsDadosFuncdetails.value.like(value,case_sensitive=False)]
