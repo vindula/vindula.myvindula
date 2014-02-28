@@ -203,7 +203,7 @@ class FuncDetails(object):
             field, value = item[0], item[1]
             
             if value:
-                if field in ['name']:
+                if field in ['name', 'nickname']:
                     value = unicode(value, 'utf-8')
                     username_term = value
                     expression_name += [ModelsDadosFuncdetails.value.like(value,case_sensitive=False)]
@@ -225,10 +225,10 @@ class FuncDetails(object):
 
         if expression_name:
             data_username = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails,
-                                                       ModelsConfgMyvindula.name==u'name',
-                                                       ModelsDadosFuncdetails.field_id==ModelsConfgMyvindula.id,
-                                                       ModelsDadosFuncdetails.deleted==False,
-                                                       Or(*expression_name),)
+                                                                ModelsConfgMyvindula.name.is_in(['name', 'nickname']),
+                                                                ModelsDadosFuncdetails.field_id==ModelsConfgMyvindula.id,
+                                                                ModelsDadosFuncdetails.deleted==False,
+                                                                Or(*expression_name),)
             
         if (data and data.count() > 0) or (data_username and data_username.count() > 0):
             L_username_aux = []
@@ -248,9 +248,11 @@ class FuncDetails(object):
                     for i in L_username_aux:
                         if (i in L_username_aux2) and (i not in L_username):
                             L_username.append(i)
+                            
             #verifica se a busca foi feita apenas por filtro
             elif expressions:
                 L_username = L_username_aux
+                
             #verifica se a busca foi feita apenas por nome e username
             else:
                 L_username = L_username_aux2
