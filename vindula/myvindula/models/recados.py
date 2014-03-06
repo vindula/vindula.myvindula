@@ -68,6 +68,8 @@ class ModelsMyvindulaRecados(Storm, BaseStoreMyvindula):
         list_username = kwargs.get('list_username',[])
         data_inicial = kwargs.get('data_inicial')
         data_final = kwargs.get('data_final')
+        subject = kwargs.get('subject')
+        
         
         if type(user) != unicode:
             user = unicode(user, 'utf-8')
@@ -75,13 +77,22 @@ class ModelsMyvindulaRecados(Storm, BaseStoreMyvindula):
         data = self.store.find(ModelsMyvindulaRecados,
                                ModelsMyvindulaRecados.receiver==user,
                                ModelsMyvindulaRecados.deleted==False).order_by(Desc(ModelsMyvindulaRecados.date_created))
-
-        if list_username:
-            data = data.find(ModelsMyvindulaRecados.username.is_in(list_username))
-
-        if data_inicial and data_final:
-            data = data.find(ModelsMyvindulaRecados.date_created>=data_inicial,
-                             ModelsMyvindulaRecados.date_created<=data_final)
+        
+        if data and data.count():
+            if subject:
+                subject = '%'+subject+'%'
+                
+                if isinstance(subject, str):
+                    subject = subject.decode('utf-8')
+                    
+                data = data.find(ModelsMyvindulaRecados.text.like(subject))
+    
+            if list_username:
+                data = data.find(ModelsMyvindulaRecados.username.is_in(list_username))
+    
+            if data_inicial and data_final:
+                data = data.find(ModelsMyvindulaRecados.date_created>=data_inicial,
+                                 ModelsMyvindulaRecados.date_created<=data_final)
 
         return data
 

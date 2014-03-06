@@ -22,10 +22,6 @@ $j = jQuery.noConflict();
 //        }
 //    }
 //    
-//    params['b_size'] = b_size;
-//    params['b_start'] = b_start;
-//    params['ajax_load'] = 1;
-//    
 //    if (usernames){
 //        params['usernames'] = usernames;
 //    }
@@ -100,11 +96,31 @@ $j(document).ready(function(){
         return false;
     });
 
-    $j('.submet_seach').click(function(){
-        var $conteiner = $j(this).parents('.userpage');
+    $j('.submit_search').click(function(){
+        var $conteiner = $j(this).parents('.userpage'),
+	        usernames = $conteiner.find('.usernames').val(),
+	        data_inicial = $conteiner.find('#datepicker_data_inicial').val(),
+	        data_final = $conteiner.find('#datepicker_data_final').val(),
+	        subject = $conteiner.find('input#subject').val(),
+            parameters = {};
+        
+        if (usernames){
+        	parameters['usernames'] = usernames;
+        }
+        
+        if (data_inicial){
+        	parameters['data_inicial'] = data_inicial;
+        }
+        
+        if (data_final){
+        	parameters['data_final'] = data_final;
+        }
+        
+        if (subject){
+        	parameters['subject'] = subject;
+        }
 
-        executaAjax($conteiner,null,null);
-
+        executaAjax($conteiner, null, null, undefined, parameters);
     });
 
 
@@ -126,6 +142,7 @@ $j(document).ready(function(){
     });
 
     $j.datepicker.setDefaults($j.datepicker.regional["pt-BR"]);
+    
     var D = {showAnim:'blind',
              dateFormat: "dd/mm/yy",
              defaultDate: "1D",

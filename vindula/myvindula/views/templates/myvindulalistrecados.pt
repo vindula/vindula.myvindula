@@ -55,9 +55,15 @@
                             tal:attributes="src string:${context/portal_url}/++resource++vindula.myvindula.views/js/ajax_messages.js"></script>
                     
                     <style type="text/css">
-                        .datepicker{
-                            width: 105px !important;
-                            margin: 0 3px !important;
+                        .datepicker {
+                            width: 112px !important;
+                            margin-left: 3px !important;
+                        }
+                        
+                        input.datepicker,
+                        input.subject {
+                             height: 23px !important;
+                            border-radius: 3px;
                         }
                     </style>
 
@@ -66,98 +72,103 @@
                         <hr/>
                     </div>
 
-					<div class="columns large-12 userpage geral_lista_comentarios" 
-                         tal:condition="items">
+					<div class="columns large-12 userpage geral_lista_comentarios" id="userpage">
                         
-                        <div class="container row">
+                        <div class="row">
 
                             <div class="columns large-6">
                                 <label for="usernames">Usuários</label>
                                 <input type="text" name="usernames" id="usernames" class="usernames"/>
                             </div>
+                            
                             <div class="columns large-6">
                                 <label for="data">Datas</label>
                                 De: <input type="text" name="data_inicial" id="datepicker_data_inicial" class="datepicker"/>
                                 á<input type="text" name="data_final" id="datepicker_data_final" class="datepicker"/>
                                
                             </div>
+                            
+                            <div class="columns large-12">
+                                <label for="subject">Assunto</label>
+                                <input type="text" name="subject" id="subject" class="subject"/>
+                            </div>
+                            
                             <div class="columns large-12 listing-bar">
                                 <div class="ajax_loader">
                                     <img tal:attributes="src string:${context/portal_url}/loader.gif">
                                 </div>
-
-                                <input type="button" name="submet" class="submet_seach" value="OK" />
-
+                                
+                                <div class="right">
+                                    <input type="button" name="submet" class="button small radius submit_search" value="Buscar" />
+                                </div>
                             </div>
+                            
                             <br><br>
                             
-                            <div class="columns large-12" id="content_recados">
+                            <div class="columns large-12 container" id="content_recados">
                             
                                 <input type="hidden" id="b_size" tal:attributes="value b_size" />
                                 <input type="hidden" id="b_start" tal:attributes="value b_start" />
                                 <input type="hidden" id="absolute_url" tal:attributes="value string:${context/portal_url}/myvindulalistrecados" >
         						
-                                <tal:rep tal:repeat="item batch">
-        							<div class="comment item_lista row" 
-                                         tal:attributes="id string:${item/hash}-div;">
-                                             
-        							    <div metal:use-macro="context/macro-myvindula-documentByLine/macros/page"> </div>
-                                        
-        				                <div class="comment-body">
-        				                    <p tal:replace="structure item/text|nothing" />
-        						  		</div>
-                                        
-                                        <br />
-                                        <div class="columns large-5">
-                                            <div class="vd-social-left social-box" tal:define="UID item/username;
-                                                                                               TYPES string:UserObject;
-                                                                                               button_responder python:True;
-                                                                                               change_id item/hash">
-                                                <div metal:use-macro="context/macro-message-content/macros/view" />
+        						<tal:cond condition="items">
+        						    <tal:rep tal:repeat="item batch">
+                                        <div class="comment item_lista row"
+                                             tal:attributes="id string:${item/hash}-div;">
+
+                                            <div metal:use-macro="context/macro-myvindula-documentByLine/macros/page"></div>
+
+                                            <div class="comment-body">
+                                                <p tal:replace="structure item/text|nothing" />
                                             </div>
-                                       
+
+                                            <br />
+                                            <div class="columns large-5">
+                                                <div class="vd-social-left social-box" tal:define="UID item/username;
+                                                                                                   TYPES string:UserObject;
+                                                                                                   button_responder python:True;
+                                                                                                   change_id item/hash">
+                                                    <div metal:use-macro="context/macro-message-content/macros/view" />
+                                                </div>
+                                            </div>
+
+                                            <a class="delete-message vindula-icon-cross-2"
+                                               tal:attributes="href string: ${context/portal_url}/vindula-api/social/personal/delete_message;
+                                               data-hash item/hash;"> </a>
+
+                                            <br/>
                                         </div>
+                                    </tal:rep>
 
-                                        <a class="delete-message vindula-icon-cross-2"
-                                           tal:attributes="href string: ${context/portal_url}/vindula-api/social/personal/delete_message;
-                                                           data-hash item/hash;">
-                                        </a>
-                                            
-                                        <br/>
-        							</div>
-        						</tal:rep>
-
-                                <br/><br/>
-                                <div id="paginacao">
-                                    <div id="size-nav" class="left">
-                                        <p>
-                                            <span tal:content="python:'Total: ('+str(len(items))+')'">Total (XX)</span>
-                                            |
-                                            <span tal:define="css python:'font-weight:bolder;;'">Itens por página:
-                                                <a class="c-pointer" id="itenspage" href="#"
-                                                   tal:attributes="style python:b_size == '10' and css or '' ">10</a>,
-                                                <a class="c-pointer" id="itenspage" href="#"
-                                                   tal:attributes="style python:b_size == '20' and css or '' ">20</a>,
-                                                <a class="c-pointer" id="itenspage" href="#"
-                                                   tal:attributes="style python:b_size == '30' and css or '' ">30</a>,
-                                                <a class="c-pointer" id="itenspage" href="#"
-                                                   tal:attributes="style python:b_size == '40' and css or '' ">40</a>
-                                            </span>
-                                        </p>
+                                    <br/>
+                                    <br/>
+                                        
+                                    <div id="paginacao">
+                                        <div id="size-nav" class="left">
+                                            <p>
+                                                <span tal:content="python:'Total: ('+str(len(items))+')'">Total (XX)</span>
+                                                |
+                                                <span tal:define="css python:'font-weight:bolder;;'">Itens por página: <a class="c-pointer" id="itenspage" href="#"
+                                                    tal:attributes="style python:b_size == '10' and css or '' ">10</a>, <a class="c-pointer" id="itenspage" href="#"
+                                                    tal:attributes="style python:b_size == '20' and css or '' ">20</a>, <a class="c-pointer" id="itenspage" href="#"
+                                                    tal:attributes="style python:b_size == '30' and css or '' ">30</a>, <a class="c-pointer" id="itenspage" href="#"
+                                                    tal:attributes="style python:b_size == '40' and css or '' ">40</a> </span>
+                                            </p>
+                                        </div>
+                                        <div id="pag-nav" class="right">
+                                            <metal:block metal:use-macro="context/boll_batch/macros/navigation" />
+                                        </div>
                                     </div>
-                                    <div id="pag-nav" class="right">
-                                        <metal:block metal:use-macro="context/boll_batch/macros/navigation" />
-                                    </div>
+        						</tal:cond>
+        						
+        						<div class="columns large-12" id="content_recados"
+        						     tal:condition="not: items" >
+                                    
+                                    <h3>Você não possui mensagens.</h3>
                                 </div>
                             </div>
                         </div>
 					</div>
-                    <div tal:condition="not: items"
-                         class="columns large-12" id="content_recados">
-                        
-                        <h3>Você não possui mensagens.</h3>
-
-                    </div>
     			</div>
     		</div>
         </div>
