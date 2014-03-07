@@ -127,16 +127,23 @@ class FuncDetails(object):
         return range(data.count())
 
     @staticmethod
-    def get_AllFuncUsernameList(filter=None,b_size=None,b_start=None,sorted_by=por_name,reverse=False):
+    def get_AllFuncUsernameList(filter=None,b_size=None,b_start=None,sorted_by=por_name,reverse=False,search_all_fields=True):
         #Nao usar o b_size, b_start
         #TODO: Consertar a forma que esta sendo ordenada a lista
         #TODO: Melhorar, ainda nao está bom, tempo melhorado de 11 para 2 sec
-        key = generate_cache_key(domain='FuncDetails:get_AllFuncUsernameList',filter=filter,b_size=b_size,b_start=b_start,sorted_by=str(sorted_by))
+        key = generate_cache_key(domain='FuncDetails:get_AllFuncUsernameList', 
+                                 filter=filter,
+                                 b_size=b_size,
+                                 b_start=b_start,
+                                 sorted_by=str(sorted_by),
+                                 search_all_fields=str(search_all_fields))
+        
         L_username = get_redis_cache(key)
 
         if not L_username:
             L_username = []
             L_retorno = []
+            
             if b_size != None and b_start != None:
                 b_start = int(b_start)
                 b_size = b_start + int(b_size)
@@ -150,10 +157,27 @@ class FuncDetails(object):
                 
                 filter = filter.split(' ')
                 filter = '%'.join(filter)
-                data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, 
-                                                           ModelsDadosFuncdetails.deleted==False,
-                                                           ModelsDadosFuncdetails.value.like('%'+filter+'%',case_sensitive=False))
-                if data.count() > 0:
+                
+                data = []
+                
+                if search_all_fields:
+                    data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, 
+                                                               ModelsDadosFuncdetails.deleted==False,
+                                                               ModelsDadosFuncdetails.value.like('%'+filter+'%',case_sensitive=False))
+                else:
+                    #Faz a busca só pelos campos de NOME, EMAIL E APELIDO!
+                    fields = ModelsConfgMyvindula().store.find(ModelsConfgMyvindula, 
+                                                               ModelsConfgMyvindula.deleted==False,
+                                                               ModelsConfgMyvindula.name.is_in([u'nickname', u'name', u'email']))
+                    id_fields = []
+                    for field in fields:
+                        id_fields.append(field.id) 
+                    if id_fields:
+                        data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, 
+                                                                   ModelsDadosFuncdetails.deleted==False,
+                                                                   ModelsDadosFuncdetails.field_id.is_in(id_fields),
+                                                                   ModelsDadosFuncdetails.value.like('%'+filter+'%',case_sensitive=False))
+                if data and data.count() > 0:
                     for item in data:
                         if not item.username in L_username:
                             L_username.append(item.username)
@@ -177,9 +201,16 @@ class FuncDetails(object):
         return L_username
 
     @staticmethod
-    def get_AllFuncDetails(filter=None,b_size=None,b_start=None):
+    def get_AllFuncDetails(filter=None, b_size=None, b_start=None, search_all_fields=True):
+        """Retorna todos os usuarios e seus atributos
+        :param filter: Adiciona um filtro na busca dos usuarios
+        :param b_size: Passa o tamanho da lista para retornar (usado para paginação)
+        :param b_start: Passa de onde vai continuar a paginar (usado para paginação)
+        :param search_all_fields: Variável que define se o filtro vai ser aplicado a todos os campos do perfil ou apenas para nome, apelido e email
+        """
+        
         L_retorno = []
-        L_username = FuncDetails.get_AllFuncUsernameList(filter=filter,b_size=b_size,b_start=b_start)
+        L_username = FuncDetails.get_AllFuncUsernameList(filter=filter, b_size=b_size, b_start=b_start, search_all_fields=search_all_fields)
         for user in L_username[b_start:b_size]:
             L_retorno.append(FuncDetails(user))
 
@@ -267,7 +298,9 @@ class FuncDetails(object):
             for item in data:
                 L_username.append(item[0])
 
-        key = generate_cache_key('FuncDetails:get_FuncDetailsByField',L_retorno=str(L_username),fields=str(fields))
+        key = generate_cache_key('FuncDetails:get_FuncDetailsByField',
+                                 L_retorno=str(L_username),
+                                 fields=str(fields))
         sorted_user_list = get_redis_cache(key)
         if not sorted_user_list:
             for user in L_username:
