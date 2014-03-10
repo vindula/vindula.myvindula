@@ -67,9 +67,14 @@ class FuncDetails(object):
         return '/myvindulalistuser?user=%s' %(self.username)
 
     def getContato(self):
-        return '%s<br />%s<br />%s'%(self.get('email',''),
-                                     self.get('phone_number',''),
-                                     self.get('cell_phone',''))
+        info = '%s<br />%s' % (self.get('email',''))
+        
+        if self.get('show_phone', False) and \
+           self.get('phone_number', False) and \
+           (self.get('show_phone') == 'on'):
+            info += '%s<br />%s' % (self.get('phone_number',''))
+        
+        return info
 
     def get_unidadeprincipal(self):
         try:
