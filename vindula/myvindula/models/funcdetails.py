@@ -234,7 +234,7 @@ class FuncDetails(object):
             field, value = item[0], item[1]
             
             if value:
-                if field in ['name', 'nickname']:
+                if field == 'name':
                     value = unicode(value, 'utf-8')
                     username_term = value
                     expression_name += [ModelsDadosFuncdetails.value.like(value,case_sensitive=False)]
@@ -266,11 +266,11 @@ class FuncDetails(object):
             L_username_aux2 = []
             
             for item in data:
-                if not item.username in L_username:
+                if not item.username in L_username_aux:
                     L_username_aux.append(item.username)
-                    
+            
             for item in data_username:
-                if not item.username in L_username:
+                if not item.username in L_username_aux2:
                     L_username_aux2.append(item.username)
                     
             #verifica se a busca foi feita tanto por nome quando pelos outros filtros
