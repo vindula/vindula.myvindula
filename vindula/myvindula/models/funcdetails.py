@@ -67,12 +67,11 @@ class FuncDetails(object):
         return '/myvindulalistuser?user=%s' %(self.username)
 
     def getContato(self):
-        info = '%s<br />%s' % (self.get('email',''))
+        info = '%s<br />' % (self.get('email',''))
+        show_phone = self.get('show_phone', 'off')
         
-        if self.get('show_phone', False) and \
-           self.get('phone_number', False) and \
-           (self.get('show_phone') == 'on'):
-            info += '%s<br />%s' % (self.get('phone_number',''))
+        if self.get('phone_number', False) and show_phone == 'on':
+            info += self.get('phone_number','')
         
         return info
 
