@@ -85,7 +85,7 @@ class ModelsMyvindulaRecados(Storm, BaseStoreMyvindula):
                 if isinstance(subject, str):
                     subject = subject.decode('utf-8')
                     
-                data = data.find(ModelsMyvindulaRecados.text.like(subject))
+                data = data.find(ModelsMyvindulaRecados.text.like(subject, case_sensitive=False))
     
             if list_username:
                 data = data.find(ModelsMyvindulaRecados.username.is_in(list_username))
