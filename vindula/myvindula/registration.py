@@ -459,14 +459,18 @@ class ImportUser(BaseFunc):
         username = user.get('username','')
         if portal_member.getMemberById(username):
             portal_member.getMemberById(username).setMemberProperties(user_properties)
-
         else:
             if username != '':
                 user_properties['username'] = username
-                user_properties['password'] = username
+                if user.get('password',''):
+                    password = user.get('password','')
+                else:
+                    password = username
+                
+                user_properties['password'] = password
 
                 portal_member.addMember(id=username,
-                                        password=username,
+                                        password=password,
                                         roles=("Member",),
                                         domains="",
                                         properties=user_properties)
