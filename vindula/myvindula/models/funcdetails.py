@@ -69,9 +69,15 @@ class FuncDetails(object):
     def getContato(self):
         info = '%s<br />' % (self.get('email',''))
         show_phone = self.get('show_phone', 'off')
+        ramal = self.get('ramal', '')
+        
+        if ramal:
+            info += ramal
         
         if self.get('phone_number', False) and show_phone == 'on':
-            info += self.get('phone_number','')
+            if ramal:
+                info += ' | '
+            info += self.get('phone_number', '')
         
         return info
 
