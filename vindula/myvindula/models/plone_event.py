@@ -2,11 +2,11 @@
 #Imports regarding the connection of the database 'strom'
 from storm.locals import *
 
-from vindula.myvindula.models.base import BaseStore
+from vindula.myvindula.models.base import BaseStore, BaseStoreMyvindula
 from vindula.myvindula.tools.utils import UtilMyvindula
 
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class PloneEvent(Storm, BaseStore):
     __storm_table__ = 'vinapp_myvindula_plone_event'
@@ -26,7 +26,9 @@ class PloneEvent(Storm, BaseStore):
         D['type'] = tool.Convert_utf8(portal_type)
         D['status'] = False
         D['actor'] = tool.Convert_utf8(actor)
-        D['date_created'] = datetime.now()
+        
+        time_zone = BaseStoreMyvindula.getVindulaTimeZone()
+        D['date_created'] = datetime.now() + timedelta(hours=time_zone)
         
         event = PloneEvent(**D)
         self.store.add(event)

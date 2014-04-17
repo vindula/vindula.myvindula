@@ -7,7 +7,8 @@ from storm.expr import Desc, Select
 from storm.zope.interfaces import IZStorm
 from zope.component import getUtility
 from datetime import date , datetime, timedelta
-
+from Products.CMFCore.utils import getToolByName
+from zope.app.component.hooks import getSite
 
 #import sys
 #from storm.tracer import debug #debug(True, stream=sys.stdout)
@@ -27,14 +28,14 @@ class BaseStore(object):
         # divide o dicionario 'convertidos'
         for key in kwargs:
             setattr(self,key,kwargs[key])
-#
+
         try:
             # adiciona a data atual
             self.date_creation = datetime.now()
         except:
             # adiciona a data atual
             self.date_created = datetime.now()
-
+            
 
 # Models de Migração
 class BaseStoreMyvindula(BaseStore):
@@ -48,10 +49,26 @@ class BaseStoreMyvindula(BaseStore):
 
     @property
     def get_date_created(self):
-        #date = self.date_created - timedelta(hours=3)
-        date = self.date_created
+        time_zone = BaseStoreMyvindula.getVindulaTimeZone()
+        date = self.date_created - timedelta(hours=time_zone)
         return date
- 
+    
     @property
     def date_creation(self):
-        return self.date_created
+        time_zone = BaseStoreMyvindula.getVindulaTimeZone()
+        date = self.date_created - timedelta(hours=time_zone)
+        return date
+    
+    @staticmethod
+    def getVindulaTimeZone():
+        portal_obj = getSite()
+        
+        #Caso nao exista o registro cadastrado ele ira definir o timezone como 3horas por padrao
+        time_zone = 3
+        if portal_obj and portal_obj.portal_type == 'Plone Site':
+            p_registry = getToolByName(portal_obj, 'portal_registry')
+            record_time_zone = p_registry.records.get('vindula.controlpanel.settings.ISettings.timezoneVindula')
+            if record_time_zone:
+                time_zone = record_time_zone.value
+                
+        return time_zone
