@@ -7,7 +7,8 @@ from storm.expr import Desc, Select
 from storm.zope.interfaces import IZStorm
 from zope.component import getUtility
 from datetime import date , datetime, timedelta
-
+from hashlib import md5
+from random import choice
 
 #import sys
 #from storm.tracer import debug #debug(True, stream=sys.stdout)
@@ -55,3 +56,14 @@ class BaseStoreMyvindula(BaseStore):
     @property
     def date_creation(self):
         return self.date_created
+
+
+    @property
+    def __hash_vindulapp__(self):
+        if not self.id:
+            #TODO: Gerar um id aleatorio temporariamente
+            id = datetime.now().strftime('%Y-%m-%d|%H:%M:%S')+str(choice(range(100)))
+            hash = md5(self.__class__.__name__ + str(id)).hexdigest()
+        else:
+            hash = md5(self.__class__.__name__ + str(self.id)).hexdigest()
+        return unicode(hash, 'utf-8')

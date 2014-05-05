@@ -8,7 +8,7 @@ from storm.expr import Desc, Select
 from vindula.myvindula.models.base import BaseStoreMyvindula
 
 from vindula.myvindula.tools.utils import UtilMyvindula
-from vindula.contentcore.base import BaseFunc
+# from vindula.contentcore.base import BaseFunc
 
 
 class ModelsMyvindulaRecados(Storm, BaseStoreMyvindula):
