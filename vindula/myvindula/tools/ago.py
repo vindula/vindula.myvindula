@@ -30,7 +30,7 @@ def human(dt, precision=2, past_tense='{} atrás', future_tense=' {}'):
     d = delta2dict( delta )
     hlist = []
     count = 0
-    fist_s = ' a '
+#     fist_s = ' a '
     units = ( 'ano', 'dia', 'hora', 'minuto', 'segundo')# REMOVIDO O MICROSEGUNDO 'microsegundo' )
     for unit in units:
         if count >= precision: break # met precision
@@ -44,7 +44,8 @@ def human(dt, precision=2, past_tense='{} atrás', future_tense=' {}'):
 #        fist_s = ' as '
 #    else:
 #        fist_s = ' a '
-
-    human_delta = fist_s + ' e '.join( hlist )
+    
+#     human_delta = fist_s + ' e '.join( hlist )
+    human_delta = ' e '.join( hlist )
     return the_tense.format(human_delta)
 
