@@ -83,13 +83,13 @@ class MyVindulaView(grok.View, UtilMyvindula):
         return ModelsMyvindulaRecados().cont_recados_new(username)
 
     def get_recados(self,username):
-        return ModelsMyvindulaRecados().get_myvindula_recados(receiver=username,destination=username)
+        return ModelsMyvindulaRecados().get_myvindula_recados(receiver=username,destination=username)[:5]
     
     def count_notificacao_new(self, username):
         return ModelsMyvindulaNotificacao().cont_notificacao_new(username)
 
     def get_notificacoes(self,username):
-        result = ModelsMyvindulaNotificacao().get_myvindula_notificacao(username=username)
+        result = ModelsMyvindulaNotificacao().get_myvindula_notificacao(username=username)[:5]
         if result.count():
             return self.rs_to_list(result)
         else:

@@ -26,7 +26,7 @@ class FuncDetails(object):
 
     def __init__(self, username, *args, **kwargs):
         self.username = username
-
+        
         redis_conn = get_redis_connection()
         key = 'vindula:user-profile:%s' % username
         if redis_conn.hmget(key,'username')[0] != None:
@@ -39,6 +39,7 @@ class FuncDetails(object):
                 user_data = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstance(self.username)
 
                 for field in self.fields:
+
                     value = user_data.get(field.name)
 
                     if field.type == 'BooleanField':
@@ -48,10 +49,13 @@ class FuncDetails(object):
                             value = False
 
                     setattr(self, field.name,value)
+                    continue
+                    
 
         #TODO: Verificar pq isso esta acontecendo
         if not isinstance(self.username,unicode) and not isinstance(self.username,str):
             self.username = self.username.username
+        
 
     def get(self,attribute,default=''):
         valor = getattr(self, attribute, default)
@@ -77,7 +81,7 @@ class FuncDetails(object):
         if self.get('phone_number', False) and show_phone == 'on':
             if ramal:
                 info += ' | '
-            info += self.get('phone_number', '')
+            info += self.get('phone_number', '') + '<br />'
         
         return info
 

@@ -1,0 +1,40 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+         xmlns:tal="http://xml.zope.org/namespaces/tal"
+         xmlns:metal="http://xml.zope.org/namespaces/metal"
+         xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+         lang="en"
+         metal:use-macro="context/prefs_main_template/macros/master"
+         i18n:domain="plone">
+
+  <head>
+  </head>
+  <body>
+    <metal:main fill-slot="prefs_configlet_content" tal:define="member context/@@plone_portal_state/member;">
+
+        <script type="text/javascript"  tal:attributes="src string:${context/portal_url|nothing}/vindula-api/static/js/vindula_myvindula.js"></script>
+        
+        <script type="text/javascript"
+            tal:content="python:'''
+                                $j(document).ready(function(){
+                                $j('#myvindula').myvindula(null, {username : '%s', dominio: '%s', user_token: '%s'});
+                                });
+                                ''' % (member.getUserName(),context.portal_url(),session.get('user_token'))" >
+        </script>
+
+        <div id="myvindula">
+            <div class="vd_manage_categories" tal:attributes="data_username member/getUserName;"></div>
+        </div>
+        
+        <div class="visualClear"></div>
+        <!-- Botões de ação -->
+        <fieldset>
+            <br />
+            <div style="float:left; width:100%">
+                <input style="width:100px" class="button-erp" type="button" value="Voltar" name="form.voltar"
+                       onclick="window.location.href = 'http://'+ window.location.host + '/plone_control_panel';"  >
+            </div>
+        </fieldset>
+
+    </metal:main>
+  </body>
+</html>

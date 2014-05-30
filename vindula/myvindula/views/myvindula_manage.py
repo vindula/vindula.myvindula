@@ -188,6 +188,12 @@ class MyVindulaConfgsView(grok.View, BaseFunc):
 #                         ModelsDadosFuncdetails().set_DadosFuncdetails(**D)
 
 
+class MyVindulaCategoryFieldsView(grok.View):
+    grok.context(INavigationRoot)
+    grok.require('cmf.ManagePortal')
+    grok.name('myvindulacategoryfields')
+
+
 class MyVindulaImportUser(grok.View, UtilMyvindula):
     grok.context(INavigationRoot)
     grok.require('cmf.ManagePortal')

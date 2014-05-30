@@ -27,7 +27,7 @@ class ModelsConfgMyvindula(Storm, BaseStoreMyvindula):
     choices =  Unicode(default=u'')
     order_position = Int(default=0)
     mask = Unicode(default=u'')
-    profile_category = Unicode(default=u'')
+    profile_category = Reference(id, "FieldCategory.id")
 
 
     def set_configuration(self,**kwargs):
