@@ -88,8 +88,12 @@ class MyVindulaView(grok.View, UtilMyvindula):
     def count_notificacao_new(self, username):
         return ModelsMyvindulaNotificacao().cont_notificacao_new(username)
 
-    def get_notificacoes(self,username):
-        result = ModelsMyvindulaNotificacao().get_myvindula_notificacao(username=username)[:5]
+    def get_notificacoes(self,username, limit=5):
+        query = 'result = ModelsMyvindulaNotificacao().get_myvindula_notificacao(username=username)'
+        if limit:
+            query += '[:5]'
+        
+        exec(query)
         if result.count():
             return self.rs_to_list(result)
         else:

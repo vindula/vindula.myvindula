@@ -31,7 +31,6 @@ class ModelsMyvindulaNotificacao(Storm, BaseStoreMyvindula):
         if data:
             data = data.find(ModelsMyvindulaNotificacao.notified==True)
             return data.count()
-
         return 0
 
     def get_myvindula_notificacao(self,**kwargs):

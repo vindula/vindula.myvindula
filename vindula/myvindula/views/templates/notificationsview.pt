@@ -26,7 +26,7 @@
                                      isAnonymous context/portal_membership/isAnonymousUser|python:True;
                                      username python:member.getUserName() or None;
                                      
-                                     notificacoes python:view_myvindula.get_notificacoes(username);
+                                     notificacoes python:view_myvindula.get_notificacoes(username, 0);
     
                                      Batch python:modules['Products.CMFPlone'].Batch;
                                      b_size request/b_size|string:10;
