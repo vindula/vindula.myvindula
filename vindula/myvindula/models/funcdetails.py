@@ -65,7 +65,8 @@ class FuncDetails(object):
         return  default
 
     def getImageIcone(self):
-        return '/vindula-api/myvindula/user-picture/photograph/%s/True' %(self.username)
+        url_foto_user = UtilMyvindula().getURLFotoUser(username=self.username,with_root=False)
+        return url_foto_user
 
     def getUrlPerfil(self):
         return '/myvindulalistuser?user=%s' %(self.username)

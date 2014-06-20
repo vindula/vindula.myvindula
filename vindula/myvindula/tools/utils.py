@@ -423,12 +423,21 @@ class UtilMyvindula(object):
         return texto + human(time)
 
 
-    def getURLFotoUser(self,username,field='photograph'):
-        ativa_gravatar = self.context.restrictedTraverse('myvindula-conf-userpanel').check_ativa_gravatar()
+    def getURLFotoUser(self,username,field='photograph',with_root=True):
+        if hasattr(self, 'context'):
+            context = self.context
+        else:
+            context = getSite()
+
+        ativa_gravatar = context.restrictedTraverse('myvindula-conf-userpanel').check_ativa_gravatar()
         username = self.Convert_utf8(username)
 
-        return self.context.portal_url() + '/vindula-api/myvindula/user-picture/'+field+'/'+username+'/'+str(ativa_gravatar)
+        url_foto = '/vindula-api/myvindula/user-picture/%s/%s/%s' %(field,username,ativa_gravatar)
 
+        if with_root:
+            return '%s%s' %(context.portal_url(),url_foto)
+        else:
+            return url_foto
        
     # def loadGravatarImage(self, email,username): 
     #     # Imagem Padrão o usuario
