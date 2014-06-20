@@ -5,6 +5,8 @@
 from storm.locals import *
 from storm.expr import Desc, Select
 
+from vindula.content.models.content import ModelsContent
+
 from vindula.myvindula.models.base import BaseStoreMyvindula
 
 from vindula.myvindula.tools.utils import UtilMyvindula
@@ -33,15 +35,18 @@ class ModelsMyvindulaNotificacao(Storm, BaseStoreMyvindula):
             return data.count()
         return 0
 
+
     def get_myvindula_notificacao(self,**kwargs):
         user = kwargs.get('username','')
 
         if type(user) != unicode:
             user = unicode(kwargs.get('username',''), 'utf-8')
-
+        
         data = self.store.find(ModelsMyvindulaNotificacao,
-                               ModelsMyvindulaNotificacao.username==user).order_by(Desc(ModelsMyvindulaNotificacao.date_created,))
-
+                               ModelsMyvindulaNotificacao.username==user,
+                               ModelsMyvindulaNotificacao.content_id==ModelsContent.id,
+                               ModelsContent.deleted==False).order_by(Desc(ModelsMyvindulaNotificacao.date_created,))
+                               
         return data
 
 

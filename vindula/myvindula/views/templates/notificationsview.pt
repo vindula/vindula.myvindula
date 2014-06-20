@@ -44,12 +44,10 @@
                                 <div class="notify" tal:define="user_actor python:view_myvindula.get_prefs_user(notificacao.actor);
                                                                 content_type python:notificacao.content.type;
                                                                 uid_obj python:notificacao.content.uid;">
-                                                 
+
                                     <tal:block define="obj_action python:view_myvindula.lookupObject(uid_obj);"
                                                condition="obj_action/Title|nothing">
-                                        <a href="#" tal:define="obj_type obj_action/portal_type|nothing;
-                                        url_view python: 'view'"
-                                        tal:attributes="href string:${obj_action/absolute_url|nothing}${url_view}">
+                                        <a href="#" tal:attributes="href string:${obj_action/absolute_url|nothing}/view">
                                         <div class="clear">
                                             <img class="left" width="50" height="50"
                                             tal:attributes="src string:${here/portal_url}/vindula-api/myvindula/user-picture/photograph/${notificacao/actor}/True">
