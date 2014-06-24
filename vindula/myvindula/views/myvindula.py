@@ -1030,117 +1030,16 @@ class MyVindulaHoleriteView(grok.View, UtilMyvindula):
     grok.require('vindula.UserLogado')
     grok.name('myvindula-holerite')
 
-    def format(self, cnpj):
-        """
-        Method to format cnpj numbers.
-        Tests:
-        
-        >>> print Cnpj().format('53612734000198')
-        53.612.734/0001-98
-        """
-        return "%s.%s.%s/%s-%s" % ( cnpj[0:2], cnpj[2:5], cnpj[5:8], cnpj[8:12], cnpj[12:14] )
+    url_frame = '%s/vindula-api/rh/holerite/%s/?iframe_id=2942e8d4dc2af485405cb70f936847df'
+
+    def get_url_frame(self):
+        url = self.context.portal_url()
+        user_token = self.request.SESSION.get('user_token')
+
+        return self.url_frame %(url,user_token)
     
-    def format_moeda(self, val):
-        import locale
-        locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
-        
-        if val:
-            valor = val[:-2] +'.'+ val[-2:]
-        else:
-            valor = '0.00'
-	x = locale.currency( float(valor), grouping=True)
-	return x  
-    
-    def select_modelo(self):
-        modelo =  self.context.restrictedTraverse('myvindula-conf-userpanel').select_modelo_holerite()
-        return modelo
 
 
-    def get_descricao_holerite(self, id_holerite):
-
-        if self.select_modelo() == '01':
-            result = ModelsFuncHoleriteDescricao().get_FuncHoleriteDescricoes_byid(id_holerite)
-        elif self.select_modelo() == '02':
-            result = ModelsFuncHoleriteDescricao02().get_FuncHoleriteDescricoes_byid(id_holerite)
-        
-        if result: 
-            return result
-        else:
-            return [] 
-
-    def load_list(self):
-        session = self.context.REQUEST.SESSION
-        result = []
-        if 'cpf' in session.keys():
-            cpf = session.get('cpf')
-        else:
-            membership = self.context.portal_membership
-            user_login = membership.getAuthenticatedMember()
-            user = str(user_login.getUserName())
-            prefs_user = self.get_prefs_user(user)
-            if prefs_user:
-                cpf = prefs_user.get('cpf','')
-
-        if cpf:
-            if self.select_modelo() == '01':
-                holerites = ModelsFuncHolerite().get_FuncHolerites_byCPF(cpf)
-            elif self.select_modelo() == '02': 
-                holerites = ModelsFuncHolerite02().get_FuncHolerites_byCPF(cpf)
-            D = {}
-            if holerites:
-                if holerites.count() > 1:
-                    D['select'] = holerites
-                    D['data'] = holerites.last()
-                    result =  D
-                else:
-                    D['select'] = []
-                    D['data'] = holerites.one()
-                    result = D
-
-        return result
-
-    def update(self):
-        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
-        if open_for_anonymousUser:
-            self.request.response.redirect(self.context.absolute_url() + '/login')
-
-    def validateUser(self):
-        cpf_valid = False
-        request = self.context.REQUEST
-
-        if 'cpf' not in request.SESSION.keys():
-            if 'cpf_validate' in request.keys():
-                cpf_valid = self.CPFValid(request)
-                if not cpf_valid:
-                    IStatusMessage(self.request).addStatusMessage(_(u'CPF não é valido.'),"error")
-        elif 'cpf_time' in request.SESSION.keys():
-            if request.SESSION.get('cpf_time') < datetime.now() - timedelta(minutes=10):
-                if 'cpf_validate' in request.keys():
-                    cpf_valid = self.CPFValid(request)
-                    if not cpf_valid:
-                        IStatusMessage(self.request).addStatusMessage(_(u'CPF não é valido.'),"error")
-            else:
-                cpf_valid = True
-        else:
-            cpf_valid = True
-
-        return cpf_valid
-
-    def CPFValid(self, request):
-        membership = self.context.portal_membership
-        user_login = membership.getAuthenticatedMember()
-        user = str(user_login.getUserName())
-        prefs_user = self.get_prefs_user(user)
-        if prefs_user:
-            cpf = prefs_user.get('cpf') or prefs_user.get('teaching_research') or ''
-            cpf = cpf.replace('.', '').replace('-', '')
-            cpf_validate = request.get('cpf_validate').replace('.', '').replace('-', '')
-            if cpf == cpf_validate:
-                request.SESSION['cpf'] = cpf
-                request.SESSION['cpf_time'] = datetime.now()
-                return True
-
-        return False
 
 
 class MyVindulaPrintHoleriteView(grok.View, UtilMyvindula):
