@@ -1,6 +1,4 @@
 # coding: utf-8
-from vindula.myvindula.models.holerites2 import ModelsFuncHolerite02, ModelsFuncHoleriteDescricao02
-
 from Acquisition import aq_inner
 from five import grok
 from Products.CMFCore.interfaces import ISiteRoot
@@ -44,9 +42,6 @@ from vindula.myvindula.models.like import ModelsMyvindulaLike
 
 from vindula.myvindula.models.recados import ModelsMyvindulaRecados
 from vindula.myvindula.models.notification import ModelsMyvindulaNotificacao
-
-from vindula.myvindula.models.holerite import ModelsFuncHolerite
-from vindula.myvindula.models.descricao_holerite import ModelsFuncHoleriteDescricao
 
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 from vindula.myvindula.models.follow import ModelsFollow
@@ -988,124 +983,17 @@ class MyVindulaComments(grok.View, UtilMyvindula):
 
 
 
-class MyVindulaFindHoleriteView(grok.View, UtilMyvindula):
-    grok.context(Interface)
-    grok.require('vindula.UserLogado')
-    grok.name('myvindula-find-holerite')
-
-    def select_modelo(self):
-        modelo =  self.context.restrictedTraverse('myvindula-conf-userpanel').select_modelo_holerite()
-        return modelo
-    
-    
-    def get_descricao_holerite(self, id_holerite):
-        if self.select_modelo() == '01':
-            result = ModelsFuncHoleriteDescricao().get_FuncHoleriteDescricoes_byid(id_holerite)
-        elif self.select_modelo() == '02':
-            result = ModelsFuncHoleriteDescricao02().get_FuncHoleriteDescricoes_byid(id_holerite)
-        
-        if result: 
-            return result
-        else:
-            return []
-
-    def load_list(self):
-        form = self.request.form
-        session = self.context.REQUEST.SESSION
-        if 'cpf' in session.keys() and 'id' in form.keys():
-            try:cpf = unicode(session.get('cpf', ''),'utf-8')
-            except:cpf = session.get('cpf', '')
-
-            id = int(form.get('id','0'))
-            if self.select_modelo() == '01':
-                result = ModelsFuncHoleriteDescricao().get_FuncHolerites_byCPFAndID(cpf, id)
-        
-            elif self.select_modelo() == '02':
-                result = ModelsFuncHoleriteDescricao02().get_FuncHolerites_byCPFAndID(cpf, id)
-            
-            return result
-
 class MyVindulaHoleriteView(grok.View, UtilMyvindula):
     grok.context(ISiteRoot)
     grok.require('vindula.UserLogado')
     grok.name('myvindula-holerite')
 
-    url_frame = '%s/vindula-api/rh/holerite/%s/?iframe_id=2942e8d4dc2af485405cb70f936847df'
+    url_frame = '%s/vindula-api/rh/holerite/%s/%s/?iframe_id=2942e8d4dc2af485405cb70f936847df'
 
     def get_url_frame(self):
         url = self.context.portal_url()
+        modelo =  self.context.restrictedTraverse('myvindula-conf-userpanel').select_modelo_holerite()
         user_token = self.request.SESSION.get('user_token')
 
-        return self.url_frame %(url,user_token)
+        return self.url_frame %(url,user_token,modelo)
     
-
-
-
-
-class MyVindulaPrintHoleriteView(grok.View, UtilMyvindula):
-    grok.context(ISiteRoot)
-    grok.require('vindula.UserLogado')
-    grok.name('imprimir-holerite')
-
-    def format(self, cnpj):
-        """
-        Method to format cnpj numbers.
-        Tests:
-        
-        >>> print Cnpj().format('53612734000198')
-        53.612.734/0001-98
-        """
-        return "%s.%s.%s/%s-%s" % ( cnpj[0:2], cnpj[2:5], cnpj[5:8], cnpj[8:12], cnpj[12:14] )
-
-
-    def format_moeda(self, val):
-        import locale
-        locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
-        
-        if val:
-            valor = val[:-2] +'.'+ val[-2:]
-        else:
-            valor = '0.00'
-        return  locale.currency( float(valor), grouping=True)
-
-    def select_modelo(self):
-        modelo =  self.context.restrictedTraverse('myvindula-conf-userpanel').select_modelo_holerite()
-        return modelo
-
-    def get_descricao_holerite(self, id_holerite):
-        if self.select_modelo() == '01':
-            result = ModelsFuncHoleriteDescricao().get_FuncHoleriteDescricoes_byid(id_holerite)
-        elif self.select_modelo() == '02':
-            result = ModelsFuncHoleriteDescricao02().get_FuncHoleriteDescricoes_byid(id_holerite)
-        
-        if result: 
-            return result
-        else:
-            return []
-
-    def load_list(self):
-        form = self.request.form
-
-        membership = self.context.portal_membership
-        user_login = membership.getAuthenticatedMember()
-        prefs_user = self.get_prefs_user(user_login.getUserName())
-
-        if prefs_user and 'id' in form.keys():
-   	    cpf = prefs_user.get('cpf') or prefs_user.get('teaching_research') or ''
-
-            try:cpf = unicode(cpf, 'utf-8')
-            except:pass
-
-            id = int(form.get('id','0'))
-
-            if self.select_modelo() == '01':
-                return ModelsFuncHolerite().get_FuncHolerites_byCPFAndID(cpf, id)      
-            elif self.select_modelo() == '02':
-		cpf = cpf.replace('.','').replace('-','')
-		return ModelsFuncHolerite02().get_FuncHolerites_byCPFAndID(cpf, id)
-
-    def update(self):
-        open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
-        if open_for_anonymousUser:
-            self.request.response.redirect(self.context.absolute_url() + '/login')
-

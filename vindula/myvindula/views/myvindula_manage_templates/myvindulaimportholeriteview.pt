@@ -1,58 +1,32 @@
-<html>
-    <body metal:use-macro="here/prefs_main_template/macros/master">
-        <div metal:fill-slot="prefs_configlet_content">
-            <div id="first" tal:define="load view/load_file">
-                <div class="import-holerite">
-                    <h1>Contra-Cheque</h1>
-                    <br />
-                    <form method="post" enctype="multipart/form-data" tal:attributes="action string:${context/portal_url|nothing}/myvindula-import-holerite">
-                        <span><input type="file" name="txt_file" size="30" accept="csv"></span>
-                        <span><input type="submit" name="load_file" value="Enviar"></span>
-                    </form>
-					<br />
-					<br />
-					<div id="last-import" style="overflow: hidden;">
-						<h3>Ultimas Importações</h3>
-						<tal:def define="itens view/get_lastImport">
-							<div class="row even">
-								<div class="cell width-3 position-0">
-									<span>Quantidade de Dados Importados</span>
-								</div>
-								<div class="cell width-4 position-3">
-									<span>Data da Importação</span>
-								</div>
-								<div class="cell width-6 position-7">
-									<span>Empresa</span>
-								</div>
-								<div class="cell width-3 position-13">
-									<span>Remover Lote ?</span>
-								</div>
-								
-							</div>
-							<tal:rep repeat="item itens">
-								<div tal:define="even repeat/item/even|nothing" 
-									  class="row" tal:attributes="class python:even and 'row' or 'row even'">
-									<div class="cell width-3 position-0" style="text-align: center;">
-										<span tal:content="item/contador">Quantidade de Dados Importados</span>
-									</div>
-									<div class="cell width-4 position-3">
-										<span tal:content="item/date_creation">Data da Importação</span>
-									</div>
-									<div class="cell width-6 position-7">
-										<span tal:content="item/empresa">Empresa</span>
-									</div>
-									
-									<div class="cell width-3 position-13">
-										<a tal:attributes="href python: context.portal_url()+'/myvindula-del-holerite?date='+item.get('date_excluir').strftime('%Y-%m-%d %H:%M')+'&empresa='+item.get('empresa','')"
-										   onclick="if (confirm('Tem certeza que deseja excluir todo o lote de dados importados?')){return true;}else{return false;};"
-										>Remover</a>
-									</div>
-								</div>
-							</tal:rep>
-						</tal:def>
-					</div>
+<html metal:use-macro="here/main_template/macros/master">
+	<head>
+
+        <metal:block fill-slot="top_slot">
+            <tal:dummy tal:define="dummy python:request.set('disable_border',1)" />            
+        </metal:block>
+
+	</head>
+    <body>
+				
+		<div metal:fill-slot="content">         
+			<metal:page metal:define-macro="page">
+
+                <div id="holerite-manage" >
+
+                    <div class="vd_manager_holerite" tal:attributes="data_uid context/UID|nothing;
+                                                                  data_type context/portal_type|nothing;">
+                        
+                        <span id="" class="new_manager_holerite" id="8d60ac741503d50f2970c8ac337e6899">
+                            <iframe frameborder="0" scrolling="no" class="new_manager_holerite" src="" height="0" width="100%"
+                                    id="8d60ac741503d50f2970c8ac337e6899" tal:attributes="src view/get_url_frame">
+
+                            </iframe>
+                        </span>
+                    </div>
+				
                 </div>
-            </div>
-        </div>
-    </body>
+			</metal:page>
+		</div>
+	</body>
 </html>
+
