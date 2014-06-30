@@ -71,16 +71,16 @@ class UtilMyvindula(object):
         fields = ModelsConfgMyvindula().get_configurationAll()
         if fields:
             for field in fields:
-                if not field.fields in ['vin_myvindula_department']:
+                if not field.name in ['vin_myvindula_department']:
                     M={}
                     M['required'] = field.required
                     M['type'] = field.type
                     M['label'] = field.label
                     M['decription'] = field.decription
-                    M['ordem'] = field.ordem
-                    M['mascara'] = field.mascara
+                    M['ordem'] = field.order_position
+                    M['mascara'] = field.mask
 
-                    campos[field.fields] = M
+                    campos[field.name] = M
 
         return campos
 

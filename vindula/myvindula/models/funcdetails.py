@@ -26,6 +26,7 @@ class FuncDetails(object):
 
     def __init__(self, username, *args, **kwargs):
         self.username = username
+        self.fields = ModelsConfgMyvindula().get_configurationAll()
         
         redis_conn = get_redis_connection()
         key = 'vindula:user-profile:%s' % username
@@ -34,7 +35,6 @@ class FuncDetails(object):
                 setattr(self,field,redis_conn.hmget(key,field)[0])
             del(redis_conn)
         else:
-            self.fields = ModelsConfgMyvindula().get_configurationAll()
             if  self.fields.count() > 0:
                 user_data = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstance(self.username)
 

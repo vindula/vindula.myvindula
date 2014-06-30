@@ -269,7 +269,7 @@
                                                             </li>
 
                                                             <tal:rep repeat="field user_profile/fields">
-                                                                <li tal:condition="python: not field.name in view.black_list">
+                                                                <li tal:condition="python: not field.name in view.black_list and field.ativo_view">
                                                                     <strong tal:content="string:${field/label}: "></strong>
                                                                     <span tal:content="structure python:user_profile.get(field.name)"></span>
                                                                 </li>
@@ -313,7 +313,7 @@
                                                         <tal:cond tal:condition="departamentos">
                                                             <div class="clear block-unit" tal:repeat="departamento departamentos">
                                                                 <div class="image-container">
-                                                                    <img class="left"
+                                                                    <img class="left" width="40px" height="40px"
                                                                          tal:attributes="src departamento/obj/getImageIcone|nothing;
                                                                                          alt departamento/title|string: "/>
                                                                 </div>

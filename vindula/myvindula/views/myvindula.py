@@ -358,7 +358,12 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
     grok.require('zope2.View')
     grok.name('myvindulalistuser')
 
-    black_list = ['name','vin_myvindula_department','photograph','about','unidadeprincipal','atividades','biografia']
+    black_list = ['name','vin_myvindula_department','photograph',\
+                  'about','unidadeprincipal','atividades','biografia','hide_birthday','show_phone']
+
+    def __init__(self,context,request):
+        super(MyVindulaListUser, self).__init__(context,request)
+
 
     def get_ConfugCampos(self, campo):
         configuracao= ModelsConfgMyvindula().getConfig_views(campo)
