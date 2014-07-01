@@ -37,6 +37,7 @@ from vindula.myvindula.tools.utils import UtilMyvindula
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 # from vindula.myvindula.models.department import ModelsDepartment
 from vindula.myvindula.models.howareu import ModelsMyvindulaHowareu
+from vindula.myvindula.models.fieldcategory import FieldCategory
 from vindula.myvindula.models.comments import ModelsMyvindulaComments
 from vindula.myvindula.models.like import ModelsMyvindulaLike
 
@@ -443,7 +444,9 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
             if v_categories:
                 return v_categories.profile_layout
         
-        
+    def get_fields_category(self):
+        data = FieldCategory().store.find(FieldCategory).order_by(FieldCategory.order_position)
+        return data
 
     # def geraDadosAreas(self,area,instanceUser):
     #     campos = ModelsConfgMyvindula().getConfig_byArea(self.Convert_utf8(area))

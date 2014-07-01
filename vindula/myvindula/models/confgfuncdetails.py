@@ -23,11 +23,14 @@ class ModelsConfgMyvindula(Storm, BaseStoreMyvindula):
     required = Bool(default=False)
     ativo_edit = Bool(default=True)
     ativo_view = Bool(default=True)
+    ativo_onlyuser = Bool(default=False)
     type = Unicode(default=u'')
     choices =  Unicode(default=u'')
     order_position = Int(default=0)
     mask = Unicode(default=u'')
-    profile_category = Reference(id, "FieldCategory.id")
+    profile_category_id = Int(default=0)
+
+    profile_category = Reference(profile_category_id, "FieldCategory.id")
 
 
     def set_configuration(self,**kwargs):

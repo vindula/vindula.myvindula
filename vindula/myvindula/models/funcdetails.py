@@ -27,6 +27,7 @@ class FuncDetails(object):
     def __init__(self, username, *args, **kwargs):
         self.username = username
         self.fields = ModelsConfgMyvindula().get_configurationAll()
+        self.fields_private = self.fields.find(ativo_onlyuser=True)
         
         redis_conn = get_redis_connection()
         key = 'vindula:user-profile:%s' % username
