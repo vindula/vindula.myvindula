@@ -270,21 +270,24 @@
                                                         
 
                                                         <tal:rep repeat="category view/get_fields_category">
-                                                            <li><h6 tal:content="category/label"></h6></li>
-                                                                    
-                                                            <tal:rep repeat="field python:user_profile.fields.find(profile_category_id=category.id)">
-                                                                <li tal:condition="python: not field.name in view.black_list and field.ativo_view and not field.ativo_onlyuser">
-                                                                    <strong tal:content="string:${field/label}: "></strong>
-                                                                    <span tal:content="structure python:user_profile.get(field.name)"></span>
-                                                                </li>
 
-                                                                <li tal:condition="python: field.ativo_onlyuser and user_login == user_request">
-                                                                    <strong tal:content="string:${field/label}: "></strong>
-                                                                    <span tal:content="structure python:user_profile.get(field.name)"></span>
-                                                                </li>
+                                                            <tal:def define="fields python:user_profile.fields.find(profile_category_id=category.id)">
+    
+                                                              <li tal:condition="fields/count" ><h6 tal:content="category/label"></h6></li>
+                                                                      
+                                                              <tal:rep repeat="field fields">
+                                                                  <li tal:condition="python: not field.name in view.black_list and field.ativo_view and not field.ativo_onlyuser">
+                                                                      <strong tal:content="string:${field/label}: "></strong>
+                                                                      <span tal:content="structure python:user_profile.get(field.name)"></span>
+                                                                  </li>
 
-                                                            </tal:rep>
-                                                            
+                                                                  <li tal:condition="python: field.ativo_onlyuser and user_login == user_request">
+                                                                      <strong tal:content="string:${field/label}: "></strong>
+                                                                      <span tal:content="structure python:user_profile.get(field.name)"></span>
+                                                                  </li>
+
+                                                              </tal:rep>
+                                                            </tal:def>
                                                         </tal:rep>
 
                                                         </ul>
