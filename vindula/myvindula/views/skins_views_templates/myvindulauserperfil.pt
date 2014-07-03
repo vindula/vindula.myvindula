@@ -121,16 +121,16 @@
                                                     <div class="columns large-12 label-team">
                                                         <div class="label-content">
                                                             <strong><a href="">Assinantes</a></strong>
-                                                            <span tal:content="python: '('+ str(followers.count()) + ')' ">(41)</span>
+                                                            <span tal:content="python: '('+ str(len(followers)) + ')' ">(41)</span>
                                                         </div>
                                                     </div>
                                                     
                                                     <div class="columns large-12 manager">
-                                                        <div tal:condition="not: followers/count" class="label-team">
+                                                        <div tal:condition="not: followers" class="label-team">
                                                             <strong> Não possui nenhum assinante</strong>
                                                         </div>
                                                         
-                                                        <div class="row" tal:condition="followers/count">
+                                                        <div class="row" tal:condition="followers">
                                                             <div class="follow-cycle-container"
                                                                  tal:define="blocks python:view.format_follow(followers) or [];">
                                                                 <ul class="no-bullet">
@@ -155,29 +155,6 @@
                                                                     </a>
                                                                 </ul>
                                                             </div>
-                                                                    
-                                                            <!--div tal:condition="followers/count" class="orbit-container"
-                                                                 tal:define="blocks python: view.format_follow(followers) or [];
-                                                                             bullets_false python:'bullets:false;;timer_speed:0;;navigation_arrows:%s' % ((blocks and (len(blocks) > 1)) and 'true' or 'false');">
-                                                                <ul data-orbit
-                                                                    tal:attributes="data-options bullets_false;"
-                                                                    class="orbit-slides-container">
-                                                                    <tal:rep repeat="bloco_follow blocks">
-                                                                        <li>
-                                                                            <ul class="small-block-grid-9 large-block-grid-9 members-team">
-                                                                                 <li tal:repeat="follower bloco_follow">
-                                                                                    <!-- Dados para utilização da macro -->
-                                                                                    <!--tal:def define="size_img string:30px;
-                                                                                                     item python: view.get_prefs_user(follower.username);
-                                                                                                     username follower/username|string: ;">
-                                                                                        <metal:use use-macro="context/myvindula-imageprofiles-macro/macros/userimage"/>
-                                                                                    </tal:def>
-                                                                                 </li>
-                                                                             </ul>
-                                                                        </li>
-                                                                    </tal:rep>
-                                                                </ul>
-                                                            </div-->
                                                         </div>
                                                     </div>
                                                     
