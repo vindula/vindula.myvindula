@@ -40,31 +40,38 @@
 				    </div>
 				</div>
                 
-                <div class="social-follow">
-                    <div class="vd-social-left right" tal:define="UID username;
-                                                                  TYPES string:UserObject;"
-                                                      tal:condition="python: user_login != user_request">
-                        <div metal:use-macro="context/macro-follow-content/macros/view" />
+                <div class="row">
+                    <div class="user-name columns large-6 medium-4 small-12">
+                        <h5>
+                            <tal:cond condition="python:view.get_ConfugCampos('name')">
+                               <tal:cont content="user_profile/name|nothing" />
+                            </tal:cond>
+                            <span class="discrete">
+                                <tal:cond condition="python:user_profile.get('nickname', False)">
+                                   (<tal:cont content="user_profile/nickname|nothing" />)
+                                </tal:cond>
+                            </span>
+                        </h5>
                     </div>
                     
-                    <div class="vd-social-left right" tal:define="UID username;
-                                                                  TYPES string:UserObject;"
-                                                      tal:condition="python: user_login != user_request">
-                        <div metal:use-macro="context/macro-message-content/macros/view" />
+                    <div class="social-follow columns large-6 medium-8 small-12">
+                        <div class="vd-social-left right" tal:define="UID username;
+                                                                      TYPES string:UserObject;"
+                                                          tal:condition="python: user_login != user_request">
+                            <div metal:use-macro="context/macro-follow-content/macros/view"></div>
+                        </div>
+                        
+                        <div class="vd-social-left right" tal:define="UID username;
+                                                                      TYPES string:UserObject;"
+                                                          tal:condition="python: user_login != user_request">
+                            <div metal:use-macro="context/macro-message-content/macros/view"></div>
+                        </div>
+                    </div>
+                    <div class="columns large-12">
+                        <hr>
                     </div>
                 </div>
-                <h5>
-                    <tal:cond condition="python:view.get_ConfugCampos('name')">
-                       <tal:cont content="user_profile/name|nothing" />
-                    </tal:cond>
-                    <span class="discrete">
-                        <tal:cond condition="python:user_profile.get('nickname', False)">
-                           (<tal:cont content="user_profile/nickname|nothing" />)
-                        </tal:cond>
-                    </span>
-                    <hr/>
-                </h5>
-
+                
                 <div class="row">
                     <div class="columns large-9">
                         <div class="row">
@@ -137,7 +144,7 @@
                                                                     <tal:rep repeat="bloco_follow blocks">
                                                                         <li tal:attributes="class python:'cycle-block %s' % ((repeat['bloco_follow'].start) and 'active' or '');
                                                                                             style python:(repeat['bloco_follow'].start) and 'display:block;;' or ''">
-                                                                            <ul class="small-block-grid-9 large-block-grid-9 members-team">
+                                                                            <ul class="small-block-grid-4 large-block-grid-9 members-team">
                                                                                  <li tal:repeat="follower bloco_follow">
                                                                                     <!-- Dados para utilização da macro -->
                                                                                     <tal:def define="size_img string:30px;
@@ -178,7 +185,7 @@
                                                                             <tal:rep repeat="bloco_follow blocks">
                                                                                 <li tal:attributes="class python:'cycle-block %s' % ((repeat['bloco_follow'].start) and 'active' or '');
                                                                                                     style python:(repeat['bloco_follow'].start) and 'display:block;;' or ''">
-                                                                                    <ul class="small-block-grid-9 large-block-grid-9 members-team">
+                                                                                    <ul class="small-block-grid-4 large-block-grid-9 members-team">
                                                                                          <li tal:repeat="following bloco_follow">
                                                                                             <!-- Dados para utilização da macro -->
                                                                                             <tal:def define="size_img string:30px;

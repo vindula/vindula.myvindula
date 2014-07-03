@@ -68,7 +68,7 @@
                     </style>
 
                     <div class="columns large-12">
-                        <h5>Mensagens que deixaram para você</h5>
+                        <h5>Minhas mensagens</h5>
                         <hr/>
                     </div>
 
@@ -76,24 +76,24 @@
                         
                         <div class="row">
 
-                            <div class="columns large-6">
+                            <div class="columns large-6 medium-12 small-12">
                                 <label for="usernames">Usuários</label>
                                 <input type="text" name="usernames" id="usernames" class="usernames"/>
                             </div>
                             
-                            <div class="columns large-6">
+                            <div class="columns large-6 medium-12 small-12">
                                 <label for="data">Datas</label>
                                 De: <input type="text" name="data_inicial" id="datepicker_data_inicial" class="datepicker"/>
                                 á<input type="text" name="data_final" id="datepicker_data_final" class="datepicker"/>
                                
                             </div>
                             
-                            <div class="columns large-12">
+                            <div class="columns large-12 medium-12 small-12">
                                 <label for="subject">Assunto</label>
                                 <input type="text" name="subject" id="subject" class="subject"/>
                             </div>
                             
-                            <div class="columns large-12 listing-bar">
+                            <div class="columns large-12 medium-12 small-12 listing-bar">
                                 <div class="ajax_loader">
                                     <img tal:attributes="src string:${context/portal_url}/loader.gif">
                                 </div>
