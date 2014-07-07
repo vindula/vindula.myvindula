@@ -43,4 +43,6 @@ class UserSessionToken(Storm, BaseStoreMyvindula):
     
     def invalidateToken(self):
         self.deleted = True
-        self.date_excluded = datetime.now()
+        
+        #TODO: Arrumar isso, foi comentada essa linha pois em BD com postgres o storm está dando conflito
+        #self.date_excluded = datetime.now()
