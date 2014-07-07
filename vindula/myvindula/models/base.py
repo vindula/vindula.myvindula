@@ -76,7 +76,6 @@ class BaseStoreMyvindula(BaseStore):
                 
         return time_zone
 
-
     @property
     def __hash_vindulapp__(self):
         if not self.id:
