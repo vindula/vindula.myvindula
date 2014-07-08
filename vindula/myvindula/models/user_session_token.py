@@ -19,7 +19,7 @@ class UserSessionToken(Storm, BaseStoreMyvindula):
     token = Unicode()
     ip_client = Unicode()
 
-    def set_new_token(self,session, user,ip):
+    def set_new_token(self, session, user, ip):
         tool = UtilMyvindula()
 
         username = user.getUserName()
@@ -39,3 +39,10 @@ class UserSessionToken(Storm, BaseStoreMyvindula):
         usersession = UserSessionToken(**D)
         self.store.add(usersession)
         self.store.flush()
+        
+    
+    def invalidateToken(self):
+        self.deleted = True
+        
+        #TODO: Arrumar isso, foi comentada essa linha pois em BD com postgres o storm está dando conflito
+        #self.date_excluded = datetime.now()

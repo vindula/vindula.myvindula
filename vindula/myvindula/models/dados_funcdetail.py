@@ -94,7 +94,9 @@ class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
             id_instance = unicode(id_instance)
 
         tools = UtilMyvindula()
-        data = self.store.find(ModelsDadosFuncdetails, ModelsDadosFuncdetails.username==id_instance)
+        data = self.store.find(ModelsDadosFuncdetails,
+                               ModelsDadosFuncdetails.username==id_instance,
+                               ModelsDadosFuncdetails.deleted==False)
 
         if data.count() > 0:
             D={}
@@ -105,7 +107,7 @@ class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
                     valor = tools.decodePickle(item.value)
                 except:
                     valor = item.value
-
+                
                 D[item.campo.name] = valor
 
             return D
@@ -117,8 +119,10 @@ class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
         result = []
         if isinstance(field_name, str):
             field_name = unicode(field_name)
-        data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, ModelsConfgMyvindula.name==field_name,
-                                                                           ModelsDadosFuncdetails.field_id==ModelsConfgMyvindula.id)
+        data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, 
+                                                   ModelsConfgMyvindula.name==field_name,
+                                                   ModelsDadosFuncdetails.field_id==ModelsConfgMyvindula.id,
+                                                   ModelsDadosFuncdetails.deleted==False)
         if data.count() > 0:
             result = [i for i in data]
         return result

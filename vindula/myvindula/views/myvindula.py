@@ -23,7 +23,7 @@ import calendar, logging, base64, pickle
 
 from vindula.myvindula.user import BaseFunc
 
-
+from vindula.myvindula.models.funcdetails import FuncDetails
 
 from vindula.myvindula.registration import SchemaFunc, SchemaConfgMyvindula
 
@@ -383,17 +383,28 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
         return self.get_prefs_user(user)
 
     def get_follow(self,username, followers=True):
+        items = []
+        result = []
+
         if followers:
-            return ModelsFollow.get_followers(self.Convert_utf8(username))
+            items = ModelsFollow.get_followers(self.Convert_utf8(username))
         else:
-            data =  ModelsFollow.get_followings(self.Convert_utf8(username))
-            items = []
-            if data:
-                for item in data:
-                    content = self.get_content_by_id(item.content_id)
+            items =  ModelsFollow.get_followings(self.Convert_utf8(username))
+                        
+        for item in  items:
+            user = None
+            if followers:
+                user = FuncDetails(item.username)
+            else:
+                content = self.get_content_by_id(item.content_id)
+                if content:
                     if content.type == 'UserObject':
-                        items.append(content)
-            return items
+                        user = FuncDetails(content.uid)
+                        item = content
+            
+            if user and not user.is_deleted():
+                result.append(item)
+        return result
         
     def get_content_by_id(self,content_id):
         content_obj = ModelsContent().getContent_by_id(content_id)
