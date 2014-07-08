@@ -273,7 +273,8 @@
 
                                                             <tal:def define="fields python:user_profile.fields.find(profile_category_id=category.id)">
     
-                                                              <li tal:condition="fields/count" ><h6 tal:content="category/label"></h6></li>
+                                                              <li tal:condition="fields/count" tal:attributes="class category/name">
+                                                                <h6 tal:content="category/label"></h6></li>
                                                                       
                                                               <tal:rep repeat="field fields">
                                                                   <li tal:condition="python: not field.name in view.black_list and field.ativo_view and not field.ativo_onlyuser">

@@ -28,7 +28,7 @@
                             <tal:cond tal:condition="departamentos">
                                 <div class="clear block-unit" tal:repeat="departamento departamentos">
                                     <div class="image-container">
-                                        <img class="left"
+                                        <img class="left" width="40px" height="40px"
                                              tal:attributes="src departamento/obj/getImageIcone|nothing;
                                                              alt departamento/title|string: "/>
                                     </div>
