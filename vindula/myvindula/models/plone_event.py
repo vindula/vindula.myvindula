@@ -16,6 +16,7 @@ class PloneEvent(Storm, BaseStore):
     type = Unicode()
     actor = Unicode()
     status = Bool()
+    error = Bool()
     date_created = DateTime()
     
     def set_event(self,uid,portal_type,actor):
@@ -25,6 +26,7 @@ class PloneEvent(Storm, BaseStore):
         D['uid'] = tool.Convert_utf8(uid)
         D['type'] = tool.Convert_utf8(portal_type)
         D['status'] = False
+        D['error'] = False
         D['actor'] = tool.Convert_utf8(actor)
         
         time_zone = BaseStoreMyvindula.getVindulaTimeZone()
