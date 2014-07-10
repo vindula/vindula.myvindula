@@ -27,7 +27,7 @@ class VindulaWebServeExportPhotoUser(grok.View,BaseFunc):
         campo_image = ModelsPhotoUser().get_ModelsPhotoUser_byUsername(username,field)
 
         if campo_image:
-            self.retorno['photograph'] = campo_image.photograph
-            self.retorno['thumb'] = campo_image.thumb
+            dados['photograph'] = campo_image.photograph
+            dados['thumb'] = campo_image.thumb
 
-        
+        self.retorno = dados
