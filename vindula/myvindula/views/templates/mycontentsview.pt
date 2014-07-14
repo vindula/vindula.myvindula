@@ -42,9 +42,9 @@
                                 <tr>
                                     <th></th>
                                     <th>Titulo</th>
-                                    <th>Descrição</th>
-                                    <th>Modificado</th>
-                                    <th>Estado</th>
+                                    <th class="hide-for-small">Descrição</th>
+                                    <th class="hide-for-medium-down">Modificado</th>
+                                    <th class="hide-for-medium-down">Estado</th>
                                 </tr>
                              <tal:cont tal:content="structure python:ativa_estilo_tabela and '</thead>' or ''"></tal:cont>
                             
@@ -67,13 +67,12 @@
                                                    tal:content="item/title|item/id|nothing">Item Title</a>
                                             </span>
                                         </td>
-                                        <td class="description" tal:content="item/Description|string: ">
+                                        <td class="description hide-for-small" tal:content="item/Description|string: ">
                                             description
                                         </td>
-                                        <td tal:content="python: item.bobobase_modification_time().strftime('%d/%m/%Y %H:%M')"></td>
+                                        <td class="hide-for-medium-down" tal:content="python: item.bobobase_modification_time().strftime('%d/%m/%Y %H:%M')"></td>
             
-                                        <td tal:content="python: view.get_title_WF(item_wf_state, item)"></td>
-            
+                                        <td class="hide-for-medium-down" tal:content="python: view.get_title_WF(item_wf_state, item)"></td>
                                     </tr>
                                 </tal:rep>
                             </tbody>
