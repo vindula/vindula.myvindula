@@ -34,11 +34,11 @@
 					<!-- metal:use use-macro="context/@@myvindulapanel/macros/page"/-->
 
 
-			    	<div class="large-12 columns" id="myvindula" tal:condition="python: user_login == user_request" >
+			    	<div class="large-12 columns" id="myvindula" tal:condition="python: user_login == user_request and not view.check_edit_manager(user_login)" >
 						<div class="vd_myvindula_edit" tal:attributes="data_username member/getUserName;"></div>
 					</div>
 
-					<div class="large-12 columns" id="myvindula" tal:condition="python: user_login != user_request and view.check_edit_manager(user_login)" >
+					<div class="large-12 columns" id="myvindula" tal:condition="python: view.check_edit_manager(user_login)" >
 						<div class="vd_myvindula_edit" tal:attributes="data_username member/getUserName;
 																	   data_edit_user user_request"></div>
 					</div>
