@@ -127,12 +127,16 @@ class FuncDetails(object):
             username = self.username.decode('utf-8')
             
         data = ModelsDadosFuncdetails().store.find(ModelsDadosFuncdetails, 
-                                                   ModelsDadosFuncdetails.deleted==True,
                                                    ModelsDadosFuncdetails.username==self.username.decode('utf-8'))
-        if data.count() > 0:
+        L_field = []
+
+        for field in data:
+            if field.deleted == True:
+                L_field.append(True)
+
+        if len(L_field) == data.count():
             return True
-        else:
-            return False
+        return False
 
     @staticmethod
     def get_AllFuncFakeList(filter=None):
