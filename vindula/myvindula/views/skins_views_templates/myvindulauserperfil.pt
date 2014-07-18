@@ -78,7 +78,7 @@
                             <div class="columns large-12 container-perfil">
                                 <div class="container-tiles-section section-user-profile section-container auto" data-section>
                                     <section id="profile-info">
-                                        <p class="title" data-section-title><a href="#panel1">Informações</a></p>
+                                        <p class="title" data-section-title><a href="#panel1">Info</a></p>
                                         <div class="content bloco-perfil" data-section-content>
                                             <div id="tile-org-info">
                                                 
