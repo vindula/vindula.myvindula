@@ -930,42 +930,37 @@ class MyVindulaExportUsersView(grok.View,UtilMyvindula):
                         campo_image_instance = ModelsPhotoUser().get_ModelsPhotoUser_byFieldAndInstance(campo,instance_id.id)
 
                         if campo_image_instance:
-                            text += '%s;' %('True')
-
+                            valor = '%s;' %('True')
                         else:
                             try:
-                                campo_image_username = ModelsPhotoUser().get_ModelsPhotoUser_byUsername(username,campo)    
-
+                                campo_image_username = ModelsPhotoUser().get_ModelsPhotoUser_byUsername(username,campo)
                                 if campo_image_username:
-                                    text += '%s;' %('True')
+                                    valor = '%s;' %('True')
                                 else:
-                                    text += '%s;' %('False')
+                                    valor = '%s;' %('False')
                             except:
-                                text += '%s;' %('False')
+                                valor = '%s;' %('False')
 
-                    if campo == 'vin_myvindula_department':
-                        valor = user.get(campo,'')
+                    elif campo == 'vin_myvindula_department':
+                        valor2 = user.get(campo,'')
                         try:
-                            text += '%s;' %(valor[1])
+                            valor = '%s;' %(valor2[1])
                         except:
-                            text += ';' 
-
+                            valor = ';'
                     else:
                         valor = user.get(campo,'')
-                        valor_list = ''
-                        if type(valor) == list:
-                            for i in valor:
-                                if i :valor_list += (i + ' / ') 
-                            
-                            valor = valor_list
-                            
-                        text += '%s;' % (str(valor).replace('\n', '').replace('\r', '').replace(';', ''))
 
-                        valor = valor_list
-                        
+                        if type(valor) == list:
+                            valor_list = ''
+                            for i in valor:
+                                if i :valor_list += (i + ' / ')
+
+                            valor = valor_list
+
                     text += '%s;' % (str(valor).replace('\n', '').replace('\r', '').replace(';', ''))
+
                 text += '\n'
-                 
+
             self.request.response.write(str(text))
         
         
