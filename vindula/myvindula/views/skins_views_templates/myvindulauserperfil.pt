@@ -348,36 +348,39 @@
                                                 </div>
                                                 
                                                 <div class="columns large-6 shadow-line">
-                                                    <div class="tile-list-bullet ">
-                                                        <h5>
-                                                            Projetos
-                                                            <hr/>
-                                                        </h5>
+                                                    <tal:remove tal:replace="nothing">
+                                                      <!-- REMOVIDO POIS ESTA EM DESUSO -->
+                                                      <div class="tile-list-bullet ">
+                                                          <h5>
+                                                              Projetos
+                                                              <hr/>
+                                                          </h5>
 
-                                                        <ul class="square">
-                                                            <tal:cond condition="projects">
-                                                                <tal:rep repeat="project projects">
-                                                                    <li>
-                                                                        <a class="structure-link"
-                                                                           tal:attributes="href project/absolute_url|nothing;
-                                                                                           alt project/getSiglaOrTitle|string: ;
-                                                                                           data-type string:Structure;
-                                                                                           data-value project/UID|nothing;"
-                                                                           tal:content="project/getSiglaOrTitle|string: ">ASCON</a>
-                                                                    </li>
-                                                                </tal:rep>
-                                                                <div class="icon-moreaccess clear">
-                                                                    <a href="#" class="more" id="projetos">
-                                                                        <h1 class="left subheader vindula-icon-plus-sign"></h1>
-                                                                        Ver todos
-                                                                    </a>
-                                                                </div>
-                                                            </tal:cond>
-                                                            <tal:cond condition="not:projects">
-                                                                <span>Não possui nenhum projeto.</span>
-                                                            </tal:cond>
-                                                        </ul>
-                                                    </div>
+                                                          <ul class="square">
+                                                              <tal:cond condition="projects">
+                                                                  <tal:rep repeat="project projects">
+                                                                      <li>
+                                                                          <a class="structure-link"
+                                                                             tal:attributes="href project/absolute_url|nothing;
+                                                                                             alt project/getSiglaOrTitle|string: ;
+                                                                                             data-type string:Structure;
+                                                                                             data-value project/UID|nothing;"
+                                                                             tal:content="project/getSiglaOrTitle|string: ">ASCON</a>
+                                                                      </li>
+                                                                  </tal:rep>
+                                                                  <div class="icon-moreaccess clear">
+                                                                      <a href="#" class="more" id="projetos">
+                                                                          <h1 class="left subheader vindula-icon-plus-sign"></h1>
+                                                                          Ver todos
+                                                                      </a>
+                                                                  </div>
+                                                              </tal:cond>
+                                                              <tal:cond condition="not:projects">
+                                                                  <span>Não possui nenhum projeto.</span>
+                                                              </tal:cond>
+                                                          </ul>
+                                                      </div>
+                                                    </tal:remove>
                                                 </div>
                                             </div>
                                             
@@ -407,12 +410,15 @@
                                         </div>
                                     </section>
                                     
-                                    <section id="projetos" tal:condition="not: simple_layout">
-                                        <p class="title" data-section-title><a href="#panel3">Projetos</a></p>
-                                        <div class="content" data-section-content>
-                                            <metal:use use-macro="context/myvindulaprojects/macros/page-view" />
-                                        </div>
-                                    </section>
+                                    <tal:remove tal:replace="nothing">
+                                      <!-- REMOVIDO POIS ESTA EM DESUSO -->
+                                      <section id="projetos" tal:condition="not: simple_layout">
+                                          <p class="title" data-section-title><a href="#panel3">Projetos</a></p>
+                                          <div class="content" data-section-content>
+                                              <metal:use use-macro="context/myvindulaprojects/macros/page-view" />
+                                          </div>
+                                      </section>
+                                    </tal:remove>
                                     
                                     <section id="participando" tal:condition="not: simple_layout">
                                         <p class="title" data-section-title><a href="#panel3">Participando</a></p>
