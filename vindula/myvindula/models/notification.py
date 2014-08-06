@@ -44,6 +44,7 @@ class ModelsMyvindulaNotificacao(Storm, BaseStoreMyvindula):
         
         data = self.store.find(ModelsMyvindulaNotificacao,
                                ModelsMyvindulaNotificacao.username==user,
+                               ModelsMyvindulaNotificacao.actor!=user,
                                ModelsMyvindulaNotificacao.content_id==ModelsContent.id,
                                ModelsContent.deleted==False).order_by(Desc(ModelsMyvindulaNotificacao.date_created,))
                                
