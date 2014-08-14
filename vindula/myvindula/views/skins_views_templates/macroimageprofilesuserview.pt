@@ -22,7 +22,7 @@
                    
                     <a tal:attributes="href to_url;"
                        tal:condition="python:user_login == user_request"
-                       data-reveal-id="myModal"> 
+                       data-reveal-id="myModal" class="profile-link"> 
                         <img src="defaultUser.png" border="0"
                              tal:attributes="src python:view_profiles.getURLFotoUser(username);
                                              alt item/name|nothing;
