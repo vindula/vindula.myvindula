@@ -124,9 +124,9 @@
 				                       Minha Agenda
 				                    </a>
 				            </li>
-   				    </tal:cond>
+   				    	</tal:cond>
 
-				   <tal:cond condition="python: context.restrictedTraverse('@@myvindulapanel').checkEveron('enable_comissao')">
+				   		<tal:cond condition="python: context.restrictedTraverse('@@myvindulapanel').checkEveron('enable_comissao')">
                   
 			              <li id="contentview-user_data-personal-my-comissao"
 		                            tal:define="link context/@@myvindulapanel/getPersonalPrefsLink;
@@ -139,7 +139,23 @@
 		                               Minha Comissao
 		                            </a>
 		                    </li>
-			          </tal:cond>
+			          	</tal:cond>
+
+			          	<!-- Controle de solicitações e minhas solicitações-->
+						<tal:cond define="enable_contentcore context/@@myvindula-conf-userpanel/check_contentcore;"
+								  condition="python: enable_contentcore ">
+							<li id="contentview-user_data-personal-contentcore"
+				                    tal:define="link context/@@myvindulapanel/getPersonalPrefsLink;
+				                                selected python:view_name=='myvindula-contentcore';"
+				                    tal:condition="link|nothing"
+				                    tal:attributes="class python:selected and 'selected' or 'plain'">
+				                    <a href=""
+				                       tal:attributes="href string:${context/portal_url}/@@myvindula-contentcore"
+				                       i18n:translate="">
+				                       Solicitações
+				                    </a>
+				            </li>
+						</tal:cond> 
 
 
 		            </ul>

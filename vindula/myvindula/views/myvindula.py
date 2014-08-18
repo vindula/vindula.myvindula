@@ -274,6 +274,15 @@ class MyVindulaRecursosHumanosView(grok.View, UtilMyvindula):
         if open_for_anonymousUser:
             self.request.response.redirect(self.context.absolute_url() + '/login')
 
+class MyVindulaContentcoreView(MyVindulaRecursosHumanosView):
+    grok.context(ISiteRoot)
+    grok.require('zope2.View')
+    grok.name('myvindula-contentcore')
+
+    def getMacro(self,link='minhas-solicitacoes'):
+        return super(MyVindulaContentcoreView,self).getMacro(link)
+
+
 class MyVindulaPrefsView(grok.View, BaseFunc):
     grok.context(ISiteRoot)
     grok.require('zope2.View')
