@@ -1,6 +1,6 @@
 <metal:macro define-macro="userprofiles"
               tal:define="view_profiles nocall:context/myvindula-imageprofiles-macro;
-                          username item/username|nothing;">
+                          username item/username|string: ;">
 
     <div class="row">
         <tal:cond condition="view/show_picture|python:True">
