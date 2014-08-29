@@ -196,6 +196,7 @@ class Renderer(base.Renderer, UtilMyvindula):
     def get_details_user(self, user):
         if self.data.details_user:
             lines = self.data.details_user.splitlines()
+            obj_user = self.get_prefs_user(user)
             L = []
 
             for line in lines:
@@ -203,11 +204,10 @@ class Renderer(base.Renderer, UtilMyvindula):
                 line = line.replace('[', '').replace(']', '').split(' | ')
                 try:
                     D['label'] = line[0]
-                    
-                    content = user.get(line[1])
+                    content = obj_user.get(line[1])
 
                     if not content and len(line) == 3:
-                        content = user.get(line[2])
+                        content = obj_user.get(line[2])
 
                     D['content'] = content
 
