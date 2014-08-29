@@ -90,19 +90,20 @@
 			    	<div>
 				    	<tal:results tal:define="busca python:results[:int(quant)];"
 					  			   	 tal:repeat="item busca">
+								
 								<div id="boxPortlet" tal:define="i repeat/item/end;"
-	    					     					 tal:attributes="class python:view.getEnd(i);">
+	    					     					 tal:attributes="class python:view.getEnd(i);"
+	    					     					 tal:condition="item">
 						     		
                                     <!-- Dados para utilização da macro -->                                   
                                     <tal:def define="size_img string:50px;
                                     				 view_contato view_contato;
                                                      principal_name python: view.get_principal_campo(item);
-                                                     details python: view.get_details_user(item.get('username')) or [];"
-                                             tal:condition="item">
+                                                     details python: view.get_details_user(item.get('username')) or [];">
                                         <div metal:use-macro="context/myvindula-imageprofiles-macro/macros/userprofiles" />       
                                     </tal:def>    			
 
-						 	</div>
+						 		</div>
 						 	<div class="visualClear"></div>
 			      		</tal:results>
 					</div>
