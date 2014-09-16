@@ -21,13 +21,18 @@ class ModelsFollow(Storm, BaseStoreMyvindula):
 
     @staticmethod
     def get_followers(content):
-        content_obj = ModelsContent().getContent_by_uid(content)
+        content_obj = ModelsContent().getContent_by_uid(content,is_user_object=True)
+        
         if content_obj:
-            content_obj_id = content_obj.id
+            ids = []
+            for content in content_obj:
+                ids.append(content.id)
         else:
-            content_obj_id = 0
+            ids = [0]
 
-        data = ModelsFollow().store.find(ModelsFollow, ModelsFollow.content_id==content_obj_id, ModelsFollow.deleted==False)
+        data = ModelsFollow().store.find(ModelsFollow, 
+                                         ModelsFollow.content_id.is_in(ids), 
+                                         ModelsFollow.deleted==False)
         return data
     
     

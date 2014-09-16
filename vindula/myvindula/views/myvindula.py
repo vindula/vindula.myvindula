@@ -389,7 +389,7 @@ class MyVindulaListUser(grok.View, UtilMyvindula):
         if followers:
             items = ModelsFollow.get_followers(self.Convert_utf8(username))
         else:
-            items =  ModelsFollow.get_followings(self.Convert_utf8(username))
+            items = ModelsFollow.get_followings(self.Convert_utf8(username))
                         
         for item in  items:
             user = None
