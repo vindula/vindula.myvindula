@@ -4,16 +4,31 @@
             <tal:dummy tal:define="dummy python:request.set('disable_border',1);
                                    disable_column_one python:request.set('disable_plone.leftcolumn',1);
                                    " />
+
+
+
+
         </metal:block>
 	</head>
 
 	<body metal:fill-slot="content">
 		<meta:macro metal:define-macro="page-view">
 
-	    	<div id="myvindula-profile"   
+        <script type="text/javascript">
+        $j(document).ready(function() {
+
+            $j('#refrex_social').click(function(){
+              var $iframe = $j('#718b80f7d3d758dc624b150d664d2728 iframe');
+              $iframe.attr('src',$iframe.attr('src'));
+
+            });
+        });
+        </script>
+
+	    	<div id="myvindula-profile"
                  tal:define="view python: context.restrictedTraverse('@@myvindulalistuser');
                              panelView python: context.restrictedTraverse('@@myvindula-conf-userpanel');
-                             
+
 	    	                 isAnonymous context/portal_membership/isAnonymousUser|python:True;
                              member context/@@plone_portal_state/member;
 
@@ -22,10 +37,10 @@
                              username user_profile/username|nothing;
                              user_request request/user|username;
                              user_login member/getUserName;
-                             
+
                              profile_layout view/getProfileLayout;
                              simple_layout python:'simple' in profile_layout and True or False;
-                             
+
                              followers python:view.get_follow(username, followers=True);
 
                              activities user_profile/atividades|nothing;
@@ -39,7 +54,7 @@
                         <a class="close-reveal-modal">×</a>
 				    </div>
 				</div>
-                
+
                 <div class="row">
                     <div class="user-name columns large-6 medium-4 small-12">
                         <h5>
@@ -53,14 +68,14 @@
                             </span>
                         </h5>
                     </div>
-                    
+
                     <div class="social-follow columns large-6 medium-8 small-12">
                         <div class="vd-social-left right" tal:define="UID username;
                                                                       TYPES string:UserObject;"
                                                           tal:condition="python: user_login != user_request">
                             <div metal:use-macro="context/macro-follow-content/macros/view"></div>
                         </div>
-                        
+
                         <div class="vd-social-left right" tal:define="UID username;
                                                                       TYPES string:UserObject;"
                                                           tal:condition="python: user_login != user_request">
@@ -71,7 +86,7 @@
                         <hr>
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="columns large-9">
                         <div class="row">
@@ -81,11 +96,11 @@
                                         <p class="title" data-section-title><a href="#panel1">Info</a></p>
                                         <div class="content bloco-perfil" data-section-content>
                                             <div id="tile-org-info">
-                                                
+
                                                 <div class="clear alert-vindula error" tal:condition="user_profile/is_deleted|nothing">
                                                     Este usuário encontra-se Inativo na Intranet
                                                 </div>
-                                                
+
                                                 <div class="clear">
                                                     <div id="photo" class="columns large-3">
                                                         <div>
@@ -105,7 +120,7 @@
                                                     <div class="columns large-9 manager">
                                                         <div>
                                                             <h5>Apresentação</h5>
-                                                            <span class="structure_markdown" 
+                                                            <span class="structure_markdown"
                                                                   tal:content="structure user_profile/about|string: ">
                                                                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                                                             </span>
@@ -124,19 +139,19 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div class="columns large-12 label-team">
                                                         <div class="label-content">
                                                             <strong><a href="">Assinantes</a></strong>
                                                             <span tal:content="python: '('+ str(len(followers)) + ')' ">(41)</span>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div class="columns large-12 manager">
                                                         <div tal:condition="not: followers" class="label-team">
                                                             <strong> Não possui nenhum assinante</strong>
                                                         </div>
-                                                        
+
                                                         <div class="row" tal:condition="followers">
                                                             <div class="follow-cycle-container"
                                                                  tal:define="blocks python:view.format_follow(followers) or [];">
@@ -164,7 +179,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <tal:cond tal:condition="python: user_login == user_request">
                                                         <tal:def define="followings python:view.get_follow(username, followers=False);">
                                                             <div class="columns large-12 label-team">
@@ -173,7 +188,7 @@
                                                                     <span tal:content="python: '('+ str(len(followings)) + ')' ">(41)</span>
                                                                 </div>
                                                             </div>
-                                                            
+
                                                             <div class="columns large-12 manager">
                                                                 <div tal:condition="not: followings" class="label-team">
                                                                     <strong> Não possui nenhum assinante</strong>
@@ -203,7 +218,7 @@
                                                                             </a>
                                                                         </ul>
                                                                     </div>
-                                                                    
+
                                                                     <!--div tal:condition="followings" class="orbit-container"
                                                                          tal:define="blocks python: view.format_follow(followings,1) or [];
                                                                                      bullets_false python:'bullets:false;;timer_speed:0;;navigation_arrows:%s' % ((blocks and (len(blocks) > 1)) and 'true' or 'false');">
@@ -248,18 +263,18 @@
                                                                 <a class="structure-link"
                                                                    tal:attributes="href python:unidadeprincial().absolute_url() or None;
                                                                                    data-type string:Structure;
-                                                                                   data-value python:unidadeprincial().UID() or None;" 
+                                                                                   data-value python:unidadeprincial().UID() or None;"
                                                                    tal:content="python:unidadeprincial().getSiglaOrTitle() or ''">ASCON</a>
                                                             </li>
-                                                        
+
 
                                                         <tal:rep repeat="category view/get_fields_category">
 
                                                             <tal:def define="fields python:user_profile.fields.find(profile_category_id=category.id)">
-    
+
                                                               <li tal:condition="fields/count" tal:attributes="class category/name">
                                                                 <h6 tal:content="category/label"></h6></li>
-                                                                      
+
                                                               <tal:rep repeat="field fields">
                                                                   <li tal:condition="python: not field.name in view.black_list and field.ativo_view and not field.ativo_onlyuser">
                                                                       <strong tal:content="string:${field/label}: "></strong>
@@ -276,10 +291,10 @@
                                                         </tal:rep>
 
                                                         </ul>
-                                                        
+
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="columns large-6 shadow-line hide">
                                                     <div class="tile-list-bullet">
                                                         <h5>
@@ -294,7 +309,7 @@
                                                                         <span tal:content="item">Lorem ipsum dolor sit amet</span>
                                                                     </li>
                                                                 </tal:def>
-                                                            </tal:cond> 
+                                                            </tal:cond>
                                                             <tal:cond condition="not: activities">
                                                                 <span>Não possui nenhuma atividade.</span>
                                                             </tal:cond>
@@ -330,7 +345,7 @@
                                                                     </a>
                                                                 </div>
                                                             </div>
-                                                            
+
                                                             <div class="icon-moreaccess clear">
                                                                 <a href="#" class="more" id="participando">
                                                                     <h1 class="left subheader vindula-icon-plus-sign"></h1>
@@ -338,7 +353,7 @@
                                                                 </a>
                                                             </div>
                                                         </tal:cond>
-                                                        
+
                                                         <tal:cond tal:condition="not: departamentos">
                                                             <p>
                                                                 Não participa de nenhuma Unidade Organizacional.
@@ -346,7 +361,7 @@
                                                         </tal:cond>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="columns large-6 shadow-line">
                                                     <tal:remove tal:replace="nothing">
                                                       <!-- REMOVIDO POIS ESTA EM DESUSO -->
@@ -383,12 +398,12 @@
                                                     </tal:remove>
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="clear" tal:condition="panelView/check_joboffer|nothing">
                                                 <div class="class columns large-12"
                                                      id="tile-manager-joboffer">
                                                      <h5>Recrutamento Interno<hr></h5>
-                                                     
+
                                                      <div class="vd_show_my_joboffers"></div>
                                                 </div>
                                             </div>
@@ -402,14 +417,14 @@
                                             <metal:use use-macro="context/myvindulaprefs/macros/page-view" />
                                         </div>
                                     </section>
-                                    
+
                                     <section tal:condition="python: user_login == user_request" id="my_content">
                                         <p class="title" data-section-title><a href="#panel3">Meus Conteúdos</a></p>
                                         <div class="content" data-section-content>
                                             <metal:use use-macro="context/myvindula_my_contents/macros/page-view" />
                                         </div>
                                     </section>
-                                    
+
                                     <tal:remove tal:replace="nothing">
                                       <!-- REMOVIDO POIS ESTA EM DESUSO -->
                                       <section id="projetos" tal:condition="not: simple_layout">
@@ -419,7 +434,7 @@
                                           </div>
                                       </section>
                                     </tal:remove>
-                                    
+
                                     <section id="participando" tal:condition="not: simple_layout">
                                         <p class="title" data-section-title><a href="#panel3">Participando</a></p>
                                         <div class="content" data-section-content>
@@ -428,12 +443,12 @@
                                     </section>
 
                                     <section tal:condition="python: user_login == user_request" id="social">
-                                        <p class="title" data-section-title><a href="#panel3">Social</a></p>
+                                        <p class="title" data-section-title><a href="#panel3" id="refrex_social">Social</a></p>
                                         <div class="content" data-section-content>
                                             <metal:use use-macro="context/myvindulasocial/macros/page-view" />
                                         </div>
                                     </section>
-                                    
+
                                     <section id="biografia">
                                         <p class="title" data-section-title><a href="#panel3">Biografia</a></p>
                                         <div class="content" data-section-content>
@@ -459,13 +474,13 @@
                         </div>
                     </div>
                     <div class="columns large-3">
-                        
+
                         <div tal:condition="simple_layout" class="user-contact-box">
                             <h5>
                                 Contato
                                 <hr/>
                             </h5>
-        
+
                             <div>
                                 <ul class="no-bullet">
                                     <li tal:define="unidadeprincial nocall:user_profile/get_unidadeprincipal;"
@@ -474,22 +489,22 @@
                                         <a class="structure-link"
                                            tal:attributes="href python:unidadeprincial().absolute_url() or None;
                                                            data-type string:Structure;
-                                                           data-value python:unidadeprincial().UID() or None;" 
+                                                           data-value python:unidadeprincial().UID() or None;"
                                            tal:content="python:unidadeprincial().getSiglaOrTitle() or ''">ASCON</a>
                                     </li>
-                                    
+
                                     <li tal:condition="python:user_profile.get('ramal')">
                                         <strong>Ramal:</strong>
                                         <span tal:content="python:user_profile.get('ramal')"></span>
                                     </li>
-                                    
+
                                     <tal:def define="show_phone python: (user_profile.get('show_phone', False)) and ((user_profile.get('show_phone') == 'on') and True or False) or False">
                                         <li tal:condition="python:show_phone and user_profile.get('phone_number', False)">
                                             <strong>Telefone:</strong>
                                             <span tal:content="python:user_profile.get('phone_number')"></span>
                                         </li>
                                     </tal:def>
-                                    
+
                                     <li tal:condition="python:user_profile.get('email')">
                                         <strong>Email:</strong>
                                         <span tal:content="python:user_profile.get('email')"></span>
@@ -497,7 +512,7 @@
                                 </ul>
                             </div>
                         </div>
-                        
+
                         <div class="vd_micro_timeline row" tal:attributes="data_username username" />
                     </div>
                 </div>
