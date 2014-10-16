@@ -6,7 +6,7 @@ import pickle
 #from redis_completion import RedisEngine
 
 #TODO: colocar essa configuração no painel de controle do plone.
-REDIS_HOST = '172.17.0.2'
+REDIS_HOST = '127.0.0.1'
 REDIS_PORT = 6379
 REDIS_DB = 2
 pool = redis.ConnectionPool(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
@@ -19,7 +19,7 @@ def set_redis_cache(key,key_set,value,expire=600):
 		value = json.dumps(value)
 	except:
 		value = pickle.dumps(value)
-		
+
 	pipe = get_redis_connection().pipeline()
 	pipe.setex(key, expire, value)
 	pipe.sadd(key_set, key)
@@ -27,7 +27,7 @@ def set_redis_cache(key,key_set,value,expire=600):
 	print 'Cache key MISS: ',key
 
 def get_redis_cache(key):
-	data = get_redis_connection().get(key)	
+	data = get_redis_connection().get(key)
 	if data:
 		try:
 			print 'Cache key HIT: ',key
@@ -35,10 +35,11 @@ def get_redis_cache(key):
 		except:
 			print 'Cache key HIT: ',key
 			return pickle.loads(data)
-	else: 
+	else:
 		return None
 
 def generate_cache_key(domain,**kwargs):
 	key = hashlib.md5(':'.join([kwargs[i] for i in kwargs.keys() if kwargs[i]!=None])).hexdigest()
 	key = '%s::%s' % (domain,key)
-	return key
+	return key
+
