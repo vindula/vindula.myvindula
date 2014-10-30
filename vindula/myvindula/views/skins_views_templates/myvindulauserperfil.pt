@@ -20,8 +20,12 @@
             $j('#refrex_social').click(function(){
               var $iframe = $j('#718b80f7d3d758dc624b150d664d2728 iframe');
               $iframe.attr('src',$iframe.attr('src'));
-
             });
+            $j('#refrex_edit').click(function(){
+              var $iframe = $j('#3e51e80cfa7f7f345f9053fd85b54dde iframe');
+              $iframe.attr('src',$iframe.attr('src'));
+            });
+
         });
         </script>
 
@@ -412,7 +416,7 @@
 
                                     <section tal:condition="python: user_login == user_request or view.check_edit_manager(user_login)"
                                              id="prefs_edit">
-                                        <p class="title" data-section-title><a href="#panel2">Editar Perfil</a></p>
+                                        <p class="title" data-section-title><a href="#panel2" id="refrex_edit">Editar Perfil</a></p>
                                         <div class="content" data-section-content>
                                             <metal:use use-macro="context/myvindulaprefs/macros/page-view" />
                                         </div>
