@@ -1,15 +1,24 @@
 <html>
     <body metal:use-macro="here/prefs_main_template/macros/master">
-    	
+
         <div metal:fill-slot="prefs_configlet_content">
             <div id="interna">
-				<div class="import-user" tal:define="export view/export_users">
-                    <h2 class="h2title">Exportar Perfil de Usu&aacute;rios</h2>
-					<p>Os dados ser&atilde;o exportados em formato .CSV</p>
-                    <form method="post" enctype="multipart/form-data" tal:attributes="action string:${context/absolute_url}/myvindula-export-users">
-                        <input id="import-button" type="submit" name="export" value="Exportar">
-                    </form>
+
+                <script type="text/javascript"  tal:attributes="src string:${context/portal_url|nothing}/vindula-api/static/js/vindula_myvindula.js"></script>
+
+                <script type="text/javascript"
+                    tal:content="python:'''
+                                        $j(document).ready(function(){
+                                            $j('#myvindula').myvindula(null, {dominio: '%s', user_token: '%s'});
+                                        });
+                                        ''' % (context.portal_url(),session.get('user_token'))" >
+                </script>
+
+                <div id="myvindula">
+                    <div class="vd_export_user"></div>
                 </div>
+
+
 			</div>
         </div>
     </body>

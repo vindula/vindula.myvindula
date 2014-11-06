@@ -212,7 +212,7 @@ class MyVindulaDeParaUser(grok.View, UtilMyvindula):
     grok.context(INavigationRoot)
     grok.require('cmf.ManagePortal')
     grok.name('myvindula-compare-user')
-    
+
     ignoreContext = True
 
     label = _(u"Usuários orfaos do vindula")
@@ -235,7 +235,7 @@ class MyVindulaRemoveUser(grok.View, UtilMyvindula):
                 users = [users]
             for user in users:
                 username = self.Convert_utf8(user)
-    
+
 #                is_user_vindula = ModelsInstanceFuncdetails().get_InstanceFuncdetails(username)
                 is_user_vindula = FuncDetails(username)
                 try:
@@ -268,7 +268,7 @@ class MyVindulaImportHoleriteView(grok.View, UtilMyvindula):
     grok.context(INavigationRoot)
     grok.require('cmf.ManagePortal')
     grok.name('myvindula-import-holerite')
-    
+
     url_frame = '%s/vindula-api/rh/holerite/manager/%s/%s/?iframe_id=8d60ac741503d50f2970c8ac337e6899'
 
     def get_url_frame(self):
@@ -547,42 +547,3 @@ class MyVindulaExportUsersView(grok.View,UtilMyvindula):
     grok.require('cmf.ManagePortal')
     grok.name('myvindula-export-users')
 
-    def export_users(self):
-        form = self.request.form
-        if 'export' in form.keys():
-            self.request.response.setHeader("Content-Type", "text/csv", 0)
-            filename = 'myvindula-export-users.csv'
-            self.request.response.setHeader('Content-Disposition','attachment; filename=%s'%(filename))
-
-            fields_orig = ModelsConfgMyvindula().get_configurationAll()  #ModelsFuncDetails()._storm_columns.values()
-
-            campos_vin = []
-            text = ''
-
-            if fields_orig:
-                campos_vin.append('username')    
-                text += 'username;'
-                
-                for field in fields_orig:
-                    campos_vin.append(field.fields)
-                    text += field.fields + ';'
-            
-                text = text[:-1] + '\n'
-            
-            users = ModelsInstanceFuncdetails().get_AllFuncDetails()
-
-            for user in users:
-                for campo in campos_vin:
-                    valor = user.get(campo,'')
-
-                    if type(valor) == list:
-                        valor_list = ''
-                        for i in valor:
-                            if i :valor_list += (i + ' / ')
-
-                        valor = valor_list
-
-                    text += '%s;' % (str(valor).replace('\n', '').replace('\r', '').replace(';', ''))
-                text += '\n'
-
-            self.request.response.write(str(text))
