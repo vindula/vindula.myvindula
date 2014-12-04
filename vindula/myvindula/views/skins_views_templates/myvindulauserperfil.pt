@@ -274,7 +274,7 @@
 
                                                         <tal:rep repeat="category view/get_fields_category">
 
-                                                            <tal:def define="fields python:user_profile.fields.find(profile_category_id=category.id)">
+                                                            <tal:def define="fields python:user_profile.fields.find(profile_category_id=category.id, deleted=False)">
 
                                                               <li tal:condition="fields/count" tal:attributes="class category/name">
                                                                 <h6 tal:content="category/label"></h6></li>
