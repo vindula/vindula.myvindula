@@ -392,10 +392,10 @@ class UtilMyvindula(object):
             site =self.context
         url = site.absolute_url() + local
         request = site.REQUEST
-        
+
         if request.other.get('came_from') in (getSite().portal_url()+'/', '', None):
             request.other["came_from"]=url
-        
+
         request.response.redirect(url, lock=True)
 
 
@@ -432,22 +432,24 @@ class UtilMyvindula(object):
         ativa_gravatar = context.restrictedTraverse('myvindula-conf-userpanel').check_ativa_gravatar()
         username = self.Convert_utf8(username)
 
-        url_foto = '/vindula-api/myvindula/user-picture/%s/%s/%s' %(field,username,ativa_gravatar)
+        session = context.REQUEST.SESSION
+
+        url_foto = '/vindula-api/myvindula/user-picture/%s/%s/%s/%s' %(session.get('user_token'),field,username,ativa_gravatar)
 
         if with_root:
             return '%s%s' %(context.portal_url(),url_foto)
         else:
             return url_foto
-       
-    # def loadGravatarImage(self, email,username): 
+
+    # def loadGravatarImage(self, email,username):
     #     # Imagem Padrão o usuario
     #     default = self.context.portal_url() + '/user-image?username='+username+'&field=photograph'
     #     size = 168
-        
+
     #     gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(email.lower()).hexdigest() + "?"
     #     gravatar_url += urllib.urlencode({'d':default,'s':str(size)})
-        
-    #     return gravatar_url       
+
+    #     return gravatar_url
 
 
     def envia_email(self,ctx, msg, assunto, mail_para, arquivos=[],to_email=None):
@@ -475,9 +477,9 @@ class UtilMyvindula(object):
         mensagem.preamble = 'This is a multi-part message in MIME format.'
 
 
-        email_layout_obj = LayoutEmail(msg=msg, ctx=ctx)        
+        email_layout_obj = LayoutEmail(msg=msg, ctx=ctx)
         mensagem.attach(MIMEText(email_layout_obj.layout(), 'html', 'utf-8'))
-        
+
         # Atacha os arquivos
         for f in arquivos:
             if type(f) == dict:
@@ -515,7 +517,7 @@ class UtilMyvindula(object):
             return False
 
         return True
-        
+
     def now():
         #TODO: COLOCAR ESSA CONFIGURACAO NUM LUGAR MELHOR
         #MYSQL=1

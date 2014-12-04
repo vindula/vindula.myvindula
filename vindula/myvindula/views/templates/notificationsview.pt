@@ -10,36 +10,36 @@
         <div metal:fill-slot="content" >
             <metal:use use-macro="context/@@myvindulapanel/macros/page"/>
             <metal:macro define-macro="page-view">
-                
+
                 <script type="text/javascript" src=""
                         tal:attributes="src string:${context/absolute_url|nothing}/++resource++vindula.content/js/ajax_list_file.js"></script>
-                        
+
                 <div class="clear">
                     <div class="columns large-12">
                         <h5>Notifica&ccedil;&otilde;es</h5>
                         <hr/>
                     </div>
-                    
-                    <div id="notifications" class="columns large-12 list_file" 
+
+                    <div id="notifications" class="columns large-12 list_file"
                          tal:define="member python:context.portal_membership.getAuthenticatedMember();
                                      view_myvindula nocall:context/@@myvindula;
                                      isAnonymous context/portal_membership/isAnonymousUser|python:True;
                                      username python:member.getUserName() or None;
-                                     
+
                                      notificacoes python:view_myvindula.get_notificacoes(username, 0);
-    
+
                                      Batch python:modules['Products.CMFPlone'].Batch;
                                      b_size request/b_size|string:10;
                                      b_start python:0;
                                      b_start request/b_start | b_start;
-    
+
                                      batch python:Batch(notificacoes, int(b_size), int(b_start));">
-                        
-                        <div class="container"> 
+
+                        <div class="container">
                             <input type="hidden" id="b_size" tal:attributes="value b_size" />
                             <input type="hidden" id="b_start" tal:attributes="value b_start" />
                             <input type="hidden" id="absolute_url" tal:attributes="value string:${context/portal_url}/myvindula-notifications" >
-                            
+
                             <tal:rep repeat="notificacao batch">
                                 <div class="notify" tal:define="user_actor python:view_myvindula.get_prefs_user(notificacao.actor);
                                                                 content_type python:notificacao.content.type;
@@ -50,13 +50,13 @@
                                         <a href="#" tal:attributes="href string:${obj_action/absolute_url|nothing}/view">
                                         <div class="clear">
                                             <img class="left" width="50" height="50"
-                                            tal:attributes="src string:${here/portal_url}/vindula-api/myvindula/user-picture/photograph/${notificacao/actor}/True">
+                                            tal:attributes="src string:${here/portal_url}/vindula-api/myvindula/user-picture/${session/user_token|nothing}/photograph/${notificacao/actor}/True">
 
                                             <div class="left info-updates">
                                                 <div>
                                                     <strong tal:content="user_actor/name|notificacao/acto|string: "></strong>
                                                     <span tal:content="python:view_myvindula.action_social.get(notificacao.action,'')"></span>
-                                                    <strong tal:content="obj_action/Title|string: "></strong> 
+                                                    <strong tal:content="obj_action/Title|string: "></strong>
                                                     <br/>
 
                                                     <span tal:content="python:view_myvindula.getTimeAgo(notificacao.get_date_created,'')"></span>
@@ -70,7 +70,7 @@
                                         <div class="clear">
                                             <div class="circle-mark"></div>
                                             <img class="left" width="50" height="50"
-                                            tal:attributes="src string:${here/portal_url}/vindula-api/myvindula/user-picture/photograph/${notificacao/actor}/True">
+                                            tal:attributes="src string:${here/portal_url}/vindula-api/myvindula/user-picture/${session/user_token|nothing}/photograph/${notificacao/actor}/True">
 
                                             <div class="left info-updates"
                                             tal:define="user_related python:view_myvindula.get_prefs_user(uid_obj);">
@@ -90,7 +90,7 @@
                             <!--div class="navigation-users">
                                 <div metal:use-macro="here/batch_macros/macros/navigation" />
                             </div-->
-                                
+
                             <div id="paginacao">
                                 <div id="size-nav" class="left">
                                     <p>
@@ -112,7 +112,7 @@
                                     <metal:block metal:use-macro="context/boll_batch/macros/navigation" />
                                 </div>
                             </div>
-                        </div>  
+                        </div>
                     </div>
                 </div>
             </metal:macro>
