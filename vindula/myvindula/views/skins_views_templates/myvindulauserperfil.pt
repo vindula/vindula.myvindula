@@ -2,12 +2,7 @@
 	<head>
         <metal:block fill-slot="top_slot">
             <tal:dummy tal:define="dummy python:request.set('disable_border',1);
-                                   disable_column_one python:request.set('disable_plone.leftcolumn',1);
-                                   " />
-
-
-
-
+                                   disable_column_one python:request.set('disable_plone.leftcolumn',1);"/>
         </metal:block>
 	</head>
 
@@ -25,19 +20,18 @@
               var $iframe = $j('#3e51e80cfa7f7f345f9053fd85b54dde iframe');
               $iframe.attr('src',$iframe.attr('src'));
             });
-
         });
         </script>
 
-	    	<div id="myvindula-profile"
-                 tal:define="view python: context.restrictedTraverse('@@myvindulalistuser');
-                             panelView python: context.restrictedTraverse('@@myvindula-conf-userpanel');
-
-	    	                 isAnonymous context/portal_membership/isAnonymousUser|python:True;
-                             member context/@@plone_portal_state/member;
-
-							 user_profile view/load_list | python:{};
-                             session request/SESSION|python:{};
+    	<div id="myvindula-profile"
+             tal:define="view python: context.restrictedTraverse('@@myvindulalistuser');
+                         panelView python: context.restrictedTraverse('@@myvindula-conf-userpanel');
+	    	             isAnonymous context/portal_membership/isAnonymousUser|python:True;
+                         member context/@@plone_portal_state/member;
+                         user_profile view/load_list|nothing;"
+             tal:condition="user_profile">
+            
+            <tal:def define="session request/SESSION|python:{};
                              username user_profile/username|nothing;
                              user_request request/user|username;
                              user_login member/getUserName;
@@ -52,9 +46,9 @@
 
 				<div id="myModal" class="reveal-modal large" >
 				    <div>
-				        <div class="vd_user_profile_picture" data_field="photograph" tal:attributes="data_token session/user_token|nothing;
-                                                                                                     data_username username;">
-                        </div>
+				        <div class="vd_user_profile_picture" data_field="photograph" 
+                             tal:attributes="data_token session/user_token|nothing;
+                                             data_username username;"></div>
                         <a class="close-reveal-modal">×</a>
 				    </div>
 				</div>
@@ -520,6 +514,7 @@
                         <div class="vd_micro_timeline row" tal:attributes="data_username username" />
                     </div>
                 </div>
+                </tal:def>
 	        </div>
 	</meta:macro>
 </body>

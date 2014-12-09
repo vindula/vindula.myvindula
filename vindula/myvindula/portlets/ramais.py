@@ -5,6 +5,7 @@
 from zope.interface import implements
 from zope.formlib import form
 from zope import schema
+from Acquisition import aq_inner
 
 from plone.portlets.interfaces import IPortletDataProvider
 from plone.app.portlets.portlets import base
@@ -226,13 +227,12 @@ class Renderer(base.Renderer, UtilMyvindula):
         else:
             return None
 
+    def get_all_uos(self):
+        context = aq_inner(self.context)
+        catalog = getToolByName(context, 'portal_catalog')
 
-    # def list_filtro(self):
-    #     campo = self.data.filtro_departamento
-    #     result = ModelsFuncDetails().get_allFuncDetails()
-    #     if result:
-    #         classe = 'ModelsFuncDetails.'+str(campo)
-    #         return result.group_by(eval(classe)).order_by()
+        return catalog(portal_type='OrganizationalStructure',
+                       review_state=['published', 'internally_published'])
 
     def list_departamentos(self):
         # return  ModelsDepartment().get_department()

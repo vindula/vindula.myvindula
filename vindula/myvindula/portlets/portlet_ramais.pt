@@ -30,10 +30,6 @@
 
 		<div id="busca-portlet">
 			<form action="" method="post" id="portlet-ramais">
-		    	<!--h4>Nome:</h4>
-				<input type="text" name="title" size="26" tal:attributes="value python: request.get('title', '')"/>
-				<h4>Ramal:</h4>
-				<input type="text" name="ramal" size="26" tal:attributes="value python: request.get('ramal', '')"/-->
 
 				<tal:rep repeat="detail view/get_camposFilter">
                     <h4 tal:condition="python: detail['label'] and detail['content']"
@@ -46,46 +42,17 @@
 
 				<h4>Departamento:</h4>
 				<tal:def define="filtro view/filtro_departamento|nothing;
-								 ctx python:context;
-								 uid_selected python: view.get_uid_struct_org(ctx)">
-		            <tal:cond condition="python: filtro=='departamentos'">
-		            	<select size="1" id="departamento" name="departamento" style="width:100%;">
-			        		<option value="" >Todos ...</option>
-				            <tal:departamentos tal:repeat="item view/list_departamentos">
-			            		<tal:cond condition="request/SearchSubmit|nothing">
-					            	<option tal:define="id_request request/departamento | python:''"
-											tal:attributes="value item/UID|nothing;
-											selected python: str(item.UID) == str(id_request)"
-											tal:content="item/Title|nothing">Marketing
-					                </option>
-				                </tal:cond>
-				                <tal:cond condition="not: request/SearchSubmit|nothing">
-					                <option tal:define="id_request request/departamento | python:''"
-											tal:attributes="value item/UID|nothing;
-											selected python: uid_selected == item.UID"
-											tal:content="item/Title|nothing">Marketing
-					                </option>
-					           </tal:cond>
-
-
-				            </tal:departamentos>
-						</select>
-		            </tal:cond>
-		            <tal:cond condition="python: filtro!='departamentos'">
-		            	<select size="1" id="departamento" name="departamento" style="width:100%;">
-							<option value="" >Todos ...</option>
-							<tal:rep repeat="item view/list_filtro">
-								<option tal:define="id_request request/departamento | python:'';
-									 				itemDep python:item"
-										tal:condition="itemDep"
-										tal:attributes="value itemDep|nothing;
-										selected python: str(id_request)==str(itemDep)"
-										tal:content="itemDep|nothing">Marketing
-				               </option>
-
-							</tal:rep>
-						</select>
-					</tal:cond>
+								 uid_selected python: view.get_uid_struct_org(context);">
+					<select size="1" id="departamento" name="departamento" style="width:100%;">
+						<option value="">Todos</option>
+						<tal:rep repeat="item view/get_all_uos">
+							<option tal:define="id_request request/departamento|python:''"
+									tal:content="item/Title|nothing"
+									tal:attributes="value item/UID|nothing;
+													selected python: str(id_request)==str(item.UID)">
+			               </option>
+						</tal:rep>
+					</select>
 				</tal:def>
 
 				<tal:cond condition="view/active_vindula_contato_geral">
