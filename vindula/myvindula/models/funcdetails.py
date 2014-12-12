@@ -237,7 +237,7 @@ class FuncDetails(object):
         return L_retorno
 
     @staticmethod
-    def get_FuncDetailsByField(fields={}):
+    def get_FuncDetailsByField(fields={}, case_sensitive=False, if_empty_return_all=True):
         L_username = []
         L_retorno = []
         
@@ -248,23 +248,21 @@ class FuncDetails(object):
         data = []
         data_username = []
         
-        username_term = ''
-        
         for item in fields.items():
             field, value = item[0], item[1]
             
             if value:
                 if field == 'name':
-                    value = unicode(value, 'utf-8')
-                    username_term = value
-                    expression_name += [ModelsDadosFuncdetails.value.like(value,case_sensitive=False)]
-                    expression_name += [ModelsDadosFuncdetails.username.like(value,case_sensitive=False)]
+                    if not isinstance(value, unicode):
+                        value = unicode(value, 'utf-8')
+                    expression_name += [ModelsDadosFuncdetails.value.like(value,case_sensitive=case_sensitive)]
+                    expression_name += [ModelsDadosFuncdetails.username.like(value,case_sensitive=case_sensitive)]
                 else:
                     if isinstance(value, list):
                         for val in value:
-                            expressions += [ModelsDadosFuncdetails.value.like(unicode(val, 'utf-8'),case_sensitive=False)]
+                            expressions += [ModelsDadosFuncdetails.value.like(unicode(val, 'utf-8'),case_sensitive=case_sensitive)]
                     else:
-                        expressions += [ModelsDadosFuncdetails.value.like(unicode(value, 'utf-8'),case_sensitive=False)]
+                        expressions += [ModelsDadosFuncdetails.value.like(unicode(value, 'utf-8'),case_sensitive=case_sensitive)]
                     campos += [unicode(field, 'utf-8')]
         
         if campos and expressions:
@@ -308,7 +306,7 @@ class FuncDetails(object):
             else:
                 L_username = L_username_aux2
                 
-        else:
+        elif if_empty_return_all:
             #Pegando os usuarios com distinct
             select = Select(ModelsDadosFuncdetails.username,
                             ModelsDadosFuncdetails.deleted==False,

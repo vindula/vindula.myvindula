@@ -13,7 +13,10 @@
             <div class="personal-info">
                 <div class="clear">
                     <div class="image-box left">
-                        <img tal:attributes="src python:'%s/vindula-api/myvindula/user-picture/%s/photograph/%s/True' % (context.portal_url(),session.get('user_token') username)" width="90px" class="image-modal">
+                        <img 
+                            tal:attributes="src python:'%s/vindula-api/myvindula/user-picture/%s/photograph/%s/True' % (context.portal_url(), request.SESSION.get('user_token'), username)" 
+                            width="90px" 
+                            class="image-modal">
                     </div>
                     <div class="info-box left">
                         <h6 tal:content="python:user_profile.get('nickname', user_profile.get('name', ''))"></h6>

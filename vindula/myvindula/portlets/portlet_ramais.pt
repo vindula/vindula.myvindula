@@ -1,46 +1,44 @@
 <dl class="portlet" tal:define="view view/data;
 								view_contato request/active_vindula_contato|python:False">
     <dt class="portletHeader">
-        <span class="portletTopLeft"></span>
-		<span class="tile" tal:content="view/get_title">Portlet Title</span>
-		<span class="portletTopRight"></span>
+		<h4>
+            <tal:rep tal:replace="view/get_title"></tal:rep>
+            <hr/>
+        </h4>
     </dt>
 
-    <dd class="portletItem odd">
+    <dd class="portletItem">
 
     	<script type="text/javascript">
-
 			$(document).ready(function(){
 				var scrollTop = $("#portlet-ramais").offset().top
 				$('#portlet-ramais').attr('action','?scrollTop='+scrollTop);
 			});
     	</script>
 
-		<script type="text/javascript" tal:content="python: '''
+		<script type="text/javascript" 
+                tal:content="python: '''
+                            			$(document).ready(function(){
+                            				$('html, body').animate({
+                                                scrollTop:%s
+                                            });
+                            			});
+    		                         ''' %(request.get('scrollTop','0'))">
+        </script>
 
-			$(document).ready(function(){
-				$('html, body').animate({
-                    scrollTop:%s
-                });
-			});
-
-		'''%(request.get('scrollTop','0'))"></script>
-
-
-
-		<div id="busca-portlet">
-			<form action="" method="post" id="portlet-ramais">
+		<div id="busca-portlet" class="clear">
+			<form action="" method="post" id="portlet-ramais" class="clear">
 
 				<tal:rep repeat="detail view/get_camposFilter">
-                    <h4 tal:condition="python: detail['label'] and detail['content']"
-                        tal:content="string: ${detail/label}: "> </h4>
-                    <input type="text" name="ramal" size="23"
+                    <strong tal:condition="python: detail['label'] and detail['content']"
+                            tal:content="string: ${detail/label}: "> </strong>
+                    <input type="text" name="ramal"
                            tal:define="campo  detail/content"
                            tal:attributes="value python: request.get(campo, '');
                                            name campo"/>
                 </tal:rep>
 
-				<h4>Departamento:</h4>
+				<strong>Departamento:</strong>
 				<tal:def define="filtro view/filtro_departamento|nothing;
 								 uid_selected python: view.get_uid_struct_org(context);">
 					<select size="1" id="departamento" name="departamento" style="width:100%;">
@@ -55,70 +53,61 @@
 					</select>
 				</tal:def>
 
-				<tal:cond condition="view/active_vindula_contato_geral">
-
-					<input type="checkbox" name="active_vindula_contato:Boolean" value="True" class="context"
-						tal:attributes="checked python: view_contato and 'checked' or ''" />
-					Habilitar mecanismo de busca de contatos
-
-				</tal:cond>
-
-				<div class="aling-right">
-					<input type="submit" name="SearchSubmit" value="Buscar" class="context" i18n:attributes="value"/>
+				<div class="right">
+					<input type="submit" name="SearchSubmit" value="Buscar" class="button tiny radius"/>
 				</div>
      	 	</form>
 
 			<!-- Results -->
-			<tal:results tal:define="quant view/get_quantidade_portlet;
-									 results view/busca_usuarios;">
+			<div tal:define="quant view/get_quantidade_portlet;
+						     results view/busca_usuarios;">
 				<tal:cond condition="results">
-		    		<h4><strong i18n:translate="">Resultados</strong></h4>
-			    	<div>
+			    	<div class="row list-users-small">
 				    	<tal:results tal:define="busca python:results[:int(quant)];"
 					  			   	 tal:repeat="item busca">
+                            <tal:cond condition="item">
+                                <div class="columns small-12 user-small">
 
-								<div id="boxPortlet" tal:define="i repeat/item/end;"
-	    					     					 tal:attributes="class python:view.getEnd(i);"
-	    					     					 tal:condition="item">
+                                    <div class="left box-image">
+                                        <img tal:attributes="src item/getImageIcone;
+                                                             alt item/name|nothing;
+                                                             title item/name|nothing;">
+                                    </div>
 
-                                    <!-- Dados para utilização da macro -->
-                                    <tal:def define="size_img string:50px;
-                                    				 view_contato view_contato;
-                                                     principal_name python: view.get_principal_campo(item);
-                                                     details python: view.get_details_user(item.get('username')) or [];">
-                                        <div metal:use-macro="context/myvindula-imageprofiles-macro/macros/userprofiles" />
-                                    </tal:def>
-
-						 		</div>
-						 	<div class="visualClear"></div>
+                                    <div class="left box-data">
+                                        <a href="#" class="profile-link"
+                                           tal:content="item/name"
+                                           tal:attributes="href item/getUrlPerfil;
+                                                           data-type string:UserObject;
+                                                           data-value item/username|nothing;">Nome do usuario</a>
+                                           
+                                        <tal:rep repeat="detail python: view.get_details_user(item)">
+                                            <p class="discrete">
+                                                <span tal:condition="python: detail['label'] and detail['content']"
+                                                      tal:replace="string: ${detail/label}: "> </span>
+                                                <span tal:condition="detail/content" 
+                                                      tal:replace="detail/content"> </span>
+                                            </p>
+                                        </tal:rep>
+                                    </div>
+                                </div>
+					 		</tal:cond>
 			      		</tal:results>
 					</div>
-			    	<div class="titulo_info_boxTipo2 aling-right">
-				        <h4 tal:condition="python:len(results)>int(quant)">
-
-				        	<a tal:condition="not: view_contato"
-				        	   tal:attributes="href python: view.get_url_mais(view.form_dados)">Mais...</a>
-
-				        	<a tal:condition="view_contato"
-				        	   tal:attributes="href python: view.get_url_mais_contatos(view.form_dados)">Mais...</a>
-
-				        </h4>
-				    </div>
-
 				</tal:cond>
+                
 				<tal:cond condition="python: not results and 'SearchSubmit' in context.REQUEST.form">
-				    <h4 tal:content="view/check_filter">N&atilde;o h&aacute; resultados.</h4>
+                    <div>
+				        <strong tal:content="view/check_filter">N&atilde;o h&aacute; resultados.</strong>
+                    </div>
 				</tal:cond>
-			</tal:results>
+			</div>
 
 			<tal:cond condition="view/get_details_text|nothing">
-				<br>
 				<div class="titulo_info_boxTipo2 aling-right">
 					<p tal:replace="structure view/get_details_text|nothing" />
 				</div>
 			</tal:cond>
-
 		</div>
     </dd>
-    <dd class="portletFooter"></dd>
 </dl>
