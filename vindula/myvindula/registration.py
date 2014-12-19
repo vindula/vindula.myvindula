@@ -449,16 +449,13 @@ class ImportUser(BaseFunc):
         if not user:
             user = db_user[index]
 
-        user_properties = {'fullname':user.get('name',''),
-                           'email':user.get('email',''),
-                           #'home_page':user.blogs,
-                           #'location':user.location,
-                           #'description':user.customised_message,
-                           }
-
         username = user.get('username','')
+        user_properties = {'username': username,
+                           'fullname':user.get('name',''),
+                           'email':user.get('email',''),}
+
         if portal_member.getMemberById(username):
-            portal_member.getMemberById(username).setMemberProperties(user_properties)
+            portal_member.getMemberById(username).setMemberProperties(mapping=user_properties)
         else:
             if username != '':
                 user_properties['username'] = username
