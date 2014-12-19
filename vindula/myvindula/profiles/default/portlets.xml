@@ -10,7 +10,7 @@
 		description="Portlet busca de pessoas"
 	    />
 
-	<portlet
+	<!--portlet
 		addview="vindula.myvindula.PortletAniversariosVindula"
 		title="Portlet Aniversarios Vindula"
 		description="Portlet Aniversarios Vindula \n
@@ -21,7 +21,7 @@
 		addview="vindula.myvindula.PortletAniversariosVindulaReload"
 		title="Portlet Aniversarios Vindula - Reloading"
 		description="Portlet Aniversarios Vindula - Reloading"
-	    />
+	    /-->
 
 
 </portlets>
