@@ -1,49 +1,27 @@
 # coding: utf-8
+import logging
+from copy import copy
+from datetime import datetime
+from random import randint
 
-from five import grok
-
-from Acquisition import aq_inner
-from plone.app.layout.navigation.interfaces import INavigationRoot
 from Products.CMFCore.interfaces import ISiteRoot
-
-from zope.component import adapts, getAdapter, getMultiAdapter, getUtility
-from Products.CMFCore.utils import getToolByName
+from Products.statusmessages.interfaces import IStatusMessage
+from five import grok
+from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.i18n.normalizer.interfaces import IIDNormalizer
-
 from zope.app.component.hooks import getSite
+from zope.component import getUtility
 
 from vindula.myvindula import MessageFactory as _
-from Products.statusmessages.interfaces import IStatusMessage
-
-from datetime import date, datetime
-from random import randint
-import logging, base64
-from copy import copy
-from itertools import chain
-
-from vindula.myvindula.validation import valida_form,valida_form_dinamic
-from vindula.myvindula.user import BaseFunc
-from vindula.myvindula.registration import SchemaFunc, SchemaConfgMyvindula, ImportUser
-# from vindula.chat.utils.models import ModelsUserOpenFire
-
-from vindula.myvindula.tools.utils import UtilMyvindula
-# from vindula.myvindula.models.instance_funcdetail import ModelsInstanceFuncdetails
+from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 from vindula.myvindula.models.funcdetails import FuncDetails
-
-
-#Import Necessario spara a migração dos dados
-# from vindula.myvindula.models.courses import ModelsMyvindulaCourses
-# from vindula.myvindula.models.languages import ModelsMyvindulaLanguages
-# from vindula.myvindula.models.funcdetail_couses import ModelsMyvindulaFuncdetailCouses
-# from vindula.myvindula.models.funcdetail_languages import ModelsMyvindulaFuncdetailLanguages
-
-
-# from vindula.myvindula.models.funcdetails import ModelsFuncDetails
-from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
+from vindula.myvindula.registration import ImportUser
+from vindula.myvindula.tools.utils import UtilMyvindula
+from vindula.myvindula.user import BaseFunc
+from vindula.myvindula.validation import valida_form_dinamic
 
 logger = logging.getLogger('vindula.myvindula')
-
 
 
 class MyVindulaConfgsView(grok.View, BaseFunc):
@@ -281,266 +259,271 @@ class MyVindulaImportHoleriteView(grok.View, UtilMyvindula):
 
 
 
-class MyVindulaImportFirstView(grok.View,UtilMyvindula):
+# class MyVindulaImportFirstView(grok.View,UtilMyvindula):
+#     grok.context(INavigationRoot)
+#     grok.require('cmf.ManagePortal')
+#     grok.name('myvindula-import-first')
+
+#     def load_file(self):
+#         form = self.request.form
+#         if 'load_file' in form.keys():
+#             if 'csv_file' in form.keys():
+#                 portal = self.context
+#                 pasta_control = getattr(portal, 'control-panel-objects')
+#                 if pasta_control:
+#                     pasta_migracao = getattr(pasta_control, 'migration-users')
+#                     if pasta_migracao:
+#                         pasta = getattr(pasta_migracao, 'upload-csv')
+#                         if pasta:
+#                             arquivo = self.request.get('csv_file')
+#                             nome = arquivo.filename
+
+#                             normalizer = getUtility(IIDNormalizer)
+#                             nome_arquivo = nome_org = normalizer.normalize(unicode(nome, 'utf-8'))
+
+#                             count = 0
+#                             while nome_arquivo in pasta.objectIds():
+#                                 count +=1
+#                                 #if count != 1:
+#                                 #    nome_arquivo = nome_arquivo[:-2]
+#                                 nome_arquivo = nome_org + '-' + str(count)
+
+#                             pasta.invokeFactory('File',
+#                                                 id=nome_arquivo,
+#                                                 title=nome_arquivo,
+#                                                 description='',
+#                                                 file=self.request.get('csv_file')
+#                                                 )
+#                             campos_csv = pasta.get(nome_arquivo).data.split('\n')[0].replace('"', '').split(';')
+#                             arquivo = pasta.get(nome_arquivo).virtual_url_path()
+#                             redirect = self.context.absolute_url() + '/myvindula-import-second?url_arquivo=%s' % (arquivo)
+#                             return self.request.response.redirect(redirect)
+#                         else:
+#                             IStatusMessage(self.request).addStatusMessage(_(u"Erro ao carregar arquivo, contate o administrados do portal."), "error")
+#                     else:
+#                         IStatusMessage(self.request).addStatusMessage(_(u"Erro ao carregar arquivo, contate o administrados do portal."), "error")
+#                 else:
+#                     IStatusMessage(self.request).addStatusMessage(_(u"Erro ao carregar arquivo, contate o administrados do portal."), "error")
+
+# class MyVindulaImportSecondView(grok.View, UtilMyvindula):
+#     grok.context(INavigationRoot)
+#     grok.require('cmf.ManagePortal')
+#     grok.name('myvindula-import-second')
+
+#     def to_utf8(self, value):
+#         return unicode(value, 'utf-8')
+
+#     def load_archive(self):
+#         form = self.request.form
+#         if 'url_arquivo' in form.keys():
+#             path_file = form.get('url_arquivo').split('/')
+#             if len(path_file) == 3:
+#                 folder = path_file[1]
+#                 file = path_file[2]
+#             else:
+#                 folder = path_file[0]
+#                 file = path_file[1]
+#             folder = self.context.get(folder)
+#             file = folder.get(file)
+
+#             return file.title
+
+
+#     def load_fields_vindula(self):
+#         form = self.request.form
+#         fields_vin = []
+#         i=0
+
+#         fields = ModelsConfgMyvindula().get_configurationAll() #SchemaFunc().campos
+#         FIELD_BLACKLIST = ['vin_myvindula_department',]
+
+#         camposAux = copy(fields)
+#         for item in camposAux:
+#             if not item.fields in FIELD_BLACKLIST:
+#                 fields_vin.append(item.ordem)
+
+#         if fields:
+#             for field in fields:
+#                 if not field.fields in FIELD_BLACKLIST:
+#                     index = field.ordem
+#                     D = {}
+#                     D['name'] = field.fields
+#                     if field.fields != 'username':
+#                         D['label'] = field.label  #self.get_label_filed(field)
+
+#                     pos = fields_vin.index(index)
+#                     fields_vin.pop(pos)
+#                     fields_vin.insert(pos, D)
+
+#                 #fields_vin.append(D)
+#         return fields_vin
+
+
+#     def load_fields_csv(self):
+#         form = self.request.form
+#         if 'url_arquivo' in form.keys():
+#             path_file = form.get('url_arquivo').split('/')
+#             folder = getSite()[path_file[0]][path_file[1]][path_file[2]]
+#             file = folder.get(path_file[3])
+
+#             return file.data.split('\n')[0].replace('"', '').split(';')
+
+#     def importar_valores(self):
+#         form = self.request.form
+#         tools = UtilMyvindula()
+#         if 'import' in form.keys():
+#             path_file = form.get('url_arquivo').split('/')
+#             folder = getSite()[path_file[0]][path_file[1]][path_file[2]]
+#             arquivo = folder.get(path_file[3])
+
+#             linhas_error =[]
+#             lista_erros = []
+#             campos = self.get_Dic_Campos()
+
+# #            folder = self.context.get(folder)
+# #            arquivo = folder.get(file)
+#             ignore_fields = ['import',
+#                              'url_arquivo',
+#                              'cria-username',
+#                              'atualiza-dados',
+#                              'ciar-user-plone',
+#                              'username',]
+
+#             success = False
+#             criar_user = form.get('cria-username', False)
+#             merge_user = form.get('atualiza-dados', False)
+
+#             criar_user_plone = form.get('ciar-user-plone', False)
+
+#             error = 0
+#             url = ''
+
+#             arquivo.data = arquivo.data.replace('\r', '')
+
+#             for linha in arquivo.data.split('\n')[1:-1]:
+#                 if linha:
+#                     dados = {}
+#                     dados_linha = linha.split(';')
+#                     check_user = False
+#                     for campo in form.keys():
+#                         if form[campo] != '' and campo not in ignore_fields:
+#                             indice = int(form[campo])-1
+#                             dados[campo] = self.to_utf8(dados_linha[indice].replace('"',''))
+#                         else:
+#                             if campo == 'username':
+#                                 if criar_user:
+#                                     name = dados_linha[int(form['name'])-1].replace('"','').lower().split(' ')
+
+#                                     username = name[0] + name[-1]
+#                                     cont = 1
+
+#                                     if form.get('registration'):
+#                                         matricula = dados_linha[int(form.get('registration'))-1].replace('"','')
+#                                         username += str(matricula)
+#                                     else:
+#                                         matricula = randint(1,pow(10,10))
+#                                         username += str(matricula)
+
+#                                     usr = username
+#                                     while ModelsInstanceFuncdetails().get_InstanceFuncdetails(self.to_utf8(usr)):
+#                                         usr = username + str(cont)
+#                                         cont +=1
+
+#                                     dados[campo] = self.to_utf8(usr)
+#                                     check_user = True
+
+#                                 else:
+#                                     if form.get('username'):
+#                                         indice = int(form.get('username'))-1
+#                                         user = self.to_utf8(dados_linha[indice].replace('"',''))
+#                                         if ModelsInstanceFuncdetails().get_InstanceFuncdetails(user) and merge_user:
+#                                             dados[campo] = user
+#                                             check_user = True
+#                                         else:
+#                                             dados[campo] = user
+#                                             check_user = True
+
+#                     erros, data_user = valida_form_dinamic(self,campos, dados)
+#                     if not erros:
+#                         if criar_user_plone:
+#                             ImportUser().importUser(self,{},dados)
+
+#                         username = dados['username']
+#                         if check_user:
+#                             user_instance = ModelsInstanceFuncdetails().get_InstanceFuncdetails(username)
+#                             if user_instance:
+#                                 id_instance = user_instance.id
+#                             else:
+#                                 id_instance = ModelsInstanceFuncdetails().set_InstanceFuncdetails(username)
+
+#                             for item in data_user.keys():
+#                                 field = self.Convert_utf8(item)
+#                                 valor = data_user[item]
+#                                 result_campo = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstanceAndField(id_instance,field)
+#                                 if result_campo:
+#                                     result_campo.valor = valor.strip()
+#                                     tools.db.store.commit()
+#                                 else:
+#                                     if valor:
+#                                         D={}
+#                                         D['vin_myvindula_instance_id'] = id_instance
+#                                         D['vin_myvindula_confgfuncdetails_fields'] = field
+#                                         D['valor'] = self.Convert_utf8(valor)
+
+#                                         ModelsDadosFuncdetails().set_DadosFuncdetails(**D)
+
+#                             success = True
+
+#                         else:
+#                             error = 1
+#                     else:
+#                         linhas_error.append(linha)
+#                         lista_erros.append(erros)
+#                         error = 2
+#                         success = False
+
+#                     logger.info("%s - %s "% (erros,data_user))
+
+#             if linhas_error:
+#                 success = False
+#                 campos = arquivo.data.split('\n')[0].replace('\r','')
+#                 text = ''
+#                 col = ''
+#                 for campo in campos.split(';'):
+#                     col += campo+';'
+
+#                 col += 'coluna erro;\n'
+#                 text = col
+#                 i = 0
+
+#                 for linha in linhas_error:
+#                     text += linha.replace('\r','') + ';'+str(lista_erros[i].keys())+'\n'
+#                     i +=1
+
+#                 text += '\n'
+
+#                 nome_arquivo = 'error-import-'+ datetime.now().strftime('%Y-%M-%d_%H-%M-%S') +'.csv'
+#                 pasta_error = getSite()['control-panel-objects']['migration-users']['errors-import']
+#                 pasta_error.invokeFactory('File',
+#                                             id=nome_arquivo,
+#                                             title=nome_arquivo,
+#                                             description='',
+#                                             file=text)
+#                 url=pasta_error[nome_arquivo].absolute_url()
+
+#             redirect = self.context.absolute_url() + '/myvindula-import-third?success=%s&error=%s&url=%s' % (success,error,url)
+#             return self.request.response.redirect(redirect)
+
+
+# class MyVindulaImportThirdView(grok.View,UtilMyvindula):
+#     grok.context(INavigationRoot)
+#     grok.require('cmf.ManagePortal')
+#     grok.name('myvindula-import-third')
+
+class MyVindulaImportUsers(grok.View):
     grok.context(INavigationRoot)
     grok.require('cmf.ManagePortal')
-    grok.name('myvindula-import-first')
-
-    def load_file(self):
-        form = self.request.form
-        if 'load_file' in form.keys():
-            if 'csv_file' in form.keys():
-                portal = self.context
-                pasta_control = getattr(portal, 'control-panel-objects')
-                if pasta_control:
-                    pasta_migracao = getattr(pasta_control, 'migration-users')
-                    if pasta_migracao:
-                        pasta = getattr(pasta_migracao, 'upload-csv')
-                        if pasta:
-                            arquivo = self.request.get('csv_file')
-                            nome = arquivo.filename
-
-                            normalizer = getUtility(IIDNormalizer)
-                            nome_arquivo = nome_org = normalizer.normalize(unicode(nome, 'utf-8'))
-
-                            count = 0
-                            while nome_arquivo in pasta.objectIds():
-                                count +=1
-                                #if count != 1:
-                                #    nome_arquivo = nome_arquivo[:-2]
-                                nome_arquivo = nome_org + '-' + str(count)
-
-                            pasta.invokeFactory('File',
-                                                id=nome_arquivo,
-                                                title=nome_arquivo,
-                                                description='',
-                                                file=self.request.get('csv_file')
-                                                )
-                            campos_csv = pasta.get(nome_arquivo).data.split('\n')[0].replace('"', '').split(';')
-                            arquivo = pasta.get(nome_arquivo).virtual_url_path()
-                            redirect = self.context.absolute_url() + '/myvindula-import-second?url_arquivo=%s' % (arquivo)
-                            return self.request.response.redirect(redirect)
-                        else:
-                            IStatusMessage(self.request).addStatusMessage(_(u"Erro ao carregar arquivo, contate o administrados do portal."), "error")
-                    else:
-                        IStatusMessage(self.request).addStatusMessage(_(u"Erro ao carregar arquivo, contate o administrados do portal."), "error")
-                else:
-                    IStatusMessage(self.request).addStatusMessage(_(u"Erro ao carregar arquivo, contate o administrados do portal."), "error")
-
-class MyVindulaImportSecondView(grok.View, UtilMyvindula):
-    grok.context(INavigationRoot)
-    grok.require('cmf.ManagePortal')
-    grok.name('myvindula-import-second')
-
-    def to_utf8(self, value):
-        return unicode(value, 'utf-8')
-
-    def load_archive(self):
-        form = self.request.form
-        if 'url_arquivo' in form.keys():
-            path_file = form.get('url_arquivo').split('/')
-            if len(path_file) == 3:
-                folder = path_file[1]
-                file = path_file[2]
-            else:
-                folder = path_file[0]
-                file = path_file[1]
-            folder = self.context.get(folder)
-            file = folder.get(file)
-
-            return file.title
-
-
-    def load_fields_vindula(self):
-        form = self.request.form
-        fields_vin = []
-        i=0
-
-        fields = ModelsConfgMyvindula().get_configurationAll() #SchemaFunc().campos
-        FIELD_BLACKLIST = ['vin_myvindula_department',]
-
-        camposAux = copy(fields)
-        for item in camposAux:
-            if not item.fields in FIELD_BLACKLIST:
-                fields_vin.append(item.ordem)
-
-        if fields:
-            for field in fields:
-                if not field.fields in FIELD_BLACKLIST:
-                    index = field.ordem
-                    D = {}
-                    D['name'] = field.fields
-                    if field.fields != 'username':
-                        D['label'] = field.label  #self.get_label_filed(field)
-
-                    pos = fields_vin.index(index)
-                    fields_vin.pop(pos)
-                    fields_vin.insert(pos, D)
-
-                #fields_vin.append(D)
-        return fields_vin
-
-
-    def load_fields_csv(self):
-        form = self.request.form
-        if 'url_arquivo' in form.keys():
-            path_file = form.get('url_arquivo').split('/')
-            folder = getSite()[path_file[0]][path_file[1]][path_file[2]]
-            file = folder.get(path_file[3])
-
-            return file.data.split('\n')[0].replace('"', '').split(';')
-
-    def importar_valores(self):
-        form = self.request.form
-        tools = UtilMyvindula()
-        if 'import' in form.keys():
-            path_file = form.get('url_arquivo').split('/')
-            folder = getSite()[path_file[0]][path_file[1]][path_file[2]]
-            arquivo = folder.get(path_file[3])
-
-            linhas_error =[]
-            lista_erros = []
-            campos = self.get_Dic_Campos()
-
-#            folder = self.context.get(folder)
-#            arquivo = folder.get(file)
-            ignore_fields = ['import',
-                             'url_arquivo',
-                             'cria-username',
-                             'atualiza-dados',
-                             'ciar-user-plone',
-                             'username',]
-
-            success = False
-            criar_user = form.get('cria-username', False)
-            merge_user = form.get('atualiza-dados', False)
-
-            criar_user_plone = form.get('ciar-user-plone', False)
-
-            error = 0
-            url = ''
-
-            arquivo.data = arquivo.data.replace('\r', '')
-
-            for linha in arquivo.data.split('\n')[1:-1]:
-                if linha:
-                    dados = {}
-                    dados_linha = linha.split(';')
-                    check_user = False
-                    for campo in form.keys():
-                        if form[campo] != '' and campo not in ignore_fields:
-                            indice = int(form[campo])-1
-                            dados[campo] = self.to_utf8(dados_linha[indice].replace('"',''))
-                        else:
-                            if campo == 'username':
-                                if criar_user:
-                                    name = dados_linha[int(form['name'])-1].replace('"','').lower().split(' ')
-
-                                    username = name[0] + name[-1]
-                                    cont = 1
-
-                                    if form.get('registration'):
-                                        matricula = dados_linha[int(form.get('registration'))-1].replace('"','')
-                                        username += str(matricula)
-                                    else:
-                                        matricula = randint(1,pow(10,10))
-                                        username += str(matricula)
-
-                                    usr = username
-                                    while ModelsInstanceFuncdetails().get_InstanceFuncdetails(self.to_utf8(usr)):
-                                        usr = username + str(cont)
-                                        cont +=1
-
-                                    dados[campo] = self.to_utf8(usr)
-                                    check_user = True
-
-                                else:
-                                    if form.get('username'):
-                                        indice = int(form.get('username'))-1
-                                        user = self.to_utf8(dados_linha[indice].replace('"',''))
-                                        if ModelsInstanceFuncdetails().get_InstanceFuncdetails(user) and merge_user:
-                                            dados[campo] = user
-                                            check_user = True
-                                        else:
-                                            dados[campo] = user
-                                            check_user = True
-
-                    erros, data_user = valida_form_dinamic(self,campos, dados)
-                    if not erros:
-                        if criar_user_plone:
-                            ImportUser().importUser(self,{},dados)
-
-                        username = dados['username']
-                        if check_user:
-                            user_instance = ModelsInstanceFuncdetails().get_InstanceFuncdetails(username)
-                            if user_instance:
-                                id_instance = user_instance.id
-                            else:
-                                id_instance = ModelsInstanceFuncdetails().set_InstanceFuncdetails(username)
-
-                            for item in data_user.keys():
-                                field = self.Convert_utf8(item)
-                                valor = data_user[item]
-                                result_campo = ModelsDadosFuncdetails().get_DadosFuncdetails_byInstanceAndField(id_instance,field)
-                                if result_campo:
-                                    result_campo.valor = valor.strip()
-                                    tools.db.store.commit()
-                                else:
-                                    if valor:
-                                        D={}
-                                        D['vin_myvindula_instance_id'] = id_instance
-                                        D['vin_myvindula_confgfuncdetails_fields'] = field
-                                        D['valor'] = self.Convert_utf8(valor)
-
-                                        ModelsDadosFuncdetails().set_DadosFuncdetails(**D)
-
-                            success = True
-
-                        else:
-                            error = 1
-                    else:
-                        linhas_error.append(linha)
-                        lista_erros.append(erros)
-                        error = 2
-                        success = False
-
-                    logger.info("%s - %s "% (erros,data_user))
-
-            if linhas_error:
-                success = False
-                campos = arquivo.data.split('\n')[0].replace('\r','')
-                text = ''
-                col = ''
-                for campo in campos.split(';'):
-                    col += campo+';'
-
-                col += 'coluna erro;\n'
-                text = col
-                i = 0
-
-                for linha in linhas_error:
-                    text += linha.replace('\r','') + ';'+str(lista_erros[i].keys())+'\n'
-                    i +=1
-
-                text += '\n'
-
-                nome_arquivo = 'error-import-'+ datetime.now().strftime('%Y-%M-%d_%H-%M-%S') +'.csv'
-                pasta_error = getSite()['control-panel-objects']['migration-users']['errors-import']
-                pasta_error.invokeFactory('File',
-                                            id=nome_arquivo,
-                                            title=nome_arquivo,
-                                            description='',
-                                            file=text)
-                url=pasta_error[nome_arquivo].absolute_url()
-
-            redirect = self.context.absolute_url() + '/myvindula-import-third?success=%s&error=%s&url=%s' % (success,error,url)
-            return self.request.response.redirect(redirect)
-
-
-class MyVindulaImportThirdView(grok.View,UtilMyvindula):
-    grok.context(INavigationRoot)
-    grok.require('cmf.ManagePortal')
-    grok.name('myvindula-import-third')
+    grok.name('myvindula-import-users')
 
 class MyVindulaExportUsersView(grok.View,UtilMyvindula):
     grok.context(INavigationRoot)
