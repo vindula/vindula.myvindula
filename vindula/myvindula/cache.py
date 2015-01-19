@@ -4,11 +4,8 @@ import json
 import hashlib
 import pickle
 #from redis_completion import RedisEngine
+from vindula.myvindula.config import REDIS_HOST,REDIS_PORT,REDIS_DB
 
-#TODO: colocar essa configuração no painel de controle do plone.
-REDIS_HOST = 'redis.vindula.infra'
-REDIS_PORT = 6379
-REDIS_DB = 2
 pool = redis.ConnectionPool(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
 
 def get_redis_connection(host=REDIS_HOST,port=REDIS_PORT,db=REDIS_DB):
