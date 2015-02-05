@@ -2,15 +2,14 @@
 
 
 #Imports regarding the connection of the database 'strom'
-from storm.locals import *
-from storm.expr import Desc, Select
+from datetime import datetime
+from hashlib import md5
 
+from storm.locals import *
 
 from vindula.myvindula.models.base import BaseStoreMyvindula
 from vindula.myvindula.tools.utils import UtilMyvindula
 
-from hashlib import md5
-from datetime import datetime
 
 class UserSessionToken(Storm, BaseStoreMyvindula):
     __storm_table__ = 'vinapp_myvindula_usersessiontoken'
@@ -46,3 +45,23 @@ class UserSessionToken(Storm, BaseStoreMyvindula):
         
         #TODO: Arrumar isso, foi comentada essa linha pois em BD com postgres o storm está dando conflito
         #self.date_excluded = datetime.now()
+
+    @staticmethod
+    def get_tokenobj_by_token(token):
+        if isinstance(token, str):
+            token = token.decode('utf-8')
+
+        rs = UserSessionToken().store.find(UserSessionToken,
+                UserSessionToken.token==token,
+                UserSessionToken.deleted==False)
+
+        if rs and rs.count():
+            return rs[0]
+        return None
+
+    @staticmethod
+    def token_exits(token):
+        obj_token = UserSessionToken.get_tokenobj_by_token(token)
+        if obj_token:
+            return True
+        return False
