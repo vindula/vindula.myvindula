@@ -1,6 +1,4 @@
-# coding: utf-8
-
-#Imports regarding the connection of the database 'strom'
+# -*- coding: utf-8 -*-
 from datetime import datetime
 from hashlib import md5
 
@@ -28,12 +26,15 @@ class RequiredReadingData(Storm, BaseStoreMyvindula):
         
         if kwargs.get('username','') and isinstance(kwargs.get('username',''), str):
             kwargs['username'] = kwargs.get('username','').decode('utf-8')
-        
+
+        kwargs['date_created'] = datetime.now()
+        kwargs['date_modified'] = datetime.now()
+
         data = RequiredReadingData(**kwargs)
         self.store.add(data)
         self.store.commit()
         self.store.flush()
-        
+
         #Criando o registro de log para o analytics
         site = getSite()
         session = site.REQUEST.SESSION

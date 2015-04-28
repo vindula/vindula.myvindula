@@ -1,20 +1,15 @@
 # coding: utf-8
 
-
-#Imports regarding the connection of the database 'strom'
-from storm.locals import *
-from storm.expr import Desc, Select
-from storm.zope.interfaces import IZStorm
-from zope.component import getUtility
-from datetime import date , datetime, timedelta
-
+from datetime import datetime, timedelta
 from hashlib import md5
 from random import choice
-from Products.CMFCore.utils import getToolByName
-from zope.app.component.hooks import getSite
 
-#import sys
-#from storm.tracer import debug #debug(True, stream=sys.stdout)
+from Products.CMFCore.utils import getToolByName
+from storm.locals import *
+from storm.zope.interfaces import IZStorm
+from zope.app.component.hooks import getSite
+from zope.component import getUtility
+
 
 class BaseStore(object):
 
