@@ -1,34 +1,26 @@
 # coding: utf-8
-
-from Products.statusmessages.interfaces import IStatusMessage
-from vindula.myvindula import MessageFactory as _
-
-
-# from vindula.myvindula.models.photo_user import ModelsPhotoUser
-
-from vindula.myvindula.models.base import BaseStore
-
-# Import para envio de E-mail
+import base64, pickle
+import logging
 import smtplib
+from datetime import date, datetime
+# Import para envio de E-mail
+from email import Encoders
+from email.MIMEBase import MIMEBase
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
-from email.MIMEBase import MIMEBase
-from email.MIMEImage import MIMEImage
-from email import Encoders
-from vindula.myvindula.tools.layoutemail import LayoutEmail
-from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
-
-from vindula.myvindula.tools.ago import human
-
-
-from Products.CMFCore.utils import getToolByName
-from zope.app.component.hooks import getSite
-
-import hashlib, urllib, base64, pickle
-from datetime import date, datetime
 
 import pytz
-import logging
+from Products.CMFCore.utils import getToolByName
+from Products.statusmessages.interfaces import IStatusMessage
+from zope.app.component.hooks import getSite
+
+from vindula.myvindula import MessageFactory as _
+from vindula.myvindula.models.base import BaseStore
+from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
+from vindula.myvindula.tools.ago import human
+from vindula.myvindula.tools.layoutemail import LayoutEmail
+
+
 logger = logging.getLogger('vindula.myvindula')
 
 class UtilMyvindula(object):

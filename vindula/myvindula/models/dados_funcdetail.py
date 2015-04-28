@@ -1,15 +1,15 @@
 # coding: utf-8
-import requests
 from datetime import datetime, date
 from hashlib import md5
+
+import requests
 from storm.locals import *
-from storm.expr import Desc, Select
 from zope.component.hooks import getSite
 
+from vindula.myvindula.config import HA_VINDULAPP_HOST,HA_VINDULAPP_PORT
 from vindula.myvindula.models.base import BaseStoreMyvindula
 from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
 from vindula.myvindula.tools.utils import UtilMyvindula
-from vindula.myvindula.config import HA_VINDULAPP_HOST,HA_VINDULAPP_PORT
 
 
 class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):

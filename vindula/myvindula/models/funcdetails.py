@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-
-from storm.locals import Select
-from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
-from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
-
-from vindula.myvindula.tools.utils import UtilMyvindula
-from plone.app.uuid.utils import uuidToObject
 from datetime import datetime, date
-from vindula.myvindula.cache import *
 
-from storm.expr import Or, And
+from plone.app.uuid.utils import uuidToObject
+from storm.expr import Or
+from storm.locals import Select
+
+from vindula.myvindula.cache import *
+from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
+from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
+from vindula.myvindula.tools.utils import UtilMyvindula
+
 
 def por_name(item):
     return item.get('name','')
