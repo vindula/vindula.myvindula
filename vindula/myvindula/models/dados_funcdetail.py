@@ -1,19 +1,16 @@
 # coding: utf-8
-
-
-#Imports regarding the connection of the database 'strom'
-from storm.locals import *
-from storm.expr import Desc, Select
-
-
-from vindula.myvindula.models.base import BaseStoreMyvindula
-# from vindula.myvindula.models.department import ModelsDepartment
-from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
-
-from vindula.myvindula.tools.utils import UtilMyvindula
-
+import requests
 from datetime import datetime, date
 from hashlib import md5
+from storm.locals import *
+from storm.expr import Desc, Select
+from zope.component.hooks import getSite
+
+from vindula.myvindula.models.base import BaseStoreMyvindula
+from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
+from vindula.myvindula.tools.utils import UtilMyvindula
+from vindula.myvindula.config import HA_VINDULAPP_HOST,HA_VINDULAPP_PORT
+
 
 class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
     #__storm_table__ = 'vin_myvindula_dados_funcdetails'
@@ -68,8 +65,17 @@ class ModelsDadosFuncdetails(Storm, BaseStoreMyvindula):
             created = True
 
         if created:
+            self.store.commit()
             self.store.flush()
             tool.setLogger('info',"User created on myvindula: %s" % username)
+
+            site = getSite()
+            session = site.REQUEST.SESSION
+            token = session.get('user_token')
+
+            uri = 'vindula-api/myvindula/run-log/%s/%s/%s' % (token, 'UserObject', username)
+            url = 'http://%s:%s/%s' %(HA_VINDULAPP_HOST,HA_VINDULAPP_PORT,uri)
+            result = requests.get(url)
 
 
     def del_DadosFuncdetails(self,id_instance):
