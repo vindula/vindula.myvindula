@@ -8,7 +8,6 @@
 from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 
 from vindula.myvindula.tools.utils import UtilMyvindula
-from vindula.myvindula.registration import SchemaFunc
 
 #TODO: Limpar imports e codigo velho
 def userupdate(event):
@@ -35,40 +34,10 @@ def userupdate(event):
             dados['name'] = user_login.getProperty('fullname')
 
         user_schema.createUserProfile(dados)
-        # """
-        # campos = [u'name',u'email']
-        # for campo in campos:
-        #     D={}
-        #     #D['vin_myvindula_instance_id'] = id_instance
-        #     D['vin_myvindula_confgfuncdetails_fields'] = campo
-        #     D['value'] = tools.Convert_utf8(dados.get(campo))
 
-        #     ModelsDadosFuncdetails().set_DadosFuncdetails(**D)
-        # """
-        # if enable_chat and not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
-        #     CreateUserXMPP(user_id)
-
-#        tools.setRedirectPage('/myvindula-first-registre')
-
-
-    # if enable_chat and not ModelsUserOpenFire().get_UserOpenFire_by_username(user_id):
-    #     CreateUserXMPP(user_id)
-
-        #tools.setRedirectPage('/myvindula-first-registre')
 
     else:
         user_data =  tools.get_prefs_user(user_id)
-
         if ((not user_data.get('name')) or (not user_data.get('date_birth')) or\
             (not user_data.get('phone_number')) or (not user_data.get('email'))) and alert_first_access:
-
             tools.setLogger('info',"Dados Incompletos no myvindula")
-
-#            tools.setRedirectPage('/myvindula-first-registre')
-
-
-# def onDeleteUser(event):
-#     user = event.object
-#     if user:
-#         return SchemaFunc().deleteUser(user)
-
