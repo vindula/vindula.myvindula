@@ -31,9 +31,9 @@
 	      provides="Products.GenericSetup.interfaces.EXTENSION"
 	      />
 
-	<!--subscriber
+	<subscriber
     		for="Products.PluggableAuthService.interfaces.events.IUserLoggedInEvent"
-    		handler=".handlers.userupdate"/-->
+    		handler=".handlers.userupdate"/>
 
 	<!--subscriber
 	    for="Products.PluggableAuthService.interfaces.events.IPrincipalDeletedEvent"
