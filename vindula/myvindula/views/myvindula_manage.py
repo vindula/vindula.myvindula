@@ -256,6 +256,19 @@ class MyVindulaImportHoleriteView(grok.View, UtilMyvindula):
 
         return self.url_frame %(url,user_token,modelo)
 
+class MyVindulaImportInformeRendimentosView(grok.View, UtilMyvindula):
+    grok.context(INavigationRoot)
+    grok.require('cmf.ManagePortal')
+    grok.name('myvindula-import-ir')
+
+    url_frame = '%s/vindula-api/rh/ir/manager/%s/?iframe_id=8d60ac741503d50f2970c8ac337e6Xc51'
+
+    def get_url_frame(self):
+        url = self.context.portal_url()
+        user_token = self.request.SESSION.get('user_token')
+
+        return self.url_frame %(url,user_token)
+
 
 
 
