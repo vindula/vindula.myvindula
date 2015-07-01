@@ -1,25 +1,16 @@
 # coding: utf-8
 import logging
-from copy import copy
-from datetime import datetime
-from random import randint
 
 from Products.CMFCore.interfaces import ISiteRoot
-from Products.statusmessages.interfaces import IStatusMessage
 from five import grok
 from plone.app.layout.navigation.interfaces import INavigationRoot
-from plone.i18n.normalizer.interfaces import IIDNormalizer
-from zope.app.component.hooks import getSite
-from zope.component import getUtility
 
 from vindula.myvindula import MessageFactory as _
-from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
-from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 from vindula.myvindula.models.funcdetails import FuncDetails
 from vindula.myvindula.registration import ImportUser
 from vindula.myvindula.tools.utils import UtilMyvindula
 from vindula.myvindula.user import BaseFunc
-from vindula.myvindula.validation import valida_form_dinamic
+
 
 logger = logging.getLogger('vindula.myvindula')
 
@@ -542,4 +533,9 @@ class MyVindulaExportUsersView(grok.View,UtilMyvindula):
     grok.context(INavigationRoot)
     grok.require('cmf.ManagePortal')
     grok.name('myvindula-export-users')
+
+class MyVindulaImportProfilePicture(grok.View):
+    grok.context(INavigationRoot)
+    grok.require('cmf.ManagePortal')
+    grok.name('myvindula-import-profile-picture')
 
