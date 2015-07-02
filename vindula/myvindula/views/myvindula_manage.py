@@ -1,25 +1,16 @@
 # coding: utf-8
 import logging
-from copy import copy
-from datetime import datetime
-from random import randint
 
 from Products.CMFCore.interfaces import ISiteRoot
-from Products.statusmessages.interfaces import IStatusMessage
 from five import grok
 from plone.app.layout.navigation.interfaces import INavigationRoot
-from plone.i18n.normalizer.interfaces import IIDNormalizer
-from zope.app.component.hooks import getSite
-from zope.component import getUtility
 
 from vindula.myvindula import MessageFactory as _
-from vindula.myvindula.models.confgfuncdetails import ModelsConfgMyvindula
-from vindula.myvindula.models.dados_funcdetail import ModelsDadosFuncdetails
 from vindula.myvindula.models.funcdetails import FuncDetails
 from vindula.myvindula.registration import ImportUser
 from vindula.myvindula.tools.utils import UtilMyvindula
 from vindula.myvindula.user import BaseFunc
-from vindula.myvindula.validation import valida_form_dinamic
+
 
 logger = logging.getLogger('vindula.myvindula')
 
@@ -255,6 +246,19 @@ class MyVindulaImportHoleriteView(grok.View, UtilMyvindula):
         user_token = self.request.SESSION.get('user_token')
 
         return self.url_frame %(url,user_token,modelo)
+
+class MyVindulaImportInformeRendimentosView(grok.View, UtilMyvindula):
+    grok.context(INavigationRoot)
+    grok.require('cmf.ManagePortal')
+    grok.name('myvindula-import-ir')
+
+    url_frame = '%s/vindula-api/rh/ir/manager/%s/?iframe_id=8d60ac741503d50f2970c8ac337e6Xc51'
+
+    def get_url_frame(self):
+        url = self.context.portal_url()
+        user_token = self.request.SESSION.get('user_token')
+
+        return self.url_frame %(url,user_token)
 
 
 
@@ -529,4 +533,9 @@ class MyVindulaExportUsersView(grok.View,UtilMyvindula):
     grok.context(INavigationRoot)
     grok.require('cmf.ManagePortal')
     grok.name('myvindula-export-users')
+
+class MyVindulaImportProfilePicture(grok.View):
+    grok.context(INavigationRoot)
+    grok.require('cmf.ManagePortal')
+    grok.name('myvindula-import-profile-picture')
 

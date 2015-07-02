@@ -1,0 +1,30 @@
+<html metal:use-macro="here/main_template/macros/master">
+    <head>
+
+        <metal:block fill-slot="top_slot">
+            <tal:dummy tal:define="dummy python:request.set('disable_border',1)" />            
+            <tal:dummy tal:define="disable_column_one python:request.set('disable_plone.leftcolumn',1);" />
+            <tal:dummy tal:define="disable_column_two python:request.set('disable_plone.rightcolumn',1);" />
+        </metal:block>
+
+    </head>
+    <body>
+                
+        <div metal:fill-slot="content">         
+            <metal:page metal:define-macro="page">
+
+                <div id="informe-rendimentos-content" class="columns large-12 medium-12 small-12">
+                    <div class="vd_view_ir" tal:attributes="data_uid context/UID|nothing;
+                                                            data_type context/portal_type|nothing;">
+                        <span class="new_view_ir" id="2942e8d4dc2af485405cb70f936856Dfa">
+                            <iframe frameborder="0" scrolling="no" class="new_view_ir" src="" height="0" width="100%"
+                                    id="2942e8d4dc2af485405cb70f936856Dfa" tal:attributes="src view/get_url_frame">
+                            </iframe>
+                        </span>
+                    </div>
+                </div>
+            </metal:page>
+        </div>
+    </body>
+</html>
+

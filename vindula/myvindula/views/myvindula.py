@@ -870,4 +870,16 @@ class MyVindulaHoleriteView(grok.View, UtilMyvindula):
         user_token = self.request.SESSION.get('user_token')
 
         return self.url_frame %(url,user_token,modelo)
+
+class MyVindulaInformeRendimentosView(grok.View, UtilMyvindula):
+    grok.context(ISiteRoot)
+    grok.require('vindula.UserLogado')
+    grok.name('myvindula-ir')
+
+    url_frame = '%s/vindula-api/rh/ir/%s/?iframe_id=2942e8d4dc2af485405cb70f936856Dfa'
+
+    def get_url_frame(self):
+        url = self.context.portal_url()
+        user_token = self.request.SESSION.get('user_token')
+        return self.url_frame %(url,user_token)
     
