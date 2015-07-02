@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '2.0a3'
+version = 'Smart 1.9'
 
 setup(name='vindula.myvindula',
       version=version,
