@@ -151,7 +151,7 @@ class MyVindulaView(grok.View, UtilMyvindula):
         if list_message:
             return list_message
         else:
-            return None
+            return []
 
 #Views de renderização das imagem do howareu ---------------------------------------------------
 class VindulahowareuImage(grok.View, UtilMyvindula):
