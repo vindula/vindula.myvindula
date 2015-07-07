@@ -30,12 +30,18 @@ class MyVindulaListRecados(grok.View,UtilMyvindula):
         if data_inicial and data_final:
             data_inicial = self.str2datetime(data_inicial) + timedelta(days=1)
             data_final = self.str2datetime(data_final)
+
+        data = ModelsMyvindulaRecados().get_myvindula_recados(receiver=user,
+            list_username=L,
+            data_inicial=data_inicial,
+            data_final=data_final,
+            subject=subject,)
+
+        if data and data.count():
+            L = data
+
+        return L
         
-        return ModelsMyvindulaRecados().get_myvindula_recados(receiver=user,
-                                                              list_username=L,
-                                                              data_inicial=data_inicial,
-                                                              data_final=data_final,
-                                                              subject=subject,)
     def update(self):
         open_for_anonymousUser =  self.context.restrictedTraverse('myvindula-conf-userpanel').check_myvindulaprivate_isanonymous();
         if open_for_anonymousUser:
